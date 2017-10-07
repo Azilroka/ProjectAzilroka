@@ -1,0 +1,12 @@
+## Interface: 60000
+## Title: |cffC495DDBroker|r|cFFFFFFFFLDB|r
+## Notes: A data broker display for Tukui panels based off Ztango's Tukui DataBroker
+## Author: Azilroka
+## Version: 2.01
+## OptionalDeps: AsphyxiaUI-Core, DuffedUI, ElvUI, Tukui, Enhanced_Config
+## SavedVariables: BrokerLDBOptions, BrokerLDBBlacklist
+## X-Tukui-ProjectID: 146
+## X-Tukui-ProjectFolders: BrokerLDB
+
+LibDataBroker-1.1.lua
+Broker.lua

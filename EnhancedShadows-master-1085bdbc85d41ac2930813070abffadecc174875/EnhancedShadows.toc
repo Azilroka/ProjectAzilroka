@@ -1,0 +1,9 @@
+## Interface: 70300
+## Title: |cff1784d1ElvUI |r|cffFFFFFFEnhancedShadows|r
+## Author: Azilroka, Infinitron
+## Version: 1.07
+## Notes: ElvUI plugin for Enhanced Shadows
+## RequiredDeps: ElvUI
+## OptionalDeps: ElvUI_ExtraActionBars
+
+EnhancedShadows.lua

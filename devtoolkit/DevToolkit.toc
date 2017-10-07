@@ -1,0 +1,9 @@
+## Interface: 60000
+## Title: |cFFFF7D0ADev|rToolkit
+## Author: Azilroka, Elv, Tukz
+## OptionalDeps: Tukui, AsphyxiaUI, DuffedUI, ElvUI
+## Version: 1.2
+
+AddOnControl.lua
+Frame.lua
+Misc.lua

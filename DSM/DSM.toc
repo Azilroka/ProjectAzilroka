@@ -1,0 +1,12 @@
+## Interface: 70000
+## Title: |cff1daa1dDajova|r Shared Media
+## Notes: Adds Shared Media textures and fonts into your selected addon!
+## Version: 3.15
+## Author: Azilroka, Sortokk, Dajova
+## X-Tukui-ProjectID: 135
+## X-Tukui-ProjectFolders: DSM
+
+Libs\LibStub.lua
+Libs\CallbackHandler-1.0.lua
+Libs\LibSharedMedia-3.0.lua
+Media.lua
