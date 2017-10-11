@@ -58,7 +58,7 @@ function BrokerLDB:GetOptions()
 						desc = CONFIRM_RESET_SETTINGS,
 						confirm = true,
 						type = 'execute',
-						func = function() BrokerLDBOptions = CopyTable(Defaults); wipe(BrokerLDBBlacklist); end,
+						func = function() BrokerLDBOptions = CopyTable(Defaults) wipe(BrokerLDBBlacklist) end,
 					},
 					space = {
 						type = 'description',

@@ -9,20 +9,20 @@ local function Hook(source, target, secure)
     end
 end
 
-local FRIENDS_GROUP_NAME_COLOR = NORMAL_FONT_COLOR;
+local FRIENDS_GROUP_NAME_COLOR = NORMAL_FONT_COLOR
  
-local INVITE_RESTRICTION_NO_TOONS = 0;
-local INVITE_RESTRICTION_CLIENT = 1;
-local INVITE_RESTRICTION_LEADER = 2;
-local INVITE_RESTRICTION_FACTION = 3;
-local INVITE_RESTRICTION_INFO = 4;
-local INVITE_RESTRICTION_NONE = 5;
+local INVITE_RESTRICTION_NO_TOONS = 0
+local INVITE_RESTRICTION_CLIENT = 1
+local INVITE_RESTRICTION_LEADER = 2
+local INVITE_RESTRICTION_FACTION = 3
+local INVITE_RESTRICTION_INFO = 4
+local INVITE_RESTRICTION_NONE = 5
 
-local ONE_MINUTE = 60;
-local ONE_HOUR = 60 * ONE_MINUTE;
-local ONE_DAY = 24 * ONE_HOUR;
-local ONE_MONTH = 30 * ONE_DAY;
-local ONE_YEAR = 12 * ONE_MONTH;
+local ONE_MINUTE = 60
+local ONE_HOUR = 60 * ONE_MINUTE
+local ONE_DAY = 24 * ONE_HOUR
+local ONE_MONTH = 30 * ONE_DAY
+local ONE_YEAR = 12 * ONE_MONTH
 
 local FriendButtons = { count = 0 }
 local GroupCount = 0
@@ -65,143 +65,143 @@ local function ClassColourCode(class,table)
 end
 
 local function FriendGroups_GetTopButton(offset)
-	local usedHeight = 0;
+	local usedHeight = 0
 	for i = 1, FriendButtons.count do
-		local buttonHeight = FRIENDS_BUTTON_HEIGHTS[FriendButtons[i].buttonType];
+		local buttonHeight = FRIENDS_BUTTON_HEIGHTS[FriendButtons[i].buttonType]
 		if ( usedHeight + buttonHeight >= offset ) then
-			return i - 1, offset - usedHeight;
+			return i - 1, offset - usedHeight
 		else
-			usedHeight = usedHeight + buttonHeight;
+			usedHeight = usedHeight + buttonHeight
 		end
 	end
 	return 0,0
 end
 
 local function FriendGroups_UpdateFriendButton(button)
-	local index = button.index;
-	button.buttonType = FriendButtons[index].buttonType;
-	button.id = FriendButtons[index].id;
-	local height = FRIENDS_BUTTON_HEIGHTS[button.buttonType];
-	local nameText, nameColor, infoText, broadcastText;
-	local hasTravelPassButton = false;
+	local index = button.index
+	button.buttonType = FriendButtons[index].buttonType
+	button.id = FriendButtons[index].id
+	local height = FRIENDS_BUTTON_HEIGHTS[button.buttonType]
+	local nameText, nameColor, infoText, broadcastText
+	local hasTravelPassButton = false
 	if ( button.buttonType == FRIENDS_BUTTON_TYPE_WOW ) then
-		local name, level, class, area, connected, status, note, isRaF, guid = GetFriendInfo(FriendButtons[index].id);
-		broadcastText = nil;
+		local name, level, class, area, connected, status, note, isRaF, guid = GetFriendInfo(FriendButtons[index].id)
+		broadcastText = nil
 		if ( connected ) then
-			button.background:SetColorTexture(FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b, FRIENDS_WOW_BACKGROUND_COLOR.a);
+			button.background:SetColorTexture(FRIENDS_WOW_BACKGROUND_COLOR.r, FRIENDS_WOW_BACKGROUND_COLOR.g, FRIENDS_WOW_BACKGROUND_COLOR.b, FRIENDS_WOW_BACKGROUND_COLOR.a)
 			if ( status == "" ) then
-				button.status:SetTexture(FRIENDS_TEXTURE_ONLINE);
+				button.status:SetTexture(FRIENDS_TEXTURE_ONLINE)
 			elseif ( status == CHAT_FLAG_AFK ) then
-				button.status:SetTexture(FRIENDS_TEXTURE_AFK);
+				button.status:SetTexture(FRIENDS_TEXTURE_AFK)
 			elseif ( status == CHAT_FLAG_DND ) then
-				button.status:SetTexture(FRIENDS_TEXTURE_DND);
+				button.status:SetTexture(FRIENDS_TEXTURE_DND)
 			end
 
 			if FriendGroups_SavedVars.colour_classes then
-				nameColor = ClassColourCode(class,true);
+				nameColor = ClassColourCode(class,true)
 			else
-				nameColor = FRIENDS_WOW_NAME_COLOR;
+				nameColor = FRIENDS_WOW_NAME_COLOR
 			end
-			nameText = name..", "..format(FRIENDS_LEVEL_TEMPLATE, level, class);
+			nameText = name..", "..format(FRIENDS_LEVEL_TEMPLATE, level, class)
 		else
-			button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a);
-			button.status:SetTexture(FRIENDS_TEXTURE_OFFLINE);
-			nameText = name;
-			nameColor = FRIENDS_GRAY_COLOR;
+			button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a)
+			button.status:SetTexture(FRIENDS_TEXTURE_OFFLINE)
+			nameText = name
+			nameColor = FRIENDS_GRAY_COLOR
 		end
-		infoText = area;
-		button.gameIcon:Hide();
-		button.summonButton:ClearAllPoints();
-		button.summonButton:SetPoint("TOPRIGHT", button, "TOPRIGHT", 1, -1);
-		FriendsFrame_SummonButton_Update(button.summonButton);
+		infoText = area
+		button.gameIcon:Hide()
+		button.summonButton:ClearAllPoints()
+		button.summonButton:SetPoint("TOPRIGHT", button, "TOPRIGHT", 1, -1)
+		FriendsFrame_SummonButton_Update(button.summonButton)
 	elseif ( button.buttonType == FRIENDS_BUTTON_TYPE_BNET ) then
-		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(FriendButtons[index].id);
-		broadcastText = messageText;
+		local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(FriendButtons[index].id)
+		broadcastText = messageText
 		-- set up player name and character name
-		local characterName = characterName;
+		local characterName = characterName
 		if ( accountName ) then
-			nameText = accountName;
+			nameText = accountName
 			if ( isOnline ) then
-				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client);
+				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
 			end
 		else
-			nameText = UNKNOWN;
+			nameText = UNKNOWN
 		end
 
 		-- append character name
 		if ( characterName ) then
 			if ( client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(bnetIDGameAccount) ) then
-				local level = select(11, BNGetGameAccountInfo(bnetIDGameAccount));
+				local level = select(11, BNGetGameAccountInfo(bnetIDGameAccount))
 				if FriendGroups_SavedVars.colour_classes then
 					local class = select(8, BNGetGameAccountInfo(bnetIDGameAccount))
-					nameText = nameText.." "..ClassColourCode(class).."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE;
+					nameText = nameText.." "..ClassColourCode(class).."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE
 				else
-					nameText = nameText.." "..FRIENDS_WOW_NAME_COLOR_CODE.."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE;
+					nameText = nameText.." "..FRIENDS_WOW_NAME_COLOR_CODE.."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE
 				end
 			else
-				local level = select(11, BNGetGameAccountInfo(bnetIDGameAccount));
+				local level = select(11, BNGetGameAccountInfo(bnetIDGameAccount))
 				if ( ENABLE_COLORBLIND_MODE == "1" ) then
-					characterName = characterName..CANNOT_COOPERATE_LABEL;
+					characterName = characterName..CANNOT_COOPERATE_LABEL
 				end
 				if level ~= "" then
-					nameText = nameText.." "..FRIENDS_OTHER_NAME_COLOR_CODE.."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE;
+					nameText = nameText.." "..FRIENDS_OTHER_NAME_COLOR_CODE.."("..characterName.."-"..level..")"..FONT_COLOR_CODE_CLOSE
 				else
-					nameText = nameText.." "..FRIENDS_OTHER_NAME_COLOR_CODE.."("..characterName..")"..FONT_COLOR_CODE_CLOSE;
+					nameText = nameText.." "..FRIENDS_OTHER_NAME_COLOR_CODE.."("..characterName..")"..FONT_COLOR_CODE_CLOSE
 				end
 			end
 		end
 
 		if ( isOnline ) then
-			local _, _, _, realmName, realmID, faction, _, _, _, zoneName, _, gameText, _, _, _, _, _, isGameAFK, isGameBusy, guid = BNGetGameAccountInfo(bnetIDGameAccount);
-			button.background:SetColorTexture(FRIENDS_BNET_BACKGROUND_COLOR.r, FRIENDS_BNET_BACKGROUND_COLOR.g, FRIENDS_BNET_BACKGROUND_COLOR.b, FRIENDS_BNET_BACKGROUND_COLOR.a);
+			local _, _, _, realmName, realmID, faction, _, _, _, zoneName, _, gameText, _, _, _, _, _, isGameAFK, isGameBusy, guid = BNGetGameAccountInfo(bnetIDGameAccount)
+			button.background:SetColorTexture(FRIENDS_BNET_BACKGROUND_COLOR.r, FRIENDS_BNET_BACKGROUND_COLOR.g, FRIENDS_BNET_BACKGROUND_COLOR.b, FRIENDS_BNET_BACKGROUND_COLOR.a)
 			if ( isBnetAFK or isGameAFK ) then
-				button.status:SetTexture(FRIENDS_TEXTURE_AFK);
+				button.status:SetTexture(FRIENDS_TEXTURE_AFK)
 			elseif ( isBnetDND or isGameBusy ) then
-				button.status:SetTexture(FRIENDS_TEXTURE_DND);
+				button.status:SetTexture(FRIENDS_TEXTURE_DND)
 			else
-				button.status:SetTexture(FRIENDS_TEXTURE_ONLINE);
+				button.status:SetTexture(FRIENDS_TEXTURE_ONLINE)
 			end
 			if ( client == BNET_CLIENT_WOW ) then
 				if ( not zoneName or zoneName == "" ) then
-					infoText = UNKNOWN;
+					infoText = UNKNOWN
 				else
-					infoText = zoneName;
+					infoText = zoneName
 				end
 			else
-				infoText = gameText;
+				infoText = gameText
 			end
-			button.gameIcon:SetTexture(BNet_GetClientTexture(client));
-			nameColor = FRIENDS_BNET_NAME_COLOR;
+			button.gameIcon:SetTexture(BNet_GetClientTexture(client))
+			nameColor = FRIENDS_BNET_NAME_COLOR
 
 			--Note - this logic should match the logic in FriendsFrame_ShouldShowSummonButton
 
-			local shouldShowSummonButton = FriendsFrame_ShouldShowSummonButton(button.summonButton);
-			button.gameIcon:SetShown(not shouldShowSummonButton);
+			local shouldShowSummonButton = FriendsFrame_ShouldShowSummonButton(button.summonButton)
+			button.gameIcon:SetShown(not shouldShowSummonButton)
 
 			-- travel pass
-			hasTravelPassButton = true;
-			local restriction = FriendsFrame_GetInviteRestriction(button.id);
+			hasTravelPassButton = true
+			local restriction = FriendsFrame_GetInviteRestriction(button.id)
 			if ( restriction == INVITE_RESTRICTION_NONE ) then
-				button.travelPassButton:Enable();
+				button.travelPassButton:Enable()
 			else
-				button.travelPassButton:Disable();
+				button.travelPassButton:Disable()
 			end
 		else
-			button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a);
-			button.status:SetTexture(FRIENDS_TEXTURE_OFFLINE);
-			nameColor = FRIENDS_GRAY_COLOR;
-			button.gameIcon:Hide();
+			button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a)
+			button.status:SetTexture(FRIENDS_TEXTURE_OFFLINE)
+			nameColor = FRIENDS_GRAY_COLOR
+			button.gameIcon:Hide()
 			if ( not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR ) then
-				infoText = FRIENDS_LIST_OFFLINE;
+				infoText = FRIENDS_LIST_OFFLINE
 			else
-				infoText = string.format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline));
+				infoText = string.format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
 			end
 		end
-		button.summonButton:ClearAllPoints();
-		button.summonButton:SetPoint("CENTER", button.gameIcon, "CENTER", 1, 0);
-		FriendsFrame_SummonButton_Update(button.summonButton);
+		button.summonButton:ClearAllPoints()
+		button.summonButton:SetPoint("CENTER", button.gameIcon, "CENTER", 1, 0)
+		FriendsFrame_SummonButton_Update(button.summonButton)
 	elseif ( button.buttonType == FRIENDS_BUTTON_TYPE_DIVIDER ) then
-		local title;
+		local title
 		local group = FriendButtons[index].text
 		if group == "" or not group then
 			title = "[no group]"
@@ -212,7 +212,7 @@ local function FriendGroups_UpdateFriendButton(button)
         button.text:Show()
 
 		local counts = "(" .. GroupOnline[group] .. "/" .. GroupTotal[group] .. ")"
-		nameText = counts;
+		nameText = counts
 		nameColor = FRIENDS_GROUP_NAME_COLOR
 		button.name:SetJustifyH("RIGHT")
 
@@ -224,50 +224,50 @@ local function FriendGroups_UpdateFriendButton(button)
 		infoText = group
 		button.info:Hide()
 		button.gameIcon:Hide()
-		button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a);
+		button.background:SetColorTexture(FRIENDS_OFFLINE_BACKGROUND_COLOR.r, FRIENDS_OFFLINE_BACKGROUND_COLOR.g, FRIENDS_OFFLINE_BACKGROUND_COLOR.b, FRIENDS_OFFLINE_BACKGROUND_COLOR.a)
 		button.background:SetAlpha(0.5)
-		local scrollFrame = FriendsFrameFriendsScrollFrame;
-		local divider = scrollFrame.dividerPool:Acquire();
-		divider:SetParent(scrollFrame.ScrollChild);
-		divider:SetAllPoints(button);
-		divider:Show();
+		local scrollFrame = FriendsFrameFriendsScrollFrame
+		local divider = scrollFrame.dividerPool:Acquire()
+		divider:SetParent(scrollFrame.ScrollChild)
+		divider:SetAllPoints(button)
+		divider:Show()
 	elseif ( button.buttonType == FRIENDS_BUTTON_TYPE_INVITE_HEADER ) then
-		local header = FriendsFrameFriendsScrollFrame.PendingInvitesHeaderButton;
-		header:SetPoint("TOPLEFT", button, 1, 0);
-		header:Show();
-		header:SetFormattedText(FRIEND_REQUESTS, BNGetNumFriendInvites());
-		local collapsed = GetCVarBool("friendInvitesCollapsed");
+		local header = FriendsFrameFriendsScrollFrame.PendingInvitesHeaderButton
+		header:SetPoint("TOPLEFT", button, 1, 0)
+		header:Show()
+		header:SetFormattedText(FRIEND_REQUESTS, BNGetNumFriendInvites())
+		local collapsed = GetCVarBool("friendInvitesCollapsed")
 		if ( collapsed ) then
-			header.DownArrow:Hide();
-			header.RightArrow:Show();
+			header.DownArrow:Hide()
+			header.RightArrow:Show()
 		else
-			header.DownArrow:Show();
-			header.RightArrow:Hide();
+			header.DownArrow:Show()
+			header.RightArrow:Hide()
 		end
-		nameText = nil;
+		nameText = nil
 	elseif ( button.buttonType == FRIENDS_BUTTON_TYPE_INVITE ) then
-		local scrollFrame = FriendsFrameFriendsScrollFrame;
-		local invite = scrollFrame.invitePool:Acquire();
-		invite:SetParent(scrollFrame.ScrollChild);
-		invite:SetAllPoints(button);
-		invite:Show();
-		local inviteID, accountName = BNGetFriendInviteInfo(button.id);
-		invite.Name:SetText(accountName);
-		invite.inviteID = inviteID;
-		invite.inviteIndex = button.id;
-		nameText = nil;
+		local scrollFrame = FriendsFrameFriendsScrollFrame
+		local invite = scrollFrame.invitePool:Acquire()
+		invite:SetParent(scrollFrame.ScrollChild)
+		invite:SetAllPoints(button)
+		invite:Show()
+		local inviteID, accountName = BNGetFriendInviteInfo(button.id)
+		invite.Name:SetText(accountName)
+		invite.inviteID = inviteID
+		invite.inviteIndex = button.id
+		nameText = nil
 	end
 	-- travel pass?
 	if ( hasTravelPassButton ) then
-		button.travelPassButton:Show();
+		button.travelPassButton:Show()
 	else
-		button.travelPassButton:Hide();
+		button.travelPassButton:Hide()
 	end
 	-- selection
 	if ( FriendsFrame.selectedFriendType == FriendButtons[index].buttonType and FriendsFrame.selectedFriend == FriendButtons[index].id ) then
-		button:LockHighlight();
+		button:LockHighlight()
 	else
-		button:UnlockHighlight();
+		button:UnlockHighlight()
 	end
 	-- finish setting up button if it's not a header
 	if ( nameText ) then
@@ -277,50 +277,50 @@ local function FriendGroups_UpdateFriendButton(button)
 			button.background:SetAlpha(1)
 			button.info:Show()
 		end
-		button.name:SetText(nameText);
-		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b);
-		button.info:SetText(infoText);
-		button:Show();
+		button.name:SetText(nameText)
+		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
+		button.info:SetText(infoText)
+		button:Show()
 	else
-		button:Hide();
+		button:Hide()
 	end
 	-- update the tooltip if hovering over a button
 	if ( FriendsTooltip.button == button ) then
-		FriendsFrameTooltip_Show(button);
+		FriendsFrameTooltip_Show(button)
 	end
 	if ( GetMouseFocus() == button ) then
-		FriendsFrameTooltip_Show(button);
+		FriendsFrameTooltip_Show(button)
 	end
-	return height;
+	return height
 end
 
 
 local function FriendGroups_UpdateFriends()
-	local scrollFrame = FriendsFrameFriendsScrollFrame;
-	local offset = HybridScrollFrame_GetOffset(scrollFrame);
-	local buttons = scrollFrame.buttons;
-	local numButtons = #buttons;
-	local numFriendButtons = FriendButtons.count;
+	local scrollFrame = FriendsFrameFriendsScrollFrame
+	local offset = HybridScrollFrame_GetOffset(scrollFrame)
+	local buttons = scrollFrame.buttons
+	local numButtons = #buttons
+	local numFriendButtons = FriendButtons.count
 
-	local usedHeight = 0;
+	local usedHeight = 0
 
-	scrollFrame.dividerPool:ReleaseAll();
-	scrollFrame.invitePool:ReleaseAll();
-	scrollFrame.PendingInvitesHeaderButton:Hide();
+	scrollFrame.dividerPool:ReleaseAll()
+	scrollFrame.invitePool:ReleaseAll()
+	scrollFrame.PendingInvitesHeaderButton:Hide()
 	for i = 1, numButtons do
-		local button = buttons[i];
-		local index = offset + i;
+		local button = buttons[i]
+		local index = offset + i
 		if ( index <= numFriendButtons ) then
-			button.index = index;
-			local height = FriendGroups_UpdateFriendButton(button);
-			button:SetHeight(height);
-			usedHeight = usedHeight + height;
+			button.index = index
+			local height = FriendGroups_UpdateFriendButton(button)
+			button:SetHeight(height)
+			usedHeight = usedHeight + height
 		else
-			button.index = nil;
-			button:Hide();
+			button.index = nil
+			button:Hide()
 		end
 	end
-	HybridScrollFrame_Update(scrollFrame, scrollFrame.totalFriendListEntriesHeight, usedHeight);
+	HybridScrollFrame_Update(scrollFrame, scrollFrame.totalFriendListEntriesHeight, usedHeight)
 
 	if hooks["FriendsFrame_UpdateFriends"] then
         hooks["FriendsFrame_UpdateFriends"]()
@@ -398,14 +398,14 @@ local function IncrementGroup(group, online)
 end
 
 local function FriendGroups_Update(forceUpdate)
-	local numBNetTotal, numBNetOnline = BNGetNumFriends();
-	local numBNetOffline = numBNetTotal - numBNetOnline;
-	local numWoWTotal, numWoWOnline = GetNumFriends();
-	local numWoWOffline = numWoWTotal - numWoWOnline;
+	local numBNetTotal, numBNetOnline = BNGetNumFriends()
+	local numBNetOffline = numBNetTotal - numBNetOnline
+	local numWoWTotal, numWoWOnline = GetNumFriends()
+	local numWoWOffline = numWoWTotal - numWoWOnline
 
-	QuickJoinToastButton:UpdateDisplayedFriendCount();
+	QuickJoinToastButton:UpdateDisplayedFriendCount()
 	if ( not FriendsListFrame:IsShown() and not forceUpdate) then
-		return;
+		return
 	end
 
 	wipe(FriendButtons)
@@ -420,22 +420,22 @@ local function FriendGroups_Update(forceUpdate)
 
     local buttonCount = 0
 
-	FriendButtons.count = 0;
-	local addButtonIndex = 0;
-	local totalButtonHeight = 0;
+	FriendButtons.count = 0
+	local addButtonIndex = 0
+	local totalButtonHeight = 0
 	local function AddButtonInfo(buttonType, id)
-		addButtonIndex = addButtonIndex + 1;
+		addButtonIndex = addButtonIndex + 1
 		if ( not FriendButtons[addButtonIndex] ) then
-			FriendButtons[addButtonIndex] = { };
+			FriendButtons[addButtonIndex] = { }
 		end
-		FriendButtons[addButtonIndex].buttonType = buttonType;
-		FriendButtons[addButtonIndex].id = id;
-		FriendButtons.count = FriendButtons.count+1;
-		totalButtonHeight = totalButtonHeight + FRIENDS_BUTTON_HEIGHTS[buttonType];
+		FriendButtons[addButtonIndex].buttonType = buttonType
+		FriendButtons[addButtonIndex].id = id
+		FriendButtons.count = FriendButtons.count+1
+		totalButtonHeight = totalButtonHeight + FRIENDS_BUTTON_HEIGHTS[buttonType]
 	end
 
 	-- invites
-	local numInvites = BNGetNumFriendInvites();
+	local numInvites = BNGetNumFriendInvites()
 	if ( numInvites > 0 ) then
 		for i = 1, numInvites do
 			if not FriendReqGroup[i] then
@@ -445,7 +445,7 @@ local function FriendGroups_Update(forceUpdate)
 			NoteAndGroups(_, FriendReqGroup[i])
 			if not FriendGroups_SavedVars.collapsed[group] then
 				buttonCount = buttonCount + 1
-				AddButtonInfo(FRIENDS_BUTTON_TYPE_INVITE, i);
+				AddButtonInfo(FRIENDS_BUTTON_TYPE_INVITE, i)
 			end
 		end
 	end
@@ -460,7 +460,7 @@ local function FriendGroups_Update(forceUpdate)
             IncrementGroup(group, true)
 			 if not FriendGroups_SavedVars.collapsed[group] then
                 buttonCount = buttonCount + 1
-				AddButtonInfo(FRIENDS_BUTTON_TYPE_BNET, i);
+				AddButtonInfo(FRIENDS_BUTTON_TYPE_BNET, i)
             end
 		end
 	end
@@ -475,7 +475,7 @@ local function FriendGroups_Update(forceUpdate)
             IncrementGroup(group, true)
             if not FriendGroups_SavedVars.collapsed[group] then
                 buttonCount = buttonCount + 1
-				AddButtonInfo(FRIENDS_BUTTON_TYPE_WOW, i);
+				AddButtonInfo(FRIENDS_BUTTON_TYPE_WOW, i)
             end
         end
 	end
@@ -491,7 +491,7 @@ local function FriendGroups_Update(forceUpdate)
             IncrementGroup(group)
 			 if not FriendGroups_SavedVars.collapsed[group] and not FriendGroups_SavedVars.hide_offline then
                 buttonCount = buttonCount + 1
-				AddButtonInfo(FRIENDS_BUTTON_TYPE_BNET, j);
+				AddButtonInfo(FRIENDS_BUTTON_TYPE_BNET, j)
             end
 		end
 	end
@@ -507,7 +507,7 @@ local function FriendGroups_Update(forceUpdate)
             IncrementGroup(group)
             if not FriendGroups_SavedVars.collapsed[group] and not FriendGroups_SavedVars.hide_offline then
                 buttonCount = buttonCount + 1
-				AddButtonInfo(FRIENDS_BUTTON_TYPE_WOW, j);
+				AddButtonInfo(FRIENDS_BUTTON_TYPE_WOW, j)
             end
         end
 	end
@@ -515,8 +515,8 @@ local function FriendGroups_Update(forceUpdate)
 	buttonCount = buttonCount + GroupCount
     totalScrollHeight = totalButtonHeight + GroupCount * FRIENDS_BUTTON_HEIGHTS[FRIENDS_BUTTON_TYPE_DIVIDER]
 
-	FriendsFrameFriendsScrollFrame.totalFriendListEntriesHeight = totalScrollHeight;
-	FriendsFrameFriendsScrollFrame.numFriendListEntries = addButtonIndex;
+	FriendsFrameFriendsScrollFrame.totalFriendListEntriesHeight = totalScrollHeight
+	FriendsFrameFriendsScrollFrame.numFriendListEntries = addButtonIndex
 
 	if buttonCount > #FriendButtons then
         for i = #FriendButtons + 1, buttonCount do
@@ -589,67 +589,67 @@ local function FriendGroups_Update(forceUpdate)
     FriendButtons.count = index
 
 	-- selection
-	local selectedFriend = 0;
+	local selectedFriend = 0
 	-- check that we have at least 1 friend
 	if ( numBNetTotal + numWoWTotal > 0 ) then
 		-- get friend
 		if ( FriendsFrame.selectedFriendType == FRIENDS_BUTTON_TYPE_WOW ) then
-			selectedFriend = GetSelectedFriend();
+			selectedFriend = GetSelectedFriend()
 		elseif ( FriendsFrame.selectedFriendType == FRIENDS_BUTTON_TYPE_BNET ) then
-			selectedFriend = BNGetSelectedFriend();
+			selectedFriend = BNGetSelectedFriend()
 		end
 		-- set to first in list if no friend
 		if ( not selectedFriend or selectedFriend == 0 ) then
-			FriendsFrame_SelectFriend(FriendButtons[1].buttonType, 1);
-			selectedFriend = 1;
+			FriendsFrame_SelectFriend(FriendButtons[1].buttonType, 1)
+			selectedFriend = 1
 		end
 		-- check if friend is online
-		local isOnline;
+		local isOnline
 		if ( FriendsFrame.selectedFriendType == FRIENDS_BUTTON_TYPE_WOW ) then
-			local name, level, class, area;
-			name, level, class, area, isOnline = GetFriendInfo(selectedFriend);
+			local name, level, class, area
+			name, level, class, area, isOnline = GetFriendInfo(selectedFriend)
 		elseif ( FriendsFrame.selectedFriendType == FRIENDS_BUTTON_TYPE_BNET ) then
-			local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client;
-			bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline = BNGetFriendInfo(selectedFriend);
+			local bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client
+			bnetIDAccount, accountName, battleTag, isBattleTag, characterName, bnetIDGameAccount, client, isOnline = BNGetFriendInfo(selectedFriend)
 			if ( not accountName ) then
-				isOnline = false;
+				isOnline = false
 			end
 		end
 		if ( isOnline ) then
-			FriendsFrameSendMessageButton:Enable();
+			FriendsFrameSendMessageButton:Enable()
 		else
-			FriendsFrameSendMessageButton:Disable();
+			FriendsFrameSendMessageButton:Disable()
 		end
 	else
-		FriendsFrameSendMessageButton:Disable();
+		FriendsFrameSendMessageButton:Disable()
 	end
-	FriendsFrame.selectedFriend = selectedFriend;
+	FriendsFrame.selectedFriend = selectedFriend
 
 	-- RID warning, upon getting the first RID invite
-	local showRIDWarning = false;
-	local numInvites = BNGetNumFriendInvites();
+	local showRIDWarning = false
+	local numInvites = BNGetNumFriendInvites()
 	if ( numInvites > 0 and not GetCVarBool("pendingInviteInfoShown") ) then
-		local _, _, _, _, _, _, isRIDEnabled = BNGetInfo();
+		local _, _, _, _, _, _, isRIDEnabled = BNGetInfo()
 		if ( isRIDEnabled ) then
 			for i = 1, numInvites do
-				local inviteID, accountName, isBattleTag = BNGetFriendInviteInfo(i);
+				local inviteID, accountName, isBattleTag = BNGetFriendInviteInfo(i)
 				if ( not isBattleTag ) then
 					-- found one
-					showRIDWarning = true;
-					break;
+					showRIDWarning = true
+					break
 				end
 			end
 		end
 	end
 	if ( showRIDWarning ) then
-		FriendsListFrame.RIDWarning:Show();
-		FriendsFrameFriendsScrollFrame.scrollBar:Disable();
-		FriendsFrameFriendsScrollFrame.scrollUp:Disable();
-		FriendsFrameFriendsScrollFrame.scrollDown:Disable();
+		FriendsListFrame.RIDWarning:Show()
+		FriendsFrameFriendsScrollFrame.scrollBar:Disable()
+		FriendsFrameFriendsScrollFrame.scrollUp:Disable()
+		FriendsFrameFriendsScrollFrame.scrollDown:Disable()
 	else
-		FriendsListFrame.RIDWarning:Hide();
+		FriendsListFrame.RIDWarning:Hide()
 	end
-	FriendGroups_UpdateFriends();
+	FriendGroups_UpdateFriends()
 end
 
 local function FriendGroups_OnClick(self, button)
@@ -922,7 +922,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 				if FriendsTooltip:IsShown() then
 					FriendsTooltip:Hide()
 				end
-				return;
+				return
 			end
 		end,true)-- Fixes tooltip showing on groups
 

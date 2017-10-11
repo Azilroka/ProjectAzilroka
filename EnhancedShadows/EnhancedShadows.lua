@@ -82,7 +82,7 @@ function ES:RegisterShadow(shadow)
 end
 
 function ES:Scale(x)
-	return self.mult*floor(x/self.mult+.5);
+	return self.mult*floor(x/self.mult+.5)
 end
 
 function ES:UpdateShadow(shadow)
@@ -92,12 +92,15 @@ function ES:UpdateShadow(shadow)
 		r, g, b = ClassColor['r'], ClassColor['g'], ClassColor['b']
 	end
 
+	local backdrop = shadow:GetBackdrop()
+
 	local Size = ES.db.Size
 	shadow:SetOutside(shadow:GetParent(), Size, Size)
-	shadow:SetBackdrop({
-		edgeFile = [[Interface\AddOns\EnhancedShadows\Media\Shadow]], edgeSize = ES:Scale(Size > 3 and Size or 3),
-		insets = {left = ES:Scale(5), right = ES:Scale(5), top = ES:Scale(5), bottom = ES:Scale(5)},
-	})
+
+	backdrop.edgeSize = ES:Scale(Size > 3 and Size or 3)
+	backdrop.insets = {left = ES:Scale(5), right = ES:Scale(5), top = ES:Scale(5), bottom = ES:Scale(5)}
+
+	shadow:SetBackdrop(backdrop)
 	shadow:SetBackdropColor(r, g, b, 0)
 	shadow:SetBackdropBorderColor(r, g, b, a)
 end

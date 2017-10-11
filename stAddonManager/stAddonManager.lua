@@ -50,7 +50,7 @@ function stAM.Initialize(self, event, ...)
 	end
 	
 	if ElvUI then
-		local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
+		local E, L, V, P, G, _ = unpack(ElvUI) --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 		local S = E:GetModule('Skins')
 		S:HandleButton(addons)
 	end
@@ -162,8 +162,8 @@ function stAM.UpdateSearchQuery(self, search, userInput)
 	-- 2) The query text contains nothing but spaces
 	if (not userInput) or (strlen(query) == 0) then
 		self:UpdateAddonList()
-		self.searchQuery = false; -- make sure scroll bar is using the correct update function
-		return;
+		self.searchQuery = false -- make sure scroll bar is using the correct update function
+		return
 	end
 
 	self.searchQuery = true
@@ -260,8 +260,8 @@ function stAM.LoadWindow(self)
 			self:SetText("Search")
 		end
 	end)
-	search:HookScript('OnEscapePressed', function(self) stAM:UpdateAddonList(); self:SetText("Search") end)
-	search:HookScript("OnTextChanged", function(self, userInput) stAM.scrollOffset = 0; stAM:UpdateSearchQuery(self, userInput) end)
+	search:HookScript('OnEscapePressed', function(self) stAM:UpdateAddonList() self:SetText("Search") end)
+	search:HookScript("OnTextChanged", function(self, userInput) stAM.scrollOffset = 0 stAM:UpdateSearchQuery(self, userInput) end)
 	self.search = search
 	self.search.addons = {} -- used to hold addons that fit the search query
 

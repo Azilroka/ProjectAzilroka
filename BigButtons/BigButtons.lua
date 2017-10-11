@@ -1,4 +1,4 @@
-﻿local AddOnName, Engine = ...
+local AddOnName, Engine = ...
 local ES, AS, BorderColor
 local GetSpellInfo, GetItemInfo, select, GetSubZoneText, GetItemCount = GetSpellInfo, GetItemInfo, select, GetSubZoneText, GetItemCount
 
@@ -74,11 +74,11 @@ function BigButtons:CreateBigButton(name, id, type, check, ...)
 		if not InCombatLockdown() then
 			if check() then
 				self:Show()
-				if not buttons[name] then buttons[name] = true; numBigButtons = numBigButtons + 1 end
+				if not buttons[name] then buttons[name] = true numBigButtons = numBigButtons + 1 end
 				UIFrameFadeIn(self, 0.5, self:GetAlpha(), 1)
 				self:SetPoint('LEFT', BigButtons, 'LEFT', (numBigButtons - 1) * (self:GetWidth() + (ElvUI and ElvUI[1].PixelMode and 1 or 3)), 0)
 			else
-				if buttons[name] then buttons[name] = false; numBigButtons = numBigButtons - 1 end
+				if buttons[name] then buttons[name] = false numBigButtons = numBigButtons - 1 end
 				self:Hide()
 			end
 			self:GetParent():Update()

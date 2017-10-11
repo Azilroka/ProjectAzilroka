@@ -44,7 +44,7 @@ function DragonOverlay:GetOptions()
 				name = 'General',
 				guiInline = true,
 				get = function(info) return DragonOverlayOptions[info[#info]] end,
-    			set = function(info, value) DragonOverlayOptions[info[#info]] = value; DragonOverlay:Update() end, 
+    			set = function(info, value) DragonOverlayOptions[info[#info]] = value DragonOverlay:Update() end, 
 				args = {
 					ClassIcon = {
 						order = 0,

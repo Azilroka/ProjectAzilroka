@@ -3,8 +3,6 @@
 ## Version: 1.12
 ## Notes: BigButtons
 ## Author: Azilroka, Sortokk
-## OptionalDeps: Tukui, ElvUI, AsphyxiaUI, DuffedUI, Enhanced_Config
-## X-Tukui-ProjectID: 131
-## X-Tukui-ProjectFolders: BigButtons
+## OptionalDeps: Tukui, ElvUI, Enhanced_Config
 
 BigButtons.lua

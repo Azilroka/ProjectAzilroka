@@ -25,7 +25,7 @@ if Tukui then
 end
 
 if ElvUI then
-	local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
+	local E, L, V, P, G, _ = unpack(ElvUI) --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 	API.backdropcolor = P.general.backdropcolor
 	API.bordercolor = P.general.bordercolor
 end
@@ -264,8 +264,8 @@ function API.CreateEditBox(name, parent, width, height, point)
 	--Just some basic scripts to make sure your cursor doesn't get stuck in the edit box
 	search:HookScript('OnEnterPressed', function(self) self:ClearFocus() end)
 	search:HookScript('OnEscapePressed', function(self) self:ClearFocus() end)
-	search:HookScript('OnEditFocusGained', function(self) self:SetBackdropBorderColor(unpack(API.hovercolor)); self:HighlightText() end)
-	search:HookScript('OnEditFocusLost', function(self) self:SetBackdropBorderColor(unpack(API.bordercolor)); self:HighlightText(0,0) end)
+	search:HookScript('OnEditFocusGained', function(self) self:SetBackdropBorderColor(unpack(API.hovercolor)) self:HighlightText() end)
+	search:HookScript('OnEditFocusLost', function(self) self:SetBackdropBorderColor(unpack(API.bordercolor)) self:HighlightText(0,0) end)
 
 	return search
 end

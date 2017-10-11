@@ -87,7 +87,7 @@ end
 
 
 
-BrokenIslesInvasionTimer = {};
+BrokenIslesInvasionTimer = {}
 
 BrokenIslesInvasionTimerDB = {
     server = varserver,
@@ -97,12 +97,12 @@ BrokenIslesInvasionTimerDB = {
 }
 
 
-BrokenIslesInvasionTimer.panel = CreateFrame( "Frame", "BrokenIslesInvasionTimerPanel", UIParent );
+BrokenIslesInvasionTimer.panel = CreateFrame( "Frame", "BrokenIslesInvasionTimerPanel", UIParent )
 -- Register in the Interface Addon Options GUI
 -- Set the name for the Category for the Options Panel
-BrokenIslesInvasionTimer.panel.name = "BrokenIslesInvasionTimer";
+BrokenIslesInvasionTimer.panel.name = "BrokenIslesInvasionTimer"
 -- Add the panel to the Interface Options
-InterfaceOptions_AddCategory(BrokenIslesInvasionTimer.panel);
+InterfaceOptions_AddCategory(BrokenIslesInvasionTimer.panel)
 
 local function CreateInterface()
     local pnlMain=CreateFrame("Frame", "pnlMain", BrokenIslesInvasionTimerPanel)
@@ -126,8 +126,8 @@ local function CreateInterface()
     _G[btnReset:GetName() .. "Text"]:SetText("Reset to Default")
 
     btnReset:SetScript("OnClick", function (self, button, down)
-        --BrokenIslesInvasionTimerDB = private.defaults;
-        ReloadUI();
+        --BrokenIslesInvasionTimerDB = private.defaults
+        ReloadUI()
     end)
 
 
@@ -302,7 +302,7 @@ function Bit_SlashCmd(msg)
 
 end
 
-SLASH_BIT1 = "/bit";
+SLASH_BIT1 = "/bit"
 SlashCmdList["BIT"] = Bit_SlashCmd
 
 function BrokenIslesInvasionTimer.SetConfigToDefaults()
