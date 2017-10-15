@@ -1,23 +1,27 @@
-local ProjectAzilroka = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
-_G.ProjectAzilroka = ProjectAzilroka
+local AddOnName, PA = ...
+PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
+_G.ProjectAzilroka = PA
 
 -- Project Data
-ProjectAzilroka.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
-ProjectAzilroka.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
-ProjectAzilroka.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
+PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
+PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
+PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 
 -- Libraries
-ProjectAzilroka.LSM = LibStub('LibSharedMedia-3.0')
-ProjectAzilroka.LDB = LibStub('LibDataBroker-1.1')
+PA.LSM = LibStub('LibSharedMedia-3.0')
+PA.LDB = LibStub('LibDataBroker-1.1')
+PA.LAB = LibStub("LibActionButton-1.0")
+PA.ACR = LibStub("AceConfigRegistry-3.0")
+PA.ACD = LibStub("AceConfigDialog-3.0")
 
 -- WoW Data
-ProjectAzilroka.MyClass = select(2, UnitClass('player'))
-ProjectAzilroka.MyName = UnitName('player')
-ProjectAzilroka.MyRealm = GetRealmName()
-ProjectAzilroka.Noop = function() end
-ProjectAzilroka.TexCoords = {.08, .92, .08, .92}
-ProjectAzilroka.UIScale = UIParent:GetScale()
+PA.MyClass = select(2, UnitClass('player'))
+PA.MyName = UnitName('player')
+PA.MyRealm = GetRealmName()
+PA.Noop = function() end
+PA.TexCoords = {.08, .92, .08, .92}
+PA.UIScale = UIParent:GetScale()
 
 -- Pixel Perfect
-ProjectAzilroka.ScreenWidth, ProjectAzilroka.ScreenHeight = GetPhysicalScreenSize()
-ProjectAzilroka.Multiple = 768/ProjectAzilroka.ScreenHeight
+PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
+PA.Multiple = 768/PA.ScreenHeight

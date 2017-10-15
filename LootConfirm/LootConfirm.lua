@@ -1,5 +1,8 @@
-local AddOnName = ...
 local LC = LibStub('AceAddon-3.0'):NewAddon('LootConfirm', 'AceEvent-3.0')
+_G.LootConfirm = LC
+
+LC.Version: 2.34
+
 local EP
 
 local Defaults = {
@@ -90,21 +93,19 @@ function LC:GetOptions()
 	}
 
 	if EP then
+		local Ace3OptionsPanel = IsAddOnLoaded("ElvUI") and ElvUI[1] or Enhanced_Config[1]
 		if IsAddOnLoaded('ElvUI') and ElvUI[1].Options.args.general ~= nil then
 			if ElvUI[1].db.general then ElvUI[1].db.general.autoRoll = false end
 			ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = function() return true end
 		end
-		local Ace3OptionsPanel = IsAddOnLoaded("ElvUI") and ElvUI[1] or Enhanced_Config[1]
 		Ace3OptionsPanel.Options.args.brokerldb = Options
-	else
-		local ACR, ACD = LibStub("AceConfigRegistry-3.0", true), LibStub("AceConfigDialog-3.0", true)
-		if not (ACR or ACD) then return end
-		ACR:RegisterOptionsTable("LootConfirm", Options)
-		ACD:AddToBlizOptions("LootConfirm", "LootConfirm", nil, "general")
-		for k, v in pairs(Options.args) do
-			if k ~= "general" and k ~= 'header' then
-				ACD:AddToBlizOptions("LootConfirm", v.name, "LootConfirm", k)
-			end
+	end
+
+	ACR:RegisterOptionsTable("LootConfirm", Options)
+	ACD:AddToBlizOptions("LootConfirm", "LootConfirm", nil, "general")
+	for k, v in pairs(Options.args) do
+		if k ~= "general" and k ~= 'header' then
+			ACD:AddToBlizOptions("LootConfirm", v.name, "LootConfirm", k)
 		end
 	end
 end
@@ -176,7 +177,6 @@ function LC:Initialize()
 	self:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
 	self:RegisterEvent('START_LOOT_ROLL')
 
-	EP = LibStub('LibElvUIPlugin-1.0', true)
 	if EP then
 		EP:RegisterPlugin(AddOnName, LC.GetOptions)
 	else
@@ -184,4 +184,4 @@ function LC:Initialize()
 	end
 end
 
-LC:Initialize()
+LC:RegisterEvent('PLAYER_LOGIN', 'Initialize')

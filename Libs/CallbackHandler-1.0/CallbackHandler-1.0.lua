@@ -65,9 +65,7 @@ end})
 --   UnregisterName    - name of the callback unregistration API, default "UnregisterCallback"
 --   UnregisterAllName - name of the API to unregister all callbacks, default "UnregisterAllCallbacks". false == don't publish this API.
 
-function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAllName, OnUsed, OnUnused)
-	-- TODO: Remove this after beta has gone out
-	assert(not OnUsed and not OnUnused, "ACE-80: OnUsed/OnUnused are deprecated. Callbacks are now done to registry.OnUsed and registry.OnUnused")
+function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAllName)
 
 	RegisterName = RegisterName or "RegisterCallback"
 	UnregisterName = UnregisterName or "UnregisterCallback"
@@ -94,7 +92,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 		registry.recurse = oldrecurse
 
 		if registry.insertQueue and oldrecurse==0 then
-			-- Something in one of our callbacks wanted to register more callbacks they got queued
+			-- Something in one of our callbacks wanted to register more callbacks; they got queued
 			for eventname,callbacks in pairs(registry.insertQueue) do
 				local first = not rawget(events, eventname) or not next(events[eventname])	-- test for empty before. not test for one member after. that one member may have been overwritten.
 				for self,func in pairs(callbacks) do

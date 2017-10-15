@@ -1,5 +1,9 @@
 local ES = LibStub('AceAdddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
+
 _G.EnhancedShadows = ES
+
+ES.Author = 'Azilroka, Infinitron'
+ES.Version = 1.07
 
 local LSM, EP = LibStub('LibSharedMedia-3.0')
 local ACR, ACD = LibStub("AceConfigRegistry-3.0"), LibStub("AceConfigDialog-3.0")
