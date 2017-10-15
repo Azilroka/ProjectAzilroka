@@ -13,6 +13,7 @@ PA.LDB = LibStub('LibDataBroker-1.1')
 PA.LAB = LibStub("LibActionButton-1.0")
 PA.ACR = LibStub("AceConfigRegistry-3.0")
 PA.ACD = LibStub("AceConfigDialog-3.0")
+PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))

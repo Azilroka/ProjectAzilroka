@@ -1,0 +1,11 @@
+## Interface: 70300
+## Title: |cff1784d1ProjectAzilroka|r
+## Author: Azilroka
+## Version: 1.00
+## OptionalDeps: AddOnSkins, Enhanced_Config, ElvUI, Tukui
+## SavedVariables: SquareMinimapButtonOptions
+
+Libs\Load_Libs.xml
+
+Init.lua
+Load_Modules.xml
