@@ -1,5 +1,5 @@
 local AddOnName, PA = ...
-PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
+PA[1] = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
 _G.ProjectAzilroka = PA
 
 -- Project Data
@@ -10,9 +10,9 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 -- Libraries
 PA.LSM = LibStub('LibSharedMedia-3.0')
 PA.LDB = LibStub('LibDataBroker-1.1')
-PA.LAB = LibStub("LibActionButton-1.0")
-PA.ACR = LibStub("AceConfigRegistry-3.0")
-PA.ACD = LibStub("AceConfigDialog-3.0")
+PA.LAB = LibStub('LibActionButton-1.0')
+PA.ACR = LibStub('AceConfigRegistry-3.0')
+PA.ACD = LibStub('AceConfigDialog-3.0')
 PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 
 -- WoW Data
