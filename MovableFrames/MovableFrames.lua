@@ -1,11 +1,15 @@
-local AddOnName, NS = ...
-local Title = select(2, GetAddOnInfo(AddOnName))
-local Version = GetAddOnMetadata(AddOnName, 'Version')
-local EP, Ace3OptionsPanel
+local PA = select(2, ...)
 
-local MovableFrame = CreateFrame('Frame')
+local MF = LibStub('AceAddon-3.0'):NewAddon('MovableFrames', 'AceEvent-3.0')
+_G.MovableFrames = MF
 
-MovableFramesSaved = {}
+MF.Title = '|cFFFFFFFFMovableFrames|r'
+MF.Authors = 'Azilroka    Simpy'
+MF.Version = 1.84
+
+local pairs, unpack, select, tinsert, sort = pairs, unpack, select, tinsert, sort
+local _G = _G
+local CopyTable, IsAddOnLoaded = CopyTable, IsAddOnLoaded
 
 local Frames = {
 	'AddonList',
@@ -29,7 +33,6 @@ local Frames = {
 	'LFGDungeonReadyDialog',
 	'LFGDungeonReadyStatus',
 	'LootFrame',
-	'LossOfControlFrame',
 	'MailFrame',
 	'MerchantFrame',
 	'OpenMailFrame',
@@ -92,16 +95,51 @@ local AddOnFrames = {
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
 }
 
+local function OnUpdate(self)
+	if self.IsMoving then return end
+	if MF.db[self:GetName()]['Points'] then
+		self:ClearAllPoints()
+		self:SetPoint(unpack(MF.db[self:GetName()]['Points']))
+	end
+end
+
+local function OnDragStart(self)
+	self:StartMoving()
+	self.IsMoving = true
+	if not MF.db[self:GetName()]['Permanent'] then self:SetUserPlaced(false) end
+end
+
+local function OnDragStop(self)
+	self:StopMovingOrSizing()
+	self.IsMoving = false
+	if MF.db[self:GetName()]['Permanent'] then
+		local a, b, c, d, e = self:GetPoint()
+		b = self:GetParent():GetName()
+		if self:GetName() == 'QuestFrame' or self:GetName() == 'GossipFrame' then
+			MF.db['GossipFrame'].Points = {a, b, c, d, e}
+			MF.db['QuestFrame'].Points = {a, b, c, d, e}
+		else
+			MF.db[self:GetName()].Points = {a, b, c, d, e}
+		end
+	end
+end
+
+local Ace3OptionsPanel
 local Options = {
 	order = 100,
 	type = 'group',
-	name = Title,
+	name = MF.Title,
+	childGroups = 'tab',
 	args = {
+		Header = {
+			order = 0,
+			type = 'header',
+			name = format('%s |cFFFFFFFF - Version: %s|r', MF.Title, MF.Version),
+		},
 		permanent = {
 			order = 1,
 			type = 'group',
 			name = 'Permanent Moving',
-			guiInline = true,
 			args = {},
 		},
 		reset = {
@@ -110,64 +148,32 @@ local Options = {
 			name = 'Reset Moving',
 			args = {},
 		},
+		about = {
+			type = 'group',
+			name = 'About/Help',
+			order = -2,
+			args = {
+				AuthorHeader = {
+					order = 0,
+					type = 'header',
+					name = 'Authors:',
+				},
+				Authors = {
+					order = 1,
+					type = 'description',
+					name = MF.Authors,
+					fontSize = 'large',
+				},
+			},
+		},
 	},
 }
 
-local function OnUpdate(self)
-	if self.IsMoving then return end
-	if MovableFramesSaved[self:GetName()]['Points'] then
-		self:ClearAllPoints()
-		self:SetPoint(unpack(MovableFramesSaved[self:GetName()]['Points']))
-	end
-end
-
-local function OnDragStart(self)
-	self:StartMoving()
-	self.IsMoving = true
-	if not MovableFramesSaved[self:GetName()]['Permanent'] then self:SetUserPlaced(false) end
-end
-
-local function OnDragStop(self)
-	self:StopMovingOrSizing()
-	self.IsMoving = false
-	if MovableFramesSaved[self:GetName()]['Permanent'] then
-		local a, b, c, d, e = self:GetPoint()
-		b = self:GetParent():GetName()
-		if self:GetName() == 'QuestFrame' or self:GetName() == 'GossipFrame' then
-			MovableFramesSaved['GossipFrame'].Points = {a, b, c, d, e}
-			MovableFramesSaved['QuestFrame'].Points = {a, b, c, d, e}
-		else
-			MovableFramesSaved[self:GetName()].Points = {a, b, c, d, e}
-		end
-	end
-end
-
 local Index = 0
-function MovableFrame:MakeMovable(Frame)
+function MF:MakeMovable(Frame)
 	local Name = Frame:GetName()
-	if IsAddOnLoaded('ElvUI') and Name == 'LossOfControlFrame' then return end
 
-	if MovableFramesSaved[Name] == nil then MovableFramesSaved[Name] = {} end
-	if MovableFramesSaved[Name]['Permanent'] == nil then MovableFramesSaved[Name]['Permanent'] = false end
-
-	Options.args.permanent.args[Name] = {
-		order = Index,
-		type = 'toggle',
-		name = Name,
-		get = function(info) return MovableFramesSaved[info[#info]]['Permanent'] end,
-		set = function(info, value) MovableFramesSaved[info[#info]]['Permanent'] = value end,
-	}
-	Options.args.reset.args[Name] = {
-		order = Index,
-		type = 'execute',
-		name = Name,
-		disabled = function() return not MovableFramesSaved[Name]['Permanent'] end,
-		func = function() MovableFramesSaved[Name]['Points'] = nil end,
-	}
-
-	if Ace3OptionsPanel then -- Refresh the table
-		Ace3OptionsPanel.Options.args.movableframes = CopyTable(Options)
-	end
+	if not Name then return end
 
 	if Name == 'AchievementFrame' then AchievementFrameHeader:EnableMouse(false) end
 
@@ -182,49 +188,86 @@ function MovableFrame:MakeMovable(Frame)
 		Frame:HookScript('OnEnter', function(self) self:SetTemplate() end)
 		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
 	end
+
+	if PA.EP then
+		if MF.db[Name] == nil then MF.db[Name] = {} end
+		if MF.db[Name]['Permanent'] == nil then MF.db[Name]['Permanent'] = false end
+
+		Options.args.permanent.args[Name] = {
+			order = Index,
+			type = 'toggle',
+			name = Name,
+			get = function(info) return MF.db[info[#info]]['Permanent'] end,
+			set = function(info, value) MF.db[info[#info]]['Permanent'] = value end,
+		}
+
+		Options.args.reset.args[Name] = {
+			order = Index,
+			type = 'execute',
+			name = Name,
+			disabled = function() return not MF.db[Name]['Permanent'] end,
+			func = function() MF.db[Name]['Points'] = nil end,
+		}
+
+		Ace3OptionsPanel.Options.args.movableframes = CopyTable(Options) -- Refresh the table
+
+		Index = Index + 1
+	end
 end
 
-function MovableFrame:GetOptions()
-	Ace3OptionsPanel = IsAddOnLoaded('ElvUI') and ElvUI[1] or Enhanced_Config[1]
+function MF:GetOptions()
 	Ace3OptionsPanel.Options.args.movableframes = CopyTable(Options)
 end
 
-MovableFrame:RegisterEvent('PLAYER_LOGIN')
-MovableFrame:SetScript('OnEvent', function(self, event, addon)
-	if event == 'PLAYER_LOGIN' then
-		self:RegisterEvent('ADDON_LOADED')
-		EP = LibStub('LibElvUIPlugin-1.0', true)
+function MF:SetupProfile()
+	self.data = LibStub('AceDB-3.0'):New('MovableFramesDB', { profile = {}, })
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
 
-		if EP then
-			EP:RegisterPlugin(AddOnName, self.GetOptions)
+function MF:ADDON_LOADED(event, addon)
+	if AddOnFrames[addon] then
+		for _, Frame in pairs(AddOnFrames[addon]) do
+			self:MakeMovable(_G[Frame])
 		end
+	end
+end
 
-		for _, Frame in pairs(Frames) do
-			if _G[Frame] then
+function MF:PLAYER_LOGIN()
+	self:SetupProfile()
+	self:RegisterEvent('ADDON_LOADED')
+
+	if IsAddOnLoaded('Tukui') then
+		tinsert(Frames, 'LossOfControlFrame')
+		sort(Frames)
+	end
+
+	if PA.EP then
+		Ace3OptionsPanel = IsAddOnLoaded('ElvUI') and ElvUI[1] or Enhanced_Config[1]
+		PA.EP:RegisterPlugin("ProjectAzilroka", self.GetOptions)
+	end
+
+	for _, Frame in pairs(Frames) do
+		if _G[Frame] then
+			self:MakeMovable(_G[Frame])
+		end
+	end
+
+	-- Check Forced Loaded AddOns
+	for AddOn, Table in pairs(AddOnFrames) do
+		if IsAddOnLoaded(AddOn) then
+			for _, Frame in pairs(Table) do
 				self:MakeMovable(_G[Frame])
 			end
 		end
-
-		-- Check Forced Loaded AddOns
-		for AddOn, Table in pairs(AddOnFrames) do
-			if IsAddOnLoaded(AddOn) then
-				for _, Frame in pairs(Table) do
-					self:MakeMovable(_G[Frame])
-				end
-			end
-		end
-
-		hooksecurefunc(ExtendedUI['CAPTUREPOINT'], 'create', function(id)
-			if _G['WorldStateCaptureBar'..id].MoverAssigned then return end
-			MovableFrame:MakeMovable(_G['WorldStateCaptureBar'..id])
-			_G['WorldStateCaptureBar'..id].MoverAssigned = true
-		end)
 	end
-	if event == 'ADDON_LOADED' then
-		if AddOnFrames[addon] then
-			for _, Frame in pairs(AddOnFrames[addon]) do
-				self:MakeMovable(_G[Frame])
-			end
-		end
-	end
-end)
+
+	hooksecurefunc(ExtendedUI['CAPTUREPOINT'], 'create', function(id)
+		if _G['WorldStateCaptureBar'..id].MoverAssigned then return end
+		MF:MakeMovable(_G['WorldStateCaptureBar'..id])
+		_G['WorldStateCaptureBar'..id].MoverAssigned = true
+	end)
+end
+
+MF:RegisterEvent('PLAYER_LOGIN')
