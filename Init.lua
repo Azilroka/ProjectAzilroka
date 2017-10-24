@@ -2,11 +2,6 @@ local AddOnName, PA = ...
 PA[1] = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
 _G.ProjectAzilroka = PA
 
--- Project Data
-PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
-PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
-PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
-
 -- Libraries
 PA.LSM = LibStub('LibSharedMedia-3.0')
 PA.LDB = LibStub('LibDataBroker-1.1')
@@ -26,3 +21,12 @@ PA.UIScale = UIParent:GetScale()
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 768/PA.ScreenHeight
+
+-- Project Data
+PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
+PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
+PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
+
+PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
+PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
+PA.AceOptionsPanel = PA.ElvUI and ElvUI[1] or Enhanced_Config[1]

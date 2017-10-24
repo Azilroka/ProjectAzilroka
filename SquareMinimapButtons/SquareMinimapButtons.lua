@@ -65,7 +65,8 @@ local AddButtonsToBar = {
 }
 
 function SMB:SkinMinimapButton(Button)
-	if (not Button or Button.isSkinned) then return end
+	if (not Button) then return end
+	if Button.isSkinned then return end
 
 	local Name = Button:GetName()
 	if not Name then return end
@@ -146,6 +147,8 @@ function SMB:SkinMinimapButton(Button)
 	end
 
 	Button:SetTemplate()
+	Button:HookScript('OnEnter', function(self) self:SetBackdropBorderColor(.7, 0, .7) end)
+	Button:HookScript('OnLeave', function(self) self:SetTemplate() end)
 
 	Button.isSkinned = true
 	tinsert(SkinnedMinimapButtons, Button)
@@ -226,8 +229,6 @@ function SMB:Update()
 			Frame:RegisterForDrag('LeftButton')
 			Frame:SetScript('OnDragStart', nil)
 			Frame:SetScript('OnDragStop', nil)
-			Frame:HookScript('OnEnter', function(self) self:SetBackdropBorderColor(.7, 0, .7) end)
-			Frame:HookScript('OnLeave', function(self) self:SetTemplate() end)
 
 			if Maxed then ActualButtons = ButtonsPerRow end
 			local BarWidth = (Spacing + ((Size * (ActualButtons * Mult)) + ((Spacing * (ActualButtons - 1)) * Mult) + (Spacing * Mult)))
@@ -291,9 +292,10 @@ function SMB:PLAYER_LOGIN()
 		ElvUI[1]:CreateMover(self.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
 
-	self.TexCoords = { .1, .9, .1, .9 }
+	self.TexCoords = { .08, .92, .08, .92 }
 
 	self:AddCustomUIButtons()
+
 	QueueStatusMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 
@@ -304,6 +306,7 @@ function SMB:PLAYER_LOGIN()
 	else
 		self:GetOptions()
 	end
+
 	self:ScheduleRepeatingTimer('GrabMinimapButtons', 5)
 end
 

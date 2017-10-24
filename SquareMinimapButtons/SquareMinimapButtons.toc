@@ -1,9 +1,0 @@
-## Interface: 70000
-## Title: |cffC495DDSquare Minimap Buttons|r
-## Version: 3.42
-## Notes: Minimap Button Bar / Minimap Button Skinning
-## OptionalDeps: Tukui, ElvUI, Enhanced_Config
-## Author: Azilroka, Sinaris, Omega1970
-## SavedVariables: SquareMinimapButtonOptions
-
-SquareMinimapButtons.lua
