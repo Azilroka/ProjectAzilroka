@@ -125,6 +125,7 @@ local ClientColor = {
 	WTCG = 'FFB100',
 	Hero = '00CCFF',
 	App = '82C5FF',
+	BSAp = '82C5FF',
 }
 
 function EFL:GetOptions()

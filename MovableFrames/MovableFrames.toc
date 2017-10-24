@@ -1,9 +1,0 @@
-## Interface: 60200
-## Title: |cFFFFFFFFMovableFrames|r
-## Notes: Make Blizzard Frames Movable
-## Author: Azilroka, Simpy
-## Version: 1.84
-## OptionalDeps: ElvUI, Tukui, Enhanced_Config
-## SavedVariablesPerCharacter: MovableFramesSaved
-
-MovableFrames.lua
