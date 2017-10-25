@@ -19,9 +19,6 @@ local SendAddonMessage = SendAddonMessage
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
---Global variables that we don't cache, list them here for the mikk's Find Globals script
--- GLOBALS: ElvUI
-
 lib.plugins = {}
 lib.index = 0
 lib.prefix = "ElvUIPluginVC"
@@ -55,19 +52,6 @@ if GetLocale() == "ruRU" then -- Russian Translations
 	LIBRARY = "Библиотека"
 end
 
---
--- Plugin table format:
---   { name (string) - The name of the plugin,
---     version (string) - The version of the plugin,
---     optionCallback (string) - The callback to call when ElvUI_Config is loaded
---   }
---
-
---
--- RegisterPlugin(name,callback)
---   Registers a module with the given name and option callback, pulls version info from metadata
---
-
 local function RGBToHex(r, g, b) 
     r = r <= 1 and r >= 0 and r or 0 
     g = g <= 1 and g >= 0 and g or 0 
@@ -82,7 +66,6 @@ function lib:RegisterPlugin(name,callback)
 	plugin.version = name == MAJOR and MINOR or GetAddOnMetadata(name, "Version")
 	plugin.callback = callback
 	lib.plugins[name] = plugin
-	local loaded = IsAddOnLoaded("Enhanced_Config")
 	if not lib.vcframe then
 		RegisterAddonMessagePrefix(lib.prefix)
 		local f = CreateFrame('Frame')
