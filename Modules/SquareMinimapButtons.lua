@@ -1,5 +1,4 @@
-local PA = select(2, ...)
-
+local PA = _G.ProjectAzilroka
 local SMB = LibStub('AceAddon-3.0'):NewAddon('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.SquareMinimapButtons = SMB
 
@@ -393,8 +392,7 @@ function SMB:GetOptions()
 	}
 
 	if PA.EP then
-		local Ace3OptionsPanel = IsAddOnLoaded('ElvUI') and ElvUI[1] or Enhanced_Config[1]
-		Ace3OptionsPanel.Options.args.SquareMinimapButton = Options
+		PA.AceOptionsPanel.Options.args.SquareMinimapButton = Options
 	end
 
 	PA.ACR:RegisterOptionsTable('SquareMinimapButtons', Options)

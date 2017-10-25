@@ -1,12 +1,10 @@
-local ES = LibStub('AceAdddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
+local PA = _G.ProjectAzilroka
+local ES = LibStub('AceAddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
 
 _G.EnhancedShadows = ES
 
 ES.Author = 'Azilroka, Infinitron'
 ES.Version = 1.07
-
-local LSM, EP = LibStub('LibSharedMedia-3.0')
-local ACR, ACD = LibStub("AceConfigRegistry-3.0"), LibStub("AceConfigDialog-3.0")
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -18,7 +16,7 @@ ES.RegisteredShadows = {}
 function ES:UpdateProfile()
 	self.data = LibStub("AceDB-3.0"):New("EnhancedShadowsDB", {
 		profile = {
-			['Color'] = { 0, 0, 0 },
+			['Color'] = { 0, 0, 0, 1 },
 			['ColorByClass'] = false,
 			['Size'] = 3,
 		},
@@ -32,7 +30,7 @@ end
 function ES:GetOptions()
 	local Options = {
 		type = "group",
-		name = "EnhancedShadows",
+		name = "Enhanced Shadows",
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
 		args = {
@@ -41,8 +39,8 @@ function ES:GetOptions()
 				order = 1,
 				name = "Shadow Color",
 				hasAlpha = true,
-				get = function(info) unpack(ES.db[info[#info]]) end,
-				set = function(info, r, g, b, a) ES.db[info[#info]] = { r, g, b, a} ES:UpdateShadows() end,
+				get = function(info) return unpack(ES.db[info[#info]]) end,
+				set = function(info, r, g, b, a) ES.db[info[#info]] = { r, g, b, a } ES:UpdateShadows() end,
 			},
 			ColorByClass = {
 				type = 'toggle',
@@ -58,17 +56,9 @@ function ES:GetOptions()
 		},
 	}
 
-	Options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(ES.data)
-	Options.args.profiles.order = -2
-	ACR:RegisterOptionsTable("EnhancedShadows", Options.args.profiles)
-
-	if EP then
-		local Ace3OptionsPanel = IsAddOnLoaded("ElvUI") and ElvUI[1] or Enhanced_Config[1]
-		Ace3OptionsPanel.Options.args.enhancedshadows = Options
+	if PA.EP then
+		PA.AceOptionsPanel.Options.args.enhancedshadows = Options
 	end
-
-	ACR:RegisterOptionsTable("EnhancedShadows", Options)
-	ACD:AddToBlizOptions("EnhancedShadows", "EnhancedShadows", nil, "Color")
 end
 
 function ES:UpdateShadows()
@@ -112,15 +102,15 @@ end
 function ES:Initialize()
 	self.mult = 768/select(2, GetPhysicalScreenSize())/UIParent:GetScale()
 
---	self:ElvUIShadows()
+	self:UpdateProfile()
 
-	self:UpdateShadows()
-
-	if EP then
-		EP:RegisterPlugin("EnhancedShadows", self.GetOptions)
+	if PA.EP then
+		PA.EP:RegisterPlugin("ProjectAzilroka", self.GetOptions)
 	else
 		self:GetOptions()
 	end
+
+	self:UpdateShadows()
 end
 
 ES:RegisterEvent("PLAYER_LOGIN", 'Initialize')

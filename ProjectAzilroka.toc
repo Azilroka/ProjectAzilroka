@@ -3,9 +3,11 @@
 ## Author: Azilroka
 ## Version: 1.00
 ## OptionalDeps: AddOnSkins, Enhanced_Config, ElvUI, Tukui
-## SavedVariables: SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB
+## SavedVariables: SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB
 
 Libs\Load_Libs.xml
 
 Init.lua
+
+LibElvUIPlugin-1.0.lua
 Modules\Load_Modules.xml

@@ -1,4 +1,4 @@
-local PA = select(2,...)
+local PA = _G.ProjectAzilroka
 local EFL = LibStub('AceAddon-3.0'):NewAddon('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.EnhancedFriendsList = EFL
 

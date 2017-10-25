@@ -1,5 +1,4 @@
-local PA = select(2, ...)
-
+local PA = _G.ProjectAzilroka
 local MF = LibStub('AceAddon-3.0'):NewAddon('MovableFrames', 'AceEvent-3.0')
 _G.MovableFrames = MF
 
@@ -124,51 +123,6 @@ local function OnDragStop(self)
 	end
 end
 
-local Ace3OptionsPanel
-local Options = {
-	order = 100,
-	type = 'group',
-	name = MF.Title,
-	childGroups = 'tab',
-	args = {
-		Header = {
-			order = 0,
-			type = 'header',
-			name = format('%s |cFFFFFFFF - Version: %s|r', MF.Title, MF.Version),
-		},
-		permanent = {
-			order = 1,
-			type = 'group',
-			name = 'Permanent Moving',
-			args = {},
-		},
-		reset = {
-			order = 2,
-			type = 'group',
-			name = 'Reset Moving',
-			args = {},
-		},
-		about = {
-			type = 'group',
-			name = 'About/Help',
-			order = -2,
-			args = {
-				AuthorHeader = {
-					order = 0,
-					type = 'header',
-					name = 'Authors:',
-				},
-				Authors = {
-					order = 1,
-					type = 'description',
-					name = MF.Authors,
-					fontSize = 'large',
-				},
-			},
-		},
-	},
-}
-
 local Index = 0
 function MF:MakeMovable(Frame)
 	local Name = Frame:GetName()
@@ -193,7 +147,7 @@ function MF:MakeMovable(Frame)
 		if MF.db[Name] == nil then MF.db[Name] = {} end
 		if MF.db[Name]['Permanent'] == nil then MF.db[Name]['Permanent'] = false end
 
-		Options.args.permanent.args[Name] = {
+		PA.AceOptionsPanel.Options.args.movableframes.args.permanent.args[Name] = {
 			order = Index,
 			type = 'toggle',
 			name = Name,
@@ -201,7 +155,7 @@ function MF:MakeMovable(Frame)
 			set = function(info, value) MF.db[info[#info]]['Permanent'] = value end,
 		}
 
-		Options.args.reset.args[Name] = {
+		PA.AceOptionsPanel.Options.args.movableframes.args.reset.args[Name] = {
 			order = Index,
 			type = 'execute',
 			name = Name,
@@ -209,14 +163,56 @@ function MF:MakeMovable(Frame)
 			func = function() MF.db[Name]['Points'] = nil end,
 		}
 
-		Ace3OptionsPanel.Options.args.movableframes = CopyTable(Options) -- Refresh the table
-
 		Index = Index + 1
 	end
 end
 
 function MF:GetOptions()
-	Ace3OptionsPanel.Options.args.movableframes = CopyTable(Options)
+	local Options = {
+		order = 100,
+		type = 'group',
+		name = MF.Title,
+		childGroups = 'tab',
+		args = {
+			Header = {
+				order = 0,
+				type = 'header',
+				name = format('%s |cFFFFFFFF - Version: %s|r', MF.Title, MF.Version),
+			},
+			permanent = {
+				order = 1,
+				type = 'group',
+				name = 'Permanent Moving',
+				args = {},
+			},
+			reset = {
+				order = 2,
+				type = 'group',
+				name = 'Reset Moving',
+				args = {},
+			},
+			about = {
+				type = 'group',
+				name = 'About/Help',
+				order = -2,
+				args = {
+					AuthorHeader = {
+						order = 0,
+						type = 'header',
+						name = 'Authors:',
+					},
+					Authors = {
+						order = 1,
+						type = 'description',
+						name = MF.Authors,
+						fontSize = 'large',
+					},
+				},
+			},
+		},
+	}
+
+	PA.AceOptionsPanel.Options.args.movableframes = Options
 end
 
 function MF:SetupProfile()
@@ -244,7 +240,6 @@ function MF:PLAYER_LOGIN()
 	end
 
 	if PA.EP then
-		Ace3OptionsPanel = IsAddOnLoaded('ElvUI') and ElvUI[1] or Enhanced_Config[1]
 		PA.EP:RegisterPlugin("ProjectAzilroka", self.GetOptions)
 	end
 
