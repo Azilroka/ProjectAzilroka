@@ -66,10 +66,16 @@ function EC:Initialize()
 	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
 	EC:RegisterChatCommand('ec', 'ToggleConfig')
 
+	function EC.OnConfigClosed(widget, event) 
+		PA.ACD.OpenFrames['Enhanced_Config'] = nil 
+		PA.GUI:Release(widget) 
+	end
+
 	function EC:ToggleConfig()
 		if not PA.ACD.OpenFrames['Enhanced_Config'] then
 			local Container = PA.GUI:Create('Frame')
 			PA.ACD.OpenFrames['Enhanced_Config'] = Container
+			Container:SetCallback('OnClose', EC.OnConfigClosed) 
 			PA.ACD:Open('Enhanced_Config', Container)
 		end
 		GameTooltip:Hide()
