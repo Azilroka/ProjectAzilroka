@@ -6,9 +6,9 @@ MF.Title = '|cFFFFFFFFMovableFrames|r'
 MF.Authors = 'Azilroka    Simpy'
 MF.Version = 1.84
 
-local pairs, unpack, select, tinsert, sort = pairs, unpack, select, tinsert, sort
+local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
 local _G = _G
-local CopyTable, IsAddOnLoaded = CopyTable, IsAddOnLoaded
+local IsAddOnLoaded = IsAddOnLoaded
 
 local Frames = {
 	'AddonList',

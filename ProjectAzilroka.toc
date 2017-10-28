@@ -2,7 +2,7 @@
 ## Title: |cff1784d1ProjectAzilroka|r
 ## Author: Azilroka
 ## Version: 1.00
-## OptionalDeps: AddOnSkins, Enhanced_Config, ElvUI, Tukui
+## OptionalDeps: AddOnSkins, ElvUI, Tukui
 ## SavedVariables: SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB
 
 Libs\Load_Libs.xml

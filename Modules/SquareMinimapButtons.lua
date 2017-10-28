@@ -90,7 +90,7 @@ function SMB:SkinMinimapButton(Button)
 				if strfind(Name, PartialIgnores[i]) ~= nil then return end
 			end
 		end
-		
+
 		if not Name == 'GarrisonLandingPageMinimapButton' then
 			Button:SetPushedTexture(nil)
 			Button:SetHighlightTexture(nil)
@@ -279,7 +279,7 @@ function SMB:PLAYER_LOGIN()
 	self.Bar:SetTemplate('Transparent', true)
 
 	self.Bar:SetScript('OnEnter', function(self) UIFrameFadeIn(self, 0.2, self:GetAlpha(), 1) end)
-	self.Bar:SetScript('OnLeave', function(self) 
+	self.Bar:SetScript('OnLeave', function(self)
 		if SMB.db['BarMouseOver'] then
 			UIFrameFadeOut(self, 0.2, self:GetAlpha(), 0)
 		end
@@ -329,7 +329,7 @@ function SMB:GetOptions()
 				name = 'Minimap Buttons / Bar',
 				guiInline = true,
 				get = function(info) return SMB.db[info[#info]] end,
-				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end, 
+				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 				args = {
 					BarEnabled = {
 						order = 1,
@@ -355,9 +355,9 @@ function SMB:GetOptions()
 						min = 12, max = 48, step = 1,
 					},
 					ButtonSpacing = {
- 						order = 5,
- 						type = 'range',
- 						width = 'full',
+						order = 5,
+						type = 'range',
+						width = 'full',
 						name = 'Button Spacing',
 						min = 0, max = 10, step = 1,
 					},
@@ -365,10 +365,10 @@ function SMB:GetOptions()
 						order = 6,
 						type = 'range',
 						width = 'full',
- 						name = 'Buttons Per Row',
- 						min = 1, max = 12, step = 1,
- 					},
-  				},
+						name = 'Buttons Per Row',
+						min = 1, max = 12, step = 1,
+					},
+				},
 			},
 			about = {
 				type = 'group',

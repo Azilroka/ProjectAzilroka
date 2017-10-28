@@ -145,14 +145,14 @@ function EFL:GetOptions()
 				name = 'General',
 				guiInline = true,
 				get = function(info) return EFL.db[info[#info]] end,
-				set = function(info, value) EFL.db[info[#info]] = value FriendsFrame_Update() end, 
+				set = function(info, value) EFL.db[info[#info]] = value FriendsFrame_Update() end,
 				args = {
 					NameFont = {
 						type = 'select', dialogControl = 'LSM30_Font',
 						order = 1,
 						name = 'Name Font',
 						desc = 'The font that the RealID / Character Name / Level uses.',
-						values = AceGUIWidgetLSMlists.font,	
+						values = AceGUIWidgetLSMlists.font,
 					},
 					NameFontSize = {
 						order = 2,
@@ -179,7 +179,7 @@ function EFL:GetOptions()
 						order = 4,
 						name = 'Info Font',
 						desc = 'The font that the Zone / Server uses.',
-						values = AceGUIWidgetLSMlists.font,	
+						values = AceGUIWidgetLSMlists.font,
 					},
 					InfoFontSize = {
 						order = 5,
@@ -350,9 +350,9 @@ function EFL:ClassColorCode(class)
 end
 
 function EFL:BasicUpdateFriends(button)
-	local nameText, nameColor, infoText, broadcastText, _
+	local nameText, nameColor, infoText, broadcastText, _, Cooperate
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-		local name, level, class, area, connected, status, note = GetFriendInfo(button.id)
+		local name, level, class, area, connected, status = GetFriendInfo(button.id)
 		broadcastText = nil
 		if connected then
 			button.status:SetTexture(StatusIcons[self.db.StatusIconPack][(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')])
@@ -375,8 +375,6 @@ function EFL:BasicUpdateFriends(button)
 			if isOnline and not characterName and battleTag then
 				characterName = battleTag
 			end
-		elseif givenName then
-			nameText = givenName
 		else
 			nameText = UNKNOWN
 		end

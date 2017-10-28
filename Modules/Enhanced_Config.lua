@@ -40,6 +40,7 @@ EC.Options = {
 				text = {
 					order = 1,
 					type = 'description',
+					fontSize = 'medium',
 					name = 'Coding:\n'..DEVELOPER_STRING,
 				},
 			},
