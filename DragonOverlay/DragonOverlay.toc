@@ -1,9 +1,0 @@
-## Interface: 70300
-## Title: Dragon Overlay
-## Version: 1.94
-## Author: Azilroka / Credits: Codeblake, Kkthnxbye, Narley and Durandil
-## Notes: Provides an overlay on UnitFrames for Boss/Elite/Rare/RareElite
-## SavedVariables: DragonOverlayOptions
-## OptionalDeps: Tukui, ElvUI, AsphyxiaUI, DuffedUI
-
-DragonOverlay.lua
