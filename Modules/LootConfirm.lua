@@ -9,7 +9,6 @@ LC.Authors = 'Azilroka, Infinitron'
 local tonumber, strmatch, select = tonumber, strmatch, select
 local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot
 local RollOnLoot = RollOnLoot
-local IsXPUserDisabled = IsXPUserDisabled
 local IsEquippableItem, GetItemInfo, GetInventoryItemLink = IsEquippableItem, GetItemInfo, GetInventoryItemLink
 local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRollItemLink
 
@@ -119,10 +118,6 @@ function LC:START_LOOT_ROLL(event, id)
 	local Link = GetLootRollItemLink(id)
 	local ItemID = tonumber(strmatch(Link, 'item:(%d+)'))
 
-	if self.db.AutoGreed[ItemID] then
-		RollOnLoot(id, LOOT_ROLL_TYPE_GREED)
-	end
-
 	if self.db['ByLevel'] then
 		if IsEquippableItem(Link) then
 			local _, _, _, ItemLevel, _, _, _, _, Slot = GetItemInfo(Link)
@@ -134,11 +129,7 @@ function LC:START_LOOT_ROLL(event, id)
 		end
 	end
 
-	if self.db['Disenchant'] and Disenchant then
-		RollOnLoot(id, LOOT_ROLL_TYPE_DISENCHANT)
-	else
-		RollOnLoot(id, LOOT_ROLL_TYPE_GREED)
-	end
+	RollOnLoot(id, self.db['Disenchant'] and Disenchant and LOOT_ROLL_TYPE_DISENCHANT or LOOT_ROLL_TYPE_GREED)
 end
 
 function LC:Initialize()
@@ -152,5 +143,5 @@ function LC:Initialize()
 	self:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
 	self:RegisterEvent('LOOT_OPENED', 'HandleEvent')
 	self:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
-	self:RegisterEvent('START_LOOT_ROLL')
+	--self:RegisterEvent('START_LOOT_ROLL')
 end

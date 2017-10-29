@@ -3,7 +3,6 @@ local SMB = LibStub('AceAddon-3.0'):NewAddon('SquareMinimapButtons', 'AceEvent-3
 _G.SquareMinimapButtons = SMB
 
 SMB.Title = '|cffC495DDSquare Minimap Buttons|r'
-SMB.Version = 3.42
 SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega'
 
 local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
@@ -62,6 +61,9 @@ local AcceptedFrames = {
 local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
+
+function SMB:HandleBlizzardButtons(Button)
+end
 
 function SMB:SkinMinimapButton(Button)
 	if (not Button) then return end
@@ -285,21 +287,18 @@ function SMB:GetOptions()
 					IconSize = {
 						order = 4,
 						type = 'range',
-						width = 'full',
 						name = 'Icon Size',
 						min = 12, max = 48, step = 1,
 					},
 					ButtonSpacing = {
 						order = 5,
 						type = 'range',
-						width = 'full',
 						name = 'Button Spacing',
 						min = 0, max = 10, step = 1,
 					},
 					ButtonsPerRow = {
 						order = 6,
 						type = 'range',
-						width = 'full',
 						name = 'Buttons Per Row',
 						min = 1, max = 12, step = 1,
 					},
