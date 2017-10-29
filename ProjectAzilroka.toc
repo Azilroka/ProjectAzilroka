@@ -1,9 +1,9 @@
 ## Interface: 70300
 ## Title: |cff1784d1ProjectAzilroka|r
 ## Author: Azilroka
-## Version: 1.03
+## Version: 1.05
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
-## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB
+## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB
 
 Libs\Load_Libs.xml
 

@@ -159,6 +159,7 @@ function PA:LoadConfig()
 		_G.SquareMinimapButtons:GetOptions()
 	end
 	self:UnregisterEvent("ADDON_LOADED")
+	self:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end
 
 function PA:PLAYER_LOGIN()
@@ -182,7 +183,7 @@ function PA:PLAYER_LOGIN()
 	end
 
 	if not self.ElvUI then
-		self:LoadConfig()
+		self:RegisterEvent('PLAYER_ENTERING_WORLD', 'LoadConfig')
 	end
 end
 

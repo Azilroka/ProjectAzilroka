@@ -62,7 +62,7 @@ local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
 
-function SMB:HandleBlizzardButtons(Button)
+function SMB:HandleBlizzardButtons()
 	tinsert(AcceptedFrames, 'MiniMapTrackingButton')
 	QueueStatusMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
@@ -182,10 +182,6 @@ end
 function SMB:Update()
 	if not SMB.db['BarEnabled'] then return end
 
-	if SMB.db['MoveBlizzard'] and not IsAddOnLoaded('Tukui') then
-		MiniMapTrackingButton:Hide()
-	end
-
 	local AnchorX, AnchorY, MaxX = 0, 1, SMB.db['ButtonsPerRow']
 	local ButtonsPerRow = SMB.db['ButtonsPerRow']
 	local NumColumns = ceil(#SkinnedMinimapButtons / ButtonsPerRow)
@@ -197,7 +193,7 @@ function SMB:Update()
 		ButtonsPerRow = #SkinnedMinimapButtons
 	end
 
-	for Key, Frame in pairs(SkinnedMinimapButtons) do
+	for _, Frame in pairs(SkinnedMinimapButtons) do
 		local Name = Frame:GetName()
 		local Exception = false
 		for _, Button in pairs(AddButtonsToBar) do
@@ -207,12 +203,8 @@ function SMB:Update()
 					SMARTBUFF_MinimapButton_CheckPos = function() end
 					SMARTBUFF_MinimapButton_OnUpdate = function() end
 				end
-				if not SMB.db['MoveBlizzard'] and (Name == 'QueueStatusMinimapButton' or Name == 'MiniMapMailFrame') then
-					Exception = false
-				end
 			end
 		end
-		if SMB.db['MoveBlizzard'] and Name == 'MiniMapTrackingButton' then MiniMapTrackingButton:Show() end
 		if Frame:IsVisible() and not (Name == 'QueueStatusMinimapButton' or Name == 'MiniMapMailFrame') or Exception then
 			AnchorX = AnchorX + 1
 			ActualButtons = ActualButtons + 1
@@ -246,12 +238,9 @@ function SMB:Update()
 end
 
 function SMB:AddCustomUIButtons()
-	if IsAddOnLoaded('Tukui') then
+	if PA.Tukui then
 		tinsert(ignoreButtons, 'TukuiMinimapZone')
 		tinsert(ignoreButtons, 'TukuiMinimapCoord')
-	end
-	if IsAddOnLoaded('ElvUI') then
-		tinsert(ignoreButtons, 'ElvConfigToggle')
 	end
 end
 
@@ -342,6 +331,7 @@ function SMB:Initialize()
 	self:SetupProfile()
 
 	self.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
+	self.Bar:Hide()
 	self.Bar:SetPoint('RIGHT', UIParent, 'RIGHT', -45, 0)
 	self.Bar:SetFrameStrata('LOW')
 	self.Bar:SetClampedToScreen(true)
