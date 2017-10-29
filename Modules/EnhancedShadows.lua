@@ -1,10 +1,13 @@
 local PA = _G.ProjectAzilroka
+
+if (PA.SLE or PA.NUI) then return end
+
 local ES = LibStub('AceAddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
 
 _G.EnhancedShadows = ES
 
+ES.Title = 'Enhanced Shadows'
 ES.Author = 'Azilroka, Infinitron'
-ES.Version = 1.07
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -30,7 +33,8 @@ end
 function ES:GetOptions()
 	local Options = {
 		type = "group",
-		name = "Enhanced Shadows",
+		order = 207,
+		name = ES.Title,
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
 		args = {
@@ -56,9 +60,7 @@ function ES:GetOptions()
 		},
 	}
 
-	if PA.EP then
-		PA.AceOptionsPanel.Options.args.enhancedshadows = Options
-	end
+	PA.AceOptionsPanel.Options.args.enhancedshadows = Options
 end
 
 function ES:UpdateShadows()
@@ -104,13 +106,5 @@ function ES:Initialize()
 
 	self:UpdateProfile()
 
-	if PA.EP then
-		PA.EP:RegisterPlugin("ProjectAzilroka", self.GetOptions)
-	else
-		self:GetOptions()
-	end
-
 	self:UpdateShadows()
 end
-
-ES:RegisterEvent("PLAYER_LOGIN", 'Initialize')

@@ -3,7 +3,7 @@
 ## Author: Azilroka
 ## Version: 1.00
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
-## SavedVariables: SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB
+## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB
 
 Libs\Load_Libs.xml
 

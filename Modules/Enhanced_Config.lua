@@ -5,7 +5,6 @@ local EC = LibStub('AceAddon-3.0'):NewAddon("EnhancedConfig", 'AceConsole-3.0', 
 _G.Enhanced_Config = EC
 
 EC.Title = "|cff1784d1Enhanced Config|r"
-EC.Version = 1.12
 EC.Authors = "Azilroka"
 
 local DEVELOPERS = {
@@ -25,13 +24,8 @@ end
 EC.Options = {
 	type = 'group',
 	name = EC.Title,
+	order = 205,
 	args = {
-		EC_Header = {
-			order = 1,
-			type = 'header',
-			name = 'Version'..' '..EC.Version,
-			width = 'full',
-		},
 		credits = {
 			type = 'group',
 			name = 'Credits',

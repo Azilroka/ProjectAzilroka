@@ -52,13 +52,13 @@ if GetLocale() == "ruRU" then -- Russian Translations
 	LIBRARY = "Библиотека"
 end
 
-local function RGBToHex(r, g, b) 
-    r = r <= 1 and r >= 0 and r or 0 
-    g = g <= 1 and g >= 0 and g or 0 
-    b = b <= 1 and b >= 0 and b or 0 
+local function RGBToHex(r, g, b)
+    r = r <= 1 and r >= 0 and r or 0
+    g = g <= 1 and g >= 0 and g or 0
+    b = b <= 1 and b >= 0 and b or 0
 
-    return format('|cff%02x%02x%02x', r*255, g*255, b*255) 
-end 
+    return format('|cff%02x%02x%02x', r*255, g*255, b*255)
+end
 
 function lib:RegisterPlugin(name,callback)
 	local plugin = {}

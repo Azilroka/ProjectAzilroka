@@ -3,6 +3,7 @@ local EFL = LibStub('AceAddon-3.0'):NewAddon('EnhancedFriendsList', 'AceEvent-3.
 _G.EnhancedFriendsList = EFL
 
 EFL.Title = 'Enhanced Friends List'
+EFL.Author = 'Azilroka'
 
 local pairs, tonumber = pairs, tonumber
 local format = format
@@ -132,7 +133,7 @@ function EFL:GetOptions()
 	local Options = {
 		type = 'group',
 		name = EFL.Title,
-		order = 10,
+		order = 206,
 		args = {
 			header = {
 				order = 1,
@@ -289,12 +290,7 @@ function EFL:GetOptions()
 		Index = Index + 1
 	end
 
-	if PA.EP then
-		PA.AceOptionsPanel.Options.args.EnhancedFriendsList = Options
-	end
-
-	PA.ACR:RegisterOptionsTable('EnhancedFriendsList', Options)
-	PA.ACD:AddToBlizOptions('EnhancedFriendsList', 'EnhancedFriendsList', nil, 'general')
+	PA.AceOptionsPanel.Options.args.EnhancedFriendsList = Options
 end
 
 local Defaults
@@ -436,14 +432,7 @@ function EFL:BasicUpdateFriends(button)
 	end
 end
 
-function EFL:Basic()
+function EFL:Initialize()
 	self:SetupProfile()
-	if PA.EP then
-		PA.EP:RegisterPlugin('ProjectAzilroka', self.GetOptions)
-	else
-		self:GetOptions()
-	end
 	hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button) EFL:BasicUpdateFriends(button) end)
 end
-
-EFL:RegisterEvent("PLAYER_LOGIN", 'Basic')

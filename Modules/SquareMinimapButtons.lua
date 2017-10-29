@@ -252,77 +252,12 @@ function SMB:AddCustomUIButtons()
 	end
 end
 
-function SMB:SetupProfile()
-	self.data = LibStub('AceDB-3.0'):New('SquareMinimapButtonsDB', {
-		profile = {
-			['BarMouseOver'] = false,
-			['BarEnabled'] = false,
-			['IconSize'] = 27,
-			['ButtonsPerRow'] = 12,
-			['ButtonSpacing'] = 2,
-			['MoveBlizzard'] = false,
-		},
-	})
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
-
-function SMB:PLAYER_LOGIN()
-	self:SetupProfile()
-
-	self.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
-	self.Bar:SetPoint('RIGHT', UIParent, 'RIGHT', -45, 0)
-	self.Bar:SetFrameStrata('LOW')
-	self.Bar:SetClampedToScreen(true)
-	self.Bar:SetMovable(true)
-	self.Bar:SetTemplate('Transparent', true)
-
-	self.Bar:SetScript('OnEnter', function(self) UIFrameFadeIn(self, 0.2, self:GetAlpha(), 1) end)
-	self.Bar:SetScript('OnLeave', function(self)
-		if SMB.db['BarMouseOver'] then
-			UIFrameFadeOut(self, 0.2, self:GetAlpha(), 0)
-		end
-	end)
-
-	if IsAddOnLoaded('Tukui') then
-		Tukui[1]['Movers']:RegisterFrame(self.Bar)
-	elseif IsAddOnLoaded('ElvUI') then
-		ElvUI[1]:CreateMover(self.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
-	end
-
-	self.TexCoords = { .08, .92, .08, .92 }
-
-	self:AddCustomUIButtons()
-
-	QueueStatusMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-
-	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
-
-	if PA.EP then
-		PA.EP:RegisterPlugin('ProjectAzilroka', self.GetOptions)
-	else
-		self:GetOptions()
-	end
-
-	self:ScheduleRepeatingTimer('GrabMinimapButtons', 5)
-end
-
-SMB:RegisterEvent('PLAYER_LOGIN')
-
-
 function SMB:GetOptions()
 	local Options = {
 		type = 'group',
 		name = SMB.Title,
-		order = 101,
+		order = 211,
 		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = format('%s |cFFFFFFFF - Version: %s|r', SMB.Title, SMB.Version),
-			},
 			mbb = {
 				order = 1,
 				type = 'group',
@@ -370,31 +305,70 @@ function SMB:GetOptions()
 					},
 				},
 			},
-			about = {
-				type = 'group',
-				name = 'About/Help',
-				order = -2,
-				args = {
-					AuthorHeader = {
-						order = 0,
-						type = 'header',
-						name = 'Authors:',
-					},
-					Authors = {
-						order = 1,
-						type = 'description',
-						name = SMB.Authors,
-						fontSize = 'large',
-					},
-				},
+			AuthorHeader = {
+				order = 2,
+				type = 'header',
+				name = 'Authors:',
+			},
+			Authors = {
+				order = 3,
+				type = 'description',
+				name = SMB.Authors,
+				fontSize = 'large',
 			},
 		},
 	}
 
-	if PA.EP then
-		PA.AceOptionsPanel.Options.args.SquareMinimapButton = Options
+	PA.AceOptionsPanel.Options.args.SquareMinimapButton = Options
+end
+
+function SMB:SetupProfile()
+	self.data = LibStub('AceDB-3.0'):New('SquareMinimapButtonsDB', {
+		profile = {
+			['BarMouseOver'] = false,
+			['BarEnabled'] = false,
+			['IconSize'] = 27,
+			['ButtonsPerRow'] = 12,
+			['ButtonSpacing'] = 2,
+			['MoveBlizzard'] = false,
+		},
+	})
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
+
+function SMB:Initialize()
+	self:SetupProfile()
+
+	self.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
+	self.Bar:SetPoint('RIGHT', UIParent, 'RIGHT', -45, 0)
+	self.Bar:SetFrameStrata('LOW')
+	self.Bar:SetClampedToScreen(true)
+	self.Bar:SetMovable(true)
+	self.Bar:SetTemplate('Transparent', true)
+
+	self.Bar:SetScript('OnEnter', function(self) UIFrameFadeIn(self, 0.2, self:GetAlpha(), 1) end)
+	self.Bar:SetScript('OnLeave', function(self)
+		if SMB.db['BarMouseOver'] then
+			UIFrameFadeOut(self, 0.2, self:GetAlpha(), 0)
+		end
+	end)
+
+	if IsAddOnLoaded('Tukui') then
+		Tukui[1]['Movers']:RegisterFrame(self.Bar)
+	elseif IsAddOnLoaded('ElvUI') then
+		ElvUI[1]:CreateMover(self.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
 
-	PA.ACR:RegisterOptionsTable('SquareMinimapButtons', Options)
-	PA.ACD:AddToBlizOptions('SquareMinimapButtons', 'SquareMinimapButtons', nil, 'mbb')
+	self.TexCoords = { .08, .92, .08, .92 }
+
+	self:AddCustomUIButtons()
+
+	QueueStatusMinimapButton:SetParent(Minimap)
+	GarrisonLandingPageMinimapButton:SetParent(Minimap)
+
+	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
+
+	self:ScheduleRepeatingTimer('GrabMinimapButtons', 5)
 end
