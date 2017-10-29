@@ -63,6 +63,10 @@ local AddButtonsToBar = {
 }
 
 function SMB:HandleBlizzardButtons(Button)
+	tinsert(AcceptedFrames, 'MiniMapTrackingButton')
+	QueueStatusMinimapButton:SetParent(Minimap)
+	GarrisonLandingPageMinimapButton:SetParent(Minimap)
+	MiniMapTrackingButton:SetParent(Minimap)
 end
 
 function SMB:SkinMinimapButton(Button)
@@ -245,9 +249,6 @@ function SMB:AddCustomUIButtons()
 	if IsAddOnLoaded('Tukui') then
 		tinsert(ignoreButtons, 'TukuiMinimapZone')
 		tinsert(ignoreButtons, 'TukuiMinimapCoord')
-	else
-		tinsert(AcceptedFrames, 'MiniMapTrackingButton')
-		MiniMapTrackingButton:SetParent(Minimap)
 	end
 	if IsAddOnLoaded('ElvUI') then
 		tinsert(ignoreButtons, 'ElvConfigToggle')
@@ -364,9 +365,6 @@ function SMB:Initialize()
 	self.TexCoords = { .08, .92, .08, .92 }
 
 	self:AddCustomUIButtons()
-
-	QueueStatusMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 
