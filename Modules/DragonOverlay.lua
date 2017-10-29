@@ -44,7 +44,7 @@ function DO:GetOptions()
 				name = 'General',
 				guiInline = true,
 				get = function(info) return DO.db[info[#info]] end,
-				set = function(info, value) DO.db[info[#info]] = value DO:Update() end,
+				set = function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end,
 				args = {
 					ClassIcon = {
 						order = 0,
