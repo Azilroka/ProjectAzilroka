@@ -5,7 +5,5 @@
 ## Notes: Provides an overlay on UnitFrames for Boss/Elite/Rare/RareElite
 ## SavedVariables: DragonOverlayOptions
 ## OptionalDeps: Tukui, ElvUI, AsphyxiaUI, DuffedUI
-## X-Tukui-ProjectID: 136
-## X-Tukui-ProjectFolders: DragonOverlay
 
 DragonOverlay.lua

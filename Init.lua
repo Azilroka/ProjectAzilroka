@@ -71,6 +71,11 @@ function PA:GetOptions()
 				get = function(info) return PA.db[info[#info]] end,
 				set = function(info, value) PA.db[info[#info]] = value end,
 				args = {
+					DO = {
+						order = 0,
+						type = 'toggle',
+						name = 'Dragon Overlay',
+					},
 					ES = {
 						order = 1,
 						type = 'toggle',
@@ -112,6 +117,7 @@ function PA:UpdateProfile()
 	if not Defaults then
 		Defaults = {
 			profile = {
+				['DO'] = true,
 				['ES'] = true,
 				['EFL'] = true,
 				['LC'] = true,
@@ -158,6 +164,9 @@ function PA:LoadConfig()
 	if self.db['SMB'] and not self.SLE then
 		_G.SquareMinimapButtons:GetOptions()
 	end
+	if self.db['DO'] then
+		_G.DragonOverlay:GetOptions()
+	end
 	self:UnregisterEvent("ADDON_LOADED")
 	self:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end
@@ -180,6 +189,9 @@ function PA:PLAYER_LOGIN()
 	end
 	if self.db['SMB'] and not self.SLE then
 		_G.SquareMinimapButtons:Initialize()
+	end
+	if self.db['DO'] then
+		_G.DragonOverlay:Initialize()
 	end
 
 	if not self.ElvUI then

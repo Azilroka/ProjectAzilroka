@@ -144,13 +144,10 @@ function MF:MakeMovable(Frame)
 		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
 	end
 
-	if not MF.db[Name] then
-		MF.db[Name] = { ['Permanent'] = false }
-	end
 	tinsert(RegisteredMovers, Name)
 end
 
-local Options
+local Defaults, Options
 function MF:GetOptions()
 	if not Options then
 		Options = {
@@ -217,7 +214,19 @@ function MF:GetOptions()
 end
 
 function MF:SetupProfile()
-	self.data = LibStub('AceDB-3.0'):New('MovableFramesDB', { profile = {}, })
+	if not Defaults then
+		Defaults = {
+			profile = {},
+		}
+	end
+
+	for _, Frame in pairs(RegisteredMovers) do
+		if not Defaults.profile[Frame] then
+			Defaults.profile[Frame] = { ['Permanent'] = false }
+		end
+	end
+
+	self.data = LibStub('AceDB-3.0'):New('MovableFramesDB', Defaults)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
 	self.db = self.data.profile
@@ -228,18 +237,18 @@ function MF:ADDON_LOADED(event, addon)
 		for _, Frame in pairs(AddOnFrames[addon]) do
 			self:MakeMovable(_G[Frame])
 		end
+		self:SetupProfile()
 		self:GetOptions()
 	end
 end
 
 function MF:Initialize()
-	self:SetupProfile()
-	self:RegisterEvent('ADDON_LOADED')
-
 	if IsAddOnLoaded('Tukui') then
 		tinsert(Frames, 'LossOfControlFrame')
 		sort(Frames)
 	end
+
+	self:SetupProfile()
 
 	for _, Frame in pairs(Frames) do
 		if _G[Frame] then
@@ -261,4 +270,6 @@ function MF:Initialize()
 		MF:MakeMovable(_G['WorldStateCaptureBar'..id])
 		_G['WorldStateCaptureBar'..id].MoverAssigned = true
 	end)
+
+	self:RegisterEvent('ADDON_LOADED')
 end
