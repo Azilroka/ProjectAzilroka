@@ -345,6 +345,7 @@ function SMB:Initialize()
 	self.Bar:SetFrameStrata('LOW')
 	self.Bar:SetClampedToScreen(true)
 	self.Bar:SetMovable(true)
+	self.Bar:SetSize(self.db.IconSize, self.db.IconSize)
 	self.Bar:SetTemplate('Transparent', true)
 
 	self.Bar:SetScript('OnEnter', function(self) UIFrameFadeIn(self, 0.2, self:GetAlpha(), 1) end)

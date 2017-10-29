@@ -3,7 +3,6 @@ local LC = LibStub('AceAddon-3.0'):NewAddon('LootConfirm', 'AceEvent-3.0')
 _G.LootConfirm = LC
 
 LC.Title = 'Loot Confirm'
-LC.Version = 2.34
 LC.Authors = 'Azilroka, Infinitron'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
