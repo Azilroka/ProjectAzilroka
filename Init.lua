@@ -138,22 +138,27 @@ function PA:ADDON_LOADED(event, addon)
 		self:UpdateProfile()
 	end
 	if addon == 'ElvUI_Config' then
-		if not (self.SLE or self.NUI) and self.db['ES'] then
-			_G.EnhancedShadows:GetOptions()
-		end
-		if self.db['EFL'] then
-			_G.EnhancedFriendsList:GetOptions()
-		end
-		if self.db['LC'] then
-			_G.LootConfirm:GetOptions()
-		end
-		if self.db['MF'] then
-			_G.MovableFrames:GetOptions()
-		end
-		if self.db['SMB'] and not self.SLE then
-			_G.SquareMinimapButtons:GetOptions()
-		end
+		self:LoadConfig()
 	end
+end
+
+function PA:LoadConfig()
+	if not (self.SLE or self.NUI) and self.db['ES'] then
+		_G.EnhancedShadows:GetOptions()
+	end
+	if self.db['EFL'] then
+		_G.EnhancedFriendsList:GetOptions()
+	end
+	if self.db['LC'] then
+		_G.LootConfirm:GetOptions()
+	end
+	if self.db['MF'] then
+		_G.MovableFrames:GetOptions()
+	end
+	if self.db['SMB'] and not self.SLE then
+		_G.SquareMinimapButtons:GetOptions()
+	end
+	self:UnregisterEvent("ADDON_LOADED")
 end
 
 function PA:PLAYER_LOGIN()
@@ -174,6 +179,10 @@ function PA:PLAYER_LOGIN()
 	end
 	if self.db['SMB'] and not self.SLE then
 		_G.SquareMinimapButtons:Initialize()
+	end
+
+	if not self.ElvUI then
+		self:LoadConfig()
 	end
 end
 
