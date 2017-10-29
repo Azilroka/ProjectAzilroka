@@ -1,9 +1,0 @@
-## Interface: 60000
-## Title: Loot Confirm
-## Version: 2.34
-## Notes: Confirms Loot for Solo/Groups (Need/Greed/Disenchant)
-## OptionalDeps: AsphyxiaUI, DuffedUI, ElvUI, Tukui
-## SavedVariablesPerCharacter: LootConfirmOptions
-## Author: Azilroka, Sortokk
-
-LootConfirm.lua

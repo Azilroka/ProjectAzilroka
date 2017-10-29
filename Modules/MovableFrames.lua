@@ -159,7 +159,7 @@ function MF:GetOptions()
 			name = MF.Title,
 			args = {
 				Header = {
-					order = 3,
+					order = 0,
 					type = 'header',
 					name = 'Move Blizzard Frames',
 				},
@@ -194,7 +194,7 @@ function MF:GetOptions()
 
 	local Index = 1
 	for _, Name in pairs(RegisteredMovers) do
-		PA.AceOptionsPanel.Options.args.movableframes.args.permanent.args[Name] = {
+		Options.args.permanent.args[Name] = {
 			order = Index,
 			type = 'toggle',
 			name = Name,
@@ -202,7 +202,7 @@ function MF:GetOptions()
 			set = function(info, value) MF.db[info[#info]]['Permanent'] = value end,
 		}
 
-		PA.AceOptionsPanel.Options.args.movableframes.args.reset.args[Name] = {
+		Options.args.reset.args[Name] = {
 			order = Index,
 			type = 'execute',
 			name = Name,
@@ -239,10 +239,6 @@ function MF:Initialize()
 	if IsAddOnLoaded('Tukui') then
 		tinsert(Frames, 'LossOfControlFrame')
 		sort(Frames)
-	end
-
-	if PA.EP then
-		PA.EP:RegisterPlugin("ProjectAzilroka", self.GetOptions)
 	end
 
 	for _, Frame in pairs(Frames) do
