@@ -17,7 +17,6 @@ local Frames = {
 	'BonusRollLootWonFrame',
 	'BonusRollMoneyWonFrame',
 	'CharacterFrame',
-	'CraftFrame',
 	'DressUpFrame',
 	'FriendsFrame',
 	'FriendsFriendsFrame',
@@ -41,15 +40,12 @@ local Frames = {
 	'PVEFrame',
 	'PVPReadyDialog',
 	'QuestFrame',
-	'QuestLogDetailFrame',
-	'QuestLogFrame',
 	'QuestLogPopupDetailFrame',
 	'RaidBrowserFrame',
 	'RaidInfoFrame',
 	'RaidParentFrame',
 	'ReadyCheckFrame',
 	'ReportCheatingDialog',
-	'ReportPlayerNameDialog',
 	'RolePollPopup',
 	'ScrollOfResurrectionSelectionFrame',
 	'SpellBookFrame',
@@ -95,6 +91,7 @@ local AddOnFrames = {
 	['Blizzard_OrderHallUI'] = { 'OrderHallMissionFrame', 'OrderHallTalentFrame' },
 	['Blizzard_QuestChoice'] = { 'QuestChoiceFrame' },
 	['Blizzard_TalentUI'] = { 'PlayerTalentFrame' },
+	['Blizzard_TalkingHeadUI'] = { 'TalkingHeadFrame' },
 	['Blizzard_TradeSkillUI'] = { 'TradeSkillFrame' },
 	['Blizzard_TrainerUI'] = { 'ClassTrainerFrame' },
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
@@ -102,18 +99,17 @@ local AddOnFrames = {
 
 local RegisteredMovers = {}
 
-local function OnUpdate(self)
-	if self.IsMoving then return end
-	if MF.db[self:GetName()]['Points'] then
+local function LoadPosition(self)
+	if self.IsMoving == true then return end
+	if MF.db[self:GetName()]['Permanent'] and MF.db[self:GetName()]['Points'] then
 		self:ClearAllPoints()
 		self:SetPoint(unpack(MF.db[self:GetName()]['Points']))
 	end
 end
 
 local function OnDragStart(self)
-	self:StartMoving()
 	self.IsMoving = true
-	if not MF.db[self:GetName()]['Permanent'] then self:SetUserPlaced(false) end
+	self:StartMoving()
 end
 
 local function OnDragStop(self)
@@ -121,35 +117,44 @@ local function OnDragStop(self)
 	self.IsMoving = false
 	if MF.db[self:GetName()]['Permanent'] then
 		local a, b, c, d, e = self:GetPoint()
-		b = self:GetParent():GetName()
+		b = self:GetParent():GetName() or UIParent
 		if self:GetName() == 'QuestFrame' or self:GetName() == 'GossipFrame' then
 			MF.db['GossipFrame'].Points = {a, b, c, d, e}
 			MF.db['QuestFrame'].Points = {a, b, c, d, e}
 		else
 			MF.db[self:GetName()].Points = {a, b, c, d, e}
 		end
+	else
+		self:SetUserPlaced(false)
 	end
 end
 
-local Index = 0
 function MF:MakeMovable(Frame)
 	local Name = Frame:GetName()
 
 	if not Name then return end
 
-	if Name == 'AchievementFrame' then AchievementFrameHeader:EnableMouse(false) end
+	if Name == 'AchievementFrame' then AchievementFrameHeader:EnableMouse(false) UIPanelWindows[Name] = {} end
 
 	Frame:EnableMouse(true)
 	Frame:SetMovable(true)
 	Frame:RegisterForDrag('LeftButton')
 	Frame:SetClampedToScreen(true)
-	Frame:HookScript('OnUpdate', OnUpdate)
+	Frame:HookScript('OnShow', LoadPosition)
 	Frame:HookScript('OnDragStart', OnDragStart)
 	Frame:HookScript('OnDragStop', OnDragStop)
+	Frame:HookScript('OnHide', OnDragStop)
 	if Name == 'WorldStateAlwaysUpFrame' then
 		Frame:HookScript('OnEnter', function(self) self:SetTemplate() end)
 		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
 	end
+
+	C_Timer.After(0, function()
+		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then
+			Frame:ClearAllPoints()
+			Frame:SetPoint(unpack(MF.db[Name]['Points']))
+		end
+	end)
 
 	tinsert(RegisteredMovers, Name)
 end
@@ -196,6 +201,8 @@ function MF:GetOptions()
 		}
 	end
 
+	sort(RegisteredMovers)
+
 	local Index = 1
 	for _, Name in pairs(RegisteredMovers) do
 		Options.args.permanent.args[Name] = {
@@ -210,8 +217,8 @@ function MF:GetOptions()
 			order = Index,
 			type = 'execute',
 			name = Name,
-			disabled = function() return not MF.db[Name]['Permanent'] end,
-			func = function() MF.db[Name]['Points'] = nil end,
+			disabled = function(info) return not MF.db[info[#info]]['Permanent'] end,
+			func = function(info) HideUIPanel(_G[info[#info]]) MF.db[info[#info]].Points = Defaults.profile[info[#info]].Points end,
 		}
 
 		Index = Index + 1
@@ -229,7 +236,7 @@ function MF:SetupProfile()
 
 	for _, Frame in pairs(RegisteredMovers) do
 		if not Defaults.profile[Frame] then
-			Defaults.profile[Frame] = { ['Permanent'] = false }
+			Defaults.profile[Frame] = { ['Permanent'] = false, ['Points'] = { _G[Frame]:GetPoint() } }
 		end
 	end
 

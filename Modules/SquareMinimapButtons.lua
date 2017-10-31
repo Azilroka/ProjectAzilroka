@@ -152,11 +152,22 @@ function SMB:SkinMinimapButton(Button)
 	end
 
 	Button:SetTemplate()
-	Button:HookScript('OnEnter', function(self) self:SetBackdropBorderColor(.7, 0, .7) end)
-	Button:HookScript('OnLeave', function(self) self:SetTemplate() end)
+	Button:HookScript('OnEnter', function(self)
+		self:SetBackdropBorderColor(.7, 0, .7)
+		if SMB.Bar:IsShown() then
+			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+		end
+	end)
+	Button:HookScript('OnLeave', function(self)
+		self:SetTemplate()
+		if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+			UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+		end
+	end)
 
 	Button.isSkinned = true
 	tinsert(SkinnedMinimapButtons, Button)
+	self:Update()
 end
 
 function SMB:GrabMinimapButtons()
@@ -175,8 +186,6 @@ function SMB:GrabMinimapButtons()
 			end
 		end
 	end
-
-	self:Update()
 end
 
 function SMB:Update()
@@ -235,6 +244,11 @@ function SMB:Update()
 	end
 
 	self.Bar:Show()
+	if self.db['BarMouseOver'] then
+		UIFrameFadeOut(self.Bar, 0.2, self.Bar:GetAlpha(), 0)
+	else
+		UIFrameFadeIn(self.Bar, 0.2, self.Bar:GetAlpha(), 1)
+	end
 end
 
 function SMB:AddCustomUIButtons()
@@ -336,6 +350,7 @@ function SMB:Initialize()
 	self.Bar:SetFrameStrata('LOW')
 	self.Bar:SetClampedToScreen(true)
 	self.Bar:SetMovable(true)
+	self.Bar:EnableMouse(true)
 	self.Bar:SetSize(self.db.IconSize, self.db.IconSize)
 	self.Bar:SetTemplate('Transparent', true)
 
