@@ -34,7 +34,7 @@ local GameIcons = {
 		S1 = BNet_GetClientTexture(BNET_CLIENT_SC),
 		S2 = BNet_GetClientTexture(BNET_CLIENT_SC2),
 		App = BNet_GetClientTexture(BNET_CLIENT_APP),
-		BSAp = App,
+		BSAp = BNet_GetClientTexture(BNET_CLIENT_APP),
 		Hero = BNet_GetClientTexture(BNET_CLIENT_HEROES),
 		Pro = BNet_GetClientTexture(BNET_CLIENT_OVERWATCH),
 		DST2 = BNet_GetClientTexture(BNET_CLIENT_DESTINY2),
@@ -48,7 +48,7 @@ local GameIcons = {
 		S1 = 'Interface\\ChatFrame\\UI-ChatIcon-SC',
 		S2 = 'Interface\\ChatFrame\\UI-ChatIcon-SC2',
 		App = 'Interface\\ChatFrame\\UI-ChatIcon-Battlenet',
-		BSAp = App,
+		BSAp = 'Interface\\ChatFrame\\UI-ChatIcon-Battlenet',
 		Hero = 'Interface\\ChatFrame\\UI-ChatIcon-HotS',
 		Pro = 'Interface\\ChatFrame\\UI-ChatIcon-Overwatch',
 		DST2 = 'Interface\\ChatFrame\\UI-ChatIcon-Destiny2',
@@ -62,7 +62,7 @@ local GameIcons = {
 		S1 = 'Interface\\ChatFrame\\UI-ChatIcon-SC',
 		S2 = MediaPath..'GameIcons\\Flat\\SC2',
 		App = MediaPath..'GameIcons\\Flat\\BattleNet',
-		BSAp = App,
+		BSAp = MediaPath..'GameIcons\\Flat\\BattleNet',
 		Hero = MediaPath..'GameIcons\\Flat\\Heroes',
 		Pro = MediaPath..'GameIcons\\Flat\\Overwatch',
 		DST2 = 'Interface\\ChatFrame\\UI-ChatIcon-Destiny2',
@@ -76,21 +76,21 @@ local GameIcons = {
 		S1 = 'Interface\\ChatFrame\\UI-ChatIcon-SC',
 		S2 = MediaPath..'GameIcons\\Gloss\\SC2',
 		App = MediaPath..'GameIcons\\Gloss\\BattleNet',
-		BSAp = App,
+		BSAp = MediaPath..'GameIcons\\Gloss\\BattleNet',
 		Hero = MediaPath..'GameIcons\\Gloss\\Heroes',
 		Pro = MediaPath..'GameIcons\\Gloss\\Overwatch',
 		DST2 = 'Interface\\ChatFrame\\UI-ChatIcon-Destiny2',
 	},
 	Launcher = {
-		Alliance = MediaPath..'GameIcons\\Launcher\\WoW',
-		Horde = MediaPath..'GameIcons\\Launcher\\WoW',
+		Alliance = MediaPath..'GameIcons\\Launcher\\Alliance',
+		Horde = MediaPath..'GameIcons\\Launcher\\Horde',
 		Neutral = MediaPath..'GameIcons\\Launcher\\WoW',
 		D3 = MediaPath..'GameIcons\\Launcher\\D3',
 		WTCG = MediaPath..'GameIcons\\Launcher\\Hearthstone',
 		S1 = MediaPath..'GameIcons\\Launcher\\SC',
 		S2 = MediaPath..'GameIcons\\Launcher\\SC2',
 		App = MediaPath..'GameIcons\\Launcher\\BattleNet',
-		BSAp = App,
+		BSAp = MediaPath..'GameIcons\\Launcher\\BattleNet',
 		Hero = MediaPath..'GameIcons\\Launcher\\Heroes',
 		Pro = MediaPath..'GameIcons\\Launcher\\Overwatch',
 		DST2 = MediaPath..'GameIcons\\Launcher\\Destiny2',
@@ -254,21 +254,35 @@ function EFL:GetOptions()
 		S1 = 'Starcraft',
 		S2 = 'Starcraft 2',
 		App = 'App',
+		BSAp = 'Mobile',
 		Hero = 'Hero of the Storm',
 		Pro = 'Overwatch',
 		DST2 = 'Destiny 2',
 	}
 
-	local Index = 1
+	local GameIconOrder = {
+		Alliance = 1,
+		Horde = 2,
+		Neutral = 3,
+		D3 = 4,
+		WTCG = 5,
+		S1 = 6,
+		S2 = 7,
+		App = 8,
+		BSAp = 9,
+		Hero = 10,
+		Pro = 11,
+		DST2 = 12,
+	}
+
 	for Key, Value in pairs(GameIconsOptions) do
 		Options.args.GameIcons.args[Key] = {
-			order = Index,
+			order = GameIconOrder[Key],
 			type = 'execute',
 			name = Value,
 			func = function() return end,
 			image = function(info) return GameIcons[EFL.db.GameIconPack][info[#info]], 32, 32 end,
 		}
-		Index = Index + 1
 	end
 
 	local StatusIconsOptions = {
@@ -278,16 +292,21 @@ function EFL:GetOptions()
 		AFK = DEFAULT_AFK_MESSAGE,
 	}
 
-	Index = 1
+	local StatusIconsOrder = {
+		Online = 1,
+		Offline = 2,
+		DND = 3,
+		AFK = 4,
+	}
+
 	for Key, Value in pairs(StatusIconsOptions) do
 		Options.args.StatusIcons.args[Key] = {
-			order = Index,
+			order = StatusIconsOrder[Key],
 			type = 'execute',
 			name = Value,
 			func = function() return end,
 			image = function(info) return StatusIcons[EFL.db.StatusIconPack][info[#info]], 16, 16 end,
 		}
-		Index = Index + 1
 	end
 
 	PA.AceOptionsPanel.Options.args.EnhancedFriendsList = Options
