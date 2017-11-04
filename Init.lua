@@ -37,6 +37,7 @@ PA.Multiple = 768/PA.ScreenHeight
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
+PA.Color = '|cFF16C3F2'
 
 PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
@@ -55,7 +56,7 @@ end
 function PA:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.Title,
+		name = PA.Color..PA.Title,
 		order = 212,
 		args = {
 			header = {

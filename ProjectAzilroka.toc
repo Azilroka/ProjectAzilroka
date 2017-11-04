@@ -1,5 +1,5 @@
 ## Interface: 70300
-## Title: |cff1784d1ProjectAzilroka|r
+## Title: ProjectAzilroka
 ## Author: Azilroka
 ## Version: 1.09
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui

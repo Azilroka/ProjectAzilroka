@@ -2,8 +2,9 @@ local PA = _G.ProjectAzilroka
 local SMB = LibStub('AceAddon-3.0'):NewAddon('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.SquareMinimapButtons = SMB
 
-SMB.Title = '|cffC495DDSquare Minimap Buttons|r'
-SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega'
+SMB.Title = 'Square Minimap Buttons'
+SMB.Description = 'Minimap Button Bar / Minimap Button Skinning'
+SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega    Durc'
 
 local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
 local tinsert, pairs, unpack, select = tinsert, pairs, unpack, select
@@ -11,17 +12,16 @@ local UnitAffectingCombat = UnitAffectingCombat
 local Minimap = Minimap
 local IsAddOnLoaded = IsAddOnLoaded
 
-local SkinnedMinimapButtons = {}
+SMB.Buttons = {}
 
 local ignoreButtons = {
 	'GameTimeFrame',
-	'HelpOpenTicketButton',
+	'HelpOpenWebTicketButton',
 	'MiniMapVoiceChatFrame',
 	'TimeManagerClockButton',
 	'BattlefieldMinimap',
 	'ButtonCollectFrame',
 	'GameTimeFrame',
-	'TimeManagerClockButton',
 	'QueueStatusMinimapButton',
 }
 
@@ -39,6 +39,7 @@ local GenericIgnores = {
 	'LibRockConfig-1.0_MinimapButton',
 	'NauticusMiniIcon',
 	'WestPointer',
+	'Cork',
 }
 
 local PartialIgnores = {
@@ -46,10 +47,6 @@ local PartialIgnores = {
 	'Note',
 	'Pin',
 	'POI',
-}
-
-local WhiteList = {
-	'LibDBIcon',
 }
 
 local AcceptedFrames = {
@@ -62,11 +59,126 @@ local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
 
+function SMB:SkinIcon(Icon)
+
+end
+
 function SMB:HandleBlizzardButtons()
-	tinsert(AcceptedFrames, 'MiniMapTrackingButton')
-	QueueStatusMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-	MiniMapTrackingButton:SetParent(Minimap)
+	if self.opt["hideGarrison"] and GarrisonLandingPageMinimapButton then
+		if GarrisonLandingPageMinimapButton.UnregisterAllEvents then
+			self.hidden = CreateFrame("Frame", "MinimapButtonHidden", UIParent)
+			GarrisonLandingPageMinimapButton:UnregisterAllEvents()
+			GarrisonLandingPageMinimapButton:SetParent(self.hidden)
+		else
+			GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.Hide
+		end
+		GarrisonLandingPageMinimapButton.IsShown = function() return true end
+		GarrisonLandingPageMinimapButton:Hide()
+	end
+
+	if self.opt["moveMail"] and not self.mailMoved then
+		--		MiniMapMailFrame
+		--		MiniMapMailBorder
+		--		MiniMapMailIcon
+		self.mailMoved = true
+		MiniMapMailBorder:Hide()
+		MiniMapMailIcon:Hide()
+		MiniMapMailFrame:SetParent(self.box)
+		MiniMapMailFrame.Icon = MiniMapMailFrame:CreateTexture(nil, 'ARTWORK')
+		MiniMapMailFrame.Icon:SetPoint('CENTER')
+		MiniMapMailFrame.Icon:SetSize(self.iconSize, self.iconSize)
+		MiniMapMailFrame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
+		M:TexCoord(MiniMapMailFrame.Icon)
+
+		MiniMapMailFrame:HookScript('OnShow', function(self)
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+		MiniMapMailFrame:HookScript('OnHide', function(self)
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+
+		table.insert(self.buttons, MiniMapMailFrame)
+	end
+
+	if self.opt["moveGarrison"] and not self.garrisonMoved then
+		--GarrisonLandingPageMinimapButton
+		self.garrisonMoved = true
+		GarrisonLandingPageMinimapButton:SetParent(self.box)
+		GarrisonLandingPageMinimapButton:SetScale(1)
+		GarrisonLandingPageMinimapButton:ClearAllPoints()
+		GarrisonLandingPageMinimapButton:SetAllPoints()
+
+		GarrisonLandingPageMinimapButton:HookScript('OnShow', function(self)
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+		GarrisonLandingPageMinimapButton:HookScript('OnHide', function(self)
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+
+		table.insert(self.buttons, GarrisonLandingPageMinimapButton)
+	end
+
+
+	if self.opt["moveTracker"] and not self.trackerMoved then
+		--MiniMapTrackingButton
+		--MiniMapTracking
+		self.trackerMoved = true
+		MiniMapTrackingIcon:Hide()
+		MiniMapTrackingBackground:Hide()
+		MiniMapTrackingIconOverlay:Hide()
+		MiniMapTrackingIconOverlay.Show = function() self:Hide() end
+		MiniMapTracking:SetParent(self.box)
+		MiniMapTracking:Show()
+
+		M:RebuildRegions(MiniMapTrackingButton)
+
+		MiniMapTracking.Icon = MiniMapTracking:CreateTexture(nil, 'ARTWORK')
+		MiniMapTracking.Icon:SetPoint('CENTER')
+		MiniMapTracking.Icon:SetSize(self.iconSize, self.iconSize)
+		MiniMapTracking.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
+
+		M:IconBorder(MiniMapTrackingButton, false)
+		MiniMapTrackingButton:HookScript('OnEnter', function(self)
+			M:IconBorder(MiniMapTrackingButton, true)
+		end)
+		MiniMapTrackingButton:HookScript('OnLeave', function(self)
+			M:IconBorder(MiniMapTrackingButton, false)
+		end)
+
+		table.insert(self.buttons, MiniMapTracking)
+	end
+
+	if self.opt["moveTracker"] then
+		MiniMapTrackingButton:ClearAllPoints()
+		MiniMapTrackingButton:SetAllPoints()
+	end
+
+	if self.opt["moveQueue"] and not self.trackerQueue then
+		-- QueueStatusMinimapButton
+		self.trackerQueue = true
+
+		QueueStatusMinimapButton:SetParent(self.box)
+
+		M:RebuildRegions(QueueStatusMinimapButton)
+
+		QueueStatusMinimapButton:HookScript('OnShow', function(self)
+			QueueStatusMinimapButtonIconTexture:SetParent(QueueStatusMinimapButton)
+			QueueStatusMinimapButtonIconTexture:ClearAllPoints()
+			QueueStatusMinimapButtonIconTexture:SetAllPoints()
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+		QueueStatusMinimapButton:HookScript('OnHide', function(self)
+			M:UpdateButtons()
+			M:ResizeBox()
+		end)
+
+		table.insert(self.buttons, QueueStatusMinimapButton)
+	end
 end
 
 function SMB:SkinMinimapButton(Button)
@@ -77,30 +189,16 @@ function SMB:SkinMinimapButton(Button)
 	if not Name then return end
 
 	if Button:IsObjectType('Button') then
-		local ValidIcon = false
-
-		for i = 1, #WhiteList do
-			if strsub(Name, 1, strlen(WhiteList[i])) == WhiteList[i] then ValidIcon = true break end
+		for i = 1, #ignoreButtons do
+			if Name == ignoreButtons[i] then return end
 		end
 
-		if not ValidIcon then
-			for i = 1, #ignoreButtons do
-				if Name == ignoreButtons[i] then return end
-			end
-
-			for i = 1, #GenericIgnores do
-				if strsub(Name, 1, strlen(GenericIgnores[i])) == GenericIgnores[i] then return end
-			end
-
-			for i = 1, #PartialIgnores do
-				if strfind(Name, PartialIgnores[i]) ~= nil then return end
-			end
+		for i = 1, #GenericIgnores do
+			if strsub(Name, 1, strlen(GenericIgnores[i])) == GenericIgnores[i] then return end
 		end
 
-		if not Name == 'GarrisonLandingPageMinimapButton' then
-			Button:SetPushedTexture(nil)
-			Button:SetHighlightTexture(nil)
-			Button:SetDisabledTexture(nil)
+		for i = 1, #PartialIgnores do
+			if strfind(Name, PartialIgnores[i]) ~= nil then return end
 		end
 	end
 	for i = 1, Button:GetNumRegions() do
@@ -110,11 +208,6 @@ function SMB:SkinMinimapButton(Button)
 
 			if Texture and (strfind(Texture, 'Border') or strfind(Texture, 'Background') or strfind(Texture, 'AlphaMask') or strfind(Texture, 'Highlight')) then
 				Region:SetTexture(nil)
-				if Name == 'MiniMapTrackingButton' then
-					Region:SetTexture('Interface\\Minimap\\Tracking\\None')
-					Region:ClearAllPoints()
-					Region:SetInside()
-				end
 			else
 				if Name == 'BagSync_MinimapButton' then
 					Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
@@ -128,16 +221,11 @@ function SMB:SkinMinimapButton(Button)
 					Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
 				elseif Name == 'VendomaticButtonFrame' then
 					Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
-				elseif Name == 'MiniMapMailFrame' then
-					Region:ClearAllPoints()
-					Region:SetPoint('CENTER', Button)
 				end
-				if not (Name == 'MiniMapMailFrame') then
-					Region:ClearAllPoints()
-					Region:SetInside()
-					Region:SetTexCoord(unpack(self.TexCoords))
-					Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
-				end
+				Region:ClearAllPoints()
+				Region:SetInside()
+				Region:SetTexCoord(unpack(self.TexCoords))
+				Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
 				Region:SetDrawLayer('ARTWORK')
 				Region.SetPoint = function() return end
 			end
@@ -146,11 +234,6 @@ function SMB:SkinMinimapButton(Button)
 
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	Button:Size(SMB.db['IconSize'])
-
-	if Name == 'GarrisonLandingPageMinimapButton' then
-		Button:SetScale(1)
-	end
-
 	Button:SetTemplate()
 	Button:HookScript('OnEnter', function(self)
 		self:SetBackdropBorderColor(.7, 0, .7)
@@ -166,7 +249,7 @@ function SMB:SkinMinimapButton(Button)
 	end)
 
 	Button.isSkinned = true
-	tinsert(SkinnedMinimapButtons, Button)
+	tinsert(self.Buttons, Button)
 	self:Update()
 end
 
@@ -193,16 +276,16 @@ function SMB:Update()
 
 	local AnchorX, AnchorY, MaxX = 0, 1, SMB.db['ButtonsPerRow']
 	local ButtonsPerRow = SMB.db['ButtonsPerRow']
-	local NumColumns = ceil(#SkinnedMinimapButtons / ButtonsPerRow)
+	local NumColumns = ceil(#SMB.Buttons / ButtonsPerRow)
 	local Spacing, Mult = SMB.db['ButtonSpacing'], 1
 	local Size = SMB.db['IconSize']
 	local ActualButtons, Maxed = 0
 
-	if NumColumns == 1 and ButtonsPerRow > #SkinnedMinimapButtons then
-		ButtonsPerRow = #SkinnedMinimapButtons
+	if NumColumns == 1 and ButtonsPerRow > #SMB.Buttons then
+		ButtonsPerRow = #SMB.Buttons
 	end
 
-	for _, Frame in pairs(SkinnedMinimapButtons) do
+	for _, Frame in pairs(SMB.Buttons) do
 		local Name = Frame:GetName()
 		local Exception = false
 		for _, Button in pairs(AddButtonsToBar) do
@@ -261,16 +344,17 @@ end
 function SMB:GetOptions()
 	local Options = {
 		type = 'group',
-		name = SMB.Title,
+		name = PA.Color..SMB.Title,
+		desc = SMB.Description,
 		order = 211,
+		get = function(info) return SMB.db[info[#info]] end,
+		set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 		args = {
 			mbb = {
 				order = 1,
 				type = 'group',
 				name = 'Minimap Buttons / Bar',
 				guiInline = true,
-				get = function(info) return SMB.db[info[#info]] end,
-				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 				args = {
 					BarEnabled = {
 						order = 1,
@@ -282,12 +366,6 @@ function SMB:GetOptions()
 						type = 'toggle',
 						name = 'Bar MouseOver',
 					},
-					-- MoveBlizzard = {
-					-- 	order = 3,
-					-- 	type = 'toggle',
-					-- 	name = 'Move Blizzard Buttons',
-					-- 	desc = 'Mail / Dungeon',
-					-- },
 					IconSize = {
 						order = 4,
 						type = 'range',
@@ -308,13 +386,46 @@ function SMB:GetOptions()
 					},
 				},
 			},
-			AuthorHeader = {
+			blizzard = {
+				type = "group",
+				name = "Blizzard",
+				guiInline = true,
 				order = 2,
+				args = {
+					HideGarrison  = {
+						type = "toggle",
+						name = "Hide Garrison",
+						order = 1,
+					},
+					MoveGarrison  = {
+						type = "toggle",
+						name = "Move Garrison Icon",
+						order = 2,
+					},
+					MoveMail  = {
+						type = "toggle",
+						name = "Move Mail Icon",
+						order = 3,
+					},
+					MoveTracker  = {
+						type = "toggle",
+						name = "Move Tracker Icon",
+						order = 3,
+					},
+					MoveQueue  = {
+						type = "toggle",
+						name = "Move Queue Status Icon",
+						order = 3,
+					},
+				},
+			},
+			AuthorHeader = {
+				order = 3,
 				type = 'header',
 				name = 'Authors:',
 			},
 			Authors = {
-				order = 3,
+				order = 4,
 				type = 'description',
 				name = SMB.Authors,
 				fontSize = 'large',
@@ -322,7 +433,7 @@ function SMB:GetOptions()
 		},
 	}
 
-	PA.AceOptionsPanel.Options.args.SquareMinimapButton = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.SquareMinimapButton = Options
 end
 
 function SMB:SetupProfile()
@@ -333,7 +444,11 @@ function SMB:SetupProfile()
 			['IconSize'] = 27,
 			['ButtonsPerRow'] = 12,
 			['ButtonSpacing'] = 2,
-			['MoveBlizzard'] = false,
+			['HideGarrison'] = false,
+			['MoveGarrison'] = false,
+			['MoveMail'] = false,
+			['MoveTracker'] = false,
+			['MoveQueue'] = false,
 		},
 	})
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')

@@ -3,6 +3,7 @@ local EFL = LibStub('AceAddon-3.0'):NewAddon('EnhancedFriendsList', 'AceEvent-3.
 _G.EnhancedFriendsList = EFL
 
 EFL.Title = 'Enhanced Friends List'
+EFL.Description = 'Provides Freinds List Customization'
 EFL.Author = 'Azilroka'
 
 local pairs, tonumber = pairs, tonumber
@@ -146,14 +147,10 @@ EFL.ClientColor = {
 function EFL:GetOptions()
 	local Options = {
 		type = 'group',
-		name = EFL.Title,
+		name = PA.Color..EFL.Title,
+		desc = EFL.Description,
 		order = 206,
 		args = {
-			header = {
-				order = 1,
-				type = 'header',
-				name = 'Friends List Customization',
-			},
 			general = {
 				order = 2,
 				type = 'group',
@@ -331,7 +328,7 @@ function EFL:GetOptions()
 		}
 	end
 
-	PA.AceOptionsPanel.Options.args.EnhancedFriendsList = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.EnhancedFriendsList = Options
 end
 
 local Defaults
@@ -417,12 +414,9 @@ function EFL:BasicUpdateFriends(button)
 		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
 		local realmName, realmID, faction, race, class, zoneName, level, gameText
 		broadcastText = messageText
-		local characterName = toonName
+		local characterName = BNet_GetValidatedCharacterName(toonName, battleTag, client)
 		if presenceName then
 			nameText = presenceName
-			if isOnline and not characterName and battleTag then
-				characterName = battleTag
-			end
 		else
 			nameText = UNKNOWN
 		end

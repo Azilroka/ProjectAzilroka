@@ -7,7 +7,8 @@ local ES = LibStub('AceAddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
 _G.EnhancedShadows = ES
 
 ES.Title = 'Enhanced Shadows'
-ES.Author = 'Azilroka, Infinitron'
+ES.Description = 'Adds options for registered shadows'
+ES.Author = 'Azilroka     Infinitron'
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -34,7 +35,8 @@ function ES:GetOptions()
 	local Options = {
 		type = "group",
 		order = 207,
-		name = ES.Title,
+		name = PA.Color..ES.Title,
+		desc = ES.Description,
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
 		args = {
@@ -60,7 +62,7 @@ function ES:GetOptions()
 		},
 	}
 
-	PA.AceOptionsPanel.Options.args.enhancedshadows = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.EnhancedShadows = Options
 end
 
 function ES:UpdateShadows()

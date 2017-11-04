@@ -3,6 +3,7 @@ local LC = LibStub('AceAddon-3.0'):NewAddon('LootConfirm', 'AceEvent-3.0')
 _G.LootConfirm = LC
 
 LC.Title = 'Loot Confirm'
+LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
 LC.Authors = 'Azilroka, Infinitron'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
@@ -14,7 +15,8 @@ local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRol
 function LC:GetOptions()
 	local Options = {
 		type = 'group',
-		name = LC.Title,
+		name = PA.Color..LC.Title,
+		desc = LC.Description,
 		order = 208,
 		args = {
 			header = {
@@ -71,7 +73,7 @@ function LC:GetOptions()
 		ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
 	end
 
-	PA.AceOptionsPanel.Options.args.LootConfirm = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.LootConfirm = Options
 end
 
 function LC:UpdateProfile()

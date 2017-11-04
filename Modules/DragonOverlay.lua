@@ -8,7 +8,8 @@ local pairs, tinsert, select, unpack = pairs, tinsert, select, unpack
 local strfind, strsub = strfind, strsub
 local UnitIsPlayer, UnitClass, UnitClassification = UnitIsPlayer, UnitClass, UnitClassification
 
-DO.Title = '|cffC495DDDragonOverlay|r'
+DO.Title = 'DragonOverlay'
+DO.Description = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite'
 DO.Authors = 'Azilroka    Infinitron'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
 
@@ -35,7 +36,8 @@ DO.Textures = {
 function DO:GetOptions()
 	local Options = {
 		type = 'group',
-		name = DO.Title,
+		name = PA.Color..DO.Title,
+		desc = DO.Description,
 		order = 103,
 		args = {
 			general = {
@@ -227,7 +229,7 @@ function DO:GetOptions()
 		Order = Order + 2
 	end
 
-	PA.AceOptionsPanel.Options.args.DragonOverlay = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.DragonOverlay = Options
 end
 
 function DO:SetOverlay()

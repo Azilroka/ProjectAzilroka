@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local MF = LibStub('AceAddon-3.0'):NewAddon('MovableFrames', 'AceEvent-3.0')
 _G.MovableFrames = MF
 
-MF.Title = '|cFFFFFFFFMovableFrames|r'
+MF.Title = 'MovableFrames'
+MF.Desciption = 'Make Blizzard Frames Movable'
 MF.Authors = 'Azilroka    Simpy'
 
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
@@ -166,7 +167,8 @@ function MF:GetOptions()
 		Options = {
 			order = 209,
 			type = 'group',
-			name = MF.Title,
+			name = PA.Color..MF.Title,
+			desc = MF.Desciption,
 			args = {
 				Header = {
 					order = 0,
@@ -225,7 +227,7 @@ function MF:GetOptions()
 		Index = Index + 1
 	end
 
-	PA.AceOptionsPanel.Options.args.movableframes = Options
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.MovableFrames = Options
 end
 
 function MF:SetupProfile()
