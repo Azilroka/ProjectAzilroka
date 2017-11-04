@@ -38,7 +38,7 @@ PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 PA.Color = '|cFF16C3F2'
-PA.ModuleColor = '|cFFFFFFFF'
+PA.ModuleColor = '|cFFFF8000'
 
 PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
