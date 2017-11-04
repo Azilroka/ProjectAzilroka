@@ -167,7 +167,7 @@ function MF:GetOptions()
 		Options = {
 			order = 209,
 			type = 'group',
-			name = PA.Color..MF.Title,
+			name = PA.ModuleColor..MF.Title,
 			desc = MF.Desciption,
 			args = {
 				Header = {

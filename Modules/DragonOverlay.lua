@@ -36,7 +36,7 @@ DO.Textures = {
 function DO:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.Color..DO.Title,
+		name = PA.ModuleColor..DO.Title,
 		desc = DO.Description,
 		order = 103,
 		args = {

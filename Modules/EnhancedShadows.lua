@@ -35,7 +35,7 @@ function ES:GetOptions()
 	local Options = {
 		type = "group",
 		order = 207,
-		name = PA.Color..ES.Title,
+		name = PA.ModuleColor..ES.Title,
 		desc = ES.Description,
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,

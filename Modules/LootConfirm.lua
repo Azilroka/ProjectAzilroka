@@ -15,7 +15,7 @@ local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRol
 function LC:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.Color..LC.Title,
+		name = PA.ModuleColor..LC.Title,
 		desc = LC.Description,
 		order = 208,
 		args = {

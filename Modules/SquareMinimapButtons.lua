@@ -344,7 +344,7 @@ end
 function SMB:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.Color..SMB.Title,
+		name = PA.ModuleColor..SMB.Title,
 		desc = SMB.Description,
 		order = 211,
 		get = function(info) return SMB.db[info[#info]] end,

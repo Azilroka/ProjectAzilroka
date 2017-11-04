@@ -147,7 +147,7 @@ EFL.ClientColor = {
 function EFL:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.Color..EFL.Title,
+		name = PA.ModuleColor..EFL.Title,
 		desc = EFL.Description,
 		order = 206,
 		args = {
