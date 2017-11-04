@@ -414,9 +414,12 @@ function EFL:BasicUpdateFriends(button)
 		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
 		local realmName, realmID, faction, race, class, zoneName, level, gameText
 		broadcastText = messageText
-		local characterName = BNet_GetValidatedCharacterName(toonName, battleTag, client)
+		local characterName = toonName
 		if presenceName then
 			nameText = presenceName
+			if isOnline then
+				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
+			end
 		else
 			nameText = UNKNOWN
 		end
@@ -446,10 +449,10 @@ function EFL:BasicUpdateFriends(button)
 						infoText = format('%s - %s', zoneName, realmName)
 					end
 				end
-				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db.GameIconPack])
+				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db[faction]])
 			else
 				infoText = gameText
-				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db.GameIconPack])
+				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db[client]])
 			end
 			nameColor = FRIENDS_BNET_NAME_COLOR
 		else
