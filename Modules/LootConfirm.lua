@@ -73,7 +73,7 @@ function LC:GetOptions()
 		ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
 	end
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.LootConfirm = Options
+	PA.Options.args.LootConfirm = Options
 end
 
 function LC:UpdateProfile()

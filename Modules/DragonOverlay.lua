@@ -229,7 +229,7 @@ function DO:GetOptions()
 		Order = Order + 2
 	end
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.DragonOverlay = Options
+	PA.Options.args.DragonOverlay = Options
 end
 
 function DO:SetOverlay()

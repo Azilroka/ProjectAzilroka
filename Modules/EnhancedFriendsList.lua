@@ -328,7 +328,7 @@ function EFL:GetOptions()
 		}
 	end
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.EnhancedFriendsList = Options
+	PA.Options.args.EnhancedFriendsList = Options
 end
 
 local Defaults

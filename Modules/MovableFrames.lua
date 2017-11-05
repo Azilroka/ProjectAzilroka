@@ -227,7 +227,7 @@ function MF:GetOptions()
 		Index = Index + 1
 	end
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.MovableFrames = Options
+	PA.Options.args.MovableFrames = Options
 end
 
 function MF:SetupProfile()

@@ -433,7 +433,7 @@ function SMB:GetOptions()
 		},
 	}
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.SquareMinimapButton = Options
+	PA.Options.args.SquareMinimapButton = Options
 end
 
 function SMB:SetupProfile()

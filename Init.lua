@@ -54,64 +54,62 @@ function PA:ConflictAddOn(AddOns)
 	return false
 end
 
-function PA:GetOptions()
-	local Options = {
-		type = 'group',
-		name = PA.Color..PA.Title,
-		order = 212,
-		args = {
-			header = {
-				order = 1,
-				type = 'header',
-				name = 'Controls AddOns in this package',
-			},
-			general = {
-				order = 2,
-				type = 'group',
-				name = 'AddOns',
-				guiInline = true,
-				get = function(info) return PA.db[info[#info]] end,
-				set = function(info, value) PA.db[info[#info]] = value end,
-				args = {
-					DO = {
-						order = 0,
-						type = 'toggle',
-						name = 'Dragon Overlay',
-					},
-					ES = {
-						order = 1,
-						type = 'toggle',
-						name = 'Enhanced Shadows',
-						disabled = function() return (PA.SLE or PA.NUI) end,
-					},
-					EFL = {
-						order = 2,
-						type = 'toggle',
-						name = 'Enhanced Friends List',
-					},
-					LC = {
-						order = 3,
-						type = 'toggle',
-						name = 'Loot Confirm',
-					},
-					MF = {
-						order = 4,
-						type = 'toggle',
-						name = 'MovableFrames',
-					},
-					SMB = {
-						order = 4,
-						type = 'toggle',
-						name = 'Square Minimap Buttons / Bar',
-					},
+PA.Options = {
+	type = 'group',
+	name = PA.Color..PA.Title,
+	order = 212,
+	args = {
+		header = {
+			order = 1,
+			type = 'header',
+			name = 'Controls AddOns in this package',
+		},
+		general = {
+			order = 2,
+			type = 'group',
+			name = 'AddOns',
+			guiInline = true,
+			get = function(info) return PA.db[info[#info]] end,
+			set = function(info, value) PA.db[info[#info]] = value end,
+			args = {
+				DO = {
+					order = 0,
+					type = 'toggle',
+					name = 'Dragon Overlay',
+				},
+				ES = {
+					order = 1,
+					type = 'toggle',
+					name = 'Enhanced Shadows',
+					disabled = function() return (PA.SLE or PA.NUI) end,
+				},
+				EFL = {
+					order = 2,
+					type = 'toggle',
+					name = 'Enhanced Friends List',
+				},
+				LC = {
+					order = 3,
+					type = 'toggle',
+					name = 'Loot Confirm',
+				},
+				MF = {
+					order = 4,
+					type = 'toggle',
+					name = 'MovableFrames',
+				},
+				SMB = {
+					order = 4,
+					type = 'toggle',
+					name = 'Square Minimap Buttons / Bar',
 				},
 			},
 		},
-	}
+	},
+}
 
-	if PA.EP then
-		PA.AceOptionsPanel.Options.args.ProjectAzilroka = Options
-	end
+function PA:GetOptions()
+	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
 end
 
 local Defaults

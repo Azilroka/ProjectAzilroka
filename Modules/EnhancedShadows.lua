@@ -62,7 +62,7 @@ function ES:GetOptions()
 		},
 	}
 
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka.args.EnhancedShadows = Options
+	PA.Options.args.EnhancedShadows = Options
 end
 
 function ES:UpdateShadows()
