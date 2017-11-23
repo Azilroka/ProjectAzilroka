@@ -10,4 +10,5 @@ Libs\Load_Libs.xml
 Init.lua
 
 LibElvUIPlugin-1.0.lua
+Media\Media.lua
 Modules\Load_Modules.xml

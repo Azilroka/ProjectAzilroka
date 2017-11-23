@@ -8,7 +8,7 @@ MF.Authors = 'Azilroka    Simpy'
 
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
 local _G = _G
-local IsAddOnLoaded = IsAddOnLoaded
+local IsAddOnLoaded, C_Timer = IsAddOnLoaded, C_Timer
 
 local Frames = {
 	'AddonList',
@@ -103,9 +103,10 @@ local RegisteredMovers = {}
 
 local function LoadPosition(self)
 	if self.IsMoving == true then return end
-	if MF.db[self:GetName()]['Permanent'] and MF.db[self:GetName()]['Points'] then
+	local Name = self:GetName()
+	if MF.db[Name] and MF.db[Name]['Permanent'] and MF.db[Name]['Points'] then
 		self:ClearAllPoints()
-		self:SetPoint(unpack(MF.db[self:GetName()]['Points']))
+		self:SetPoint(unpack(MF.db[Name]['Points']))
 	end
 end
 
@@ -117,14 +118,15 @@ end
 local function OnDragStop(self)
 	self:StopMovingOrSizing()
 	self.IsMoving = false
-	if MF.db[self:GetName()]['Permanent'] then
+	local Name = self:GetName()
+	if MF.db[Name] and MF.db[Name]['Permanent'] then
 		local a, b, c, d, e = self:GetPoint()
 		b = self:GetParent():GetName() or UIParent
-		if self:GetName() == 'QuestFrame' or self:GetName() == 'GossipFrame' then
+		if Name == 'QuestFrame' or Name == 'GossipFrame' then
 			MF.db['GossipFrame'].Points = {a, b, c, d, e}
 			MF.db['QuestFrame'].Points = {a, b, c, d, e}
 		else
-			MF.db[self:GetName()].Points = {a, b, c, d, e}
+			MF.db[Name].Points = {a, b, c, d, e}
 		end
 	else
 		self:SetUserPlaced(false)
