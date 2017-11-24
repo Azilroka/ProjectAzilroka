@@ -68,6 +68,7 @@ LSM:Register('font', 'KGSmallTownSouthernGirl', Path..[[Fonts\KGSmallTownSouther
 LSM:Register('font', 'Oswald Bold', Path..[[Fonts\Oswald-Bold.ttf]])
 LSM:Register('font', 'Oswald Light', Path..[[Fonts\Oswald-Light.ttf]])
 LSM:Register('font', 'Oswald Regular', Path..[[Fonts\Oswald-Regular.ttf]])
+LSM:Register('font', 'PT Sans Narrow', Path..[[Fonts\PT_Sans_Narrow.ttf]])
 LSM:Register('font', 'PT Sans Narrow Bold', Path..[[Fonts\PTSansNarrow-Bold.ttf]])
 LSM:Register('font', 'Reprise Title', Path..[[Fonts\Reprise Title.ttf]])
 LSM:Register('font', 'Saarland', Path..[[Fonts\Saarland.ttf]])

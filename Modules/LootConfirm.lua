@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local LC = LibStub('AceAddon-3.0'):NewAddon('LootConfirm', 'AceEvent-3.0')
+local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 _G.LootConfirm = LC
 
 LC.Title = 'Loot Confirm'
@@ -135,6 +135,7 @@ end
 
 function LC:Initialize()
 	self:UpdateProfile()
+	self:GetOptions()
 
 	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
 	UIParent:UnregisterEvent('CONFIRM_DISENCHANT_ROLL')

@@ -1,7 +1,7 @@
 ﻿local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-local EC = LibStub('AceAddon-3.0'):NewAddon("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
+local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.Enhanced_Config = EC
 
 EC.Title = "|cff1784d1Enhanced Config|r"

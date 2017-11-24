@@ -54,6 +54,20 @@ function PA:ConflictAddOn(AddOns)
 	return false
 end
 
+function PA:PairsByKeys(t, f)
+	local a = {}
+	for n in pairs(t) do tinsert(a, n) end
+	sort(a, f)
+	local i = 0
+	local iter = function()
+		i = i + 1
+		if a[i] == nil then return nil
+			else return a[i], t[a[i]]
+		end
+	end
+	return iter
+end
+
 PA.Options = {
 	type = 'group',
 	name = PA.Color..PA.Title,
@@ -142,33 +156,8 @@ function PA:ADDON_LOADED(event, addon)
 		self.EP = LibStub('LibElvUIPlugin-1.0', true)
 		self.AceOptionsPanel = PA.ElvUI and ElvUI[1] or Enhanced_Config
 		self:UpdateProfile()
+		self:UnregisterEvent(event)
 	end
-	if addon == 'ElvUI_Config' then
-		self:LoadConfig()
-	end
-end
-
-function PA:LoadConfig()
-	if not (self.SLE or self.NUI) and self.db['ES'] then
-		_G.EnhancedShadows:GetOptions()
-	end
-	if self.db['EFL'] then
-		_G.EnhancedFriendsList:GetOptions()
-	end
-	if self.db['LC'] then
-		_G.LootConfirm:GetOptions()
-	end
-	if self.db['MF'] then
-		_G.MovableFrames:GetOptions()
-	end
-	if self.db['SMB'] and not self.SLE then
-		_G.SquareMinimapButtons:GetOptions()
-	end
-	if self.db['DO'] then
-		_G.DragonOverlay:GetOptions()
-	end
-	self:UnregisterEvent("ADDON_LOADED")
-	self:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end
 
 function PA:PLAYER_LOGIN()
@@ -193,9 +182,8 @@ function PA:PLAYER_LOGIN()
 	if self.db['DO'] then
 		_G.DragonOverlay:Initialize()
 	end
-
-	if not self.ElvUI then
-		self:RegisterEvent('PLAYER_ENTERING_WORLD', 'LoadConfig')
+	if self.Tukui and GetAddOnEnableState(self.MyName, 'Tukui_Config') > 0 then
+		self:TukuiOptions()
 	end
 end
 

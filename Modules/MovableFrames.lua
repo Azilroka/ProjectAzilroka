@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local MF = LibStub('AceAddon-3.0'):NewAddon('MovableFrames', 'AceEvent-3.0')
+local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0')
 _G.MovableFrames = MF
 
 MF.Title = 'MovableFrames'
@@ -268,6 +268,7 @@ function MF:Initialize()
 	end
 
 	self:SetupProfile()
+	self:GetOptions()
 
 	for _, Frame in pairs(Frames) do
 		if _G[Frame] then

@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local SMB = LibStub('AceAddon-3.0'):NewAddon('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
+local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.SquareMinimapButtons = SMB
 
 SMB.Title = 'Square Minimap Buttons'
@@ -458,6 +458,7 @@ end
 
 function SMB:Initialize()
 	self:SetupProfile()
+	self:GetOptions()
 
 	self.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
 	self.Bar:Hide()

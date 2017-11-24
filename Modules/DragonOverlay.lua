@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 
-local DO = LibStub('AceAddon-3.0'):NewAddon('DragonOverlay', 'AceEvent-3.0')
+local DO = PA:NewModule('DragonOverlay', 'AceEvent-3.0')
 _G.DragonOverlay = DO
 
 local _G = _G
@@ -317,4 +317,6 @@ function DO:Initialize()
 
 	self:RegisterEvent('PLAYER_ENTERING_WORLD', 'SetupProfile')
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', 'SetOverlay')
+
+	self:GetOptions()
 end

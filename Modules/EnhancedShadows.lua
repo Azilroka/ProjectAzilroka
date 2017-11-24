@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 
 if (PA.SLE or PA.NUI) then return end
 
-local ES = LibStub('AceAddon-3.0'):NewAddon('EnhancedShadows', 'AceEvent-3.0')
+local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0')
 
 _G.EnhancedShadows = ES
 
@@ -107,6 +107,7 @@ function ES:Initialize()
 	self.mult = 768/select(2, GetPhysicalScreenSize())/UIParent:GetScale()
 
 	self:UpdateProfile()
+	self:GetOptions()
 
 	self:UpdateShadows()
 end

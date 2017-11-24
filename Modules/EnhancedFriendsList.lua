@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local EFL = LibStub('AceAddon-3.0'):NewAddon('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
+local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.EnhancedFriendsList = EFL
 
 EFL.Title = 'Enhanced Friends List'
@@ -164,7 +164,7 @@ function EFL:GetOptions()
 						order = 1,
 						name = 'Name Font',
 						desc = 'The font that the RealID / Character Name / Level uses.',
-						values = AceGUIWidgetLSMlists.font,
+						values = PA.LSM:HashTable('font'),
 					},
 					NameFontSize = {
 						order = 2,
@@ -191,7 +191,7 @@ function EFL:GetOptions()
 						order = 4,
 						name = 'Info Font',
 						desc = 'The font that the Zone / Server uses.',
-						values = AceGUIWidgetLSMlists.font,
+						values = PA.LSM:HashTable('font'),
 					},
 					InfoFontSize = {
 						order = 5,
@@ -483,5 +483,7 @@ end
 
 function EFL:Initialize()
 	self:SetupProfile()
+	self:GetOptions()
+
 	hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button) EFL:BasicUpdateFriends(button) end)
 end
