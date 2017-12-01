@@ -260,56 +260,55 @@ function DO:SetOverlay()
 	self.frame:SetFrameLevel(self.db['Level'])
 end
 
-local Defaults
 function DO:SetupProfile()
-	if not Defaults then
-		Defaults = {
-			profile = {
-				['Strata'] = '2-MEDIUM',
-				['Level'] = 12,
-				['worldboss'] = 'Chromatic',
-				['elite'] = 'HeavenlyGolden',
-				['rare'] = 'Onyx',
-				['rareelite'] = 'HeavenlyOnyx',
-				['ClassIcon'] = false,
-				['ClassIconPoints'] = {
-					['point'] = 'CENTER',
-					['relativeTo'] = 'oUF_Target',
-					['relativePoint'] = 'TOP',
-					['xOffset'] = 0,
-					['yOffset'] = 5,
-				},
-				['DragonPoints'] = {
-					['point'] = 'CENTER',
-					['relativeTo'] = 'oUF_Target',
-					['relativePoint'] = 'TOP',
-					['xOffset'] = 0,
-					['yOffset'] = 5,
-				},
-				['FlipDragon'] = false,
-			},
-		}
-		for _, Option in pairs({'ClassIconPoints', 'DragonPoints' }) do
-			if PA.Tukui then
-				Defaults.profile[Option].relativeTo = 'oUF_TukuiTarget'
-			end
-			if PA.ElvUI then
-				Defaults.profile[Option].relativeTo = 'ElvUF_Target'
-			end
-			if PA.NUI then
-				Defaults.profile[Option].relativeTo = 'NenaUF_TargetVerticalUnitFrame'
-			end
-		end
-	end
-
-	self.data = LibStub('AceDB-3.0'):New('DragonOverlayDB', Defaults)
-
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
 	self.db = self.data.profile
 end
 
 function DO:Initialize()
+	local Defaults = {
+		profile = {
+			['Strata'] = '2-MEDIUM',
+			['Level'] = 12,
+			['worldboss'] = 'Chromatic',
+			['elite'] = 'HeavenlyGolden',
+			['rare'] = 'Onyx',
+			['rareelite'] = 'HeavenlyOnyx',
+			['ClassIcon'] = false,
+			['ClassIconPoints'] = {
+				['point'] = 'CENTER',
+				['relativeTo'] = 'oUF_Target',
+				['relativePoint'] = 'TOP',
+				['xOffset'] = 0,
+				['yOffset'] = 5,
+			},
+			['DragonPoints'] = {
+				['point'] = 'CENTER',
+				['relativeTo'] = 'oUF_Target',
+				['relativePoint'] = 'TOP',
+				['xOffset'] = 0,
+				['yOffset'] = 5,
+			},
+			['FlipDragon'] = false,
+		},
+	}
+
+	for _, Option in pairs({'ClassIconPoints', 'DragonPoints' }) do
+		if PA.Tukui then
+			Defaults.profile[Option].relativeTo = 'oUF_TukuiTarget'
+		end
+		if PA.ElvUI then
+			Defaults.profile[Option].relativeTo = 'ElvUF_Target'
+		end
+		if PA.NUI then
+			Defaults.profile[Option].relativeTo = 'NenaUF_TargetVerticalUnitFrame'
+		end
+	end
+
+	self.data = PA.ADB:New('DragonOverlayDB', Defaults)
+
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)
 	frame.Texture = frame:CreateTexture(nil, 'ARTWORK')
 	frame.Texture:SetAllPoints()

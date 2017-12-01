@@ -437,7 +437,11 @@ function SMB:GetOptions()
 end
 
 function SMB:SetupProfile()
-	self.data = LibStub('AceDB-3.0'):New('SquareMinimapButtonsDB', {
+	self.db = self.data.profile
+end
+
+function SMB:Initialize()
+	self.data = PA.ADB:New('SquareMinimapButtonsDB', {
 		profile = {
 			['BarMouseOver'] = false,
 			['BarEnabled'] = false,
@@ -453,10 +457,7 @@ function SMB:SetupProfile()
 	})
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
 
-function SMB:Initialize()
 	self:SetupProfile()
 	self:GetOptions()
 

@@ -17,17 +17,7 @@ local ClassColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
 
 ES.RegisteredShadows = {}
 
-function ES:UpdateProfile()
-	self.data = LibStub("AceDB-3.0"):New("EnhancedShadowsDB", {
-		profile = {
-			['Color'] = { 0, 0, 0, 1 },
-			['ColorByClass'] = false,
-			['Size'] = 3,
-		},
-	})
-
-	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateProfile")
-	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateProfile")
+function ES:SetupProfile()
 	self.db = self.data.profile
 end
 
@@ -104,6 +94,16 @@ function ES:UpdateShadow(shadow)
 end
 
 function ES:Initialize()
+	self.data = PA.ADB:New("EnhancedShadowsDB", {
+		profile = {
+			['Color'] = { 0, 0, 0, 1 },
+			['ColorByClass'] = false,
+			['Size'] = 3,
+		},
+	})
+
+	self.data.RegisterCallback(self, "OnProfileChanged", "SetupProfile")
+	self.data.RegisterCallback(self, "OnProfileCopied", "SetupProfile")
 	self.mult = 768/select(2, GetPhysicalScreenSize())/UIParent:GetScale()
 
 	self:UpdateProfile()

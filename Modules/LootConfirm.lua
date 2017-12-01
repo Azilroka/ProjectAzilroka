@@ -68,31 +68,10 @@ function LC:GetOptions()
 		},
 	}
 
-	if PA.ElvUI then
-		ElvUI[1].db.general.autoRoll = false
-		ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
-	end
-
 	PA.Options.args.LootConfirm = Options
 end
 
-function LC:UpdateProfile()
-	self.data = LibStub("AceDB-3.0"):New("EnhancedShadowsDB", {
-		profile = {
-			['Confirm'] = true,
-			['Greed'] = false,
-			['Disenchant'] = false,
-			['ByLevel'] = false,
-			['Level'] = MAX_PLAYER_LEVEL,
-			['AutoGreed'] = {
-				[43102] = true,
-				[52078] = true,
-			}
-		},
-	})
-
-	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateProfile")
-	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateProfile")
+function LC:SetupProfile()
 	self.db = self.data.profile
 end
 
@@ -134,7 +113,24 @@ function LC:START_LOOT_ROLL(event, id)
 end
 
 function LC:Initialize()
-	self:UpdateProfile()
+	self.data = PA.ADB:New("EnhancedShadowsDB", {
+		profile = {
+			['Confirm'] = true,
+			['Greed'] = false,
+			['Disenchant'] = false,
+			['ByLevel'] = false,
+			['Level'] = MAX_PLAYER_LEVEL,
+			['AutoGreed'] = {
+				[43102] = true,
+				[52078] = true,
+			}
+		},
+	})
+
+	self.data.RegisterCallback(self, "OnProfileChanged", "SetupProfile")
+	self.data.RegisterCallback(self, "OnProfileCopied", "SetupProfile")
+
+	self:SetupProfile()
 	self:GetOptions()
 
 	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')

@@ -331,46 +331,7 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList = Options
 end
 
-local Defaults
 function EFL:SetupProfile()
-	if not Defaults then
-		Defaults = {
-			profile = {
-				['NameFont'] = 'Arial Narrow',
-				['NameFontSize'] = 12,
-				['NameFontFlag'] = 'OUTLINE',
-				['InfoFont'] = 'Arial Narrow',
-				['InfoFontSize'] = 12,
-				['InfoFontFlag'] = 'OUTLINE',
-				['StatusIconPack'] = 'Default',
-				['Alliance'] = 'Default',
-				['Horde'] = 'Default',
-				['Neutral'] = 'Default',
-				['D3'] = 'Default',
-				['WTCG'] = 'Default',
-				['S1'] = 'Default',
-				['S2'] = 'Default',
-				['App'] = 'Default',
-				['BSAp'] = 'Default',
-				['Hero'] = 'Default',
-				['Pro'] = 'Default',
-				['DST2'] = 'Default',
-			}
-		}
-		if self.ElvUI then
-			Defaults.profile['NameFont'] = ElvUI[1].db.general.font
-			Defaults.profile['InfoFont'] = ElvUI[1].db.general.font
-		elseif self.Tukui then
-			Defaults.profile['NameFont'] = 'Tukui Pixel'
-			Defaults.profile['InfoFont'] = 'Tukui Pixel'
-			Defaults.profile['NameFontFlag'] = 'MONOCHROMEOUTLINE'
-			Defaults.profile['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
-		end
-	end
-
-	self.data = LibStub('AceDB-3.0'):New('EnhancedFriendsListDB', Defaults)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
 	self.db = self.data.profile
 end
 
@@ -482,6 +443,44 @@ function EFL:BasicUpdateFriends(button)
 end
 
 function EFL:Initialize()
+	local Defaults = {
+		profile = {
+			['NameFont'] = 'Arial Narrow',
+			['NameFontSize'] = 12,
+			['NameFontFlag'] = 'OUTLINE',
+			['InfoFont'] = 'Arial Narrow',
+			['InfoFontSize'] = 12,
+			['InfoFontFlag'] = 'OUTLINE',
+			['StatusIconPack'] = 'Default',
+			['Alliance'] = 'Default',
+			['Horde'] = 'Default',
+			['Neutral'] = 'Default',
+			['D3'] = 'Default',
+			['WTCG'] = 'Default',
+			['S1'] = 'Default',
+			['S2'] = 'Default',
+			['App'] = 'Default',
+			['BSAp'] = 'Default',
+			['Hero'] = 'Default',
+			['Pro'] = 'Default',
+			['DST2'] = 'Default',
+		}
+	}
+
+	if self.ElvUI then
+		Defaults.profile['NameFont'] = ElvUI[1].db.general.font
+		Defaults.profile['InfoFont'] = ElvUI[1].db.general.font
+	elseif self.Tukui then
+		Defaults.profile['NameFont'] = 'Tukui Pixel'
+		Defaults.profile['InfoFont'] = 'Tukui Pixel'
+		Defaults.profile['NameFontFlag'] = 'MONOCHROMEOUTLINE'
+		Defaults.profile['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
+	end
+
+	self.data = PA.ADB:New('EnhancedFriendsListDB', Defaults)
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
 	self:SetupProfile()
 	self:GetOptions()
 

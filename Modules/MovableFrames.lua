@@ -99,8 +99,6 @@ local AddOnFrames = {
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
 }
 
-local RegisteredMovers = {}
-
 local function LoadPosition(self)
 	if self.IsMoving == true then return end
 	local Name = self:GetName()
@@ -159,8 +157,6 @@ function MF:MakeMovable(Frame)
 			Frame:SetPoint(unpack(MF.db[Name]['Points']))
 		end
 	end)
-
-	tinsert(RegisteredMovers, Name)
 end
 
 local Defaults, Options
@@ -206,10 +202,10 @@ function MF:GetOptions()
 		}
 	end
 
-	sort(RegisteredMovers)
+	sort(self.AllFrames)
 
 	local Index = 1
-	for _, Name in pairs(RegisteredMovers) do
+	for _, Name in pairs(self.AllFrames) do
 		Options.args.permanent.args[Name] = {
 			order = Index,
 			type = 'toggle',
@@ -233,42 +229,47 @@ function MF:GetOptions()
 end
 
 function MF:SetupProfile()
-	if not Defaults then
-		Defaults = {
-			profile = {},
-		}
-	end
-
-	for _, Frame in pairs(RegisteredMovers) do
-		if not Defaults.profile[Frame] then
-			Defaults.profile[Frame] = { ['Permanent'] = false, ['Points'] = { _G[Frame]:GetPoint() } }
-		end
-	end
-
-	self.data = LibStub('AceDB-3.0'):New('MovableFramesDB', Defaults)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
 	self.db = self.data.profile
 end
 
-function MF:ADDON_LOADED(event, addon)
+function MF:ADDON_LOADED(_, addon)
 	if AddOnFrames[addon] then
 		for _, Frame in pairs(AddOnFrames[addon]) do
 			self:MakeMovable(_G[Frame])
 		end
-		self:SetupProfile()
-		self:GetOptions()
 	end
 end
 
 function MF:Initialize()
-	if IsAddOnLoaded('Tukui') then
+	if PA.Tukui then
 		tinsert(Frames, 'LossOfControlFrame')
 		sort(Frames)
 	end
 
+	self.AllFrames = CopyTable(Frames)
+
+	for _, Table in pairs(AddOnFrames) do
+		for _, Frame in pairs(Table) do
+			tinsert(self.AllFrames, Frame)
+		end
+	end
+
+	Defaults = { profile = {} }
+
+	for _, Frame in pairs(self.AllFrames) do
+		if not Defaults.profile[Frame] then
+			Defaults.profile[Frame] = { ['Permanent'] = false }
+		end
+	end
+
+	self.data = PA.ADB:New('MovableFramesDB', Defaults)
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
 	self:SetupProfile()
 	self:GetOptions()
+
+	self.AllFrames = nil
 
 	for _, Frame in pairs(Frames) do
 		if _G[Frame] then

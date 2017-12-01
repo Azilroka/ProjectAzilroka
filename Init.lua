@@ -20,6 +20,7 @@ PA.LDB = LibStub('LibDataBroker-1.1')
 PA.LAB = LibStub('LibActionButton-1.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
 PA.ACD = LibStub('AceConfigDialog-3.0')
+PA.ADB = LibStub('AceDB-3.0')
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
@@ -126,64 +127,68 @@ function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
 end
 
-local Defaults
 function PA:UpdateProfile()
-	if not Defaults then
-		Defaults = {
-			profile = {
-				['DO'] = true,
-				['ES'] = true,
-				['EFL'] = true,
-				['LC'] = true,
-				['MF'] = true,
-				['SMB'] = true,
-			},
-		}
-		if (PA.SLE or PA.NUI) then
-			Defaults.profile.ES = false
-		end
+	local Defaults = {
+		profile = {
+			['DO'] = true,
+			['ES'] = true,
+			['EFL'] = true,
+			['LC'] = true,
+			['MF'] = true,
+			['SMB'] = true,
+		},
+	}
+
+	if (PA.SLE or PA.NUI) then
+		Defaults.profile.ES = false
 	end
 
-	self.data = LibStub("AceDB-3.0"):New("ProjectAzilrokaDB", Defaults)
-
-	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateProfile")
-	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateProfile")
-	self.db = self.data.profile
+	PA.data = PA.ADB:New("ProjectAzilrokaDB", Defaults)
+	PA.db = PA.data.profile
 end
 
 function PA:ADDON_LOADED(event, addon)
+	if addon == 'ElvUI_Config' then
+		if PA.db['LC'] then
+			ElvUI[1].db.general.autoRoll = false
+			ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
+		end
+		PA:UnregisterEvent(event)
+	end
 	if addon == AddOnName then
-		self.EP = LibStub('LibElvUIPlugin-1.0', true)
-		self.AceOptionsPanel = PA.ElvUI and ElvUI[1] or Enhanced_Config
-		self:UpdateProfile()
-		self:UnregisterEvent(event)
+		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
+		PA.AceOptionsPanel = PA.ElvUI and ElvUI[1] or Enhanced_Config
+		PA:UpdateProfile()
+		if not PA.ElvUI then
+			PA:UnregisterEvent(event)
+		end
 	end
 end
 
 function PA:PLAYER_LOGIN()
-	if self.EP then
-		self.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
+	if PA.EP then
+		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
-	if not (self.SLE or self.NUI) and self.db['ES'] then
+	if not (PA.SLE or PA.NUI) and PA.db['ES'] then
 		_G.EnhancedShadows:Initialize()
 	end
-	if self.db['EFL'] then
+	if PA.db['EFL'] then
 		_G.EnhancedFriendsList:Initialize()
 	end
-	if self.db['LC'] then
+	if PA.db['LC'] then
 		_G.LootConfirm:Initialize()
 	end
-	if self.db['MF'] then
+	if PA.db['MF'] then
 		_G.MovableFrames:Initialize()
 	end
-	if self.db['SMB'] and not self.SLE then
+	if PA.db['SMB'] and not PA.SLE then
 		_G.SquareMinimapButtons:Initialize()
 	end
-	if self.db['DO'] then
+	if PA.db['DO'] then
 		_G.DragonOverlay:Initialize()
 	end
-	if self.Tukui and GetAddOnEnableState(self.MyName, 'Tukui_Config') > 0 then
-		self:TukuiOptions()
+	if PA.Tukui and GetAddOnEnableState(PA.MyName, 'Tukui_Config') > 0 then
+		PA:TukuiOptions()
 	end
 end
 

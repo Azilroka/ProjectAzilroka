@@ -3,7 +3,7 @@
 ## Author: Azilroka
 ## Version: 1.09
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
-## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB
+## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB, stAddonManagerProfilesDB
 
 Libs\Load_Libs.xml
 
