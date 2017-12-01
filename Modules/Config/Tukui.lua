@@ -106,7 +106,6 @@ function PA:TukuiOptions()
 						end
 					elseif strfind(strlower(Option), "texture") then
 						Options.args.main.args[Group].args[Option].values = tInvert(Tukui[1].TextureTable)
-						Options.args.main.args[Group].args[Option].dialogControl = "LSM30_Statusbar"
 						Options.args.main.args[Group].args[Option].get = function(info)
 							local Texture = SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]
 							return Tukui[1].GetTexture(Texture)
