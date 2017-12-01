@@ -106,7 +106,7 @@ function ES:Initialize()
 	self.data.RegisterCallback(self, "OnProfileCopied", "SetupProfile")
 	self.mult = 768/select(2, GetPhysicalScreenSize())/UIParent:GetScale()
 
-	self:UpdateProfile()
+	self:SetupProfile()
 	self:GetOptions()
 
 	self:UpdateShadows()
