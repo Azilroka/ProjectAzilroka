@@ -19,11 +19,6 @@ function LC:GetOptions()
 		desc = LC.Description,
 		order = 208,
 		args = {
-			header = {
-				order = 1,
-				type = 'header',
-				name = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)',
-			},
 			general = {
 				order = 2,
 				type = 'group',
@@ -112,6 +107,13 @@ function LC:START_LOOT_ROLL(event, id)
 	RollOnLoot(id, self.db['Disenchant'] and Disenchant and LOOT_ROLL_TYPE_DISENCHANT or LOOT_ROLL_TYPE_GREED)
 end
 
+function LC:ADDON_LOADED(event, addon)
+	if addon == 'ElvUI_Config' then
+		ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
+		self:UnregisterEvent(event)
+	end
+end
+
 function LC:Initialize()
 	self.data = PA.ADB:New("EnhancedShadowsDB", {
 		profile = {
@@ -142,4 +144,9 @@ function LC:Initialize()
 	self:RegisterEvent('LOOT_OPENED', 'HandleEvent')
 	self:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
 	--self:RegisterEvent('START_LOOT_ROLL')
+
+	if PA.ElvUI then
+		ElvUI[1].db.general.autoRoll = false
+		self:RegisterEvent("ADDON_LOADED")
+	end
 end

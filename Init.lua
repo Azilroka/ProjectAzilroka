@@ -15,12 +15,13 @@ local UIParent = UIParent
 -- Libraries
 PA.AC = LibStub('AceConfig-3.0')
 PA.GUI = LibStub('AceGUI-3.0')
-PA.LSM = LibStub('LibSharedMedia-3.0')
-PA.LDB = LibStub('LibDataBroker-1.1')
-PA.LAB = LibStub('LibActionButton-1.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
 PA.ACD = LibStub('AceConfigDialog-3.0')
 PA.ADB = LibStub('AceDB-3.0')
+
+PA.LSM = LibStub('LibSharedMedia-3.0')
+PA.LDB = LibStub('LibDataBroker-1.1')
+PA.LAB = LibStub('LibActionButton-1.0')
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
@@ -45,6 +46,8 @@ PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
 PA.NUI = GetAddOnEnableState(PA.MyName, 'ElvUI_NenaUI') > 0
 PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
+
+local pairs, sort, tinsert = pairs, sort, tinsert
 
 function PA:ConflictAddOn(AddOns)
 	for AddOn in pairs(AddOns) do
@@ -148,20 +151,11 @@ function PA:UpdateProfile()
 end
 
 function PA:ADDON_LOADED(event, addon)
-	if addon == 'ElvUI_Config' then
-		if PA.db['LC'] then
-			ElvUI[1].db.general.autoRoll = false
-			ElvUI[1].Options.args.general.args.general.args.autoRoll.disabled = true
-		end
-		PA:UnregisterEvent(event)
-	end
 	if addon == AddOnName then
 		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 		PA.AceOptionsPanel = PA.ElvUI and ElvUI[1] or Enhanced_Config
 		PA:UpdateProfile()
-		if not PA.ElvUI then
-			PA:UnregisterEvent(event)
-		end
+		PA:UnregisterEvent(event)
 	end
 end
 
