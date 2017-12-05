@@ -11,9 +11,9 @@ local pairs, tonumber = pairs, tonumber
 local format, strsplit, gsub = format, strsplit, gsub
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local IsInInstance, IsInGroup, IsInRaid = IsInInstance, IsInGroup, IsInRaid
+local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 local GetAddOnMetadata = GetAddOnMetadata
-local IsAddOnLoaded = IsAddOnLoaded
+local C_Timer = C_Timer
 local RegisterAddonMessagePrefix = RegisterAddonMessagePrefix
 local SendAddonMessage = SendAddonMessage
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
@@ -137,8 +137,8 @@ end
 
 function lib:VersionCheck(event, prefix, message, channel, sender)
 	if (event == "CHAT_MSG_ADDON") and sender and message and (message ~= "") and (prefix == lib.prefix) then
-		local myRealm = gsub(GetRealmName(),'[%s%-]','')
-		local myName = UnitName('player')..'-'..myRealm
+		local myRealm = gsub(PA.MyRealm,'[%s%-]','')
+		local myName = PA.MyName..'-'..myRealm
 		if sender == myName then return end
 		if not self["pluginRecievedOutOfDateMessage"] then
 			for _, p in pairs({strsplit(";",message)}) do
@@ -188,16 +188,16 @@ function lib:SendPluginVersionCheck(message)
 	local plist = {strsplit(";",message)}
 	local m = ""
 	local delay = 1
+	local InGroup = IsInRaid() or IsInGroup() or false
 	for _, p in pairs(plist) do
 		if not p:match("^%s-$") then
 			if(#(m .. p .. ";") < 230) then
 				m = m .. p .. ";"
 			else
-				local _, instanceType = IsInInstance()
-				if IsInRaid() then
-					C_Timer.After(delay,SendAddonMessage(lib.prefix, m, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID"))
-				elseif IsInGroup() then
-					C_Timer.After(delay,SendAddonMessage(lib.prefix, m, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
+				if InGroup then
+					C_Timer.After(delay, function()
+						SendAddonMessage(lib.prefix, m, (IsInRaid() and (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID") or (IsInGroup() and (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
+					end)
 				end
 				m = p .. ";"
 				delay = delay + 1
@@ -206,11 +206,10 @@ function lib:SendPluginVersionCheck(message)
 	end
 	if m == "" then return end
 	-- Send the last message
-	local _, instanceType = IsInInstance()
-	if IsInRaid() then
-		C_Timer.After(delay+1,SendAddonMessage(lib.prefix, m, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID"))
-	elseif IsInGroup() then
-		C_Timer.After(delay+1,SendAddonMessage(lib.prefix, m, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
+	if InGroup then
+		C_Timer.After(delay + 1, function()
+			SendAddonMessage(lib.prefix, m, (IsInRaid() and (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID") or (IsInGroup() and (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
+		end)
 	end
 end
 
