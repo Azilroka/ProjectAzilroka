@@ -52,7 +52,6 @@ local PartialIgnores = {
 local AcceptedFrames = {
 	'BagSync_MinimapButton',
 	'VendomaticButtonFrame',
-	'MiniMapMailFrame',
 }
 
 local AddButtonsToBar = {
@@ -64,120 +63,50 @@ function SMB:SkinIcon(Icon)
 end
 
 function SMB:HandleBlizzardButtons()
-	if self.opt["hideGarrison"] and GarrisonLandingPageMinimapButton then
-		if GarrisonLandingPageMinimapButton.UnregisterAllEvents then
-			self.hidden = CreateFrame("Frame", "MinimapButtonHidden", UIParent)
-			GarrisonLandingPageMinimapButton:UnregisterAllEvents()
-			GarrisonLandingPageMinimapButton:SetParent(self.hidden)
-		else
-			GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.Hide
-		end
-		GarrisonLandingPageMinimapButton.IsShown = function() return true end
+	if not self.db['BarEnabled'] then return end
+
+	if self.db['HideGarrison'] then
+		GarrisonLandingPageMinimapButton:UnregisterAllEvents()
+		GarrisonLandingPageMinimapButton:SetParent(self.Hider)
 		GarrisonLandingPageMinimapButton:Hide()
-	end
-
-	if self.opt["moveMail"] and not self.mailMoved then
-		--		MiniMapMailFrame
-		--		MiniMapMailBorder
-		--		MiniMapMailIcon
-		self.mailMoved = true
-		MiniMapMailBorder:Hide()
-		MiniMapMailIcon:Hide()
-		MiniMapMailFrame:SetParent(self.box)
-		MiniMapMailFrame.Icon = MiniMapMailFrame:CreateTexture(nil, 'ARTWORK')
-		MiniMapMailFrame.Icon:SetPoint('CENTER')
-		MiniMapMailFrame.Icon:SetSize(self.iconSize, self.iconSize)
-		MiniMapMailFrame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
-		M:TexCoord(MiniMapMailFrame.Icon)
-
-		MiniMapMailFrame:HookScript('OnShow', function(self)
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-		MiniMapMailFrame:HookScript('OnHide', function(self)
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-
-		table.insert(self.buttons, MiniMapMailFrame)
-	end
-
-	if self.opt["moveGarrison"] and not self.garrisonMoved then
-		--GarrisonLandingPageMinimapButton
-		self.garrisonMoved = true
-		GarrisonLandingPageMinimapButton:SetParent(self.box)
+		GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.Hide
+		GarrisonLandingPageMinimapButton.IsShown = function() return true end
+	elseif self.db["MoveGarrison"] and not tContains(self.buttons, GarrisonLandingPageMinimapButton) then
 		GarrisonLandingPageMinimapButton:SetScale(1)
 		GarrisonLandingPageMinimapButton:ClearAllPoints()
 		GarrisonLandingPageMinimapButton:SetAllPoints()
 
-		GarrisonLandingPageMinimapButton:HookScript('OnShow', function(self)
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-		GarrisonLandingPageMinimapButton:HookScript('OnHide', function(self)
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-
-		table.insert(self.buttons, GarrisonLandingPageMinimapButton)
+		tinsert(self.buttons, GarrisonLandingPageMinimapButton)
 	end
 
+	if self.db["MoveMail"] and not tContains(self.buttons, MiniMapMailFrame) then
+		MiniMapMailBorder:Hide()
+		MiniMapMailIcon:Hide()
+		MiniMapMailFrame.Icon = MiniMapMailFrame:CreateTexture(nil, 'ARTWORK')
+		MiniMapMailFrame.Icon:SetPoint('CENTER')
+		MiniMapMailFrame.Icon:SetSize(self.db['IconSize'], self.db['IconSize'])
+		MiniMapMailFrame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
 
-	if self.opt["moveTracker"] and not self.trackerMoved then
-		--MiniMapTrackingButton
-		--MiniMapTracking
-		self.trackerMoved = true
+		tinsert(self.buttons, MiniMapMailFrame)
+	end
+
+	if self.db["MoveTracker"] and not tContains(self.buttons, MiniMapTracking) then
 		MiniMapTrackingIcon:Hide()
 		MiniMapTrackingBackground:Hide()
 		MiniMapTrackingIconOverlay:Hide()
-		MiniMapTrackingIconOverlay.Show = function() self:Hide() end
-		MiniMapTracking:SetParent(self.box)
+		MiniMapTrackingIconOverlay.Show = MiniMapTrackingIconOverlay.Hide
 		MiniMapTracking:Show()
-
-		M:RebuildRegions(MiniMapTrackingButton)
 
 		MiniMapTracking.Icon = MiniMapTracking:CreateTexture(nil, 'ARTWORK')
 		MiniMapTracking.Icon:SetPoint('CENTER')
-		MiniMapTracking.Icon:SetSize(self.iconSize, self.iconSize)
+		MiniMapTracking.Icon:SetSize(self.db['IconSize'], self.db['IconSize'])
 		MiniMapTracking.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
 
-		M:IconBorder(MiniMapTrackingButton, false)
-		MiniMapTrackingButton:HookScript('OnEnter', function(self)
-			M:IconBorder(MiniMapTrackingButton, true)
-		end)
-		MiniMapTrackingButton:HookScript('OnLeave', function(self)
-			M:IconBorder(MiniMapTrackingButton, false)
-		end)
-
-		table.insert(self.buttons, MiniMapTracking)
+		tinsert(self.buttons, MiniMapTracking)
 	end
 
-	if self.opt["moveTracker"] then
-		MiniMapTrackingButton:ClearAllPoints()
-		MiniMapTrackingButton:SetAllPoints()
-	end
-
-	if self.opt["moveQueue"] and not self.trackerQueue then
-		-- QueueStatusMinimapButton
-		self.trackerQueue = true
-
-		QueueStatusMinimapButton:SetParent(self.box)
-
-		M:RebuildRegions(QueueStatusMinimapButton)
-
-		QueueStatusMinimapButton:HookScript('OnShow', function(self)
-			QueueStatusMinimapButtonIconTexture:SetParent(QueueStatusMinimapButton)
-			QueueStatusMinimapButtonIconTexture:ClearAllPoints()
-			QueueStatusMinimapButtonIconTexture:SetAllPoints()
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-		QueueStatusMinimapButton:HookScript('OnHide', function(self)
-			M:UpdateButtons()
-			M:ResizeBox()
-		end)
-
-		table.insert(self.buttons, QueueStatusMinimapButton)
+	if self.db["MoveQueue"] and not tContains(self.buttons, QueueStatusMinimapButton) then
+		tinsert(self.buttons, QueueStatusMinimapButton)
 	end
 end
 
@@ -233,7 +162,7 @@ function SMB:SkinMinimapButton(Button)
 	end
 
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
-	Button:Size(SMB.db['IconSize'])
+	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 	Button:SetTemplate()
 	Button:HookScript('OnEnter', function(self)
 		self:SetBackdropBorderColor(.7, 0, .7)
@@ -461,6 +390,8 @@ function SMB:Initialize()
 	self:SetupProfile()
 	self:GetOptions()
 
+	self.Hider = CreateFrame("Frame", nil, UIParent)
+
 	self.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
 	self.Bar:Hide()
 	self.Bar:SetPoint('RIGHT', UIParent, 'RIGHT', -45, 0)
@@ -489,6 +420,8 @@ function SMB:Initialize()
 	self:AddCustomUIButtons()
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
+
+	self:HandleBlizzardButtons()
 
 	self:ScheduleRepeatingTimer('GrabMinimapButtons', 5)
 end
