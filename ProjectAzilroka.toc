@@ -1,7 +1,7 @@
 ## Interface: 70300
 ## Title: ProjectAzilroka
 ## Author: Azilroka
-## Version: 1.10
+## Version: 1.11
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
 ## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB, stAddonManagerProfilesDB
 
