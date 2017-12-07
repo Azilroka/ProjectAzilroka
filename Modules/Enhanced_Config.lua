@@ -1,4 +1,4 @@
-﻿local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
 local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0')
