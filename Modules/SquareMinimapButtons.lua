@@ -290,7 +290,6 @@ function SMB:SkinMinimapButton(Button)
 
 	Button.isSkinned = true
 	tinsert(self.Buttons, Button)
-	self:Update()
 end
 
 function SMB:GrabMinimapButtons()
@@ -309,6 +308,8 @@ function SMB:GrabMinimapButtons()
 			end
 		end
 	end
+
+	self:Update()
 end
 
 function SMB:Update()
