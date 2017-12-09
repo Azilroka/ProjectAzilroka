@@ -58,10 +58,6 @@ local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
 
-function SMB:SkinIcon(Icon)
-
-end
-
 function SMB:HandleBlizzardButtons()
 	if not self.db['BarEnabled'] then return end
 
@@ -69,44 +65,159 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:UnregisterAllEvents()
 		GarrisonLandingPageMinimapButton:SetParent(self.Hider)
 		GarrisonLandingPageMinimapButton:Hide()
-		GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.Hide
-		GarrisonLandingPageMinimapButton.IsShown = function() return true end
-	elseif self.db["MoveGarrison"] and not tContains(self.buttons, GarrisonLandingPageMinimapButton) then
+	elseif self.db["MoveGarrison"] and not tContains(self.Buttons, GarrisonLandingPageMinimapButton) then
+		GarrisonLandingPageMinimapButton:Show()
 		GarrisonLandingPageMinimapButton:SetScale(1)
-		GarrisonLandingPageMinimapButton:ClearAllPoints()
-		GarrisonLandingPageMinimapButton:SetAllPoints()
+		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
+		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
 
-		tinsert(self.buttons, GarrisonLandingPageMinimapButton)
+		GarrisonLandingPageMinimapButton:SetNormalTexture(1044517)
+		GarrisonLandingPageMinimapButton:GetNormalTexture(1044517):SetTexCoord(unpack(self.TexCoords))
+		GarrisonLandingPageMinimapButton:GetNormalTexture():SetInside()
+
+		GarrisonLandingPageMinimapButton:SetPushedTexture(1044517)
+		GarrisonLandingPageMinimapButton:GetPushedTexture(1044517):SetTexCoord(unpack(self.TexCoords))
+		GarrisonLandingPageMinimapButton:GetPushedTexture():SetInside()
+
+		GarrisonLandingPageMinimapButton:SetHighlightTexture(nil)
+
+		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
+			self:SetBackdropBorderColor(.7, 0, .7)
+			if SMB.Bar:IsShown() then
+				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+			end
+		end)
+		GarrisonLandingPageMinimapButton:HookScript('OnLeave', function(self)
+			self:SetTemplate()
+			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+			end
+		end)
+
+		tinsert(self.Buttons, GarrisonLandingPageMinimapButton)
 	end
 
-	if self.db["MoveMail"] and not tContains(self.buttons, MiniMapMailFrame) then
-		MiniMapMailBorder:Hide()
+	if self.db["MoveMail"] and not tContains(self.Buttons, MiniMapMailFrame) then
+		local Frame = CreateFrame('Frame', 'SMB_MailFrame', self.Bar)
+		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
+		Frame:SetTemplate()
+		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
+		Frame.Icon:SetPoint('CENTER')
+		Frame.Icon:Size(18)
+		Frame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
+		Frame:EnableMouse(true)
+		Frame:HookScript('OnEnter', function(self)
+			if HasNewMail() then
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT");
+				if GameTooltip:IsOwned(self) then
+					MinimapMailFrameUpdate()
+				end
+			end
+			self:SetBackdropBorderColor(.7, 0, .7)
+			if SMB.Bar:IsShown() then
+				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+			end
+		end)
+		Frame:HookScript('OnLeave', function(self)
+			GameTooltip:Hide()
+			self:SetTemplate()
+			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+			end
+		end)
+		MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0)	end)
+		MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
+
+		-- Hide Icon & Border
 		MiniMapMailIcon:Hide()
-		MiniMapMailFrame.Icon = MiniMapMailFrame:CreateTexture(nil, 'ARTWORK')
-		MiniMapMailFrame.Icon:SetPoint('CENTER')
-		MiniMapMailFrame.Icon:SetSize(self.db['IconSize'], self.db['IconSize'])
-		MiniMapMailFrame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
+		MiniMapMailBorder:Hide()
 
-		tinsert(self.buttons, MiniMapMailFrame)
+		tinsert(self.Buttons, Frame)
 	end
 
-	if self.db["MoveTracker"] and not tContains(self.buttons, MiniMapTracking) then
-		MiniMapTrackingIcon:Hide()
-		MiniMapTrackingBackground:Hide()
-		MiniMapTrackingIconOverlay:Hide()
-		MiniMapTrackingIconOverlay.Show = MiniMapTrackingIconOverlay.Hide
+	if self.db["MoveTracker"] and not tContains(self.Buttons, MiniMapTracking) then
+		MiniMapTracking.Show = nil
+
 		MiniMapTracking:Show()
 
-		MiniMapTracking.Icon = MiniMapTracking:CreateTexture(nil, 'ARTWORK')
-		MiniMapTracking.Icon:SetPoint('CENTER')
-		MiniMapTracking.Icon:SetSize(self.db['IconSize'], self.db['IconSize'])
-		MiniMapTracking.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
+		MiniMapTracking:SetParent(self.Bar)
+		MiniMapTracking:SetSize(self.db['IconSize'], self.db['IconSize'])
 
-		tinsert(self.buttons, MiniMapTracking)
+		MiniMapTrackingIcon:ClearAllPoints()
+		MiniMapTrackingIcon:SetPoint('CENTER')
+
+		MiniMapTrackingBackground:Hide()
+		MiniMapTrackingIconOverlay:Hide()
+
+		MiniMapTrackingButton:SetParent(MinimapTracking)
+		MiniMapTrackingButton:ClearAllPoints()
+		MiniMapTrackingButton:SetAllPoints(MiniMapTracking)
+
+		MiniMapTrackingButton:SetScript('OnMouseDown', nil)
+		MiniMapTrackingButton:SetScript('OnMouseUp', nil)
+
+		MiniMapTrackingButton:HookScript('OnEnter', function(self)
+			MiniMapTracking:SetBackdropBorderColor(.7, 0, .7)
+			if SMB.Bar:IsShown() then
+				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+			end
+		end)
+		MiniMapTrackingButton:HookScript('OnLeave', function(self)
+			MiniMapTracking:SetTemplate()
+			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+			end
+		end)
+
+		tinsert(self.Buttons, MiniMapTracking)
 	end
 
-	if self.db["MoveQueue"] and not tContains(self.buttons, QueueStatusMinimapButton) then
-		tinsert(self.buttons, QueueStatusMinimapButton)
+	if self.db["MoveQueue"] and not tContains(self.Buttons, QueueStatusMinimapButton) then
+		local Frame = CreateFrame('Frame', 'SMB_QueueFrame', self.Bar)
+		Frame:SetTemplate()
+		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
+		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
+		Frame.Icon:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
+		Frame.Icon:SetPoint('CENTER')
+		Frame.Icon:SetTexture([[Interface\LFGFrame\LFG-Eye]])
+		Frame.Icon:SetTexCoord(0, 64 / 512, 0, 64 / 256)
+		Frame:SetScript('OnMouseDown', function()
+			if PVEFrame:IsShown() then
+				HideUIPanel(PVEFrame)
+			else
+				ShowUIPanel(PVEFrame)
+				GroupFinderFrame_ShowGroupFrame()
+			end
+		end)
+		Frame:HookScript('OnEnter', function(self)
+			self:SetBackdropBorderColor(.7, 0, .7)
+			if SMB.Bar:IsShown() then
+				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+			end
+		end)
+		Frame:HookScript('OnLeave', function(self)
+			self:SetTemplate()
+			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+			end
+		end)
+
+		QueueStatusMinimapButton:SetParent(self.Bar)
+		QueueStatusMinimapButton:SetFrameLevel(Frame:GetFrameLevel() + 2)
+		QueueStatusMinimapButton:ClearAllPoints()
+		QueueStatusMinimapButton:SetPoint("CENTER", Frame, "CENTER", 0, 0)
+
+		QueueStatusMinimapButton:SetHighlightTexture(nil)
+
+		QueueStatusMinimapButton:HookScript('OnShow', function(self)
+			Frame:EnableMouse(false)
+		end)
+		QueueStatusMinimapButton:HookScript('PostClick', QueueStatusMinimapButton_OnLeave)
+		QueueStatusMinimapButton:HookScript('OnHide', function(self)
+			Frame:EnableMouse(true)
+		end)
+
+		tinsert(self.Buttons, Frame)
 	end
 end
 
@@ -215,18 +326,7 @@ function SMB:Update()
 	end
 
 	for _, Frame in pairs(SMB.Buttons) do
-		local Name = Frame:GetName()
-		local Exception = false
-		for _, Button in pairs(AddButtonsToBar) do
-			if Name == Button then
-				Exception = true
-				if Name == 'SmartBuff_MiniMapButton' then
-					SMARTBUFF_MinimapButton_CheckPos = function() end
-					SMARTBUFF_MinimapButton_OnUpdate = function() end
-				end
-			end
-		end
-		if Frame:IsVisible() and not (Name == 'QueueStatusMinimapButton' or Name == 'MiniMapMailFrame') or Exception then
+		if Frame:IsVisible() then
 			AnchorX = AnchorX + 1
 			ActualButtons = ActualButtons + 1
 			if AnchorX > MaxX then
@@ -243,7 +343,7 @@ function SMB:Update()
 			Frame:SetPoint('TOPLEFT', self.Bar, 'TOPLEFT', xOffset, yOffset)
 			Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 			Frame:SetFrameStrata('LOW')
-			Frame:SetFrameLevel(self.Bar:GetFrameLevel() + 2)
+			Frame:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
 			Frame:RegisterForDrag('LeftButton')
 			Frame:SetScript('OnDragStart', nil)
 			Frame:SetScript('OnDragStop', nil)
