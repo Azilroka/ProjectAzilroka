@@ -188,16 +188,14 @@ function lib:SendPluginVersionCheck(message)
 	local plist = {strsplit(";",message)}
 	local m = ""
 	local delay = 1
-	local InGroup = IsInRaid() or IsInGroup() or false
+	local ChatType = ((not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) or (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE))) and "INSTANCE_CHAT" or (IsInRaid() and "RAID") or (IsInGroup() and "PARTY") or nil
 	for _, p in pairs(plist) do
 		if not p:match("^%s-$") then
 			if(#(m .. p .. ";") < 230) then
 				m = m .. p .. ";"
 			else
-				if InGroup then
-					C_Timer.After(delay, function()
-						SendAddonMessage(lib.prefix, m, (IsInRaid() and (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID") or (IsInGroup() and (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
-					end)
+				if ChatType then
+					C_Timer.After(delay, function() SendAddonMessage(lib.prefix, m, ChatType) end)
 				end
 				m = p .. ";"
 				delay = delay + 1
@@ -206,10 +204,8 @@ function lib:SendPluginVersionCheck(message)
 	end
 	if m == "" then return end
 	-- Send the last message
-	if InGroup then
-		C_Timer.After(delay + 1, function()
-			SendAddonMessage(lib.prefix, m, (IsInRaid() and (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID") or (IsInGroup() and (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"))
-		end)
+	if ChatType then
+		C_Timer.After(delay, function() SendAddonMessage(lib.prefix, m, ChatType) end)
 	end
 end
 

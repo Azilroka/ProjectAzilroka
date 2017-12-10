@@ -68,6 +68,7 @@ function SMB:HandleBlizzardButtons()
 	elseif self.db["MoveGarrison"] and not tContains(self.Buttons, GarrisonLandingPageMinimapButton) then
 		GarrisonLandingPageMinimapButton:Show()
 		GarrisonLandingPageMinimapButton:SetScale(1)
+		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
 		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
 		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
 
