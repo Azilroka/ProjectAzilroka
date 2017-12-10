@@ -23,6 +23,9 @@ local ignoreButtons = {
 	'ButtonCollectFrame',
 	'GameTimeFrame',
 	'QueueStatusMinimapButton',
+	'GarrisonLandingPageMinimapButton',
+	'MiniMapMailFrame',
+	'MiniMapTracking',
 }
 
 local GenericIgnores = {
@@ -421,17 +424,20 @@ function SMB:GetOptions()
 				type = "group",
 				name = "Blizzard",
 				guiInline = true,
+				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() SMB:HandleBlizzardButtons() end,
 				order = 2,
 				args = {
 					HideGarrison  = {
 						type = "toggle",
 						name = "Hide Garrison",
 						order = 1,
+						disabled = function() return SMB.db.MoveGarrison end,
 					},
 					MoveGarrison  = {
 						type = "toggle",
 						name = "Move Garrison Icon",
 						order = 2,
+						disabled = function() return SMB.db.HideGarrison end,
 					},
 					MoveMail  = {
 						type = "toggle",
