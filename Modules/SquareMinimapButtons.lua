@@ -223,6 +223,8 @@ function SMB:HandleBlizzardButtons()
 
 		tinsert(self.Buttons, Frame)
 	end
+
+	self:Update()
 end
 
 function SMB:SkinMinimapButton(Button)

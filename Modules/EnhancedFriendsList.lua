@@ -336,21 +336,7 @@ function EFL:SetupProfile()
 end
 
 function EFL:ClassColorCode(class)
-	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-		if class == v then
-			class = k
-		end
-	end
-
-	if Locale ~= 'enUS' then
-		for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-			if class == v then
-				class = k
-			end
-		end
-	end
-
-	local color = class and RAID_CLASS_COLORS[class] or { r = 1, g = 1, b = 1 }
+	local color = class and RAID_CLASS_COLORS[self.Classes[class]] or { r = 1, g = 1, b = 1 }
 
 	return format('|cFF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
@@ -480,6 +466,11 @@ function EFL:Initialize()
 	self.data = PA.ADB:New('EnhancedFriendsListDB', Defaults)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
+	self.Classes = {}
+
+	for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do self.Classes[v] = k end
+	for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do self.Classes[v] = k end
 
 	self:SetupProfile()
 	self:GetOptions()
