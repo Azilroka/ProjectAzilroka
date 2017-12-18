@@ -349,8 +349,7 @@ function stAM:NewAddOnProfile(name, overwrite)
 	_G.stAddonManagerProfilesDB[name] = {}
 
 	for i = 1, #self.AddOnInfo do
-		local AddOn = unpack(self.AddOnInfo[i])
-		local isEnabled = stAM:IsAddOnEnabled(i)
+		local AddOn, isEnabled = unpack(self.AddOnInfo[i]), stAM:IsAddOnEnabled(i)
 		if isEnabled then
 			tinsert(_G.stAddonManagerProfilesDB[name], AddOn)
 		end
@@ -418,15 +417,6 @@ function stAM:InitProfiles()
 
 	ProfileMenu.NewButton = NewButton
 
-	local Profiles = CreateFrame("ScrollFrame", nil, ProfileMenu)
-	Profiles:SetPoint('TOP', NewButton, 'BOTTOM', 0, 5)
-	Profiles:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
-	Profiles:SetTemplate()
-	Profiles.Buttons = {}
-	Profiles:EnableMouse(true)
-	Profiles:EnableMouseWheel(true)
-
-	ProfileMenu.Profiles = Profiles
 	ProfileMenu.Buttons = {}
 
 	for i = 1, 10 do
@@ -479,7 +469,7 @@ function stAM:InitProfiles()
 			StaticPopup_Show('STADDONMANAGER_DELETECONFIRMATION')
 		end)
 
-		Profiles.Buttons[i] = Pullout
+		ProfileMenu.Buttons[i] = Pullout
 	end
 
 	self.ProfileMenu = ProfileMenu
@@ -488,7 +478,7 @@ end
 
 function stAM:UpdateProfiles()
 	local ProfileMenu = self.ProfileMenu
-	local Buttons = self.ProfileMenu.Profiles.Buttons
+	local Buttons = self.ProfileMenu.Buttons
 
 	wipe(self.Profiles)
 
