@@ -1,4 +1,4 @@
-local _G= _G
+local _G = _G
 local PA = _G.ProjectAzilroka
 
 local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
@@ -9,7 +9,7 @@ stAM.Title = '|cff00aaffst|rAddonManager'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
 
-local unpack, tinsert, wipe = unpack, tinsert, wipe
+local unpack, tinsert, wipe, pairs = unpack, tinsert, wipe, pairs
 local strlen, strlower, strfind = strlen, strlower, strfind
 local min, max = min, max
 
