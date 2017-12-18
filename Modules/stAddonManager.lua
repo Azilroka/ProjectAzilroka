@@ -28,10 +28,9 @@ StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
 	button1 = 'Overwrite',
 	button2 = 'Cancel',
 	timeout = 0,
-	whileDead = true,
-	hideOnEscape = true,
-	enterClicksFirstButton = true,
-	preferredIndex = 3,
+	whileDead = 1,
+	enterClicksFirstButton = 1,
+	hideOnEscape = 1,
 }
 
 StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
@@ -39,21 +38,20 @@ StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 	button1 = 'Create',
 	button2 = 'Cancel',
 	timeout = 0,
-	hasEditBox = true,
-	whileDead = true,
-	hideOnEscape = true,
+	hasEditBox = 1,
+	whileDead = 1,
 	OnAccept = function(self) stAM:NewAddOnProfile(self.editBox:GetText()) end,
-	enterClicksFirstButton = true,
-	preferredIndex = 3,
+	EditBoxOnEnterPressed = function(self) stAM:NewAddOnProfile(self:GetText()) self:GetParent():Hide() end,
+	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
 }
 
 StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
 	button1 = 'Delete',
 	button2 = 'Cancel',
 	timeout = 0,
-	whileDead = true,
-	hideOnEscape = true,
-	preferredIndex = 3,
+	whileDead = 1,
+	enterClicksFirstButton = 1,
+	hideOnEscape = 1,
 }
 
 local function strtrim(string)
