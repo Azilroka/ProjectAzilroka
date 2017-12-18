@@ -9,7 +9,7 @@ stAM.Title = '|cff00aaffst|rAddonManager'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
 
-local unpack, tinsert, wipe, pairs = unpack, tinsert, wipe, pairs
+local unpack, tinsert, wipe, pairs, sort = unpack, tinsert, wipe, pairs, sort
 local strlen, strlower, strfind = strlen, strlower, strfind
 local min, max = min, max
 
