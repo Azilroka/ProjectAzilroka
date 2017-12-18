@@ -301,14 +301,11 @@ end
 function SMB:GrabMinimapButtons()
 	if UnitAffectingCombat("player") then return end
 
-	for i = 1, Minimap:GetNumChildren() do
-		local object = select(i, Minimap:GetChildren())
-		if object then
-			if object:IsObjectType('Button') and object:GetName() then
-				self:SkinMinimapButton(object)
-			end
-			for _, frame in pairs(AcceptedFrames) do
-				if object:IsObjectType('Frame') and object:GetName() == frame then
+	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
+		for i = 1, Frame:GetNumChildren() do
+			local object = select(i, Frame:GetChildren())
+			if object then
+				if object:IsObjectType('Button') and object:GetName() then
 					self:SkinMinimapButton(object)
 				end
 			end
@@ -351,18 +348,19 @@ function SMB:Update()
 			Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 			Frame:SetFrameStrata('LOW')
 			Frame:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
-			Frame:RegisterForDrag('LeftButton')
 			Frame:SetScript('OnDragStart', nil)
 			Frame:SetScript('OnDragStop', nil)
 
 			if Maxed then ActualButtons = ButtonsPerRow end
-			local BarWidth = (Spacing + ((Size * (ActualButtons * Mult)) + ((Spacing * (ActualButtons - 1)) * Mult) + (Spacing * Mult)))
-			local BarHeight = (Spacing + ((Size * (AnchorY * Mult)) + ((Spacing * (AnchorY - 1)) * Mult) + (Spacing * Mult)))
-			self.Bar:SetSize(BarWidth, BarHeight)
 		end
 	end
 
+	local BarWidth = (Spacing + ((Size * (ActualButtons * Mult)) + ((Spacing * (ActualButtons - 1)) * Mult) + (Spacing * Mult)))
+	local BarHeight = (Spacing + ((Size * (AnchorY * Mult)) + ((Spacing * (AnchorY - 1)) * Mult) + (Spacing * Mult)))
+	self.Bar:SetSize(BarWidth, BarHeight)
+
 	self.Bar:Show()
+
 	if self.db['BarMouseOver'] then
 		UIFrameFadeOut(self.Bar, 0.2, self.Bar:GetAlpha(), 0)
 	else
