@@ -115,6 +115,21 @@ function stAM:GetOptions()
 					['THICKOUTLINE'] = 'THICKOUTLINE',
 				},
 			},
+			CheckTexture = {
+				order = 7,
+				type = "select", dialogControl = 'LSM30_Statusbar',
+				name = "Texture",
+				desc = "The texture to use.",
+				values = PA.LSM:HashTable('statusbar'),
+			},
+			CheckColor = {
+				order = 8,
+				type = "color",
+				name = COLOR_PICKER,
+				hasAlpha = true,
+				get = function(info) return unpack(stAM.db[info[#info]]) end,
+				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} end,
+			},
 			AuthorHeader = {
 				order = 9,
 				type = 'header',
