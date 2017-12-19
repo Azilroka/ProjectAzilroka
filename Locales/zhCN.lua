@@ -1,0 +1,1 @@
+-- Chinese localization file for zhCN.

@@ -1,0 +1,1 @@
+-- Korean localization file for koKR.

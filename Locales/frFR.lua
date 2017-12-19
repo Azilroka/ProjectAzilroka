@@ -1,0 +1,1 @@
+-- French localization file for frFR.

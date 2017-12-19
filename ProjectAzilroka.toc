@@ -6,6 +6,7 @@
 ## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB, stAddonManagerProfilesDB
 
 Libs\Load_Libs.xml
+Locales\Load_Locales.xml
 
 Init.lua
 
