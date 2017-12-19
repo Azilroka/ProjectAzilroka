@@ -17,6 +17,7 @@ PA.AC = LibStub('AceConfig-3.0')
 PA.GUI = LibStub('AceGUI-3.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
 PA.ACD = LibStub('AceConfigDialog-3.0')
+PA.ACL = LibStub('AceLocale-3.0')
 PA.ADB = LibStub('AceDB-3.0')
 
 PA.LSM = LibStub('LibSharedMedia-3.0')
@@ -36,6 +37,8 @@ PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 768/PA.ScreenHeight
 
 -- Project Data
+PA.Locales = {}
+
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
