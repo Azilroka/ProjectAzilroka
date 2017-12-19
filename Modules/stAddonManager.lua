@@ -117,14 +117,14 @@ function stAM:GetOptions()
 			},
 			CheckTexture = {
 				order = 7,
-				type = "select", dialogControl = 'LSM30_Statusbar',
-				name = "Texture",
-				desc = "The texture to use.",
+				type = 'select', dialogControl = 'LSM30_Statusbar',
+				name = 'Texture',
+				desc = 'The texture to use.',
 				values = PA.LSM:HashTable('statusbar'),
 			},
 			CheckColor = {
 				order = 8,
-				type = "color",
+				type = 'color',
 				name = COLOR_PICKER,
 				hasAlpha = true,
 				get = function(info) return unpack(stAM.db[info[#info]]) end,
