@@ -68,7 +68,8 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:UnregisterAllEvents()
 		GarrisonLandingPageMinimapButton:SetParent(self.Hider)
 		GarrisonLandingPageMinimapButton:Hide()
-	elseif self.db["MoveGarrison"] and not tContains(self.Buttons, GarrisonLandingPageMinimapButton) then
+	elseif self.db["MoveGarrison"] and not GarrisonLandingPageMinimapButton.SMB then
+		GarrisonLandingPageMinimapButton:SetParent(Minimap)
 		GarrisonLandingPageMinimapButton:Show()
 		GarrisonLandingPageMinimapButton:SetScale(1)
 		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
@@ -98,10 +99,11 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
+		GarrisonLandingPageMinimapButton.SMB = true
 		tinsert(self.Buttons, GarrisonLandingPageMinimapButton)
 	end
 
-	if self.db["MoveMail"] and not tContains(self.Buttons, MiniMapMailFrame) then
+	if self.db["MoveMail"] and not MiniMapMailFrame.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', self.Bar)
 		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 		Frame:SetTemplate()
@@ -136,10 +138,11 @@ function SMB:HandleBlizzardButtons()
 		MiniMapMailIcon:Hide()
 		MiniMapMailBorder:Hide()
 
+		MiniMapMailFrame.SMB = true
 		tinsert(self.Buttons, Frame)
 	end
 
-	if self.db["MoveTracker"] and not tContains(self.Buttons, MiniMapTracking) then
+	if self.db["MoveTracker"] and not MiniMapTrackingButton.SMB then
 		MiniMapTracking.Show = nil
 
 		MiniMapTracking:Show()
@@ -150,8 +153,9 @@ function SMB:HandleBlizzardButtons()
 		MiniMapTrackingIcon:ClearAllPoints()
 		MiniMapTrackingIcon:SetPoint('CENTER')
 
-		MiniMapTrackingBackground:Hide()
-		MiniMapTrackingIconOverlay:Hide()
+		MiniMapTrackingBackground:SetAlpha(0)
+		MiniMapTrackingIconOverlay:SetAlpha(0)
+		MiniMapTrackingButton:SetAlpha(0)
 
 		MiniMapTrackingButton:SetParent(MinimapTracking)
 		MiniMapTrackingButton:ClearAllPoints()
@@ -173,10 +177,11 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
+		MiniMapTrackingButton.SMB = true
 		tinsert(self.Buttons, MiniMapTracking)
 	end
 
-	if self.db["MoveQueue"] and not tContains(self.Buttons, QueueStatusMinimapButton) then
+	if self.db["MoveQueue"] and not QueueStatusMinimapButton.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_QueueFrame', self.Bar)
 		Frame:SetTemplate()
 		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
@@ -221,6 +226,7 @@ function SMB:HandleBlizzardButtons()
 			Frame:EnableMouse(true)
 		end)
 
+		QueueStatusMinimapButton.SMB = true
 		tinsert(self.Buttons, Frame)
 	end
 
