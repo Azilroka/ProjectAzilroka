@@ -1,14 +1,14 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-local MAJOR, MINOR = "LibElvUIPlugin-1.0", 14
+local MAJOR, MINOR = "LibElvUIPlugin-1.0", 18
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
 --Cache global variables
 --Lua functions
-local pairs, tonumber = pairs, tonumber
-local format, strsplit, gsub = format, strsplit, gsub
+local pairs, tonumber, strmatch, strsub = pairs, tonumber, strmatch, strsub
+local format, strsplit, strlen, gsub, ceil = format, strsplit, strlen, gsub, ceil
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
@@ -16,6 +16,7 @@ local GetAddOnMetadata = GetAddOnMetadata
 local C_Timer = C_Timer
 local RegisterAddonMessagePrefix = RegisterAddonMessagePrefix
 local SendAddonMessage = SendAddonMessage
+local GetNumGroupMembers = GetNumGroupMembers
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
@@ -26,7 +27,7 @@ lib.prefix = "ElvUIPluginVC"
 -- MULTI Language Support (Default Language: English)
 local MSG_OUTDATED = "Your version of %s is out of date (latest is version %s). You can download the latest version from http://www.tukui.org"
 local HDR_CONFIG = "Plugins"
-local HDR_INFORMATION = "LibElvUIPlugin-1.0.%d - Plugins Loaded  (Green means you have current version, Red means out of date)"
+local HDR_INFORMATION = "LibElvUIPlugin-1.0.%d - Plugins Loaded [Green - Current | Red - Out of Date]"
 local INFO_BY = "by"
 local INFO_VERSION = "Version:"
 local INFO_NEW = "Newest:"
@@ -52,15 +53,33 @@ if GetLocale() == "ruRU" then -- Russian Translations
 	LIBRARY = "Библиотека"
 end
 
-local function RGBToHex(r, g, b)
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
+local Options = {
+	order = -10,
+	type = "group",
+	name = HDR_CONFIG,
+	guiInline = false,
+	args = {
+		pluginheader = {
+			order = 1,
+			type = "header",
+			name = format(HDR_INFORMATION, MINOR),
+		},
+		plugins = {
+			order = 2,
+			type = "description",
+		},
+	}
+}
 
-    return format('|cff%02x%02x%02x', r*255, g*255, b*255)
+local function RGBToHex(r, g, b)
+	r = r <= 1 and r >= 0 and r or 0
+	g = g <= 1 and g >= 0 and g or 0
+	b = b <= 1 and b >= 0 and b or 0
+
+	return format('|cff%02x%02x%02x', r*255, g*255, b*255)
 end
 
-function lib:RegisterPlugin(name,callback)
+function lib:RegisterPlugin(name, callback)
 	local plugin = {}
 	plugin.name = name
 	plugin.version = name == MAJOR and MINOR or GetAddOnMetadata(name, "Version")
@@ -75,50 +94,15 @@ function lib:RegisterPlugin(name,callback)
 		lib.vcframe = f
 	end
 
-	if not lib.ConfigFrame then
-		local configFrame = CreateFrame("Frame")
-		configFrame:RegisterEvent("ADDON_LOADED")
-		configFrame:SetScript("OnEvent", function(self,event,addon)
-			if addon == "Enhanced_Config" then
-				for _, plugin in pairs(lib.plugins) do
-					if plugin.callback then
-						plugin.callback()
-					end
-				end
-			end
-		end)
-		lib.ConfigFrame = configFrame
-	else
-		-- Need to update plugins list
-		if name ~= MAJOR then
-			self:GetPluginOptions()
-			_G.Enhanced_Config.Options.args.plugins.args.plugins.name = lib:GeneratePluginList()
-		end
-		callback()
-	end
+	callback()
+
+	Options.args.plugins.name = lib:GeneratePluginList()
 
 	return plugin
 end
 
 function lib:GetPluginOptions()
-	_G.Enhanced_Config.Options.args.plugins = {
-        order = -10,
-        type = "group",
-        name = HDR_CONFIG,
-        guiInline = false,
-        args = {
-            pluginheader = {
-                order = 1,
-                type = "header",
-                name = format(HDR_INFORMATION, MINOR),
-            },
-            plugins = {
-                order = 2,
-                type = "description",
-                name = lib:GeneratePluginList(),
-            },
-        }
-    }
+	_G.Enhanced_Config.Options.args.plugins = Options
 end
 
 function lib:GenerateVersionCheckMessage()
@@ -136,20 +120,20 @@ local function SendPluginVersionCheck(self)
 end
 
 function lib:VersionCheck(event, prefix, message, channel, sender)
-	if (event == "CHAT_MSG_ADDON") and sender and message and (message ~= "") and (prefix == lib.prefix) then
-		local myRealm = gsub(PA.MyRealm,'[%s%-]','')
-		local myName = PA.MyName..'-'..myRealm
-		if sender == myName then return end
+	if (event == "CHAT_MSG_ADDON") and sender and message and (not strmatch(message, "^%s-$")) and (prefix == lib.prefix) then
+		if not lib.myName then lib.myName = PA.MyName..'-'..gsub(PA.MyRealm,'[%s%-]','') end
+		if sender == lib.myName then return end
 		if not self["pluginRecievedOutOfDateMessage"] then
+			local name, version, plugin, Pname
 			for _, p in pairs({strsplit(";",message)}) do
-				if not p:match("^%s-$") then
-					local name, version = p:match("([%w_]+)=([%d%p]+)")
+				if not strmatch(p, "^%s-$") then
+					name, version = strmatch(p, "([%w_]+)=([%d%p]+)")
 					if lib.plugins[name] then
-						local plugin = lib.plugins[name]
+						plugin = lib.plugins[name]
 						if plugin.version ~= 'BETA' and version ~= nil and tonumber(version) ~= nil and plugin.version ~= nil and tonumber(plugin.version) ~= nil and tonumber(version) > tonumber(plugin.version) then
 							plugin.old = true
 							plugin.newversion = tonumber(version)
-							local Pname = GetAddOnMetadata(plugin.name, "Title")
+							Pname = GetAddOnMetadata(plugin.name, "Title")
 							print(format(MSG_OUTDATED,Pname,plugin.newversion))
 							self["pluginRecievedOutOfDateMessage"] = true
 						end
@@ -158,17 +142,24 @@ function lib:VersionCheck(event, prefix, message, channel, sender)
 			end
 		end
 	else
-		C_Timer.After(2, SendPluginVersionCheck)
+		local num = GetNumGroupMembers()
+		if num ~= lib.groupSize then
+			if num > 1 and lib.groupSize and num > lib.groupSize then
+				C_Timer.After(12, SendPluginVersionCheck)
+			end
+			lib.groupSize = num
+		end
 	end
 end
 
 function lib:GeneratePluginList()
 	local list = ""
+	local author, Pname, color
 	for _, plugin in pairs(lib.plugins) do
 		if plugin.name ~= MAJOR then
-			local author = GetAddOnMetadata(plugin.name, "Author")
-			local Pname = GetAddOnMetadata(plugin.name, "Title") or plugin.name
-			local color = plugin.old and RGBToHex(1,0,0) or RGBToHex(0,1,0)
+			author = GetAddOnMetadata(plugin.name, "Author")
+			Pname = GetAddOnMetadata(plugin.name, "Title") or plugin.name
+			color = plugin.old and RGBToHex(1,0,0) or RGBToHex(0,1,0)
 			list = list .. Pname
 			if author then
 			  list = list .. " ".. INFO_BY .." " .. author
@@ -184,28 +175,24 @@ function lib:GeneratePluginList()
 end
 
 function lib:SendPluginVersionCheck(message)
-	if not message or (message == "") then return end
-	local plist = {strsplit(";",message)}
-	local m = ""
-	local delay = 1
+	if (not message) or strmatch(message, "^%s-$") then return end
+
 	local ChatType = ((not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) or (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE))) and "INSTANCE_CHAT" or (IsInRaid() and "RAID") or (IsInGroup() and "PARTY") or nil
-	for _, p in pairs(plist) do
-		if not p:match("^%s-$") then
-			if(#(m .. p .. ";") < 230) then
-				m = m .. p .. ";"
-			else
-				if ChatType then
-					C_Timer.After(delay, function() SendAddonMessage(lib.prefix, m, ChatType) end)
-				end
-				m = p .. ";"
+	if not ChatType then return end
+
+	local delay, maxChar, msgLength = 0, 250, strlen(message)
+	if msgLength > maxChar then
+		local splitMessage
+		for _ = 1, ceil(msgLength/maxChar) do
+			splitMessage = strmatch(strsub(message, 1, maxChar), '.+;')
+			if splitMessage then -- incase the string is over 250 but doesnt contain `;`
+				message = gsub(message, "^"..gsub(splitMessage, '([%(%)%.%%%+%-%*%?%[%^%$])','%%%1'), "")
+				C_Timer.After(delay, function() SendAddonMessage(lib.prefix, splitMessage, ChatType) end)
 				delay = delay + 1
 			end
 		end
-	end
-	if m == "" then return end
-	-- Send the last message
-	if ChatType then
-		C_Timer.After(delay, function() SendAddonMessage(lib.prefix, m, ChatType) end)
+	else
+		SendAddonMessage(lib.prefix, message, ChatType)
 	end
 end
 
