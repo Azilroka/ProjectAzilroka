@@ -61,6 +61,26 @@ local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
 
+function SMB:LockButton(Button)
+	Button.SetParent = PA.Noop
+	Button.ClearAllPoints = PA.Noop
+	Button.SetPoint = PA.Noop
+	Button.SetSize = PA.Noop
+	Button.SetScale = PA.Noop
+	Button.SetFrameStrata = PA.Noop
+	Button.SetFrameLevel = PA.Noop
+end
+
+function SMB:UnlockButton(Button)
+	Button.SetParent = nil
+	Button.ClearAllPoints = nil
+	Button.SetPoint = nil
+	Button.SetSize = nil
+	Button.SetScale = nil
+	Button.SetFrameStrata = nil
+	Button.SetFrameLevel = nil
+end
+
 function SMB:HandleBlizzardButtons()
 	if not self.db['BarEnabled'] then return end
 
@@ -335,8 +355,8 @@ function SMB:Update()
 		ButtonsPerRow = #SMB.Buttons
 	end
 
-	for _, Frame in pairs(SMB.Buttons) do
-		if Frame:IsVisible() then
+	for _, Button in pairs(SMB.Buttons) do
+		if Button:IsVisible() then
 			AnchorX = AnchorX + 1
 			ActualButtons = ActualButtons + 1
 			if AnchorX > MaxX then
@@ -345,17 +365,20 @@ function SMB:Update()
 				Maxed = true
 			end
 
-			local yOffset = - Spacing - ((Size + Spacing) * (AnchorY - 1))
-			local xOffset = Spacing + ((Size + Spacing) * (AnchorX - 1))
-			Frame:SetTemplate()
-			Frame:SetParent(self.Bar)
-			Frame:ClearAllPoints()
-			Frame:SetPoint('TOPLEFT', self.Bar, 'TOPLEFT', xOffset, yOffset)
-			Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
-			Frame:SetFrameStrata('LOW')
-			Frame:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
-			Frame:SetScript('OnDragStart', nil)
-			Frame:SetScript('OnDragStop', nil)
+			SMB:UnlockButton(Button)
+
+			Button:SetTemplate()
+			Button:SetParent(self.Bar)
+			Button:ClearAllPoints()
+			Button:SetPoint('TOPLEFT', self.Bar, 'TOPLEFT', (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
+			Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
+			Button:SetScale(1)
+			Button:SetFrameStrata('LOW')
+			Button:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
+			Button:SetScript('OnDragStart', nil)
+			Button:SetScript('OnDragStop', nil)
+
+			SMB:LockButton(Button)
 
 			if Maxed then ActualButtons = ButtonsPerRow end
 		end
