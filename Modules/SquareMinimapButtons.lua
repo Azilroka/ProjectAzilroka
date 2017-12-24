@@ -45,12 +45,7 @@ local GenericIgnores = {
 	'Cork',
 }
 
-local PartialIgnores = {
-	'Node',
-	'Note',
-	'Pin',
-	'POI',
-}
+local PartialIgnores = { 'Node', 'Note', 'Pin', 'POI' }
 
 local AcceptedFrames = {
 	'BagSync_MinimapButton',
@@ -61,24 +56,18 @@ local AddButtonsToBar = {
 	'SmartBuff_MiniMapButton',
 }
 
+local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
+
 function SMB:LockButton(Button)
-	Button.SetParent = PA.Noop
-	Button.ClearAllPoints = PA.Noop
-	Button.SetPoint = PA.Noop
-	Button.SetSize = PA.Noop
-	Button.SetScale = PA.Noop
-	Button.SetFrameStrata = PA.Noop
-	Button.SetFrameLevel = PA.Noop
+	for _, Function in pairs(ButtonFunctions) do
+		Button[Function] = PA.Noop
+	end
 end
 
 function SMB:UnlockButton(Button)
-	Button.SetParent = nil
-	Button.ClearAllPoints = nil
-	Button.SetPoint = nil
-	Button.SetSize = nil
-	Button.SetScale = nil
-	Button.SetFrameStrata = nil
-	Button.SetFrameLevel = nil
+	for _, Function in pairs(ButtonFunctions) do
+		Button[Function] = nil
+	end
 end
 
 function SMB:HandleBlizzardButtons()

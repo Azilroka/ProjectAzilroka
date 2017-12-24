@@ -8,7 +8,7 @@ _G.ProjectAzilroka = PA
 
 local GetAddOnMetadata = GetAddOnMetadata
 local GetAddOnEnableState = GetAddOnEnableState
-local select = select
+local select, pairs, sort, tinsert = select, pairs, sort, tinsert
 local UnitName, UnitClass, GetRealmName = UnitName, UnitClass, GetRealmName
 local UIParent = UIParent
 
@@ -49,8 +49,6 @@ PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
 PA.NUI = GetAddOnEnableState(PA.MyName, 'ElvUI_NenaUI') > 0
 PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
-
-local pairs, sort, tinsert = pairs, sort, tinsert
 
 function PA:ConflictAddOn(AddOns)
 	for AddOn in pairs(AddOns) do
