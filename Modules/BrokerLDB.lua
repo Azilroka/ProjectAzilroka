@@ -1,4 +1,12 @@
-local AddOnName, Engine = ...
+local PA = _G.ProjectAzilroka
+
+local BrokerLDB = LibStub('AceAddon-3.0'):NewAddon('BrokerLDB', 'AceEvent-3.0')
+_G.BrokerLDB = BrokerLDB
+
+BrokerLDB.Title = 'Loot Confirm'
+BrokerLDB.Authors = 'Azilroka, Infinitron'
+
+local tonumber, strmatch, select = tonumber, strmatch, select
 
 local LDB = LibStub('LibDataBroker-1.1')
 local LSM = LibStub('LibSharedMedia-3.0')
@@ -50,7 +58,7 @@ function BrokerLDB:GetOptions()
 				name = 'General',
 				guiInline = true,
 				get = function(info) return BrokerLDBOptions[info[#info]] end,
-    			set = function(info, value) BrokerLDBOptions[info[#info]] = value BrokerLDB:Update() end, 
+				set = function(info, value) BrokerLDBOptions[info[#info]] = value BrokerLDB:Update() end,
 				args = {
 					Reset = {
 						order = 0,
@@ -123,7 +131,7 @@ function BrokerLDB:GetOptions()
 							['THICKOUTLINE'] = 'THICKOUTLINE',
 						},
 					},
-  				},
+				},
 			},
 		},
 	}

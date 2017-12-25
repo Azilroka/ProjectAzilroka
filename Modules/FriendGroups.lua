@@ -452,6 +452,7 @@ local function FriendGroups_Update(forceUpdate)
 	-- online Battlenet friends
 	for i = 1, numBNetOnline do
 		if not BnetFriendGroups[i] then
+            print('Bnet Online', i)
             BnetFriendGroups[i] = {}
         end
 		local noteText = select(13,BNGetFriendInfo(i))
@@ -468,6 +469,7 @@ local function FriendGroups_Update(forceUpdate)
 	for i = 1, numWoWOnline do
 		if not WowFriendGroups[i] then
             WowFriendGroups[i] = {}
+            print('WoW Online', i)
         end
         local note = select(7,GetFriendInfo(i))
         NoteAndGroups(note, WowFriendGroups[i])
@@ -484,6 +486,7 @@ local function FriendGroups_Update(forceUpdate)
 		local j = i + numBNetOnline
 		if not BnetFriendGroups[j] then
             BnetFriendGroups[j] = {}
+            print('Bnet Offline', j)
         end
 		local noteText = select(13,BNGetFriendInfo(j))
 		NoteAndGroups(noteText, BnetFriendGroups[j])
@@ -500,6 +503,7 @@ local function FriendGroups_Update(forceUpdate)
 		local j = i + numWoWOnline
 		if not WowFriendGroups[j] then
             WowFriendGroups[j] = {}
+            print('WoW Offline', j)
         end
         local note = select(7,GetFriendInfo(j))
         NoteAndGroups(note, WowFriendGroups[j])
@@ -904,50 +908,50 @@ FriendGroups_Menu.initialize = function(self, level)
 end
 
 local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_LOGIN")
+--frame:RegisterEvent("PLAYER_LOGIN")
 
-frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        Hook("FriendsList_Update", FriendGroups_Update, true)
-        --if other addons have hooked this, we should too
-        if not issecurevariable("FriendsFrame_UpdateFriends") then
-            Hook("FriendsFrame_UpdateFriends", FriendGroups_UpdateFriends)
-        end
-        Hook("FriendsFrameFriendButton_OnClick", FriendGroups_OnClick)
-        Hook("UnitPopup_ShowMenu", FriendGroups_SaveOpenMenu, true)
-        Hook("UnitPopup_OnClick", FriendGroups_OnFriendMenuClick, true)
-        Hook("UnitPopup_HideButtons", FriendGroups_HideButtons, true)
-        Hook("FriendsFrameTooltip_Show",function(button)
-			if ( button.buttonType == FRIENDS_BUTTON_TYPE_DIVIDER ) then
-				if FriendsTooltip:IsShown() then
-					FriendsTooltip:Hide()
-				end
-				return
-			end
-		end,true)-- Fixes tooltip showing on groups
+-- frame:SetScript("OnEvent", function(self, event, ...)
+--     if event == "PLAYER_LOGIN" then
+--         Hook("FriendsList_Update", FriendGroups_Update, true)
+--         --if other addons have hooked this, we should too
+--         if not issecurevariable("FriendsFrame_UpdateFriends") then
+--             Hook("FriendsFrame_UpdateFriends", FriendGroups_UpdateFriends)
+--         end
+--         Hook("FriendsFrameFriendButton_OnClick", FriendGroups_OnClick)
+--         Hook("UnitPopup_ShowMenu", FriendGroups_SaveOpenMenu, true)
+--         Hook("UnitPopup_OnClick", FriendGroups_OnFriendMenuClick, true)
+--         Hook("UnitPopup_HideButtons", FriendGroups_HideButtons, true)
+--         Hook("FriendsFrameTooltip_Show",function(button)
+-- 			if ( button.buttonType == FRIENDS_BUTTON_TYPE_DIVIDER ) then
+-- 				if FriendsTooltip:IsShown() then
+-- 					FriendsTooltip:Hide()
+-- 				end
+-- 				return
+-- 			end
+-- 		end,true)-- Fixes tooltip showing on groups
 
-        FriendsFrameFriendsScrollFrame.dynamic = FriendGroups_GetTopButton
-        FriendsFrameFriendsScrollFrame.update = FriendGroups_UpdateFriends
+--         FriendsFrameFriendsScrollFrame.dynamic = FriendGroups_GetTopButton
+--         FriendsFrameFriendsScrollFrame.update = FriendGroups_UpdateFriends
 		
-		--add some more buttons
-		FriendsFrameFriendsScrollFrame.buttons[1]:SetHeight(FRIENDS_FRAME_FRIENDS_FRIENDS_HEIGHT)
-		HybridScrollFrame_CreateButtons(FriendsFrameFriendsScrollFrame, "FriendsFrameButtonTemplate")
+-- 		--add some more buttons
+-- 		FriendsFrameFriendsScrollFrame.buttons[1]:SetHeight(FRIENDS_FRAME_FRIENDS_FRIENDS_HEIGHT)
+-- 		HybridScrollFrame_CreateButtons(FriendsFrameFriendsScrollFrame, "FriendsFrameButtonTemplate")
         
-        table.remove(UnitPopupMenus["BN_FRIEND"], 5) --remove target option
+--         table.remove(UnitPopupMenus["BN_FRIEND"], 5) --remove target option
         
-        --add our add/remove group buttons to the friend list popup menus
-        for _,menu in ipairs(friend_popup_menus) do
-			table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_NEW")
-			table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_ADD")
-            table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_DEL")
-        end
+--         --add our add/remove group buttons to the friend list popup menus
+--         for _,menu in ipairs(friend_popup_menus) do
+-- 			table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_NEW")
+-- 			table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_ADD")
+--             table.insert(UnitPopupMenus[menu], #UnitPopupMenus[menu], "FRIEND_GROUP_DEL")
+--         end
         
-        if not FriendGroups_SavedVars then
-            FriendGroups_SavedVars = {
-                collapsed = {},
-                hide_offline = false,
-                colour_classes = true,
-            }
-        end
-    end
-end)
+--         if not FriendGroups_SavedVars then
+--             FriendGroups_SavedVars = {
+--                 collapsed = {},
+--                 hide_offline = false,
+--                 colour_classes = true,
+--             }
+--         end
+--     end
+-- end)
