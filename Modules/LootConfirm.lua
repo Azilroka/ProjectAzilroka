@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 _G.LootConfirm = LC
 
-LC.Title = 'Loot Confirm'
+LC.Title = '|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'
 LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
 LC.Authors = 'Azilroka, Infinitron'
 
@@ -59,14 +59,19 @@ end
 function LC:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.ModuleColor..LC.Title,
+		name = LC.Title,
 		desc = LC.Description,
 		order = 208,
 		args = {
+			header = {
+				order = 0,
+				type = 'header',
+				name = PA:Color(LC.Title)
+			},
 			general = {
 				order = 2,
 				type = 'group',
-				name = 'General',
+				name = PA.ACL['General'],
 				guiInline = true,
 				get = function(info) return LC.db[info[#info]] end,
 				set = function(info, value) LC.db[info[#info]] = value end,
@@ -74,31 +79,31 @@ function LC:GetOptions()
 					Confirm = {
 						order = 1,
 						type = 'toggle',
-						name = 'Auto Confirm',
-						desc = 'Automatically click OK on BOP items',
+						name = PA.ACL['Auto Confirm'],
+						desc = PA.ACL['Automatically click OK on BOP items'],
 					},
 					Greed = {
 						order = 2,
 						type = 'toggle',
-						name = 'Auto Greed',
-						desc = 'Automatically greed',
+						name = PA.ACL['Auto Greed'],
+						desc = PA.ACL['Automatically greed'],
 					},
 					Disenchant = {
 						order = 3,
 						type = 'toggle',
-						name = 'Auto Disenchant',
-						desc = 'Automatically disenchant'
+						name = PA.ACL['Auto Disenchant'],
+						desc = PA.ACL['Automatically disenchant'],
 					},
 					ByLevel = {
 						order = 4,
 						type = 'toggle',
-						name = 'Auto-roll based on a given level',
-						desc = 'This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'
+						name = PA.ACL['Auto-roll based on a given level'],
+						desc = PA.ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'],
 					},
 					Level = {
 						order = 5,
 						type = 'range',
-						name = 'Level to start auto-rolling from',
+						name = PA.ACL['Level to start auto-rolling from'],
 						min = 1, max = MAX_PLAYER_LEVEL, step = 1,
 						disabled = function() return not LC.db['ByLevel'] end,
 					},

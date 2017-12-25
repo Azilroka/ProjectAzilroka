@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.EnhancedFriendsList = EFL
 
-EFL.Title = 'Enhanced Friends List'
+EFL.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r'
 EFL.Description = 'Provides Friends List Customization'
 EFL.Author = 'Azilroka'
 
@@ -240,10 +240,15 @@ end
 function EFL:GetOptions()
 	local Options = {
 		type = 'group',
-		name = PA.ModuleColor..EFL.Title,
+		name = EFL.Title,
 		desc = EFL.Description,
 		order = 206,
 		args = {
+			header = {
+				order = 0,
+				type = 'header',
+				name = PA:Color(EFL.Title)
+			},
 			general = {
 				order = 2,
 				type = 'group',

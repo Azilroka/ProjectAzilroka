@@ -5,7 +5,7 @@ local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
 _G.stAddonManager = stAM
 _G.stAddonManagerProfilesDB = {}
 
-stAM.Title = '|cff00aaffst|rAddonManager'
+stAM.Title = '|cff00aaffst|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
 
@@ -481,44 +481,49 @@ function stAM:GetOptions()
 		get = function(info) return stAM.db[info[#info]] end,
 		set = function(info, value) stAM.db[info[#info]] = value end,
 		args = {
-			NumAddOns = {
+			Header = {
 				order = 0,
+				type = 'header',
+				name = PA:Color(stAM.Title),
+			},
+			NumAddOns = {
+				order = 1,
 				type = 'range',
 				name = '# Shown AddOns',
 				min = 3, max = 30, step = 1,
 			},
 			FrameWidth = {
-				order = 1,
+				order = 2,
 				type = 'range',
 				name = 'Frame Width',
 				min = 225, max = 1024, step = 1,
 			},
 			ButtonHeight = {
-				order = 2,
+				order = 3,
 				type = 'range',
 				name = 'Button Height',
 				min = 3, max = 30, step = 1,
 			},
 			ButtonWidth = {
-				order = 3,
+				order = 4,
 				type = 'range',
 				name = 'Button Width',
 				min = 3, max = 30, step = 1,
 			},
 			Font = {
 				type = 'select', dialogControl = 'LSM30_Font',
-				order = 4,
+				order = 5,
 				name = 'Font',
 				values = PA.LSM:HashTable('font'),
 			},
 			FontSize = {
-				order = 5,
+				order = 6,
 				name = 'Font Size',
 				type = 'range',
 				min = 6, max = 22, step = 1,
 			},
 			FontFlag = {
-				order = 6,
+				order = 7,
 				name = 'Font Outline',
 				type = 'select',
 				values = {
@@ -530,14 +535,14 @@ function stAM:GetOptions()
 				},
 			},
 			CheckTexture = {
-				order = 7,
+				order = 8,
 				type = 'select', dialogControl = 'LSM30_Statusbar',
 				name = 'Texture',
 				desc = 'The texture to use.',
 				values = PA.LSM:HashTable('statusbar'),
 			},
 			CheckColor = {
-				order = 8,
+				order = 9,
 				type = 'color',
 				name = COLOR_PICKER,
 				hasAlpha = true,
@@ -545,12 +550,12 @@ function stAM:GetOptions()
 				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} end,
 			},
 			AuthorHeader = {
-				order = 9,
+				order = 10,
 				type = 'header',
 				name = 'Authors:',
 			},
 			Authors = {
-				order = 10,
+				order = 11,
 				type = 'description',
 				name = stAM.Authors,
 				fontSize = 'large',

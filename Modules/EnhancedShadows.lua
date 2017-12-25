@@ -6,7 +6,7 @@ local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0')
 
 _G.EnhancedShadows = ES
 
-ES.Title = 'Enhanced Shadows'
+ES.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r'
 ES.Description = 'Adds options for registered shadows'
 ES.Author = 'Azilroka     Infinitron'
 
@@ -59,7 +59,7 @@ function ES:GetOptions()
 	local Options = {
 		type = "group",
 		order = 207,
-		name = PA.ModuleColor..ES.Title,
+		name = ES.Title,
 		desc = ES.Description,
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,

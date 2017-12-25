@@ -66,3 +66,14 @@ ACL['Game Icons'] = true
 ACL['Game Icon Preview'] = true
 ACL['Status Icon Preview'] = true
 ACL[' Icon'] = true
+
+-- Loot Confirm
+ACL['Auto Confirm'] = true
+ACL['Automatically click OK on BOP items'] = true
+ACL['Auto Greed'] = true
+ACL['Automatically greed'] = true
+ACL['Auto Disenchant'] = true
+ACL['Automatically disenchant'] = true
+ACL['Auto-roll based on a given level'] = true
+ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
+ACL['Level to start auto-rolling from'] = true

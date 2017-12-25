@@ -42,7 +42,6 @@ PA.Locales = {}
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
-PA.ModuleColor = '|cFFFF8000'
 
 PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
@@ -94,7 +93,7 @@ PA.Options = {
 		general = {
 			order = 2,
 			type = 'group',
-			name = PA.ACL['AddOns'],
+			name = PA:Color(PA.ACL['AddOns']),
 			guiInline = true,
 			get = function(info) return PA.db[info[#info]] end,
 			set = function(info, value) PA.db[info[#info]] = value end,

@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0')
 _G.MovableFrames = MF
 
-MF.Title = 'MovableFrames'
+MF.Title = '|cFF16C3F2Movable|r|cFFFFFFFFFrames|r'
 MF.Desciption = 'Make Blizzard Frames Movable'
 MF.Authors = 'Azilroka    Simpy'
 
@@ -171,13 +171,13 @@ function MF:GetOptions()
 	local Options = {
 		order = 209,
 		type = 'group',
-		name = PA.ModuleColor..MF.Title,
+		name = MF.Title,
 		desc = MF.Desciption,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
-				name = 'Move Blizzard Frames',
+				name = PA:Color('Move Blizzard Frames'),
 			},
 			permanent = {
 				order = 1,
