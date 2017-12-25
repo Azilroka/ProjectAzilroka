@@ -271,9 +271,12 @@ function MF:Initialize()
 
 	self.AllFrames = nil
 
-	for _, Frame in pairs(Frames) do
-		if _G[Frame] then
-			self:MakeMovable(_G[Frame])
+	for i = 1, #Frames do
+		local frame = _G[Frames[i]]
+		if frame then
+			self:MakeMovable(frame)
+		else
+			PA:Print("Frame doesn't exist: "..Frames[i])
 		end
 	end
 

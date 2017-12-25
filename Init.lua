@@ -42,13 +42,21 @@ PA.Locales = {}
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
-PA.Color = '|cFF16C3F2'
 PA.ModuleColor = '|cFFFF8000'
 
 PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
 PA.NUI = GetAddOnEnableState(PA.MyName, 'ElvUI_NenaUI') > 0
 PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
+
+function PA:Color(name)
+	local color = '|cFF16C3F2%s|r'
+	return (color):format(name)
+end
+
+function PA:Print(...)
+	print(PA:Color(PA.Title..':'), ...)
+end
 
 function PA:ConflictAddOn(AddOns)
 	for AddOn in pairs(AddOns) do
@@ -75,7 +83,7 @@ end
 
 PA.Options = {
 	type = 'group',
-	name = PA.Color..PA.Title,
+	name = PA:Color(PA.Title),
 	order = 212,
 	args = {
 		header = {
