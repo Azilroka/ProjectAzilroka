@@ -144,6 +144,99 @@ EFL.ClientColor = {
 	BSAp = '82C5FF',
 }
 
+function EFL:ClassColorCode(class)
+	local color = class and RAID_CLASS_COLORS[self.Classes[class]] or { r = 1, g = 1, b = 1 }
+
+	return format('|cFF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
+end
+
+function EFL:BasicUpdateFriends(button)
+	local nameText, nameColor, infoText, broadcastText, _, Cooperate
+	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+		local name, level, class, area, connected, status = GetFriendInfo(button.id)
+		broadcastText = nil
+		if connected then
+			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack][(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')])
+			nameText = format('%s%s - (%s - %s %s)', EFL:ClassColorCode(class), name, class, LEVEL, level)
+			nameColor = FRIENDS_WOW_NAME_COLOR
+			Cooperate = true
+		else
+			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
+			nameText = name
+			nameColor = FRIENDS_GRAY_COLOR
+		end
+		infoText = area
+	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET and BNConnected() then
+		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
+		local realmName, realmID, faction, race, class, zoneName, level, gameText
+		broadcastText = messageText
+		local characterName = toonName
+		if presenceName then
+			nameText = presenceName
+			if isOnline then
+				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
+			end
+		else
+			nameText = UNKNOWN
+		end
+
+		if characterName then
+			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(toonID)
+			if client == BNET_CLIENT_WOW then
+				if (level == nil or tonumber(level) == nil) then level = 0 end
+				local classcolor = EFL:ClassColorCode(class)
+				local diff = level ~= 0 and format('|cFF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or '|cFFFFFFFF'
+				nameText = format('%s |cFFFFFFFF(|r%s%s|r - %s %s%s|r|cFFFFFFFF)|r', nameText, classcolor, characterName, LEVEL, diff, level)
+				Cooperate = CanCooperateWithGameAccount(toonID)
+			else
+				nameText = format('|cFF%s%s|r', EFL.ClientColor[client] or 'FFFFFF', nameText)
+			end
+		end
+
+		if isOnline then
+			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack][(isDND and 'DND' or isAFK and 'AFK' or 'Online')])
+			if client == BNET_CLIENT_WOW then
+				if not zoneName or zoneName == '' then
+					infoText = UNKNOWN
+				else
+					if realmName == EFL.MyRealm then
+						infoText = zoneName
+					else
+						infoText = format('%s - %s', zoneName, realmName)
+					end
+				end
+				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db[faction]])
+			else
+				infoText = gameText
+				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db[client]])
+			end
+			nameColor = FRIENDS_BNET_NAME_COLOR
+		else
+			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
+			nameColor = FRIENDS_GRAY_COLOR
+			infoText = lastOnline == 0 and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
+		end
+	end
+
+	if button.summonButton:IsShown() then
+		button.gameIcon:SetPoint('TOPRIGHT', -50, -2)
+	else
+		button.gameIcon:SetPoint('TOPRIGHT', -21, -2)
+	end
+
+	if nameText then
+		button.name:SetText(nameText)
+		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
+		button.info:SetText(infoText)
+		button.info:SetTextColor(.49, .52, .54)
+		if Cooperate then
+			button.info:SetTextColor(1, .96, .45)
+		end
+		button.name:SetFont(PA.LSM:Fetch('font', self.db.NameFont), self.db.NameFontSize, self.db.NameFontFlag)
+		button.info:SetFont(PA.LSM:Fetch('font', self.db.InfoFont), self.db.InfoFontSize, self.db.InfoFontFlag)
+	end
+end
+
 function EFL:GetOptions()
 	local Options = {
 		type = 'group',
@@ -331,104 +424,7 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList = Options
 end
 
-function EFL:SetupProfile()
-	self.db = self.data.profile
-end
-
-function EFL:ClassColorCode(class)
-	local color = class and RAID_CLASS_COLORS[self.Classes[class]] or { r = 1, g = 1, b = 1 }
-
-	return format('|cFF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
-end
-
-function EFL:BasicUpdateFriends(button)
-	local nameText, nameColor, infoText, broadcastText, _, Cooperate
-	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-		local name, level, class, area, connected, status = GetFriendInfo(button.id)
-		broadcastText = nil
-		if connected then
-			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack][(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')])
-			nameText = format('%s%s - (%s - %s %s)', EFL:ClassColorCode(class), name, class, LEVEL, level)
-			nameColor = FRIENDS_WOW_NAME_COLOR
-			Cooperate = true
-		else
-			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
-			nameText = name
-			nameColor = FRIENDS_GRAY_COLOR
-		end
-		infoText = area
-	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET and BNConnected() then
-		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
-		local realmName, realmID, faction, race, class, zoneName, level, gameText
-		broadcastText = messageText
-		local characterName = toonName
-		if presenceName then
-			nameText = presenceName
-			if isOnline then
-				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
-			end
-		else
-			nameText = UNKNOWN
-		end
-
-		if characterName then
-			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(toonID)
-			if client == BNET_CLIENT_WOW then
-				if (level == nil or tonumber(level) == nil) then level = 0 end
-				local classcolor = EFL:ClassColorCode(class)
-				local diff = level ~= 0 and format('|cFF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or '|cFFFFFFFF'
-				nameText = format('%s |cFFFFFFFF(|r%s%s|r - %s %s%s|r|cFFFFFFFF)|r', nameText, classcolor, characterName, LEVEL, diff, level)
-				Cooperate = CanCooperateWithGameAccount(toonID)
-			else
-				nameText = format('|cFF%s%s|r', EFL.ClientColor[client] or 'FFFFFF', nameText)
-			end
-		end
-
-		if isOnline then
-			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack][(isDND and 'DND' or isAFK and 'AFK' or 'Online')])
-			if client == BNET_CLIENT_WOW then
-				if not zoneName or zoneName == '' then
-					infoText = UNKNOWN
-				else
-					if realmName == EFL.MyRealm then
-						infoText = zoneName
-					else
-						infoText = format('%s - %s', zoneName, realmName)
-					end
-				end
-				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db[faction]])
-			else
-				infoText = gameText
-				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db[client]])
-			end
-			nameColor = FRIENDS_BNET_NAME_COLOR
-		else
-			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
-			nameColor = FRIENDS_GRAY_COLOR
-			infoText = lastOnline == 0 and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
-		end
-	end
-
-	if button.summonButton:IsShown() then
-		button.gameIcon:SetPoint('TOPRIGHT', -50, -2)
-	else
-		button.gameIcon:SetPoint('TOPRIGHT', -21, -2)
-	end
-
-	if nameText then
-		button.name:SetText(nameText)
-		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
-		button.info:SetText(infoText)
-		button.info:SetTextColor(.49, .52, .54)
-		if Cooperate then
-			button.info:SetTextColor(1, .96, .45)
-		end
-		button.name:SetFont(PA.LSM:Fetch('font', self.db.NameFont), self.db.NameFontSize, self.db.NameFontFlag)
-		button.info:SetFont(PA.LSM:Fetch('font', self.db.InfoFont), self.db.InfoFontSize, self.db.InfoFontFlag)
-	end
-end
-
-function EFL:Initialize()
+function EFL:BuildProfile()
 	local Defaults = {
 		profile = {
 			['NameFont'] = 'Arial Narrow',
@@ -466,6 +462,15 @@ function EFL:Initialize()
 	self.data = PA.ADB:New('EnhancedFriendsListDB', Defaults)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
+
+function EFL:SetupProfile()
+	self.db = self.data.profile
+end
+
+function EFL:Initialize()
+	EFL:BuildProfile()
 
 	self.Classes = {}
 

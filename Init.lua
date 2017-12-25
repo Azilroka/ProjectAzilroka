@@ -34,7 +34,7 @@ PA.UIScale = UIParent:GetScale()
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
-PA.Multiple = 768/PA.ScreenHeight
+PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
 
 -- Project Data
 PA.Locales = {}
@@ -181,6 +181,8 @@ function PA:ADDON_LOADED(event, addon)
 end
 
 function PA:PLAYER_LOGIN()
+	PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
+
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end

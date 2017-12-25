@@ -58,99 +58,6 @@ local function strtrim(string)
 	return string:gsub("^%s*(.-)%s*$", "%1")
 end
 
-function stAM:GetOptions()
-	local Options = {
-		type = 'group',
-		name = stAM.Title,
-		desc = stAM.Description,
-		order = 219,
-		get = function(info) return stAM.db[info[#info]] end,
-		set = function(info, value) stAM.db[info[#info]] = value end,
-		args = {
-			NumAddOns = {
-				order = 0,
-				type = 'range',
-				name = '# Shown AddOns',
-				min = 3, max = 30, step = 1,
-			},
-			FrameWidth = {
-				order = 1,
-				type = 'range',
-				name = 'Frame Width',
-				min = 225, max = 1024, step = 1,
-			},
-			ButtonHeight = {
-				order = 2,
-				type = 'range',
-				name = 'Button Height',
-				min = 3, max = 30, step = 1,
-			},
-			ButtonWidth = {
-				order = 3,
-				type = 'range',
-				name = 'Button Width',
-				min = 3, max = 30, step = 1,
-			},
-			Font = {
-				type = 'select', dialogControl = 'LSM30_Font',
-				order = 4,
-				name = 'Font',
-				values = PA.LSM:HashTable('font'),
-			},
-			FontSize = {
-				order = 5,
-				name = 'Font Size',
-				type = 'range',
-				min = 6, max = 22, step = 1,
-			},
-			FontFlag = {
-				order = 6,
-				name = 'Font Outline',
-				type = 'select',
-				values = {
-					['NONE'] = 'None',
-					['OUTLINE'] = 'OUTLINE',
-					['MONOCHROME'] = 'MONOCHROME',
-					['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
-					['THICKOUTLINE'] = 'THICKOUTLINE',
-				},
-			},
-			CheckTexture = {
-				order = 7,
-				type = 'select', dialogControl = 'LSM30_Statusbar',
-				name = 'Texture',
-				desc = 'The texture to use.',
-				values = PA.LSM:HashTable('statusbar'),
-			},
-			CheckColor = {
-				order = 8,
-				type = 'color',
-				name = COLOR_PICKER,
-				hasAlpha = true,
-				get = function(info) return unpack(stAM.db[info[#info]]) end,
-				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} end,
-			},
-			AuthorHeader = {
-				order = 9,
-				type = 'header',
-				name = 'Authors:',
-			},
-			Authors = {
-				order = 10,
-				type = 'description',
-				name = stAM.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
-
-	PA.Options.args.stAM = Options
-end
-
-function stAM:SetupProfile()
-	self.db = self.data.profile
-end
-
 function stAM:BuildFrame()
 	local Frame = CreateFrame("Frame", 'stAMFrame', UIParent)
 	Frame:SetSize(self.db['FrameWidth'], 10 + self.db['NumAddOns'] * 25 + 40)
@@ -488,7 +395,6 @@ function stAM:InitProfiles()
 	self.ProfileMenu = ProfileMenu
 end
 
-
 function stAM:UpdateProfiles()
 	local ProfileMenu = self.ProfileMenu
 	local Buttons = self.ProfileMenu.Buttons
@@ -524,41 +430,6 @@ end
 function stAM:ToggleProfiles()
 	ToggleFrame(self.ProfileMenu)
 	self:UpdateProfiles()
-end
-
-function stAM:Initialize()
-	self.data = PA.ADB:New('stAddonManagerDB', {
-		profile = {
-			['NumAddOns'] = 15,
-			['FrameWidth'] = 550,
-			['Font'] = 'PT Sans Narrow',
-			['FontSize'] = 16,
-			['FontFlag'] = 'OUTLINE',
-			['ButtonHeight'] = 18,
-			['ButtonWidth'] = 22,
-			['CheckColor'] = { 0, .66, 1},
-			['CheckTexture'] = 'Blizzard Raid Bar'
-		},
-	}, true)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-
-	self:SetupProfile()
-	self:GetOptions()
-
-	self.AddOnInfo = {}
-	self.AddOnProfile = {}
-	self.Profiles = {}
-
-	for i = 1, GetNumAddOns() do
-		local name, title, notes = GetAddOnInfo(i)
-		local requireddeps, optionaldeps = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
-		local author = GetAddOnMetadata(i, "Author")
-		self.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
-	end
-
-	self:BuildFrame()
-	self:InitProfiles()
 end
 
 function stAM:UpdateAddonList()
@@ -599,4 +470,135 @@ function stAM:UpdateAddonList()
 
 	self.Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
 	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
+end
+
+function stAM:GetOptions()
+	local Options = {
+		type = 'group',
+		name = stAM.Title,
+		desc = stAM.Description,
+		order = 219,
+		get = function(info) return stAM.db[info[#info]] end,
+		set = function(info, value) stAM.db[info[#info]] = value end,
+		args = {
+			NumAddOns = {
+				order = 0,
+				type = 'range',
+				name = '# Shown AddOns',
+				min = 3, max = 30, step = 1,
+			},
+			FrameWidth = {
+				order = 1,
+				type = 'range',
+				name = 'Frame Width',
+				min = 225, max = 1024, step = 1,
+			},
+			ButtonHeight = {
+				order = 2,
+				type = 'range',
+				name = 'Button Height',
+				min = 3, max = 30, step = 1,
+			},
+			ButtonWidth = {
+				order = 3,
+				type = 'range',
+				name = 'Button Width',
+				min = 3, max = 30, step = 1,
+			},
+			Font = {
+				type = 'select', dialogControl = 'LSM30_Font',
+				order = 4,
+				name = 'Font',
+				values = PA.LSM:HashTable('font'),
+			},
+			FontSize = {
+				order = 5,
+				name = 'Font Size',
+				type = 'range',
+				min = 6, max = 22, step = 1,
+			},
+			FontFlag = {
+				order = 6,
+				name = 'Font Outline',
+				type = 'select',
+				values = {
+					['NONE'] = 'None',
+					['OUTLINE'] = 'OUTLINE',
+					['MONOCHROME'] = 'MONOCHROME',
+					['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					['THICKOUTLINE'] = 'THICKOUTLINE',
+				},
+			},
+			CheckTexture = {
+				order = 7,
+				type = 'select', dialogControl = 'LSM30_Statusbar',
+				name = 'Texture',
+				desc = 'The texture to use.',
+				values = PA.LSM:HashTable('statusbar'),
+			},
+			CheckColor = {
+				order = 8,
+				type = 'color',
+				name = COLOR_PICKER,
+				hasAlpha = true,
+				get = function(info) return unpack(stAM.db[info[#info]]) end,
+				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} end,
+			},
+			AuthorHeader = {
+				order = 9,
+				type = 'header',
+				name = 'Authors:',
+			},
+			Authors = {
+				order = 10,
+				type = 'description',
+				name = stAM.Authors,
+				fontSize = 'large',
+			},
+		},
+	}
+
+	PA.Options.args.stAM = Options
+end
+
+function stAM:BuildProfile()
+	self.data = PA.ADB:New('stAddonManagerDB', {
+		profile = {
+			['NumAddOns'] = 15,
+			['FrameWidth'] = 550,
+			['Font'] = 'PT Sans Narrow',
+			['FontSize'] = 16,
+			['FontFlag'] = 'OUTLINE',
+			['ButtonHeight'] = 18,
+			['ButtonWidth'] = 22,
+			['CheckColor'] = { 0, .66, 1},
+			['CheckTexture'] = 'Blizzard Raid Bar'
+		},
+	}, true)
+	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
+	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
+
+function stAM:SetupProfile()
+	self.db = self.data.profile
+end
+
+function stAM:Initialize()
+	self:BuildProfile()
+	self:GetOptions()
+
+	self.AddOnInfo = {}
+	self.AddOnProfile = {}
+	self.Profiles = {}
+
+	for i = 1, GetNumAddOns() do
+		local name, title, notes = GetAddOnInfo(i)
+		local requireddeps, optionaldeps = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
+		local author = GetAddOnMetadata(i, "Author")
+		self.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
+	end
+
+	self:BuildFrame()
+	self:InitProfiles()
 end

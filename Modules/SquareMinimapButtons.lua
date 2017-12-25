@@ -491,11 +491,7 @@ function SMB:GetOptions()
 	PA.Options.args.SquareMinimapButton = Options
 end
 
-function SMB:SetupProfile()
-	self.db = self.data.profile
-end
-
-function SMB:Initialize()
+function SMB:BuildProfile()
 	self.data = PA.ADB:New('SquareMinimapButtonsDB', {
 		profile = {
 			['BarMouseOver'] = false,
@@ -512,8 +508,15 @@ function SMB:Initialize()
 	})
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
 
-	self:SetupProfile()
+function SMB:SetupProfile()
+	self.db = self.data.profile
+end
+
+function SMB:Initialize()
+	self:BuildProfile()
 	self:GetOptions()
 
 	self.Hider = CreateFrame("Frame", nil, UIParent)

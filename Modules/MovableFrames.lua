@@ -90,7 +90,7 @@ local AddOnFrames = {
 	['Blizzard_ItemUpgradeUI'] = { 'ItemUpgradeFrame' },
 	['Blizzard_LookingForGuildUI'] = { 'LookingForGuildFrame' },
 	['Blizzard_MacroUI'] = { 'MacroFrame' },
-	['Blizzard_OrderHallUI'] = { 'OrderHallTalentFrame' }, -- OrderHallMissionFrame is not movable or resizable
+	['Blizzard_OrderHallUI'] = { 'OrderHallTalentFrame' },
 	['Blizzard_QuestChoice'] = { 'QuestChoiceFrame' },
 	['Blizzard_TalentUI'] = { 'PlayerTalentFrame' },
 	['Blizzard_TalkingHeadUI'] = { 'TalkingHeadFrame' },
@@ -159,48 +159,53 @@ function MF:MakeMovable(Frame)
 	end)
 end
 
-local Defaults, Options
-function MF:GetOptions()
-	if not Options then
-		Options = {
-			order = 209,
-			type = 'group',
-			name = PA.ModuleColor..MF.Title,
-			desc = MF.Desciption,
-			args = {
-				Header = {
-					order = 0,
-					type = 'header',
-					name = 'Move Blizzard Frames',
-				},
-				permanent = {
-					order = 1,
-					type = 'group',
-					guiInline = true,
-					name = 'Permanent Moving',
-					args = {},
-				},
-				reset = {
-					order = 2,
-					type = 'group',
-					guiInline = true,
-					name = 'Reset Moving',
-					args = {},
-				},
-				AuthorHeader = {
-					order = 3,
-					type = 'header',
-					name = 'Authors:',
-				},
-				Authors = {
-					order = 4,
-					type = 'description',
-					name = MF.Authors,
-					fontSize = 'large',
-				},
-			},
-		}
+function MF:ADDON_LOADED(_, addon)
+	if AddOnFrames[addon] then
+		for _, Frame in pairs(AddOnFrames[addon]) do
+			self:MakeMovable(_G[Frame])
+		end
 	end
+end
+
+function MF:GetOptions()
+	local Options = {
+		order = 209,
+		type = 'group',
+		name = PA.ModuleColor..MF.Title,
+		desc = MF.Desciption,
+		args = {
+			Header = {
+				order = 0,
+				type = 'header',
+				name = 'Move Blizzard Frames',
+			},
+			permanent = {
+				order = 1,
+				type = 'group',
+				guiInline = true,
+				name = 'Permanent Moving',
+				args = {},
+			},
+			reset = {
+				order = 2,
+				type = 'group',
+				guiInline = true,
+				name = 'Reset Moving',
+				args = {},
+			},
+			AuthorHeader = {
+				order = 3,
+				type = 'header',
+				name = 'Authors:',
+			},
+			Authors = {
+				order = 4,
+				type = 'description',
+				name = MF.Authors,
+				fontSize = 'large',
+			},
+		},
+	}
 
 	sort(self.AllFrames)
 
@@ -219,33 +224,18 @@ function MF:GetOptions()
 			type = 'execute',
 			name = Name,
 			disabled = function(info) return not MF.db[info[#info]]['Permanent'] end,
-			func = function(info) HideUIPanel(_G[info[#info]]) MF.db[info[#info]].Points = Defaults.profile[info[#info]].Points end,
+			func = function(info) HideUIPanel(_G[info[#info]]) end,
 		}
 
 		Index = Index + 1
 	end
 
+	self.AllFrames = nil
+
 	PA.Options.args.MovableFrames = Options
 end
 
-function MF:SetupProfile()
-	self.db = self.data.profile
-end
-
-function MF:ADDON_LOADED(_, addon)
-	if AddOnFrames[addon] then
-		for _, Frame in pairs(AddOnFrames[addon]) do
-			self:MakeMovable(_G[Frame])
-		end
-	end
-end
-
-function MF:Initialize()
-	if PA.Tukui then
-		tinsert(Frames, 'LossOfControlFrame')
-		sort(Frames)
-	end
-
+function MF:BuildProfile()
 	self.AllFrames = CopyTable(Frames)
 
 	for _, Table in pairs(AddOnFrames) do
@@ -254,7 +244,7 @@ function MF:Initialize()
 		end
 	end
 
-	Defaults = { profile = {} }
+	local Defaults = { profile = {} }
 
 	for _, Frame in pairs(self.AllFrames) do
 		if not Defaults.profile[Frame] then
@@ -265,11 +255,21 @@ function MF:Initialize()
 	self.data = PA.ADB:New('MovableFramesDB', Defaults)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
 
-	self:SetupProfile()
+function MF:SetupProfile()
+	self.db = self.data.profile
+end
+
+function MF:Initialize()
+	if PA.Tukui then
+		tinsert(Frames, 'LossOfControlFrame')
+		sort(Frames)
+	end
+
+	self:BuildProfile()
 	self:GetOptions()
-
-	self.AllFrames = nil
 
 	for i = 1, #Frames do
 		local frame = _G[Frames[i]]

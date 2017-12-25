@@ -33,6 +33,34 @@ DO.Textures = {
 	['ClassicBoss'] = MediaPath..'ClassicBoss',
 }
 
+function DO:SetOverlay()
+	local Points = 'DragonPoints'
+	local TargetClass = UnitClassification('target')
+	local Texture = DO.Textures[self.db[TargetClass]]
+
+	if UnitIsPlayer('target') and self.db['ClassIcon'] then
+		TargetClass = select(2, UnitClass('target'))
+		self.frame:SetSize(32, 32)
+		self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
+		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[TargetClass]))
+		Points = 'ClassIconPoints'
+	else
+		if Texture and strfind(Texture, 'Classic') then
+			self.frame:SetSize(80, 80)
+		else
+			self.frame:SetSize(128, 32)
+		end
+		self.frame.Texture:SetTexture(Texture)
+		self.frame.Texture:SetTexCoord(self.db['FlipDragon'] and 1 or 0, self.db['FlipDragon'] and 0 or 1, 0, 1)
+	end
+
+	self.frame:ClearAllPoints()
+	self.frame:SetPoint(self.db[Points]['point'], _G[self.db[Points]['relativeTo']].Health, self.db[Points]['relativePoint'], self.db[Points]['xOffset'], self.db[Points]['yOffset'])
+	self.frame:SetParent(self.db[Points]['relativeTo'])
+	self.frame:SetFrameStrata(strsub(self.db['Strata'], 3))
+	self.frame:SetFrameLevel(self.db['Level'])
+end
+
 function DO:GetOptions()
 	local Options = {
 		type = 'group',
@@ -232,39 +260,7 @@ function DO:GetOptions()
 	PA.Options.args.DragonOverlay = Options
 end
 
-function DO:SetOverlay()
-	local Points = 'DragonPoints'
-	local TargetClass = UnitClassification('target')
-	local Texture = DO.Textures[self.db[TargetClass]]
-
-	if UnitIsPlayer('target') and self.db['ClassIcon'] then
-		TargetClass = select(2, UnitClass('target'))
-		self.frame:SetSize(32, 32)
-		self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
-		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[TargetClass]))
-		Points = 'ClassIconPoints'
-	else
-		if Texture and strfind(Texture, 'Classic') then
-			self.frame:SetSize(80, 80)
-		else
-			self.frame:SetSize(128, 32)
-		end
-		self.frame.Texture:SetTexture(Texture)
-		self.frame.Texture:SetTexCoord(self.db['FlipDragon'] and 1 or 0, self.db['FlipDragon'] and 0 or 1, 0, 1)
-	end
-
-	self.frame:ClearAllPoints()
-	self.frame:SetPoint(self.db[Points]['point'], _G[self.db[Points]['relativeTo']].Health, self.db[Points]['relativePoint'], self.db[Points]['xOffset'], self.db[Points]['yOffset'])
-	self.frame:SetParent(self.db[Points]['relativeTo'])
-	self.frame:SetFrameStrata(strsub(self.db['Strata'], 3))
-	self.frame:SetFrameLevel(self.db['Level'])
-end
-
-function DO:SetupProfile()
-	self.db = self.data.profile
-end
-
-function DO:Initialize()
+function DO:BuildProfile()
 	local Defaults = {
 		profile = {
 			['Strata'] = '2-MEDIUM',
@@ -308,6 +304,15 @@ function DO:Initialize()
 
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+	self.db = self.data.profile
+end
+
+function DO:SetupProfile()
+	self.db = self.data.profile
+end
+
+function DO:Initialize()
+	DO:BuildProfile()
 
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)
 	frame.Texture = frame:CreateTexture(nil, 'ARTWORK')
