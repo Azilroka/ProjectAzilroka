@@ -17,7 +17,7 @@ PA.AC = LibStub('AceConfig-3.0')
 PA.GUI = LibStub('AceGUI-3.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
 PA.ACD = LibStub('AceConfigDialog-3.0')
-PA.ACL = LibStub('AceLocale-3.0')
+PA.ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false);
 PA.ADB = LibStub('AceDB-3.0')
 
 PA.LSM = LibStub('LibSharedMedia-3.0')
@@ -81,12 +81,12 @@ PA.Options = {
 		header = {
 			order = 1,
 			type = 'header',
-			name = 'Controls AddOns in this package',
+			name = PA.ACL['Controls AddOns in this package'],
 		},
 		general = {
 			order = 2,
 			type = 'group',
-			name = 'AddOns',
+			name = PA.ACL['AddOns'],
 			guiInline = true,
 			get = function(info) return PA.db[info[#info]] end,
 			set = function(info, value) PA.db[info[#info]] = value end,
@@ -94,43 +94,43 @@ PA.Options = {
 				DO = {
 					order = 0,
 					type = 'toggle',
-					name = 'Dragon Overlay',
+					name = PA.ACL['Dragon Overlay'],
 				},
 				ES = {
 					order = 1,
 					type = 'toggle',
-					name = 'Enhanced Shadows',
+					name = PA.ACL['Enhanced Shadows'],
 					disabled = function() return (PA.SLE or PA.NUI) end,
 				},
 				EFL = {
 					order = 2,
 					type = 'toggle',
-					name = 'Enhanced Friends List',
+					name = PA.ACL['Enhanced Friends List'],
 				},
 				LC = {
 					order = 3,
 					type = 'toggle',
-					name = 'Loot Confirm',
+					name = PA.ACL['Loot Confirm'],
 				},
 				MF = {
 					order = 4,
 					type = 'toggle',
-					name = 'MovableFrames',
+					name = PA.ACL['MovableFrames'],
 				},
 				SMB = {
 					order = 5,
 					type = 'toggle',
-					name = 'Square Minimap Buttons / Bar',
+					name = PA.ACL['Square Minimap Buttons / Bar'],
 				},
 				BB = {
 					order = 6,
 					type = 'toggle',
-					name = 'BigButtons',
+					name = PA.ACL['BigButtons'],
 				},
 				stAM = {
 					order = 7,
 					type = 'toggle',
-					name = 'stAddOnManager',
+					name = PA.ACL['stAddOnManager'],
 				},
 			},
 		},

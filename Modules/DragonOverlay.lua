@@ -43,7 +43,7 @@ function DO:GetOptions()
 			general = {
 				order = 0,
 				type = 'group',
-				name = 'General',
+				name = PA.ACL['General'],
 				guiInline = true,
 				get = function(info) return DO.db[info[#info]] end,
 				set = function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end,
@@ -51,17 +51,17 @@ function DO:GetOptions()
 					ClassIcon = {
 						order = 0,
 						type = 'toggle',
-						name = 'Class Icon',
+						name = PA.ACL['Class Icon'],
 					},
 					FlipDragon = {
 						order = 1,
 						type = 'toggle',
-						name = 'Flip Dragon',
+						name = PA.ACL['Flip Dragon'],
 					},
 					Strata = {
-						name = 'Frame Strata',
 						order = 2,
 						type = 'select',
+						name = PA.ACL['Frame Strata'],
 						values = {
 							['1-BACKGROUND'] = 'BACKGROUND',
 							['2-LOW'] = 'LOW',
@@ -76,7 +76,7 @@ function DO:GetOptions()
 					Level = {
 						order = 3,
 						type = 'range',
-						name = 'Frame Level',
+						name = PA.ACL['Frame Level'],
 						min = 0, max = 255, step = 1,
 					},
 					Desc = {
@@ -87,7 +87,7 @@ function DO:GetOptions()
 					AuthorHeader = {
 						order = 20,
 						type = 'header',
-						name = 'Authors:',
+						name = PA.ACL['Authors:'],
 					},
 					Authors = {
 						order = 21,
@@ -98,7 +98,7 @@ function DO:GetOptions()
 					CreditsHeader = {
 						order = 22,
 						type = 'header',
-						name = 'Image Credits:',
+						name = PA.ACL['Image Credits:'],
 					},
 					Credits = {
 						order = 23,
@@ -112,7 +112,7 @@ function DO:GetOptions()
 	}
 
 	local Order = 4
-	for Option, Name in pairs({ ['ClassIconPoints'] = 'Class Icon Points', ['DragonPoints'] = 'Dragon Points' }) do
+	for Option, Name in pairs({ ['ClassIconPoints'] = PA.ACL['Class Icon Points'], ['DragonPoints'] = PA.ACL['Dragon Points'] }) do
 		Options.args.general.args[Option] = {
 			order = Order,
 			type = 'group',
@@ -122,19 +122,19 @@ function DO:GetOptions()
 			set = function(info, value) DO.db[Option][info[#info]] = value DO:SetOverlay() end,
 			args = {
 				point = {
-					name = 'Anchor Point',
+					name = PA.ACL['Anchor Point'],
 					order = 1,
 					type = 'select',
 					values = {},
 				},
 				relativeTo = {
-					name = 'Relative Frame',
+					name = PA.ACL['Relative Frame'],
 					order = 2,
 					type = 'select',
 					values = {},
 				},
 				relativePoint = {
-					name = 'Relative Point',
+					name = PA.ACL['Relative Point'],
 					order = 3,
 					type = 'select',
 					values = {},
@@ -142,13 +142,13 @@ function DO:GetOptions()
 				xOffset = {
 					order = 5,
 					type = 'range',
-					name = 'X Offset',
+					name = PA.ACL['X Offset'],
 					min = -350, max = 350, step = 1,
 				},
 				yOffset = {
 					order = 5,
 					type = 'range',
-					name = 'Y Offset',
+					name = PA.ACL['Y Offset'],
 					min = -350, max = 350, step = 1,
 				},
 			},
@@ -189,10 +189,10 @@ function DO:GetOptions()
 	end
 
 	local MenuItems = {
-		['elite'] = 'Elite',
-		['rare'] = 'Rare',
-		['rareelite'] = 'Rare Elite',
-		['worldboss'] = 'World Boss',
+		['elite'] = PA.ACL['Elite'],
+		['rare'] = PA.ACL['Rare'],
+		['rareelite'] = PA.ACL['Rare Elite'],
+		['worldboss'] = PA.ACL['World Boss'],
 	}
 
 	Order = 6

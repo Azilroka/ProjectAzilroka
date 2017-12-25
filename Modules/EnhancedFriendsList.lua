@@ -3,7 +3,7 @@ local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', '
 _G.EnhancedFriendsList = EFL
 
 EFL.Title = 'Enhanced Friends List'
-EFL.Description = 'Provides Freinds List Customization'
+EFL.Description = 'Provides Friends List Customization'
 EFL.Author = 'Azilroka'
 
 local pairs, tonumber = pairs, tonumber
@@ -154,7 +154,7 @@ function EFL:GetOptions()
 			general = {
 				order = 2,
 				type = 'group',
-				name = 'General',
+				name = PA.ACL['General'],
 				guiInline = true,
 				get = function(info) return EFL.db[info[#info]] end,
 				set = function(info, value) EFL.db[info[#info]] = value FriendsFrame_Update() end,
@@ -162,20 +162,20 @@ function EFL:GetOptions()
 					NameFont = {
 						type = 'select', dialogControl = 'LSM30_Font',
 						order = 1,
-						name = 'Name Font',
-						desc = 'The font that the RealID / Character Name / Level uses.',
+						name = PA.ACL['Name Font'],
+						desc = PA.ACL['The font that the RealID / Character Name / Level uses.'],
 						values = PA.LSM:HashTable('font'),
 					},
 					NameFontSize = {
 						order = 2,
-						name = 'Name Font Size',
-						desc = 'The font size that the RealID / Character Name / Level uses.',
+						name = PA.ACL['Name Font Size'],
+						desc = PA.ACL['The font size that the RealID / Character Name / Level uses.'],
 						type = 'range',
 						min = 6, max = 22, step = 1,
 					},
 					NameFontFlag = {
-						name = 'Name Font Flag',
-						desc = 'The font flag that the RealID / Character Name / Level uses.',
+						name = PA.ACL['Name Font Flag'],
+						desc = PA.ACL['The font flag that the RealID / Character Name / Level uses.'],
 						order = 3,
 						type = 'select',
 						values = {
@@ -189,21 +189,21 @@ function EFL:GetOptions()
 					InfoFont = {
 						type = 'select', dialogControl = 'LSM30_Font',
 						order = 4,
-						name = 'Info Font',
-						desc = 'The font that the Zone / Server uses.',
+						name = PA.ACL['Info Font'],
+						desc = PA.ACL['The font that the Zone / Server uses.'],
 						values = PA.LSM:HashTable('font'),
 					},
 					InfoFontSize = {
 						order = 5,
-						name = 'Info Font Size',
-						desc = 'The font size that the Zone / Server uses.',
+						name = PA.ACL['Info Font Size'],
+						desc = PA.ACL['The font size that the Zone / Server uses.'],
 						type = 'range',
 						min = 6, max = 22, step = 1,
 					},
 					InfoFontFlag = {
 						order = 6,
-						name = 'Info Font Outline',
-						desc = 'The font flag that the Zone / Server uses.',
+						name = PA.ACL['Info Font Outline'],
+						desc = PA.ACL['The font flag that the Zone / Server uses.'],
 						type = 'select',
 						values = {
 							['NONE'] = 'None',
@@ -214,8 +214,8 @@ function EFL:GetOptions()
 						},
 					},
 					StatusIconPack = {
-						name = 'Status Icon Pack',
-						desc = 'Different Status Icons.',
+						name = PA.ACL['Status Icon Pack'],
+						desc = PA.ACL['Different Status Icons.'],
 						order = 8,
 						type = 'select',
 						values = {
@@ -229,7 +229,7 @@ function EFL:GetOptions()
 			GameIcons = {
 				order = 3,
 				type = 'group',
-				name = 'Game Icons',
+				name = PA.ACL['Game Icons'],
 				guiInline = true,
 				get = function(info) return EFL.db[info[#info]] end,
 				set = function(info, value) EFL.db[info[#info]] = value FriendsFrame_Update() end,
@@ -238,14 +238,14 @@ function EFL:GetOptions()
 			GameIconsPreview = {
 				order = 4,
 				type = 'group',
-				name = 'Game Icon Preview',
+				name = PA.ACL['Game Icon Preview'],
 				guiInline = true,
 				args = {},
 			},
 			StatusIcons = {
 				order = 5,
 				type = 'group',
-				name = 'Status Icon Preview',
+				name = PA.ACL['Status Icon Preview'],
 				guiInline = true,
 				args = {},
 			},
@@ -256,15 +256,15 @@ function EFL:GetOptions()
 		Alliance = FACTION_ALLIANCE,
 		Horde = FACTION_HORDE,
 		Neutral = FACTION_STANDING_LABEL4,
-		D3 = 'Diablo 3',
-		WTCG = 'Hearthstone',
-		S1 = 'Starcraft',
-		S2 = 'Starcraft 2',
-		App = 'App',
-		BSAp = 'Mobile',
-		Hero = 'Hero of the Storm',
-		Pro = 'Overwatch',
-		DST2 = 'Destiny 2',
+		D3 = PA.ACL['Diablo 3'],
+		WTCG = PA.ACL['Hearthstone'],
+		S1 = PA.ACL['Starcraft'],
+		S2 = PA.ACL['Starcraft 2'],
+		App = PA.ACL['App'],
+		BSAp = PA.ACL['Mobile'],
+		Hero = PA.ACL['Hero of the Storm'],
+		Pro = PA.ACL['Overwatch'],
+		DST2 = PA.ACL['Destiny 2'],
 	}
 
 	local GameIconOrder = {
@@ -284,7 +284,7 @@ function EFL:GetOptions()
 
 	for Key, Value in pairs(GameIconsOptions) do
 		Options.args.GameIcons.args[Key] = {
-			name = Value..' Icon',
+			name = Value..PA.ACL[' Icon'],
 			order = GameIconOrder[Key],
 			type = 'select',
 			values = {
