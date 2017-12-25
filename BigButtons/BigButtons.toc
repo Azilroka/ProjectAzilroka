@@ -1,8 +1,0 @@
-## Interface: 60000
-## Title: Big Buttons
-## Version: 1.12
-## Notes: BigButtons
-## Author: Azilroka, Sortokk
-## OptionalDeps: Tukui, ElvUI, Enhanced_Config
-
-BigButtons.lua

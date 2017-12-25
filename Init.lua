@@ -118,9 +118,19 @@ PA.Options = {
 					name = 'MovableFrames',
 				},
 				SMB = {
-					order = 4,
+					order = 5,
 					type = 'toggle',
 					name = 'Square Minimap Buttons / Bar',
+				},
+				BB = {
+					order = 6,
+					type = 'toggle',
+					name = 'BigButtons',
+				},
+				stAM = {
+					order = 7,
+					type = 'toggle',
+					name = 'stAddOnManager',
 				},
 			},
 		},
@@ -140,6 +150,8 @@ function PA:UpdateProfile()
 			['LC'] = true,
 			['MF'] = true,
 			['SMB'] = true,
+			['BB'] = true,
+			['stAM'] = true,
 		},
 	}
 
@@ -167,6 +179,12 @@ function PA:PLAYER_LOGIN()
 	if not (PA.SLE or PA.NUI) and PA.db['ES'] then
 		_G.EnhancedShadows:Initialize()
 	end
+	if PA.db['SMB'] and not PA.SLE then
+		_G.SquareMinimapButtons:Initialize()
+	end
+	if PA.db['BB'] then
+		_G.BigButtons:Initialize()
+	end
 	if PA.db['EFL'] then
 		_G.EnhancedFriendsList:Initialize()
 	end
@@ -176,11 +194,11 @@ function PA:PLAYER_LOGIN()
 	if PA.db['MF'] then
 		_G.MovableFrames:Initialize()
 	end
-	if PA.db['SMB'] and not PA.SLE then
-		_G.SquareMinimapButtons:Initialize()
-	end
 	if PA.db['DO'] then
 		_G.DragonOverlay:Initialize()
+	end
+	if PA.db['stAM'] then
+		_G.stAddonManager:Initialize()
 	end
 	if PA.Tukui and GetAddOnEnableState(PA.MyName, 'Tukui_Config') > 0 then
 		PA:TukuiOptions()

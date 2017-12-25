@@ -3,9 +3,9 @@ local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
 
 _G.BigButtons = BB
 
-local GetItemInfo, GetSubZoneText, GetItemCount = GetItemInfo, GetSubZoneText, GetItemCount
+local GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown = GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown
 local _G = _G
-local select, tinsert = select, tinsert
+local select, tinsert, unpack = select, tinsert, unpack
 local AS, ES
 
 BB.Ranch = {
@@ -69,11 +69,11 @@ function BB:InFarmZone()
 	return GetSubZoneText() == BB.Ranch
 end
 
-function BB:CreateBigButton(ButtonName, ItemID)
-	local Button = CreateFrame('Button', ButtonName..'Button', self.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
+function BB:CreateBigButton(ItemID)
+	local Button = CreateFrame('Button', nil, self.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	Button:Hide()
 	Button:SetTemplate()
-	Button:Size(50)
+	Button:SetSize(50, 50)
 	Button:SetFrameLevel(1)
 	Button:SetAttribute('type', 'item')
 	Button:SetAttribute('item', GetItemInfo(ItemID))
@@ -100,6 +100,12 @@ function BB:CreateBigButton(ButtonName, ItemID)
 		Button:RegisterEvent(event)
 	end
 
+	Button:SetScript('OnShow', function(self)
+		if self:GetAttribute("item") ~= GetItemInfo(ItemID) then
+			self:SetAttribute('item', GetItemInfo(ItemID))
+		end
+	end)
+
 	Button:SetScript('OnEvent', function(self, event)
 		if not InCombatLockdown() then
 			if BB:InFarmZone() and GetItemCount(ItemID) == 1 then
@@ -115,8 +121,8 @@ function BB:CreateBigButton(ButtonName, ItemID)
 	tinsert(self.Bar.Buttons, Button)
 end
 
-function BB:CreateSeedButton(ButtonName, ItemID, x, y)
-	local Button = CreateFrame('Button', ButtonName, self.Bar.SeedsFrame, 'SecureActionButtonTemplate, ActionButtonTemplate')
+function BB:CreateSeedButton(ItemID, x, y)
+	local Button = CreateFrame('Button', nil, self.Bar.SeedsFrame, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	Button:SetTemplate()
 	Button:SetSize(30, 30)
 	Button:SetAttribute('type', 'item')
@@ -142,10 +148,18 @@ function BB:CreateSeedButton(ButtonName, ItemID, x, y)
 	Button:HookScript('OnLeave', GameTooltip_Hide)
 
 	local function Update(self)
-		local Count = GetItemCount(ItemID)
-		self:EnableMouse(Count > 0)
-		self.Count:SetText(Count > 0 and Count or '')
-		self.icon:SetDesaturated(Count == 0)
+		if not InCombatLockdown() then
+			if self:GetAttribute("item") ~= GetItemInfo(ItemID) then
+				self:SetAttribute('item', GetItemInfo(ItemID))
+			end
+			local Count = GetItemCount(ItemID)
+			self:EnableMouse(Count > 0)
+			self.Count:SetText(Count > 0 and Count or '')
+			self.icon:SetDesaturated(Count == 0)
+			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+		else
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+		end
 	end
 
 	for _, event in pairs(BB.Events) do
@@ -193,38 +207,58 @@ function BB:Initialize()
 	Bar.SeedsFrame:SetPoint('TOP', UIParent, 'TOP', 0, -300)
 	Bar.SeedsFrame.Buttons = {}
 
-	self:CreateBigButton('RustyWateringCan', 79104)
-	self:CreateBigButton('VintageBugSprayer', 80513)
-	self:CreateBigButton('DentedShovel', 89880)
-	self:CreateBigButton('MasterPlow', 89815)
+	self:CreateBigButton(79104)
+	self:CreateBigButton(80513)
+	self:CreateBigButton(89880)
+	self:CreateBigButton(89815)
 
-	self:CreateSeedButton('GreenCabbageSeeds', 79102, 1, 1)
-	self:CreateSeedButton('JuicycrunchCarrotSeeds', 80590, 2, 1)
-	self:CreateSeedButton('ScallionSeeds', 80591, 3, 1)
-	self:CreateSeedButton('MoguPumpkinSeeds', 80592, 4, 1)
-	self:CreateSeedButton('RedBlossomLeekSeeds', 80593, 5, 1)
-	self:CreateSeedButton('PinkTurnipSeeds', 80594, 6, 1)
-	self:CreateSeedButton('WhiteTurnipSeeds', 80595, 7, 1)
-	self:CreateSeedButton('SnakerootSeed', 85215, 8, 1)
-	self:CreateSeedButton('EnigmaSeed', 85216, 9, 1)
-	self:CreateSeedButton('MagebulbSeed', 85217, 10, 1)
-	self:CreateSeedButton('OminousSeed', 85219, 1, 2)
-	self:CreateSeedButton('StripedMelonSeeds', 89329, 2, 2)
-	self:CreateSeedButton('AutumnBlossomSapling', 85267, 3, 2)
-	self:CreateSeedButton('SpringBlossomSapling', 85268, 4, 2)
-	self:CreateSeedButton('WinterBlossomSapling', 85269, 5, 2)
-	self:CreateSeedButton('WindshearCactusSeed', 89197, 6, 2)
-	self:CreateSeedButton('RaptorleafSeed', 89202, 7, 2)
-	self:CreateSeedButton('SongbellSeed', 89233, 8, 2)
-	self:CreateSeedButton('WitchberrySeeds', 89326, 9, 2)
-	self:CreateSeedButton('JadeSquashSeeds', 89328, 10, 2)
+	self:CreateSeedButton(79102, 1, 1)
+	self:CreateSeedButton(80590, 2, 1)
+	self:CreateSeedButton(80591, 3, 1)
+	self:CreateSeedButton(80592, 4, 1)
+	self:CreateSeedButton(80593, 5, 1)
+	self:CreateSeedButton(80594, 6, 1)
+	self:CreateSeedButton(80595, 7, 1)
+	self:CreateSeedButton(85215, 8, 1)
+	self:CreateSeedButton(85216, 9, 1)
+	self:CreateSeedButton(85217, 10, 1)
+	self:CreateSeedButton(89329, 1, 2)
+	self:CreateSeedButton(89197, 2, 2)
+	self:CreateSeedButton(89202, 3, 2)
+	self:CreateSeedButton(89233, 4, 2)
+	self:CreateSeedButton(89326, 5, 2)
+	self:CreateSeedButton(89328, 6, 2)
+
+	self:CreateSeedButton(85267, 7, 2)
+	self:CreateSeedButton(85268, 8, 2)
+	self:CreateSeedButton(85269, 9, 2)
+	self:CreateSeedButton(85219, 10, 2)
+
+--[[
+	80809, -- Bag of Green Cabbage Seeds
+	84782, -- Bag of Juicycrunch Carrot Seeds
+	84783, -- Bag of Scallion Seeds
+	85153, -- Bag of Mogu Pumpkin Seeds
+	85158, -- Bag of Red Blossom Leek Seeds
+	85162, -- Bag of Pink Turnip Seeds
+	85163, -- Bag of White Turnip Seeds
+	89847, -- Bag of Witchberry Seeds
+	89848, -- Bag of Jade Squash Seeds
+	89849, -- Bag of Striped Melon Seeds
+	95445, -- Bag of Songbell Seeds
+	95447, -- Bag of Snakeroot Seeds
+	95449, -- Bag of Enigma Seeds
+	95451, -- Bag of Magebulb Seeds
+	95454, -- Bag of Windshear Cactus Seeds
+	95457, -- Bag of Raptorleaf Seeds
+]]
 
 	for _, event in pairs(BB.Events) do
 		Bar:RegisterEvent(event)
 		Bar.SeedsFrame:RegisterEvent(event)
 	end
 
-	Bar:SetScript('OnEvent', function(self, event)
+	Bar:SetScript('OnEvent', function(self)
 		if not InCombatLockdown() then
 			if BB:InFarmZone() then
 				self:Show()
@@ -235,7 +269,7 @@ function BB:Initialize()
 		end
 	end)
 
-	Bar.SeedsFrame:SetScript('OnEvent', function(self, event)
+	Bar.SeedsFrame:SetScript('OnEvent', function(self)
 		if not InCombatLockdown() then
 			if BB:InSeedZone() then
 				self:Show()
@@ -263,5 +297,3 @@ function BB:Initialize()
 		end
 	end
 end
-
-BB:RegisterEvent('PLAYER_LOGIN', 'Initialize')

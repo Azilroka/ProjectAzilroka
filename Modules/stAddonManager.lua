@@ -600,5 +600,3 @@ function stAM:UpdateAddonList()
 	self.Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
 	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
 end
-
-stAM:RegisterEvent("PLAYER_LOGIN", 'Initialize')
