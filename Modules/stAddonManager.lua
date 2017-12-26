@@ -206,18 +206,20 @@ function stAM:BuildFrame()
 		end)
 		CheckButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
 
-		local checked = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 1)
-		checked:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
-		checked:SetVertexColor(unpack(stAM.db['CheckColor']))
-		checked:SetInside(CheckButton)
+		local Checked = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 1)
+		Checked:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+		Checked:SetVertexColor(unpack(stAM.db['CheckColor']))
+		Checked:SetInside(CheckButton)
 
-		CheckButton:SetCheckedTexture(checked)
+		CheckButton.CheckTexture = Checked
+		CheckButton:SetCheckedTexture(Checked)
 
-		local hover = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 2)
-		hover:SetColorTexture(1, 1, 1, 0.3)
-		hover:SetInside(CheckButton)
+		local Highlight = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 2)
+		Highlight:SetColorTexture(1, 1, 1, 0.3)
+		Highlight:SetInside(CheckButton)
 
-		CheckButton:SetHighlightTexture(hover)
+		CheckButton.HighlightTexture = Highlight
+		CheckButton:SetHighlightTexture(Highlight)
 
 		local text = CheckButton:CreateFontString(nil, 'OVERLAY')
 		text:SetPoint('LEFT', 5, 0)
@@ -468,6 +470,20 @@ function stAM:UpdateAddonList()
 	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
 end
 
+function stAM:Update()
+	for i = 1, 30 do
+		local CheckButton = self.Frame.AddOns.Buttons[i]
+
+		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
+		CheckButton.text:SetFont(PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag'])
+		CheckButton.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db['CheckColor']))
+		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
+	end
+
+	stAM:UpdateAddonList()
+end
+
 function stAM:GetOptions()
 	local Options = {
 		type = 'group',
@@ -475,7 +491,7 @@ function stAM:GetOptions()
 		desc = stAM.Description,
 		order = 219,
 		get = function(info) return stAM.db[info[#info]] end,
-		set = function(info, value) stAM.db[info[#info]] = value end,
+		set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
 		args = {
 			Header = {
 				order = 0,
@@ -542,7 +558,7 @@ function stAM:GetOptions()
 				name = COLOR_PICKER,
 				hasAlpha = true,
 				get = function(info) return unpack(stAM.db[info[#info]]) end,
-				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} end,
+				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update()end,
 			},
 			AuthorHeader = {
 				order = 10,
