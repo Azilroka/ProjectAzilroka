@@ -47,6 +47,7 @@ PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
 PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
 PA.NUI = GetAddOnEnableState(PA.MyName, 'ElvUI_NenaUI') > 0
 PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
+PA.AzilUI = GetAddOnEnableState(PA.MyName, 'AzilUI') > 0
 
 function PA:Color(name)
 	local color = '|cFF16C3F2%s|r'
