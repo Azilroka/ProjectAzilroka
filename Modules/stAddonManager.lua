@@ -8,6 +8,7 @@ _G.stAddonManagerProfilesDB = {}
 stAM.Title = '|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
+local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 
 local unpack, tinsert, wipe, pairs, sort, format = unpack, tinsert, wipe, pairs, sort, format
 local strlen, strlower, strfind = strlen, strlower, strfind
@@ -208,7 +209,7 @@ function stAM:BuildFrame()
 
 		local Checked = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 1)
 		Checked:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
-		Checked:SetVertexColor(unpack(stAM.db['CheckColor']))
+		Checked:SetVertexColor(unpack(stAM.db['ClassColor'] and {Color.r, Color.g, Color.b} or stAM.db['CheckColor']))
 		Checked:SetInside(CheckButton)
 
 		CheckButton.CheckTexture = Checked
@@ -471,7 +472,6 @@ function stAM:UpdateAddonList()
 end
 
 function stAM:Update()
-	local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 	for i = 1, 30 do
 		local CheckButton = self.Frame.AddOns.Buttons[i]
 
