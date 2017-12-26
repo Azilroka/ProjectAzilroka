@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 _G.SquareMinimapButtons = SMB
 
-SMB.Title = 'Square Minimap Buttons'
+SMB.Title = '|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r'
 SMB.Description = 'Minimap Button Bar / Minimap Button Skinning'
 SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega    Durc'
 
@@ -397,74 +397,79 @@ function SMB:GetOptions()
 		get = function(info) return SMB.db[info[#info]] end,
 		set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 		args = {
+			Header = {
+				order = 0,
+				type = 'header',
+				name = PA:Color(SMB.Title),
+			},
 			mbb = {
 				order = 1,
 				type = 'group',
-				name = 'Minimap Buttons / Bar',
+				name = PA.ACL['Minimap Buttons / Bar'],
 				guiInline = true,
 				args = {
 					BarEnabled = {
 						order = 1,
 						type = 'toggle',
-						name = 'Enable Bar',
+						name = PA.ACL['Enable Bar'],
 					},
 					BarMouseOver = {
 						order = 2,
 						type = 'toggle',
-						name = 'Bar MouseOver',
+						name = PA.ACL['Bar MouseOver'],
 					},
 					IconSize = {
 						order = 4,
 						type = 'range',
-						name = 'Icon Size',
+						name = PA.ACL['Icon Size'],
 						min = 12, max = 48, step = 1,
 					},
 					ButtonSpacing = {
 						order = 5,
 						type = 'range',
-						name = 'Button Spacing',
+						name = PA.ACL['Button Spacing'],
 						min = 0, max = 10, step = 1,
 					},
 					ButtonsPerRow = {
 						order = 6,
 						type = 'range',
-						name = 'Buttons Per Row',
+						name = PA.ACL['Buttons Per Row'],
 						min = 1, max = 12, step = 1,
 					},
 				},
 			},
 			blizzard = {
-				type = "group",
-				name = "Blizzard",
+				type = 'group',
+				name = PA.ACL['Blizzard'],
 				guiInline = true,
 				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() SMB:HandleBlizzardButtons() end,
 				order = 2,
 				args = {
 					HideGarrison  = {
-						type = "toggle",
-						name = "Hide Garrison",
+						type = 'toggle',
+						name = PA.ACL['Hide Garrison'],
 						order = 1,
 						disabled = function() return SMB.db.MoveGarrison end,
 					},
 					MoveGarrison  = {
-						type = "toggle",
-						name = "Move Garrison Icon",
+						type = 'toggle',
+						name = PA.ACL['Move Garrison Icon'],
 						order = 2,
 						disabled = function() return SMB.db.HideGarrison end,
 					},
 					MoveMail  = {
-						type = "toggle",
-						name = "Move Mail Icon",
+						type = 'toggle',
+						name = PA.ACL['Move Mail Icon'],
 						order = 3,
 					},
 					MoveTracker  = {
-						type = "toggle",
-						name = "Move Tracker Icon",
+						type = 'toggle',
+						name = PA.ACL['Move Tracker Icon'],
 						order = 3,
 					},
 					MoveQueue  = {
-						type = "toggle",
-						name = "Move Queue Status Icon",
+						type = 'toggle',
+						name = PA.ACL['Move Queue Status Icon'],
 						order = 3,
 					},
 				},
@@ -472,7 +477,7 @@ function SMB:GetOptions()
 			AuthorHeader = {
 				order = 3,
 				type = 'header',
-				name = 'Authors:',
+				name = PA.ACL['Authors:'],
 			},
 			Authors = {
 				order = 4,

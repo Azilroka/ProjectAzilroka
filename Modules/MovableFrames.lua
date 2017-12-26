@@ -177,26 +177,26 @@ function MF:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color('Move Blizzard Frames'),
+				name = PA:Color(MF.Title),
 			},
 			permanent = {
 				order = 1,
 				type = 'group',
 				guiInline = true,
-				name = 'Permanent Moving',
+				name = PA.ACL['Permanent Moving'],
 				args = {},
 			},
 			reset = {
 				order = 2,
 				type = 'group',
 				guiInline = true,
-				name = 'Reset Moving',
+				name = PA.ACL['Reset Moving'],
 				args = {},
 			},
 			AuthorHeader = {
 				order = 3,
 				type = 'header',
-				name = 'Authors:',
+				name = PA.ACL['Authors:'],
 			},
 			Authors = {
 				order = 4,
@@ -276,7 +276,7 @@ function MF:Initialize()
 		if frame then
 			self:MakeMovable(frame)
 		else
-			PA:Print("Frame doesn't exist: "..Frames[i])
+			PA:Print(PA.ACL["Frame doesn't exist: "]..Frames[i])
 		end
 	end
 

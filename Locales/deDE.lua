@@ -3,7 +3,10 @@ local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'deDE')
 if not ACL then return end
 
 -- Misc
+ACL['Authors:'] = "Authoren:"
+ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = "Kontrolliert AddOns in diesem Paket"
+ACL["Frame doesn't exist: "] = "Frame existiert nicht: "
 ACL['General'] = "Allgemein"
 
 -- Apps/Games
@@ -30,7 +33,6 @@ ACL['stAddOnManager'] = true
 
 -- Dragon Overlay
 ACL['Anchor Point'] = "Ankerpunkt"
-ACL['Authors:'] = "Authoren:"
 ACL['Class Icon'] = "Klassensymbol"
 ACL['Class Icon Points'] = "Klassensymbol Punkt"
 ACL['Dragon Points'] = "Drachen Punkt"
@@ -67,6 +69,11 @@ ACL['Game Icon Preview'] = "Spiel Symbol Vorschau"
 ACL['Status Icon Preview'] = "Status Symbol Vorschau"
 ACL[' Icon'] = " Symbol"
 
+-- Enhanced Shadows
+ACL['Color by Class'] = "Klassenfarbe"
+ACL['Shadow Color'] = "Schattenfarbe"
+ACL['Size'] = "Größe"
+
 -- Loot Confirm
 ACL['Auto Confirm'] = "Auto bestätigen"
 ACL['Automatically click OK on BOP items'] = "Klickt automatisch OK auf BOP Gegenstände"
@@ -77,3 +84,29 @@ ACL['Automatically disenchant'] = "Automatisches entzaubern"
 ACL['Auto-roll based on a given level'] = "Auto-Rollen basierend auf angegebenen Level"
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = "Dieses wird Auto-Rollen wenn, du über dem angegebenen Level bist, wenn: Du den Gegenstand nicht anziehen kannst oder das iLevel von deinem angezogenen Gegenstand höher ist wie auf das zu rollendem Gegenstand oder du ein Erbstück trägst auf dem Slot."
 ACL['Level to start auto-rolling from'] = "Level von dem Auto-Rollen gestartet wird"
+
+-- MovableFrames
+ACL['Permanent Moving'] = "Permanentes Bewegen"
+ACL['Reset Moving'] = "Bewegen zurücksetzen"
+
+-- SquareMinimapButtons
+ACL['Bar MouseOver'] = "Leiste MouseOver"
+ACL['Buttons Per Row'] = "Tasten pro Reihe"
+ACL['Button Spacing'] = "Tasten Abstand"
+ACL['Enable Bar'] = "Aktiviere Leiste"
+ACL['Hide Garrison'] = "Verstecke Garnision"
+ACL['Icon Size'] = "Icon Größe"
+ACL['Minimap Buttons / Bar'] = "Minikarte Tasten / Leiste"
+ACL['Move Garrison Icon'] = "Garnision Icon bewegen"
+ACL['Move Mail Icon'] = "Post Icon bewegen"
+ACL['Move Tracker Icon'] = "Verflogen Icon bewegen"
+ACL['Move Queue Status Icon'] = "LFG Icon bewegen"
+
+-- stAddOnManager
+ACL['# Shown AddOns'] = "# Angezeigte AddOns"
+ACL['Button Height'] = "Tasten Höhe"
+ACL['Button Width'] = "Tasten Breite"
+ACL['Font'] = "Schrifart"
+ACL['Font Outline'] = "Schriftumrandung"
+ACL['Frame Width'] = "Fenster Breite"
+ACL['Texture'] = "Textur"

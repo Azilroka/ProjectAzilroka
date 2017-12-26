@@ -3,7 +3,10 @@ local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'zhTW')
 if not ACL then return end
 
 -- Misc
+ACL['Authors:'] = true
+ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = true
+ACL["Frame doesn't exist: "] = true
 ACL['General'] = true
 
 -- Apps/Games
@@ -30,7 +33,6 @@ ACL['stAddOnManager'] = true
 
 -- Dragon Overlay
 ACL['Anchor Point'] = true
-ACL['Authors:'] = true
 ACL['Class Icon'] = true
 ACL['Class Icon Points'] = true
 ACL['Dragon Points'] = true
@@ -67,6 +69,11 @@ ACL['Game Icon Preview'] = true
 ACL['Status Icon Preview'] = true
 ACL[' Icon'] = true
 
+-- Enhanced Shadows
+ACL['Color by Class'] = true
+ACL['Shadow Color'] = true
+ACL['Size'] = true
+
 -- Loot Confirm
 ACL['Auto Confirm'] = true
 ACL['Automatically click OK on BOP items'] = true
@@ -77,3 +84,29 @@ ACL['Automatically disenchant'] = true
 ACL['Auto-roll based on a given level'] = true
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
 ACL['Level to start auto-rolling from'] = true
+
+-- MovableFrames
+ACL['Permanent Moving'] = true
+ACL['Reset Moving'] = true
+
+-- SquareMinimapButtons
+ACL['Bar MouseOver'] = true
+ACL['Buttons Per Row'] = true
+ACL['Button Spacing'] = true
+ACL['Enable Bar'] = true
+ACL['Hide Garrison'] = true
+ACL['Icon Size'] = true
+ACL['Minimap Buttons / Bar'] = true
+ACL['Move Garrison Icon'] = true
+ACL['Move Mail Icon'] = true
+ACL['Move Tracker Icon'] = true
+ACL['Move Queue Status Icon'] = true
+
+-- stAddOnManager
+ACL['# Shown AddOns'] = true
+ACL['Button Height'] = true
+ACL['Button Width'] = true
+ACL['Font'] = true
+ACL['Font Outline'] = true
+ACL['Frame Width'] = true
+ACL['Texture'] = true

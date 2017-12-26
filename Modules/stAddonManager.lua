@@ -489,42 +489,42 @@ function stAM:GetOptions()
 			NumAddOns = {
 				order = 1,
 				type = 'range',
-				name = '# Shown AddOns',
+				name = PA.ACL['# Shown AddOns'],
 				min = 3, max = 30, step = 1,
 			},
 			FrameWidth = {
 				order = 2,
 				type = 'range',
-				name = 'Frame Width',
+				name = PA.ACL['Frame Width'],
 				min = 225, max = 1024, step = 1,
 			},
 			ButtonHeight = {
 				order = 3,
 				type = 'range',
-				name = 'Button Height',
+				name = PA.ACL['Button Height'],
 				min = 3, max = 30, step = 1,
 			},
 			ButtonWidth = {
 				order = 4,
 				type = 'range',
-				name = 'Button Width',
+				name = PA.ACL['Button Width'],
 				min = 3, max = 30, step = 1,
 			},
 			Font = {
 				type = 'select', dialogControl = 'LSM30_Font',
 				order = 5,
-				name = 'Font',
+				name = PA.ACL['Font'],
 				values = PA.LSM:HashTable('font'),
 			},
 			FontSize = {
 				order = 6,
-				name = 'Font Size',
+				name = FONT_SIZE,
 				type = 'range',
 				min = 6, max = 22, step = 1,
 			},
 			FontFlag = {
 				order = 7,
-				name = 'Font Outline',
+				name = PA.ACL['Font Outline'],
 				type = 'select',
 				values = {
 					['NONE'] = 'None',
@@ -537,8 +537,7 @@ function stAM:GetOptions()
 			CheckTexture = {
 				order = 8,
 				type = 'select', dialogControl = 'LSM30_Statusbar',
-				name = 'Texture',
-				desc = 'The texture to use.',
+				name = PA.ACL['Texture'],
 				values = PA.LSM:HashTable('statusbar'),
 			},
 			CheckColor = {
@@ -552,7 +551,7 @@ function stAM:GetOptions()
 			AuthorHeader = {
 				order = 10,
 				type = 'header',
-				name = 'Authors:',
+				name = PA.ACL['Authors:'],
 			},
 			Authors = {
 				order = 11,

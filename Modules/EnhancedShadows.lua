@@ -64,10 +64,15 @@ function ES:GetOptions()
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
 		args = {
+			Header = {
+				order = 0,
+				type = 'header',
+				name = PA:Color(ES.Title)
+			},
 			Color = {
 				type = "color",
 				order = 1,
-				name = "Shadow Color",
+				name = PA.ACL['Shadow Color'],
 				hasAlpha = true,
 				get = function(info) return unpack(ES.db[info[#info]]) end,
 				set = function(info, r, g, b, a) ES.db[info[#info]] = { r, g, b, a } ES:UpdateShadows() end,
@@ -75,12 +80,12 @@ function ES:GetOptions()
 			ColorByClass = {
 				type = 'toggle',
 				order = 2,
-				name = 'Color by Class',
+				name = PA.ACL['Color by Class'],
 			},
 			Size = {
-				order = 2,
+				order = 3,
 				type = 'range',
-				name = "Size",
+				name = PA.ACL['Size'],
 				min = 3, max = 10, step = 1,
 			},
 		},
