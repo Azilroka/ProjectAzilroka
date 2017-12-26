@@ -37,17 +37,19 @@ PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
 
 -- Project Data
-PA.Locales = {}
+function PA:IsAddOnEnabled(addon)
+	return GetAddOnEnableState(PA.MyName, addon) == 2
+end
 
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 
-PA.ElvUI = GetAddOnEnableState(PA.MyName, 'ElvUI') > 0
-PA.SLE = GetAddOnEnableState(PA.MyName, 'ElvUI_SLE') > 0
-PA.NUI = GetAddOnEnableState(PA.MyName, 'ElvUI_NenaUI') > 0
-PA.Tukui = GetAddOnEnableState(PA.MyName, 'Tukui') > 0
-PA.AzilUI = GetAddOnEnableState(PA.MyName, 'AzilUI') > 0
+PA.ElvUI = PA:IsAddOnEnabled('ElvUI')
+PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE')
+PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI')
+PA.Tukui = PA:IsAddOnEnabled('Tukui')
+PA.AzilUI = PA:IsAddOnEnabled('AzilUI')
 
 function PA:Color(name)
 	local color = '|cFF16C3F2%s|r'

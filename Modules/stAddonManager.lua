@@ -5,7 +5,7 @@ local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
 _G.stAddonManager = stAM
 _G.stAddonManagerProfilesDB = {}
 
-stAM.Title = '|cff00aaffst|r|cFFFFFFFFAddonManager|r'
+stAM.Title = '|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
 
@@ -49,10 +49,6 @@ _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
 	enterClicksFirstButton = 1,
 	hideOnEscape = 1,
 }
-
-function stAM:IsAddOnEnabled(addon)
-	return GetAddOnEnableState(PA.MyName, addon) == 2
-end
 
 local function strtrim(string)
 	return string:gsub("^%s*(.-)%s*$", "%1")
@@ -183,7 +179,7 @@ function stAM:BuildFrame()
 		CheckButton:SetPoint(unpack(i == 1 and {"TOPLEFT", AddOns, "TOPLEFT", 10, -10} or {"TOP", AddOns.Buttons[i-1], "BOTTOM", 0, -5}))
 		CheckButton:SetScript('OnClick', function(self)
 			if self.name then
-				if stAM:IsAddOnEnabled(self.name) then
+				if PA:IsAddOnEnabled(self.name) then
 					DisableAddOn(self.name, PA.MyName)
 				else
 					EnableAddOn(self.name, PA.MyName)
@@ -269,7 +265,7 @@ function stAM:NewAddOnProfile(name, overwrite)
 	_G.stAddonManagerProfilesDB[name] = {}
 
 	for i = 1, #self.AddOnInfo do
-		local AddOn, isEnabled = unpack(self.AddOnInfo[i]), stAM:IsAddOnEnabled(i)
+		local AddOn, isEnabled = unpack(self.AddOnInfo[i]), PA:IsAddOnEnabled(i)
 		if isEnabled then
 			tinsert(_G.stAddonManagerProfilesDB[name], AddOn)
 		end
@@ -457,7 +453,7 @@ function stAM:UpdateAddonList()
 		if addonIndex and addonIndex <= #self.AddOnInfo then
 			button.name, button.title, button.author, button.notes, button.requireddeps, button.optionaldeps = unpack(self.AddOnInfo[addonIndex])
 			button.text:SetText(button.title)
-			button:SetChecked(stAM:IsAddOnEnabled(addonIndex))
+			button:SetChecked(PA:IsAddOnEnabled(addonIndex))
 			button:Show()
 		else
 			button:Hide()
