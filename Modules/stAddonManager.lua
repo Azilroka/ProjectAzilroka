@@ -558,7 +558,7 @@ function stAM:GetOptions()
 				name = COLOR_PICKER,
 				hasAlpha = true,
 				get = function(info) return unpack(stAM.db[info[#info]]) end,
-				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update()end,
+				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end,
 			},
 			AuthorHeader = {
 				order = 10,
@@ -614,6 +614,8 @@ function stAM:Initialize()
 		local author = GetAddOnMetadata(i, "Author")
 		self.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
 	end
+
+	self.scrollOffset = 0
 
 	self:BuildFrame()
 	self:InitProfiles()
