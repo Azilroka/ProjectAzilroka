@@ -100,6 +100,7 @@ function ES:BuildProfile()
 
 	self.data.RegisterCallback(self, "OnProfileChanged", "SetupProfile")
 	self.data.RegisterCallback(self, "OnProfileCopied", "SetupProfile")
+	self.db = self.data.profile
 end
 
 function ES:SetupProfile()

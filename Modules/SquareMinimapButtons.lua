@@ -26,6 +26,8 @@ local ignoreButtons = {
 	'GarrisonLandingPageMinimapButton',
 	'MiniMapMailFrame',
 	'MiniMapTracking',
+	'TukuiMinimapZone',
+	'TukuiMinimapCoord',
 }
 
 local GenericIgnores = {
@@ -386,13 +388,6 @@ function SMB:Update()
 	end
 end
 
-function SMB:AddCustomUIButtons()
-	if PA.Tukui then
-		tinsert(ignoreButtons, 'TukuiMinimapZone')
-		tinsert(ignoreButtons, 'TukuiMinimapCoord')
-	end
-end
-
 function SMB:GetOptions()
 	local Options = {
 		type = 'group',
@@ -545,8 +540,6 @@ function SMB:Initialize()
 	end
 
 	self.TexCoords = { .08, .92, .08, .92 }
-
-	self:AddCustomUIButtons()
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 

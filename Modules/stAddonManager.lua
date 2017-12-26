@@ -9,22 +9,18 @@ stAM.Title = '|cff00aaffst|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
 
-local unpack, tinsert, wipe, pairs, sort = unpack, tinsert, wipe, pairs, sort
+local unpack, tinsert, wipe, pairs, sort, format = unpack, tinsert, wipe, pairs, sort, format
 local strlen, strlower, strfind = strlen, strlower, strfind
 local min, max = min, max
 
 local CreateFrame, UIParent, GameTooltip = CreateFrame, UIParent, GameTooltip
 
 local GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState = GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState
-local DisableAddOn, EnableAddOn = DisableAddOn, EnableAddOn
+local DisableAddOn, EnableAddOn, GetAddOnMetadata = DisableAddOn, EnableAddOn, GetAddOnMetadata
 
 local IsShiftKeyDown = IsShiftKeyDown
 
-function stAM:IsAddOnEnabled(addon)
-	return GetAddOnEnableState(PA.MyName, addon) == 2
-end
-
-StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
+_G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
 	button1 = 'Overwrite',
 	button2 = 'Cancel',
 	timeout = 0,
@@ -33,7 +29,7 @@ StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
 	hideOnEscape = 1,
 }
 
-StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
+_G.StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 	text = "Enter a name for your new Addon Profile:",
 	button1 = 'Create',
 	button2 = 'Cancel',
@@ -45,7 +41,7 @@ StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
 }
 
-StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
+_G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
 	button1 = 'Delete',
 	button2 = 'Cancel',
 	timeout = 0,
@@ -53,6 +49,10 @@ StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
 	enterClicksFirstButton = 1,
 	hideOnEscape = 1,
 }
+
+function stAM:IsAddOnEnabled(addon)
+	return GetAddOnEnableState(PA.MyName, addon) == 2
+end
 
 local function strtrim(string)
 	return string:gsub("^%s*(.-)%s*$", "%1")
@@ -328,7 +328,7 @@ function stAM:InitProfiles()
 	NewButton:SetPoint('TOPRIGHT', ProfileMenu.DisableAll, 'BOTTOMRIGHT', 0, -5)
 	NewButton:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
 	NewButton:SetScript('OnLeave', function(self) self:SetTemplate() end)
-	NewButton:SetScript('OnClick', function() StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
+	NewButton:SetScript('OnClick', function() _G.StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
 	NewButton.Text = NewButton:CreateFontString(nil, 'OVERLAY')
 	NewButton.Text:SetFont(PA.LSM:Fetch('font', 'PT Sans Narrow'), 12, 'OUTLINE')
 	NewButton.Text:SetPoint('CENTER', 0, 0)
@@ -378,7 +378,7 @@ function stAM:InitProfiles()
 		Pullout.Delete:SetPoint('LEFT', Pullout.Update, 'RIGHT', 5, 0)
 		Pullout.Delete.Text:SetText('Delete')
 		Pullout.Delete:SetScript('OnClick', function(self)
-			local dialog = StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION']
+			local dialog = _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION']
 
 			dialog.text = format("Are you sure you want to delete %s?", Pullout.Name)
 			dialog.OnAccept = function(self)
@@ -386,7 +386,7 @@ function stAM:InitProfiles()
 				stAM:UpdateProfiles()
 			end
 
-			StaticPopup_Show('STADDONMANAGER_DELETECONFIRMATION')
+			_G.StaticPopup_Show('STADDONMANAGER_DELETECONFIRMATION')
 		end)
 
 		ProfileMenu.Buttons[i] = Pullout
@@ -428,7 +428,7 @@ function stAM:UpdateProfiles()
 end
 
 function stAM:ToggleProfiles()
-	ToggleFrame(self.ProfileMenu)
+	_G.ToggleFrame(self.ProfileMenu)
 	self:UpdateProfiles()
 end
 
