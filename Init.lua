@@ -44,6 +44,8 @@ end
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
+local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
+PA.ClassColor = { Color.r, Color.g, Color.b }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI')
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE')

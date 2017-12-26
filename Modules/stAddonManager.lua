@@ -8,7 +8,6 @@ _G.stAddonManagerProfilesDB = {}
 stAM.Title = '|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
 stAM.Authors = 'Safturento    Azilroka'
-local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 
 local unpack, tinsert, wipe, pairs, sort, format = unpack, tinsert, wipe, pairs, sort, format
 local strlen, strlower, strfind = strlen, strlower, strfind
@@ -80,7 +79,7 @@ function stAM:BuildFrame()
 	Close:SetTemplate()
 	Close:SetPoint('TOPRIGHT', -3, -3)
 	Close:SetSize(16, 16)
-	Close:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+	Close:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	Close:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Close:SetScript('OnClick', function(self) Frame:Hide() end)
 	Close.Text = Close:CreateFontString(nil, 'OVERLAY')
@@ -122,7 +121,7 @@ function stAM:BuildFrame()
 	local Reload = CreateFrame('Button', nil, Frame)
 	Reload:SetTemplate()
 	Reload:SetSize(70, 20)
-	Reload:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+	Reload:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	Reload:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Reload:SetScript('OnClick', _G.ReloadUI)
 	Reload.Text = Reload:CreateFontString(nil, 'OVERLAY')
@@ -135,7 +134,7 @@ function stAM:BuildFrame()
 	local Profiles = CreateFrame('Button', nil, Frame)
 	Profiles:SetTemplate()
 	Profiles:SetSize(70, 20)
-	Profiles:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+	Profiles:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	Profiles:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Profiles:SetScript('OnClick', function() stAM:ToggleProfiles() end)
 	Profiles.Text = Profiles:CreateFontString(nil, 'OVERLAY')
@@ -189,7 +188,7 @@ function stAM:BuildFrame()
 			end
 		end)
 		CheckButton:SetScript('OnEnter', function(self)
-			GameTooltip:SetOwner(self, 'ANCHOR_CURSOR')
+			GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
 			GameTooltip:ClearLines()
 			GameTooltip:AddLine(self.title, 1, 1, 1)
 			GameTooltip:AddLine(self.author, 1, 1, 1)
@@ -204,23 +203,19 @@ function stAM:BuildFrame()
 				GameTooltip:AddDoubleLine('Optional Dependencies:', self.optionaldeps, 1, 1, 1, 1, 1, 1)
 			end
 			GameTooltip:Show()
+			self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 		end)
-		CheckButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+		CheckButton:SetScript('OnLeave', function(self) self:SetTemplate() GameTooltip:Hide() end)
 
 		local Checked = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 1)
 		Checked:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
-		Checked:SetVertexColor(unpack(stAM.db['ClassColor'] and {Color.r, Color.g, Color.b} or stAM.db['CheckColor']))
+		Checked:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 		Checked:SetInside(CheckButton)
 
 		CheckButton.CheckTexture = Checked
 		CheckButton:SetCheckedTexture(Checked)
 
-		local Highlight = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 2)
-		Highlight:SetColorTexture(1, 1, 1, 0.3)
-		Highlight:SetInside(CheckButton)
-
-		CheckButton.HighlightTexture = Highlight
-		CheckButton:SetHighlightTexture(Highlight)
+		CheckButton:SetHighlightTexture('')
 
 		local text = CheckButton:CreateFontString(nil, 'OVERLAY')
 		text:SetPoint('LEFT', 5, 0)
@@ -288,7 +283,7 @@ function stAM:InitProfiles()
 		local Button = CreateFrame('Button', nil, ProfileMenu)
 		Button:SetTemplate()
 		Button:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
-		Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+		Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 		Button:SetScript('OnLeave', function(self) self:SetTemplate() end)
 
 		Button.Text = Button:CreateFontString(nil, 'OVERLAY')
@@ -325,7 +320,7 @@ function stAM:InitProfiles()
 	NewButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
 	NewButton:SetPoint('TOPLEFT', ProfileMenu.EnableAll, 'BOTTOMLEFT', 0, -5)
 	NewButton:SetPoint('TOPRIGHT', ProfileMenu.DisableAll, 'BOTTOMRIGHT', 0, -5)
-	NewButton:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+	NewButton:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	NewButton:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	NewButton:SetScript('OnClick', function() _G.StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
 	NewButton.Text = NewButton:CreateFontString(nil, 'OVERLAY')
@@ -348,7 +343,7 @@ function stAM:InitProfiles()
 			local Button = CreateFrame('Button', nil, Pullout)
 			Button:SetTemplate()
 			Button:SetSize(73, stAM.db.ButtonHeight)
-			Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['CheckColor'])) end)
+			Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 			Button:SetScript('OnLeave', function(self) self:SetTemplate() end)
 			Button.Text = Button:CreateFontString(nil, 'OVERLAY')
 			Button.Text:SetFont(PA.LSM:Fetch('font', 'PT Sans Narrow'), 12, 'OUTLINE')
@@ -478,7 +473,7 @@ function stAM:Update()
 		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
 		CheckButton.text:SetFont(PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag'])
 		CheckButton.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
-		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and {Color.r, Color.g, Color.b} or stAM.db['CheckColor']))
+		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
 	end
 
@@ -560,6 +555,7 @@ function stAM:GetOptions()
 				hasAlpha = true,
 				get = function(info) return unpack(stAM.db[info[#info]]) end,
 				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end,
+				disabled = function() return stAM.db['ClassColor'] end,
 			},
 			ClassColor = {
 				order = 10,
