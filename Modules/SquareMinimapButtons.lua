@@ -538,9 +538,9 @@ function SMB:Initialize()
 		end
 	end)
 
-	if IsAddOnLoaded('Tukui') then
+	if PA.Tukui then
 		Tukui[1]['Movers']:RegisterFrame(self.Bar)
-	elseif IsAddOnLoaded('ElvUI') then
+	elseif PA.ElvUI then
 		ElvUI[1]:CreateMover(self.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
 
