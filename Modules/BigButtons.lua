@@ -101,12 +101,12 @@ function BB:CreateBigButton(ItemID)
 	end
 
 	Button:SetScript('OnShow', function(self)
-		if self:GetAttribute("item") ~= GetItemInfo(ItemID) then
+		if self:GetAttribute('item') ~= GetItemInfo(ItemID) then
 			self:SetAttribute('item', GetItemInfo(ItemID))
 		end
 	end)
 
-	Button:SetScript('OnEvent', function(self, event)
+	Button:SetScript('OnEvent', function(self)
 		if not InCombatLockdown() then
 			if BB:InFarmZone() and GetItemCount(ItemID) == 1 then
 				self:Show()
@@ -149,7 +149,7 @@ function BB:CreateSeedButton(ItemID, x, y)
 
 	local function Update(self)
 		if not InCombatLockdown() then
-			if self:GetAttribute("item") ~= GetItemInfo(ItemID) then
+			if self:GetAttribute('item') ~= GetItemInfo(ItemID) then
 				self:SetAttribute('item', GetItemInfo(ItemID))
 			end
 			local Count = GetItemCount(ItemID)
@@ -280,10 +280,10 @@ function BB:Initialize()
 		end
 	end)
 
-	if IsAddOnLoaded('Tukui') then
+	if PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(self.Bar)
 		_G.Tukui[1]['Movers']:RegisterFrame(self.Bar.SeedsFrame)
-	elseif IsAddOnLoaded('ElvUI') then
+	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(self.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL')
 		_G.ElvUI[1]:CreateMover(self.Bar.SeedsFrame, 'BigButtonsSeedBar', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end

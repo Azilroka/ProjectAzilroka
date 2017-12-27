@@ -8,9 +8,8 @@ SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega    Durc'
 
 local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
 local tinsert, pairs, unpack, select = tinsert, pairs, unpack, select
-local UnitAffectingCombat = UnitAffectingCombat
+local InCombatLockdown, C_PetBattles = InCombatLockdown, C_PetBattles
 local Minimap = Minimap
-local IsAddOnLoaded = IsAddOnLoaded
 
 SMB.Buttons = {}
 
@@ -98,7 +97,7 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:SetHighlightTexture(nil)
 
 		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
-			self:SetBackdropBorderColor(.7, 0, .7)
+			self:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
@@ -130,7 +129,7 @@ function SMB:HandleBlizzardButtons()
 					MinimapMailFrameUpdate()
 				end
 			end
-			self:SetBackdropBorderColor(.7, 0, .7)
+			self:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
@@ -176,7 +175,7 @@ function SMB:HandleBlizzardButtons()
 		MiniMapTrackingButton:SetScript('OnMouseUp', nil)
 
 		MiniMapTrackingButton:HookScript('OnEnter', function(self)
-			MiniMapTracking:SetBackdropBorderColor(.7, 0, .7)
+			MiniMapTracking:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
@@ -210,7 +209,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 		Frame:HookScript('OnEnter', function(self)
-			self:SetBackdropBorderColor(.7, 0, .7)
+			self:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
@@ -264,13 +263,14 @@ function SMB:SkinMinimapButton(Button)
 			if strfind(Name, PartialIgnores[i]) ~= nil then return end
 		end
 	end
+
 	for i = 1, Button:GetNumRegions() do
 		local Region = select(i, Button:GetRegions())
 		if Region:GetObjectType() == 'Texture' then
 			local Texture = Region:GetTexture()
 
 			if Texture and (strfind(Texture, 'Border') or strfind(Texture, 'Background') or strfind(Texture, 'AlphaMask') or strfind(Texture, 'Highlight')) then
-				Region:SetTexture(nil)
+				Region:SetAlpha(0)
 			else
 				if Name == 'BagSync_MinimapButton' then
 					Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
@@ -299,7 +299,7 @@ function SMB:SkinMinimapButton(Button)
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 	Button:SetTemplate()
 	Button:HookScript('OnEnter', function(self)
-		self:SetBackdropBorderColor(.7, 0, .7)
+		self:SetBackdropBorderColor(unpack(PA.ClassColor))
 		if SMB.Bar:IsShown() then
 			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 		end
@@ -316,7 +316,7 @@ function SMB:SkinMinimapButton(Button)
 end
 
 function SMB:GrabMinimapButtons()
-	if UnitAffectingCombat("player") then return end
+	if (InCombatLockdown() or C_PetBattles.IsInBattle()) then return end
 
 	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
 		for i = 1, Frame:GetNumChildren() do
