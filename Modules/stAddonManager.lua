@@ -608,7 +608,6 @@ function stAM:Initialize()
 	self:GetOptions()
 
 	self.AddOnInfo = {}
-	self.AddOnProfile = {}
 	self.Profiles = {}
 
 	for i = 1, GetNumAddOns() do
