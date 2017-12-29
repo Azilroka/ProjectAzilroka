@@ -16,7 +16,7 @@ local min, max = min, max
 local CreateFrame, UIParent, GameTooltip = CreateFrame, UIParent, GameTooltip
 
 local GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState = GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState
-local DisableAddOn, EnableAddOn, GetAddOnMetadata = DisableAddOn, EnableAddOn, GetAddOnMetadata
+local DisableAddOn, EnableAddOn, GetAddOnMetadata, DisableAllAddOns, EnableAllAddOns = DisableAddOn, EnableAddOn, GetAddOnMetadata, DisableAllAddOns, EnableAllAddOns
 
 local IsShiftKeyDown = IsShiftKeyDown
 
@@ -298,20 +298,14 @@ function stAM:InitProfiles()
 	ProfileMenu.EnableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOPLEFT', 10, -10)
 	ProfileMenu.EnableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOP', -3, -10)
 	ProfileMenu.EnableAll:SetScript('OnClick', function(self)
-		for i = 1, #stAM.AddOnInfo do
-			EnableAddOn(i, PA.MyName)
-		end
-
+		EnableAllAddOns(PA.MyName)
 		stAM:UpdateAddonList()
 	end)
 
 	ProfileMenu.DisableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOPRIGHT', -10, -10)
 	ProfileMenu.DisableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOP', 2, -10)
 	ProfileMenu.DisableAll:SetScript('OnClick', function(self)
-		for i = 1, #stAM.AddOnInfo do
-			DisableAddOn(i, PA.MyName)
-		end
-
+		DisableAllAddOns(PA.MyName)
 		stAM:UpdateAddonList()
 	end)
 
@@ -356,6 +350,7 @@ function stAM:InitProfiles()
 		Pullout.Load:SetPoint('LEFT', Pullout, 0, 0)
 		Pullout.Load.Text:SetText('Load')
 		Pullout.Load:SetScript('OnClick', function(self)
+			DisableAllAddOns(PA.MyName)
 			for _, AddOn in pairs(_G.stAddonManagerProfilesDB[Pullout.Name]) do
 				EnableAddOn(AddOn, PA.MyName)
 			end
