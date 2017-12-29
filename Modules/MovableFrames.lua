@@ -75,7 +75,7 @@ local AddOnFrames = {
 	['Blizzard_BindingUI'] = { 'KeyBindingFrame' },
 	['Blizzard_BlackMarketUI'] = { 'BlackMarketFrame' },
 	['Blizzard_Calendar'] = { 'CalendarCreateEventFrame', 'CalendarFrame', 'CalendarViewEventFrame', 'CalendarViewHolidayFrame' },
-	['Blizzard_ChallengesUI'] = { 'ChallengesLeaderboardFrame', 'ChallengesKeystoneFrame' },
+	['Blizzard_ChallengesUI'] = { 'ChallengesKeystoneFrame' }, -- 'ChallengesLeaderboardFrame'
 	['Blizzard_Collections'] = { 'CollectionsJournal' },
 	['Blizzard_EncounterJournal'] = { 'EncounterJournal' },
 	['Blizzard_GarrisonUI'] = { 'GarrisonLandingPage', 'GarrisonMissionFrame', 'GarrisonCapacitiveDisplayFrame', 'GarrisonBuildingFrame', 'GarrisonRecruiterFrame', 'GarrisonRecruitSelectFrame', 'GarrisonShipyardFrame' },
@@ -132,6 +132,12 @@ local function OnDragStop(self)
 end
 
 function MF:MakeMovable(Frame)
+	if not _G[Frame] then
+		PA:Print(PA.ACL["Frame doesn't exist: "]..Frame)
+		return
+	end
+
+	Frame = _G[Frame]
 	local Name = Frame:GetName()
 
 	if not Name then return end
@@ -162,7 +168,7 @@ end
 function MF:ADDON_LOADED(_, addon)
 	if AddOnFrames[addon] then
 		for _, Frame in pairs(AddOnFrames[addon]) do
-			self:MakeMovable(_G[Frame])
+			self:MakeMovable(Frame)
 		end
 	end
 end
@@ -272,19 +278,14 @@ function MF:Initialize()
 	self:GetOptions()
 
 	for i = 1, #Frames do
-		local frame = _G[Frames[i]]
-		if frame then
-			self:MakeMovable(frame)
-		else
-			PA:Print(PA.ACL["Frame doesn't exist: "]..Frames[i])
-		end
+		self:MakeMovable(Frames[i])
 	end
 
 	-- Check Forced Loaded AddOns
 	for AddOn, Table in pairs(AddOnFrames) do
 		if IsAddOnLoaded(AddOn) then
 			for _, Frame in pairs(Table) do
-				self:MakeMovable(_G[Frame])
+				self:MakeMovable(Frame)
 			end
 		end
 	end
