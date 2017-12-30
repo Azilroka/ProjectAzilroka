@@ -31,6 +31,11 @@ ACL['MovableFrames'] = true
 ACL['Square Minimap Buttons / Bar'] = true
 ACL['stAddOnManager'] = true
 
+-- BigButtons
+ACL['Drop Farm Tools'] = "Werkzeuge fallen lassen"
+ACL['Farm Tool Size'] = "Werkzeug Größe"
+ACL['Seed Size'] = "Samen Größe"
+
 -- Dragon Overlay
 ACL['Anchor Point'] = "Ankerpunkt"
 ACL['Class Icon'] = "Klassensymbol"

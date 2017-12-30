@@ -1,5 +1,4 @@
 local PA = _G.ProjectAzilroka
-
 local DO = PA:NewModule('DragonOverlay', 'AceEvent-3.0')
 _G.DragonOverlay = DO
 

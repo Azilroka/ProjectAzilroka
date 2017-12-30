@@ -1,5 +1,4 @@
 local PA = _G.ProjectAzilroka
-
 local BrokerLDB = LibStub('AceAddon-3.0'):NewAddon('BrokerLDB', 'AceEvent-3.0')
 _G.BrokerLDB = BrokerLDB
 

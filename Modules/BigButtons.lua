@@ -1,7 +1,7 @@
 local PA = _G.ProjectAzilroka
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
-
 _G.BigButtons = BB
+
 BB.Title = '|cFF16C3F2Big|r|cFFFFFFFFButtons|r'
 BB.Description = 'A farm tool for Sunsong Ranch.'
 BB.Authors = 'Azilroka    ChaoticVoid'
@@ -255,18 +255,18 @@ function BB:GetOptions()
 			DropTools = {
 				order = 1,
 				type = 'toggle',
-				name = 'Drop Farm Tools',
+				name = PA.ACL['Drop Farm Tools'],
 			},
 			ToolSize = {
 				order = 2,
 				type = 'range',
-				name = 'Farm Tool Size',
+				name = PA.ACL['Farm Tool Size'],
 				min = 16, max = 64, step = 1,
 			},
 			SeedSize = {
 				order = 3,
 				type = 'range',
-				name = 'Seed Size',
+				name = PA.ACL['Seed Size'],
 				min = 16, max = 64, step = 1,
 			},
 			AuthorHeader = {

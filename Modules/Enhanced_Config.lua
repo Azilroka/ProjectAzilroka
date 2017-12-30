@@ -1,8 +1,7 @@
 local PA = _G.ProjectAzilroka
-if PA.ElvUI then return end
-
 local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0')
 _G.Enhanced_Config = EC
+if PA.ElvUI then return end
 
 EC.Title = "|cff1784d1Enhanced Config|r"
 EC.Authors = "Azilroka"
