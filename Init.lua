@@ -171,7 +171,7 @@ function PA:UpdateProfile()
 		Defaults.profile.ES = false
 	end
 
-	PA.data = PA.ADB:New("ProjectAzilrokaDB", Defaults)
+	PA.data = PA.ADB:New('ProjectAzilrokaDB', Defaults)
 	PA.db = PA.data.profile
 end
 
@@ -219,5 +219,5 @@ function PA:PLAYER_LOGIN()
 	end
 end
 
-PA:RegisterEvent("ADDON_LOADED")
-PA:RegisterEvent("PLAYER_LOGIN")
+PA:RegisterEvent('ADDON_LOADED')
+PA:RegisterEvent('PLAYER_LOGIN')
