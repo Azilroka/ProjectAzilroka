@@ -53,6 +53,17 @@ PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI')
 PA.Tukui = PA:IsAddOnEnabled('Tukui')
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI')
 
+PA.Classes = {}
+
+for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
+for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
+
+function PA:ClassColorCode(class)
+	local color = class and (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.Classes[class]] or RAID_CLASS_COLORS[PA.Classes[class]]) or { r = 1, g = 1, b = 1 }
+
+	return format('|cFF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
+end
+
 function PA:Color(name)
 	local color = '|cFF16C3F2%s|r'
 	return (color):format(name)
