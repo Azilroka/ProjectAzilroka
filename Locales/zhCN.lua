@@ -3,6 +3,7 @@ local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'zhCN')
 if not ACL then return end
 
 -- Misc
+ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true
 ACL['Authors:'] = true
 ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = true
