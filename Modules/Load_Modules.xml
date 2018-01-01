@@ -1,5 +1,6 @@
 <Ui>
 	<Script file="BigButtons.lua"/>
+	<Script file="BrokerLDB.lua"/>
 	<Script file="DragonOverlay.lua"/>
 	<Script file="EnhancedFriendsList.lua"/>
 	<Script file="EnhancedShadows.lua"/>

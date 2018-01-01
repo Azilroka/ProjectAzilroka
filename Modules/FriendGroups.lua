@@ -1,10 +1,10 @@
 local PA = _G.ProjectAzilroka
-local FG = PA:NewModule('FriendGroup')
+local FG = PA:NewModule('FriendGroup', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.FriendGroup = FG
 
 FG.Title = '|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'
-FG.Desciption = ''
-FG.Authors = 'Azilroka'
+FG.Desciption = 'Manage Firends List with Groups'
+FG.Authors = 'Azilroka    Mikeprod    frankkkkk'
 
 local hooks = {}
 
@@ -18,7 +18,7 @@ local function Hook(source, target, secure)
 end
 
 local FRIENDS_GROUP_NAME_COLOR = NORMAL_FONT_COLOR
- 
+
 local INVITE_RESTRICTION_NO_TOONS = 0
 local INVITE_RESTRICTION_CLIENT = 1
 local INVITE_RESTRICTION_LEADER = 2
@@ -690,7 +690,7 @@ local function FriendGroups_OnFriendMenuClick(self)
 	if not self.value then
 		return
 	end
-	
+
 	local add = strmatch(self.value, "FGROUPADD_(.+)")
 	local del = strmatch(self.value, "FGROUPDEL_(.+)")
 	local creating = self.value == "FRIEND_GROUP_NEW"
@@ -737,7 +737,7 @@ end
 -- hide the add/remove group buttons if we're not right clicking on a friendlist item
 local function FriendGroups_HideButtons()
 	local dropdown = UIDROPDOWNMENU_INIT_MENU
-	
+
 	local hidden = false
 	for index, value in ipairs(UnitPopupMenus[UIDROPDOWNMENU_MENU_VALUE] or UnitPopupMenus[dropdown.which]) do
 		if value == "FRIEND_GROUP_ADD" or value == "FRIEND_GROUP_DEL" or value == "FRIEND_GROUP_NEW" then
@@ -747,7 +747,7 @@ local function FriendGroups_HideButtons()
 			end
 		end
 	end
-	
+
 	if not hidden then
 		wipe(UnitPopupMenus["FRIEND_GROUP_ADD"])
 		wipe(UnitPopupMenus["FRIEND_GROUP_DEL"])
@@ -901,7 +901,7 @@ local menu_items = {
 		{ text = "Colour names", checked = function() return FriendGroups_SavedVars.colour_classes end, func = function() CloseDropDownMenus() FriendGroups_SavedVars.colour_classes = not FriendGroups_SavedVars.colour_classes FriendGroups_Update() end },
 	},
 }
- 
+
 FriendGroups_Menu.initialize = function(self, level)
 	if not menu_items[level] then return end
 	for _, items in ipairs(menu_items[level]) do
@@ -940,7 +940,7 @@ local frame = CreateFrame("Frame")
 
 		-- FriendsFrameFriendsScrollFrame.dynamic = FriendGroups_GetTopButton
 		-- FriendsFrameFriendsScrollFrame.update = FriendGroups_UpdateFriends
-		
+
 		-- add some more buttons
 		-- FriendsFrameFriendsScrollFrame.buttons[1]:SetHeight(FRIENDS_FRAME_FRIENDS_FRIENDS_HEIGHT)
 		-- HybridScrollFrame_CreateButtons(FriendsFrameFriendsScrollFrame, "FriendsFrameButtonTemplate")
