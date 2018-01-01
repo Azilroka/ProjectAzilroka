@@ -148,11 +148,12 @@ PA.Options = {
 					name = PA.ACL['Enhanced Shadows'],
 					disabled = function() return (PA.SLE or PA.NUI) end,
 				},
+				--[[
 				FG = {
 					order = 4,
 					type = 'toggle',
 					name = 'Friend Groups',
-				},
+				},]]
 				LC = {
 					order = 6,
 					type = 'toggle',
