@@ -98,11 +98,15 @@ function PA:PairsByKeys(t, f)
 	return iter
 end
 
-function PA:Reload()
-	if PA.ElvUI then
-		ElvUI[1]:StaticPopup_Show("PRIVATE_RL")
-	end
-end
+StaticPopupDialogs["PA_RELOAD"] = {
+	text = PA.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = ReloadUI,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+}
 
 PA.Options = {
 	type = 'group',
@@ -223,7 +227,7 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 	if not (PA.SLE or PA.NUI) and PA.db['ES'] then
-		pcall(_G.EnhancedShadows.Initialize, self)
+		_G.EnhancedShadows:Initialize()
 	end
 	if PA.db['BB'] then
 		_G.BigButtons:Initialize()
