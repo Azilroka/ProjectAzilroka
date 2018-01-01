@@ -24,10 +24,15 @@ function BrokerLDB:GetOptions()
 		name = BrokerLDB['Title'],
 		order = 101,
 		args = {
+			header = {
+				order = 0,
+				type = 'header',
+				name = BrokerLDB['Title'],
+			},
 			general = {
 				order = 1,
 				type = 'group',
-				name = 'General',
+				name = PA.ACL['General'],
 				guiInline = true,
 				get = function(info) return BrokerLDB.db[info[#info]] end,
 				set = function(info, value) BrokerLDB.db[info[#info]] = value BrokerLDB:Update() end,
@@ -35,46 +40,46 @@ function BrokerLDB:GetOptions()
 					ShowIcon = {
 						order = 3,
 						type = 'toggle',
-						name = 'Show Icon',
+						name = PA.ACL['Show Icon'],
 					},
 					MouseOver = {
 						order = 4,
 						type = 'toggle',
-						name = 'MouseOver',
+						name = PA.ACL['MouseOver'],
 					},
 					ShowText = {
 						order = 5,
 						type = 'toggle',
-						name = 'Show Text',
+						name = PA.ACL['Show Text'],
 					},
 					PanelHeight = {
 						order = 6,
 						type = 'range',
 						width = 'full',
-						name = 'Panel Height',
+						name = PA.ACL['Panel Height'],
 						min = 20, max = 40, step = 1,
 					},
 					PanelWidth = {
 						order = 8,
 						type = 'range',
 						width = 'full',
-						name = 'Panel Width',
+						name = PA.ACL['Panel Width'],
 						min = 0, softMin = 140, max = 280, step = 1,
 					},
 					Font = {
 						type = 'select', dialogControl = 'LSM30_Font',
 						order = 9,
-						name = 'Font',
+						name = PA.ACL['Font'],
 						values = PA.LSM:HashTable('font'),
 					},
 					FontSize = {
 						order = 10,
-						name = 'Font Size',
+						name = FONT_SIZE,
 						type = 'range',
 						min = 8, max = 22, step = 1,
 					},
 					FontFlag = {
-						name = 'Font Flag',
+						name = PA.ACL['Font Outline'],
 						order = 11,
 						type = 'select',
 						values = {

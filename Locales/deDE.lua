@@ -36,6 +36,13 @@ ACL['Drop Farm Tools'] = "Werkzeuge fallen lassen"
 ACL['Farm Tool Size'] = "Werkzeug Größe"
 ACL['Seed Size'] = "Samen Größe"
 
+-- BrokerLDB
+ACL['MouseOver'] = true
+ACL['Panel Height'] = "Leisten Höhe"
+ACL['Panel Width'] = "Leisten Breite"
+ACL['Show Icon'] = "Zeige Symbol"
+ACL['Show Text'] = "Zeige Text"
+
 -- Dragon Overlay
 ACL['Anchor Point'] = "Ankerpunkt"
 ACL['Class Icon'] = "Klassensymbol"
