@@ -98,6 +98,12 @@ function PA:PairsByKeys(t, f)
 	return iter
 end
 
+function PA:Reload()
+	if PA.ElvUI then
+		ElvUI[1]:StaticPopup_Show("PRIVATE_RL")
+	end
+end
+
 PA.Options = {
 	type = 'group',
 	name = PA:Color(PA.Title),
@@ -114,7 +120,7 @@ PA.Options = {
 			name = PA:Color(PA.ACL['AddOns']),
 			guiInline = true,
 			get = function(info) return PA.db[info[#info]] end,
-			set = function(info, value) PA.db[info[#info]] = value end,
+			set = function(info, value) PA.db[info[#info]] = value; PA:Reload() end,
 			args = {
 				BB = {
 					order = 0,
