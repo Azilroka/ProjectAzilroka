@@ -124,7 +124,7 @@ PA.Options = {
 			name = PA:Color(PA.ACL['AddOns']),
 			guiInline = true,
 			get = function(info) return PA.db[info[#info]] end,
-			set = function(info, value) PA.db[info[#info]] = value; PA:Reload() end,
+			set = function(info, value) PA.db[info[#info]] = value; StaticPopup_Show("PA_RELOAD") end,
 			args = {
 				BB = {
 					order = 0,
