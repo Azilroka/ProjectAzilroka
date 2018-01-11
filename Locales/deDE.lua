@@ -4,7 +4,7 @@ if not ACL then return end
 
 -- Misc
 ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Eine Einstellung die du geändert hast, betrifft eine Option nur für diesen Charakter. Diese Einstellung die du geändert hast, wirkt sich nicht auf dein Profil aus. Ein neu Laden des Benutzer Interface ist erforderlich."
-ACL['Authors:'] = "Authoren:"
+ACL['Authors:'] = "Autoren:"
 ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = "Kontrolliert AddOns in diesem Paket"
 ACL["Frame doesn't exist: "] = "Frame existiert nicht: "
@@ -116,7 +116,7 @@ ACL['Move Tracker Icon'] = "Verflogen Icon bewegen"
 ACL['Move Queue Status Icon'] = "LFG Icon bewegen"
 
 -- stAddOnManager
-ACL['# Shown AddOns'] = "# Angezeigte AddOns"
+ACL['# Shown AddOns'] = "# angezeigte AddOns"
 ACL['Button Height'] = "Tasten Höhe"
 ACL['Button Width'] = "Tasten Breite"
 ACL['Font'] = "Schrifart"
