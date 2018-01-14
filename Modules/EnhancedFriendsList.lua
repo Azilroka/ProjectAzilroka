@@ -1,14 +1,12 @@
 local PA = _G.ProjectAzilroka
 local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
-_G.EnhancedFriendsList = EFL
+PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 
 EFL.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r'
 EFL.Description = 'Provides Friends List Customization'
 EFL.Author = 'Azilroka    Marotheit'
 
-local pairs, tonumber, unpack = pairs, tonumber, unpack
-local format = format
-local Locale = GetLocale()
+local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
 local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
 local MediaPath = 'Interface\\AddOns\\ProjectAzilroka\\Media\\EnhancedFriendsList\\'
@@ -143,7 +141,7 @@ EFL.ClientColor = {
 	BSAp = '82C5FF',
 }
 
-function EFL:BasicUpdateFriends(button)
+function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = GetFriendInfo(button.id)
@@ -468,5 +466,9 @@ function EFL:Initialize()
 	self:BuildProfile()
 	self:GetOptions()
 
-	hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button) EFL:BasicUpdateFriends(button) end)
+	if PA.db.FG then
+		self:SecureHook(PA.FG, 'FriendGroups_UpdateFriendButton', function(self, button) EFL:UpdateFriends(button) end)
+	else
+		self:SecureHook("FriendsFrame_UpdateFriendButton", 'UpdateFriends')
+	end
 end

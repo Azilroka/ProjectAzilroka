@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local DO = PA:NewModule('DragonOverlay', 'AceEvent-3.0')
-_G.DragonOverlay = DO
+PA.DO, _G.DragonOverlay = DO, DO
 
 local _G = _G
 local pairs, tinsert, select, unpack = pairs, tinsert, select, unpack

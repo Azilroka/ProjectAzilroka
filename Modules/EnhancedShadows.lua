@@ -1,7 +1,8 @@
 local PA = _G.ProjectAzilroka
-local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0')
-_G.EnhancedShadows = ES
 if (PA.SLE or PA.NUI) then return end
+
+local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0')
+PA.ES, _G.EnhancedShadows = ES, ES
 
 ES.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r'
 ES.Description = 'Adds options for registered shadows'

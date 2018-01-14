@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
-_G.stAddonManager = stAM
+PA.stAM, _G.stAddonManager = stAM, stAM
 _G.stAddonManagerProfilesDB = {}
 
 stAM.Title = '|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'
@@ -144,7 +144,7 @@ function stAM:BuildFrame()
 	Frame.Profiles = Profiles
 
 	--Frame used to display addons list
-	local AddOns = CreateFrame("ScrollFrame", nil, Frame)
+	local AddOns = CreateFrame("Frame", nil, Frame)
 	AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
 	AddOns:SetTemplate()
 	AddOns.Buttons = {}

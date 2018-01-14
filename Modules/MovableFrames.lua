@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0')
-_G.MovableFrames = MF
+PA.MF, _G.MovableFrames = MF, MF
 
 MF.Title = '|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'
 MF.Desciption = 'Make Blizzard Frames Movable'

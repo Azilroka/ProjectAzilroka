@@ -1,7 +1,7 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-local MAJOR, MINOR = "LibElvUIPlugin-1.0", 18
+local MAJOR, MINOR = "LibElvUIPlugin-1.0", 20
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -23,6 +23,7 @@ local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 lib.plugins = {}
 lib.index = 0
 lib.prefix = "ElvUIPluginVC"
+lib.groupSize = -1
 
 -- MULTI Language Support (Default Language: English)
 local MSG_OUTDATED = "Your version of %s is out of date (latest is version %s). You can download the latest version from http://www.tukui.org"

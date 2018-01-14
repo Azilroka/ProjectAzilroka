@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
-_G.SquareMinimapButtons = SMB
+PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
 SMB.Title = '|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r'
 SMB.Description = 'Minimap Button Bar / Minimap Button Skinning'

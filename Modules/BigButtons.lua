@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
-_G.BigButtons = BB
+PA.BB, _G.BigButtons = BB, BB
 
 BB.Title = '|cFF16C3F2Big|r|cFFFFFFFFButtons|r'
 BB.Description = 'A farm tool for Sunsong Ranch.'

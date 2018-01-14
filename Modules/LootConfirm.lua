@@ -1,10 +1,10 @@
 local PA = _G.ProjectAzilroka
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
-_G.LootConfirm = LC
+PA.LC, _G.LootConfirm = LC, LC
 
 LC.Title = '|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'
 LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
-LC.Authors = 'Azilroka, Infinitron'
+LC.Authors = 'Azilroka     Infinitron'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
 local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot

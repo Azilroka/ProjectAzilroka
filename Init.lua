@@ -152,12 +152,11 @@ PA.Options = {
 					name = PA.ACL['Enhanced Shadows'],
 					disabled = function() return (PA.SLE or PA.NUI) end,
 				},
-				--[[
 				FG = {
-					order = 4,
+					order = 5,
 					type = 'toggle',
 					name = 'Friend Groups',
-				},]]
+				},
 				LC = {
 					order = 6,
 					type = 'toggle',
@@ -214,7 +213,7 @@ end
 function PA:ADDON_LOADED(event, addon)
 	if addon == AddOnName then
 		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
-		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or _G.Enhanced_Config
+		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
 		PA:UpdateProfile()
 		PA:UnregisterEvent(event)
 	end
@@ -227,33 +226,33 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 	if not (PA.SLE or PA.NUI) and PA.db['ES'] then
-		_G.EnhancedShadows:Initialize()
+		PA.ES:Initialize()
 	end
 	if PA.db['BB'] then
-		_G.BigButtons:Initialize()
+		PA.BB:Initialize()
 	end
 	if PA.db['BrokerLDB'] then
-		_G.BrokerLDB:Initialize()
+		PA.BrokerLDB:Initialize()
 	end
 	if PA.db['DO'] then
-		_G.DragonOverlay:Initialize()
+		PA.DO:Initialize()
 	end
 	if PA.db['FG'] then -- Has to be before EFL
 	end
 	if PA.db['EFL'] then
-		_G.EnhancedFriendsList:Initialize()
+		PA.EFL:Initialize()
 	end
 	if PA.db['LC'] then
-		_G.LootConfirm:Initialize()
+		PA.LC:Initialize()
 	end
 	if PA.db['MF'] then
-		_G.MovableFrames:Initialize()
+		PA.MF:Initialize()
 	end
 	if PA.db['SMB'] and not PA.SLE then
-		_G.SquareMinimapButtons:Initialize()
+		PA.SMB:Initialize()
 	end
 	if PA.db['stAM'] then
-		_G.stAddonManager:Initialize()
+		PA.stAM:Initialize()
 	end
 	if PA.Tukui and GetAddOnEnableState(PA.MyName, 'Tukui_Config') > 0 then
 		PA:TukuiOptions()

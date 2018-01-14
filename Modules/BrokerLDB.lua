@@ -1,6 +1,6 @@
 local PA = _G.ProjectAzilroka
 local BrokerLDB = PA:NewModule('BrokerLDB', 'AceEvent-3.0')
-_G.BrokerLDB = BrokerLDB
+PA.BrokerLDB, _G.BrokerLDB = BrokerLDB, BrokerLDB
 
 local _G = _G
 local pairs, tinsert, tremove, select, unpack = pairs, tinsert, tremove, select, unpack
