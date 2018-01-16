@@ -74,7 +74,7 @@ function stAM:BuildFrame()
 	Title:SetJustifyV('MIDDLE')
 	Frame.Title = Title
 
-	local Close = CreateFrame('Button', nil, Frame)
+	local Close = CreateFrame('Button', 'stAMCloseButton', Frame)
 	Close:SetTemplate()
 	Close:SetPoint('TOPRIGHT', -3, -3)
 	Close:SetSize(16, 16)
@@ -90,7 +90,7 @@ function stAM:BuildFrame()
 
 	Frame.Close = Close
 
-	local Search = CreateFrame('EditBox', nil, Frame)
+	local Search = CreateFrame('EditBox', 'stAMSearchBox', Frame)
 	Search:SetSize(1, 20)
 	Search:SetTemplate()
 	Search:SetAutoFocus(false)
@@ -117,7 +117,7 @@ function stAM:BuildFrame()
 	Frame.Search = Search
 	Frame.Search.AddOns = {}
 
-	local Reload = CreateFrame('Button', nil, Frame)
+	local Reload = CreateFrame('Button', 'stAMReload', Frame)
 	Reload:SetTemplate()
 	Reload:SetSize(70, 20)
 	Reload:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
@@ -130,7 +130,7 @@ function stAM:BuildFrame()
 	Reload.Text:SetJustifyH('CENTER')
 	Frame.Reload = Reload
 
-	local Profiles = CreateFrame('Button', nil, Frame)
+	local Profiles = CreateFrame('Button', 'stAMProfiles', Frame)
 	Profiles:SetTemplate()
 	Profiles:SetSize(70, 20)
 	Profiles:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
@@ -144,7 +144,7 @@ function stAM:BuildFrame()
 	Frame.Profiles = Profiles
 
 	--Frame used to display addons list
-	local AddOns = CreateFrame("Frame", nil, Frame)
+	local AddOns = CreateFrame("Frame", 'stAMAddOns', Frame)
 	AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
 	AddOns:SetTemplate()
 	AddOns.Buttons = {}
@@ -172,7 +172,7 @@ function stAM:BuildFrame()
 	end)
 
 	for i = 1, 30 do
-		local CheckButton = CreateFrame('CheckButton', nil, AddOns)
+		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton', AddOns)
 		CheckButton:SetTemplate()
 		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
 		CheckButton:SetPoint(unpack(i == 1 and {"TOPLEFT", AddOns, "TOPLEFT", 10, -10} or {"TOP", AddOns.Buttons[i-1], "BOTTOM", 0, -5}))
@@ -272,7 +272,7 @@ function stAM:NewAddOnProfile(name, overwrite)
 end
 
 function stAM:InitProfiles()
-	local ProfileMenu = CreateFrame('Frame', nil, self.Frame)
+	local ProfileMenu = CreateFrame('Frame', 'stAMProfileMenu', self.Frame)
 	ProfileMenu:SetPoint('TOPLEFT', self.Frame, 'TOPRIGHT', 3, 0)
 	ProfileMenu:SetSize(250, 50)
 	ProfileMenu:SetTemplate('Transparent')
