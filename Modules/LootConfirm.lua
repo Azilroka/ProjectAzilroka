@@ -8,21 +8,26 @@ LC.Authors = 'Azilroka     Infinitron'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
 local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot
-local RollOnLoot = RollOnLoot
+local RollOnLoot, LootSlot = RollOnLoot, LootSlot
 local IsEquippableItem, GetItemInfo, GetInventoryItemLink = IsEquippableItem, GetItemInfo, GetInventoryItemLink
 local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRollItemLink
 
 function LC:HandleEvent(event, ...)
 	if not self.db['Confirm'] then return end
+	local NumLootItems = GetNumLootItems()
+	if NumLootItems == 0 then
+		CloseLoot()
+	end
 	if event == 'CONFIRM_LOOT_ROLL' or event == 'CONFIRM_DISENCHANT_ROLL' then
 		local arg1, arg2 = ...
 		ConfirmLootRoll(arg1, arg2)
 	elseif event == 'LOOT_OPENED' or event == 'LOOT_BIND_CONFIRM' then
-		for slot = 1, GetNumLootItems() do
+		for slot = 1, NumLootItems do
 			ConfirmLootSlot(slot)
 		end
-		if GetNumLootItems() == 0 then
-			CloseLoot()
+	elseif event == 'LOOT_READY' then
+		for i = NumLootItems, 1, -1 do
+			LootSlot(i)
 		end
 	end
 end
@@ -151,6 +156,8 @@ function LC:Initialize()
 	self:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
 	self:RegisterEvent('LOOT_OPENED', 'HandleEvent')
 	self:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
+	self:RegisterEvent('LOOT_READY', 'HandleEvent')
+
 	--self:RegisterEvent('START_LOOT_ROLL')
 
 	if PA.ElvUI then
