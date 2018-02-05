@@ -151,7 +151,27 @@ function stAM:BuildFrame()
 	AddOns:EnableMouse(true)
 	AddOns:EnableMouseWheel(true)
 
-	AddOns:SetScript('OnMouseWheel', function(self, delta)
+	local Slider = CreateFrame("Slider", nil, AddOns)
+	Slider:SetPoint("RIGHT", -2, 0)
+	Slider:SetWidth(12)
+	Slider:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 11)
+	Slider:SetThumbTexture(PA.LSM:Fetch('background', 'Solid'))
+	Slider:SetOrientation("VERTICAL")
+	Slider:SetValueStep(1)
+	Slider:SetTemplate()
+	Slider:SetMinMaxValues(0, 1)
+	Slider:SetValue(0)
+	Slider:EnableMouse(true)
+	Slider:EnableMouseWheel(true)
+
+	local Thumb = Slider:GetThumbTexture()
+	Thumb:Width(8)
+	Thumb:Height(16)
+	Thumb:SetVertexColor(AddOns:GetBackdropBorderColor())
+
+	AddOns.ScrollBar = Slider
+
+	local OnScroll = function(self, delta)
 		local numAddons = stAM.searchQuery and #Search.AddOns or #stAM.AddOnInfo
 		if IsShiftKeyDown() then
 			if delta == 1 then
@@ -168,11 +188,17 @@ function stAM:BuildFrame()
 				end
 			end
 		end
+		Slider:SetMinMaxValues(0, (#stAM.AddOnInfo - stAM.db['NumAddOns']))
+		Slider:SetValue(stAM.scrollOffset)
 		stAM:UpdateAddonList()
-	end)
+	end
+
+	AddOns:SetScript('OnMouseWheel', OnScroll)
+	Slider:SetScript('OnMouseWheel', OnScroll)
+	Slider:SetScript('OnValueChanged', function(self, value) stAM.scrollOffset = value; OnScroll() end)
 
 	for i = 1, 30 do
-		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton', AddOns)
+		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
 		CheckButton:SetTemplate()
 		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
 		CheckButton:SetPoint(unpack(i == 1 and {"TOPLEFT", AddOns, "TOPLEFT", 10, -10} or {"TOP", AddOns.Buttons[i-1], "BOTTOM", 0, -5}))
