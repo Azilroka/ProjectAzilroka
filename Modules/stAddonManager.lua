@@ -177,7 +177,7 @@ function stAM:BuildFrame()
 			if delta == 1 then
 				stAM.scrollOffset = max(0, stAM.scrollOffset - stAM.db['NumAddOns'])
 			elseif delta == -1 then
-				stAM.scrollOffset = min(#stAM.AddOnInfo - stAM.db['NumAddOns'], stAM.scrollOffset + stAM.db['NumAddOns'])
+				stAM.scrollOffset = min(numAddons - stAM.db['NumAddOns'], stAM.scrollOffset + stAM.db['NumAddOns'])
 			end
 		else
 			if delta == 1 and stAM.scrollOffset > 0 then
@@ -188,14 +188,17 @@ function stAM:BuildFrame()
 				end
 			end
 		end
-		Slider:SetMinMaxValues(0, (#stAM.AddOnInfo - stAM.db['NumAddOns']))
+		Slider:SetMinMaxValues(0, (numAddons - stAM.db['NumAddOns']))
 		Slider:SetValue(stAM.scrollOffset)
 		stAM:UpdateAddonList()
 	end
 
 	AddOns:SetScript('OnMouseWheel', OnScroll)
 	Slider:SetScript('OnMouseWheel', OnScroll)
-	Slider:SetScript('OnValueChanged', function(self, value) stAM.scrollOffset = value; OnScroll() end)
+	Slider:SetScript('OnValueChanged', function(self, value)
+		stAM.scrollOffset = value;
+		OnScroll()
+	end)
 
 	for i = 1, 30 do
 		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
