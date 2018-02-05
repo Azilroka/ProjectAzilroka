@@ -238,6 +238,7 @@ function PA:PLAYER_LOGIN()
 		PA.DO:Initialize()
 	end
 	if PA.db['FG'] then -- Has to be before EFL
+		--PA.FG:Initialize()
 	end
 	if PA.db['EFL'] then
 		PA.EFL:Initialize()
