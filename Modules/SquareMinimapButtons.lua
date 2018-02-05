@@ -87,11 +87,11 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
 
 		GarrisonLandingPageMinimapButton:SetNormalTexture(1044517)
-		GarrisonLandingPageMinimapButton:GetNormalTexture(1044517):SetTexCoord(unpack(self.TexCoords))
+		GarrisonLandingPageMinimapButton:GetNormalTexture():SetTexCoord(unpack(self.TexCoords))
 		GarrisonLandingPageMinimapButton:GetNormalTexture():SetInside()
 
 		GarrisonLandingPageMinimapButton:SetPushedTexture(1044517)
-		GarrisonLandingPageMinimapButton:GetPushedTexture(1044517):SetTexCoord(unpack(self.TexCoords))
+		GarrisonLandingPageMinimapButton:GetPushedTexture():SetTexCoord(unpack(self.TexCoords))
 		GarrisonLandingPageMinimapButton:GetPushedTexture():SetInside()
 
 		GarrisonLandingPageMinimapButton:SetHighlightTexture(nil)
