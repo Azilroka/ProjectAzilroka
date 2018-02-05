@@ -40,6 +40,16 @@ _G.StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
 }
 
+_G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE'] = {
+	text = "Enter a name for your AddOn Profile",
+	button1 = 'Update',
+	button2 = 'Cancel',
+	timeout = 0,
+	hasEditBox = 1,
+	whileDead = 1,
+	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
+}
+
 _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
 	button1 = 'Delete',
 	button2 = 'Cancel',
@@ -365,6 +375,7 @@ function stAM:InitProfiles()
 			local Button = CreateFrame('Button', nil, Pullout)
 			Button:SetTemplate()
 			Button:SetSize(73, stAM.db.ButtonHeight)
+			Button:RegisterForClicks('AnyDown')
 			Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 			Button:SetScript('OnLeave', function(self) self:SetTemplate() end)
 			Button.Text = Button:CreateFontString(nil, 'OVERLAY')
@@ -377,15 +388,31 @@ function stAM:InitProfiles()
 
 		Pullout.Load:SetPoint('LEFT', Pullout, 0, 0)
 		Pullout.Load.Text:SetText('Load')
-		Pullout.Load:SetScript('OnClick', function(self)
-			if not IsShiftKeyDown() then
-				DisableAllAddOns(PA.MyName)
-			end
-			for _, AddOn in pairs(_G.stAddonManagerProfilesDB[Pullout.Name]) do
-				EnableAddOn(AddOn, PA.MyName)
-			end
+		Pullout.Load:SetScript('OnClick', function(self, btn)
+			if btn == 'RightButton' then
+				local Dialog = _G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE']
+				Dialog.OnAccept = function(self)
+					_G.stAddonManagerProfilesDB[Pullout.Name] = nil
+					stAM:NewAddOnProfile(self.editBox:GetText())
+					stAM:UpdateProfiles()
+				end
+				Dialog.EditBoxOnEnterPressed = function(self)
+					_G.stAddonManagerProfilesDB[Pullout.Name] = nil
+					stAM:NewAddOnProfile(self:GetText())
+					stAM:UpdateProfiles()
+					self:GetParent():Hide()
+				end
+				_G.StaticPopup_Show('STADDONMANAGER_RENAMEPROFILE')
+			else
+				if not IsShiftKeyDown() then
+					DisableAllAddOns(PA.MyName)
+				end
+				for _, AddOn in pairs(_G.stAddonManagerProfilesDB[Pullout.Name]) do
+					EnableAddOn(AddOn, PA.MyName)
+				end
 
-			stAM:UpdateAddonList()
+				stAM:UpdateAddonList()
+			end
 		end)
 
 		Pullout.Update:SetPoint('LEFT', Pullout.Load, 'RIGHT', 5, 0)
