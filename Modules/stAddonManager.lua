@@ -349,7 +349,9 @@ function stAM:InitProfiles()
 		Pullout.Load:SetPoint('LEFT', Pullout, 0, 0)
 		Pullout.Load.Text:SetText('Load')
 		Pullout.Load:SetScript('OnClick', function(self)
-			DisableAllAddOns(PA.MyName)
+			if not IsShiftKeyDown() then
+				DisableAllAddOns(PA.MyName)
+			end
 			for _, AddOn in pairs(_G.stAddonManagerProfilesDB[Pullout.Name]) do
 				EnableAddOn(AddOn, PA.MyName)
 			end
