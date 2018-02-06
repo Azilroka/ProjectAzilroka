@@ -505,11 +505,7 @@ function stAM:UpdateAddonList()
 			button.name, button.title, button.author, button.notes, button.requireddeps, button.optionaldeps = unpack(self.AddOnInfo[addonIndex])
 			button.Text:SetText(button.title)
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
-			if PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) then
-				button.CheckTexture:SetVertexColor(.6, .6, .6)
-			else
-				button.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
-			end
+			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 			button:Show()
 		else
 			button:Hide()
