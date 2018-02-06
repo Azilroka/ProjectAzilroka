@@ -39,8 +39,18 @@ PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 -- Project Data
-function PA:IsAddOnEnabled(addon)
-	return GetAddOnEnableState(PA.MyName, addon) == 2
+function PA:IsAddOnEnabled(addon, character)
+	if (type(character) == 'boolean' and character == true) then
+		character = nil
+	end
+	return GetAddOnEnableState(character, addon) == 2
+end
+
+function PA:IsAddOnPartiallyEnabled(addon, character)
+	if (type(character) == 'boolean' and character == true) then
+		character = nil
+	end
+	return GetAddOnEnableState(character, addon) == 1
 end
 
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
@@ -49,11 +59,11 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 PA.ClassColor = { Color.r, Color.g, Color.b }
 
-PA.ElvUI = PA:IsAddOnEnabled('ElvUI')
-PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE')
-PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI')
-PA.Tukui = PA:IsAddOnEnabled('Tukui')
-PA.AzilUI = PA:IsAddOnEnabled('AzilUI')
+PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
+PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
+PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI', PA.MyName)
+PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
+PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 
 PA.Classes = {}
 
@@ -77,7 +87,7 @@ end
 
 function PA:ConflictAddOn(AddOns)
 	for AddOn in pairs(AddOns) do
-		if GetAddOnEnableState(PA.MyName, AddOn) > 0 then
+		if PA:IsAddOnEnabled(AddOn, PA.MyName) then
 			return true
 		end
 	end
@@ -194,7 +204,7 @@ function PA:UpdateProfile()
 			['DO'] = true,
 			['EFL'] = true,
 			['ES'] = true,
-			['FG'] = true,
+			['FG'] = false,
 			['LC'] = true,
 			['MF'] = true,
 			['SMB'] = true,

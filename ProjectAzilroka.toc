@@ -3,7 +3,7 @@
 ## Author: Azilroka
 ## Version: 1.18
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
-## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB, stAddonManagerProfilesDB, BigButtonsDB, FriendGroupsDB
+## SavedVariables: ProjectAzilrokaDB, SquareMinimapButtonsDB, MovableFramesDB, EnhancedFriendsListDB, EnhancedShadowsDB, DragonOverlayDB, stAddonManagerDB, stAddonManagerProfilesDB, stAddonManagerServerDB, BigButtonsDB, FriendGroupsDB
 
 Libs\Load_Libs.xml
 Locales\Load_Locales.xml
