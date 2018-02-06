@@ -327,7 +327,7 @@ function stAM:InitProfiles()
 	ProfileMenu:SetTemplate('Transparent')
 	ProfileMenu:Hide()
 
-	for _, name in pairs({'EnableAll', 'DisableAll'}) do
+	for _, name in pairs({'EnableAll', 'DisableAll', 'NewButton'}) do
 		local Button = CreateFrame('Button', nil, ProfileMenu)
 		Button:SetTemplate()
 		Button:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
@@ -358,21 +358,10 @@ function stAM:InitProfiles()
 		stAM:UpdateAddonList()
 	end)
 
-	local NewButton = CreateFrame('Button', nil, ProfileMenu)
-	NewButton:SetTemplate()
-	NewButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
-	NewButton:SetPoint('TOPLEFT', ProfileMenu.EnableAll, 'BOTTOMLEFT', 0, -5)
-	NewButton:SetPoint('TOPRIGHT', ProfileMenu.DisableAll, 'BOTTOMRIGHT', 0, -5)
-	NewButton:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
-	NewButton:SetScript('OnLeave', function(self) self:SetTemplate() end)
-	NewButton:SetScript('OnClick', function() _G.StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
-	NewButton.Text = NewButton:CreateFontString(nil, 'OVERLAY')
-	NewButton.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, 'OUTLINE')
-	NewButton.Text:SetPoint('CENTER', 0, 0)
-	NewButton.Text:SetJustifyH('CENTER')
-	NewButton.Text:SetText(PA.ACL['New Profile'])
-
-	ProfileMenu.NewButton = NewButton
+	ProfileMenu.NewButton:SetPoint('TOPLEFT', ProfileMenu.EnableAll, 'BOTTOMLEFT', 0, -5)
+	ProfileMenu.NewButton:SetPoint('TOPRIGHT', ProfileMenu.DisableAll, 'BOTTOMRIGHT', 0, -5)
+	ProfileMenu.NewButton:SetScript('OnClick', function() _G.StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
+	ProfileMenu.NewButton.Text:SetText(PA.ACL['New Profile'])
 
 	ProfileMenu.Buttons = {}
 
@@ -389,6 +378,7 @@ function stAM:InitProfiles()
 			Button:RegisterForClicks('AnyDown')
 			Button:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 			Button:SetScript('OnLeave', function(self) self:SetTemplate() end)
+
 			Button.Text = Button:CreateFontString(nil, 'OVERLAY')
 			Button.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, 'OUTLINE')
 			Button.Text:SetPoint('CENTER', 0, 0)
