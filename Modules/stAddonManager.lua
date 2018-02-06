@@ -327,7 +327,7 @@ function stAM:InitProfiles()
 	ProfileMenu:SetTemplate('Transparent')
 	ProfileMenu:Hide()
 
-	for _, name in pairs({'Enable All', 'Disable All'}) do
+	for _, name in pairs({'EnableAll', 'DisableAll'}) do
 		local Button = CreateFrame('Button', nil, ProfileMenu)
 		Button:SetTemplate()
 		Button:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
@@ -338,11 +338,11 @@ function stAM:InitProfiles()
 		Button.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, 'OUTLINE')
 		Button.Text:SetPoint('CENTER', 0, 0)
 		Button.Text:SetJustifyH('CENTER')
-		Button.Text:SetText(name)
 
-		ProfileMenu[name:gsub(' ', '')] = Button
+		ProfileMenu[name] = Button
 	end
 
+	ProfileMenu.EnableAll.Text:SetText('Enable All')
 	ProfileMenu.EnableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOPLEFT', 10, -10)
 	ProfileMenu.EnableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOP', -3, -10)
 	ProfileMenu.EnableAll:SetScript('OnClick', function(self)
@@ -350,6 +350,7 @@ function stAM:InitProfiles()
 		stAM:UpdateAddonList()
 	end)
 
+	ProfileMenu.DisableAll.Text:SetText('Disable All')
 	ProfileMenu.DisableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOPRIGHT', -10, -10)
 	ProfileMenu.DisableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOP', 2, -10)
 	ProfileMenu.DisableAll:SetScript('OnClick', function(self)
