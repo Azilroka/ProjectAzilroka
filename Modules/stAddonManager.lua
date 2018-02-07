@@ -22,8 +22,8 @@ local DisableAddOn, EnableAddOn, GetAddOnMetadata, DisableAllAddOns, EnableAllAd
 local IsShiftKeyDown = IsShiftKeyDown
 
 _G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
-	button1 = 'Overwrite',
-	button2 = 'Cancel',
+	button1 = PA.ACL['Overwrite'],
+	button2 = PA.ACL['Cancel'],
 	timeout = 0,
 	whileDead = 1,
 	enterClicksFirstButton = 1,
@@ -31,9 +31,9 @@ _G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'] = {
 }
 
 _G.StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
-	text = "Enter a name for your new Addon Profile:",
-	button1 = 'Create',
-	button2 = 'Cancel',
+	text = PA.ACL['Enter a name for your new Addon Profile:'],
+	button1 = PA.ACL['Create'],
+	button2 = PA.ACL['Cancel'],
 	timeout = 0,
 	hasEditBox = 1,
 	whileDead = 1,
@@ -43,9 +43,9 @@ _G.StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 }
 
 _G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE'] = {
-	text = "Enter a name for your AddOn Profile",
-	button1 = 'Update',
-	button2 = 'Cancel',
+	text = PA.ACL['Enter a name for your AddOn Profile:'],
+	button1 = PA.ACL['Update'],
+	button2 = PA.ACL['Cancel'],
 	timeout = 0,
 	hasEditBox = 1,
 	whileDead = 1,
@@ -53,8 +53,8 @@ _G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE'] = {
 }
 
 _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
-	button1 = 'Delete',
-	button2 = 'Cancel',
+	button1 = PA.ACL['Delete'],
+	button2 = PA.ACL['Cancel'],
 	timeout = 0,
 	whileDead = 1,
 	enterClicksFirstButton = 1,
@@ -342,7 +342,7 @@ function stAM:InitProfiles()
 		ProfileMenu[name] = Button
 	end
 
-	ProfileMenu.EnableAll.Text:SetText('Enable All')
+	ProfileMenu.EnableAll.Text:SetText(PA.ACL['Enable All'])
 	ProfileMenu.EnableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOPLEFT', 10, -10)
 	ProfileMenu.EnableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOP', -3, -10)
 	ProfileMenu.EnableAll:SetScript('OnClick', function(self)
@@ -350,7 +350,7 @@ function stAM:InitProfiles()
 		stAM:UpdateAddonList()
 	end)
 
-	ProfileMenu.DisableAll.Text:SetText('Disable All')
+	ProfileMenu.DisableAll.Text:SetText(PA.ACL['Disable All'])
 	ProfileMenu.DisableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOPRIGHT', -10, -10)
 	ProfileMenu.DisableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOP', 2, -10)
 	ProfileMenu.DisableAll:SetScript('OnClick', function(self)
@@ -417,13 +417,13 @@ function stAM:InitProfiles()
 		end)
 
 		Pullout.Update:SetPoint('LEFT', Pullout.Load, 'RIGHT', 5, 0)
-		Pullout.Update.Text:SetText('Update')
+		Pullout.Update.Text:SetText(PA.ACL['Update'])
 		Pullout.Update:SetScript('OnClick', function(self)
 			stAM:NewAddOnProfile(Pullout.Name, true)
 		end)
 
 		Pullout.Delete:SetPoint('LEFT', Pullout.Update, 'RIGHT', 5, 0)
-		Pullout.Delete.Text:SetText('Delete')
+		Pullout.Delete.Text:SetText(PA.ACL['Delete'])
 		Pullout.Delete:SetScript('OnClick', function(self)
 			local dialog = _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION']
 
@@ -622,7 +622,7 @@ function stAM:GetOptions()
 			ClassColor = {
 				order = 10,
 				type = 'toggle',
-				name = 'Class Color Check Texture',
+				name = PA.ACL['Class Color Check Texture'],
 			},
 			AuthorHeader = {
 				order = 11,
