@@ -242,9 +242,9 @@ function stAM:BuildFrame()
 		CheckButton:SetScript('OnEnter', function(self)
 			GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
 			GameTooltip:ClearLines()
-			GameTooltip:AddLine(self.title, 1, 1, 1)
-			GameTooltip:AddLine(self.author, 1, 1, 1)
-			GameTooltip:AddLine(self.notes, 1, 1, 1)
+			GameTooltip:AddDoubleLine('AddOn:', self.title, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine(PA.ACL['Authors:'], self.author, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine('Notes:', self.notes, 1, 1, 1, 1, 1, 1)
 			if self.requireddeps or self.optionaldeps then
 				GameTooltip:AddLine(' ')
 			end
