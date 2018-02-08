@@ -117,6 +117,7 @@ ACL['Move Queue Status Icon'] = "LFG Icon bewegen"
 
 -- stAddOnManager
 ACL['# Shown AddOns'] = "# angezeigte AddOns"
+ACL['Are you sure you want to delete %s?'] = "Willst du wirklich %s löschen?"
 ACL['Button Height'] = "Tasten Höhe"
 ACL['Button Width'] = "Tasten Breite"
 ACL['Cancel'] = "Abbrechen"
@@ -137,4 +138,5 @@ ACL['Profiles'] = "Profile"
 ACL['Reload'] = "Neu Laden"
 ACL['Search'] = "Suche"
 ACL['Texture'] = "Textur"
+ACL['There is already a profile named %s. Do you want to overwrite it?'] = "Es ist bereits ein Profil mit dem Namen %s vorhanden. Willst du es überschreiben?"
 ACL['Update'] = "Aktualisieren"

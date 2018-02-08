@@ -117,6 +117,7 @@ ACL['Move Queue Status Icon'] = true
 
 -- stAddOnManager
 ACL['# Shown AddOns'] = true
+ACL['Are you sure you want to delete %s?'] = true
 ACL['Button Height'] = true
 ACL['Button Width'] = true
 ACL['Cancel'] = true
@@ -137,4 +138,5 @@ ACL['Profiles'] = true
 ACL['Reload'] = true
 ACL['Search'] = true
 ACL['Texture'] = true
+ACL['There is already a profile named %s. Do you want to overwrite it?'] = true
 ACL['Update'] = true
