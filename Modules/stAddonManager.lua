@@ -302,7 +302,7 @@ end
 
 function stAM:NewAddOnProfile(name, overwrite)
 	if _G.stAddonManagerProfilesDB[name] and (not overwrite) then
-		_G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'].text = 'There is already a profile named ' .. name .. '. Do you want to overwrite it?'
+		_G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'].text = format('There is already a profile named %s. Do you want to overwrite it?', name)
 		_G.StaticPopupDialogs['STADDONMANAGER_OVERWRITEPROFILE'].OnAccept = function(self) stAM:NewAddOnProfile(name, true) end
 		_G.StaticPopup_Show('STADDONMANAGER_OVERWRITEPROFILE')
 		return
@@ -427,7 +427,7 @@ function stAM:InitProfiles()
 		Pullout.Delete:SetScript('OnClick', function(self)
 			local dialog = _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION']
 
-			dialog.text = format("Are you sure you want to delete %s?", Pullout.Name)
+			dialog.text = format("Are you sure you want to delete %s?", Pullout.Name) -- Mera
 			dialog.OnAccept = function(self)
 				_G.stAddonManagerProfilesDB[Pullout.Name] = nil
 				stAM:UpdateProfiles()
