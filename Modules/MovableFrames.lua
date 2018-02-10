@@ -157,6 +157,17 @@ function MF:MakeMovable(Frame)
 		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
 	end
 
+	Frame.ignoreFramePositionManager = true
+	Frame:SetAttribute("UIPanelLayout-defined", true)
+	if UIPanelWindows[Frame] then
+		for Key, Value in pairs(UIPanelWindows[Frame]) do
+			if Key == 'area' or Key == 'xoffset' or Key == 'yoffset' then
+				UIPanelWindows[Frame][Key] = nil
+				Frame:SetAttribute("UIPanelLayout-"..Key, nil)
+			end
+		end
+	end
+
 	C_Timer.After(0, function()
 		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then
 			Frame:ClearAllPoints()
