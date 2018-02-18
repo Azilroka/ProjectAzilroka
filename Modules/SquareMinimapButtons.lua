@@ -314,12 +314,15 @@ end
 function SMB:GrabMinimapButtons()
 	if (InCombatLockdown() or C_PetBattles.IsInBattle()) then return end
 
-	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
-		for i = 1, Frame:GetNumChildren() do
-			local object = select(i, Frame:GetChildren())
-			if object then
-				local name = object:GetName()
-				if name and (object:IsObjectType('Button') or object:IsObjectType('Frame') and AcceptedFrames[name]) then
+	for i = 1, _G["Minimap"]:GetNumChildren() do
+		local object = select(i, _G["Minimap"]:GetChildren())
+		if object then
+			local name = object:GetName()
+			if name and object:IsObjectType('Button') then
+				self:SkinMinimapButton(object)
+			end
+			for _, frame in pairs(AcceptedFrames) do
+				if object:IsObjectType('Frame') and object:GetName() == frame then
 					self:SkinMinimapButton(object)
 				end
 			end
