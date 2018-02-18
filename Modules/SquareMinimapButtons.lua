@@ -7,7 +7,7 @@ SMB.Description = 'Minimap Button Bar / Minimap Button Skinning'
 SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega    Durc'
 
 local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
-local tinsert, pairs, unpack, select = tinsert, pairs, unpack, select
+local tinsert, pairs, unpack, select, tContains = tinsert, pairs, unpack, select, tContains
 local InCombatLockdown, C_PetBattles = InCombatLockdown, C_PetBattles
 local Minimap = Minimap
 
@@ -247,9 +247,7 @@ function SMB:SkinMinimapButton(Button)
 	if not Name then return end
 
 	if Button:IsObjectType('Button') then
-		for i = 1, #ignoreButtons do
-			if Name == ignoreButtons[i] then return end
-		end
+		if tContains(ignoreButtons, Name) then return end
 
 		for i = 1, #GenericIgnores do
 			if strsub(Name, 1, strlen(GenericIgnores[i])) == GenericIgnores[i] then return end
