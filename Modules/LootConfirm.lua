@@ -26,8 +26,10 @@ function LC:HandleEvent(event, ...)
 			ConfirmLootSlot(slot)
 		end
 	elseif event == 'LOOT_READY' then
-		for i = NumLootItems, 1, -1 do
-			LootSlot(i)
+		if not IsModifierKeyDown() and GetCVarBool("autoLootDefault") == true then
+			for i = NumLootItems, 1, -1 do
+				LootSlot(i)
+			end
 		end
 	end
 end

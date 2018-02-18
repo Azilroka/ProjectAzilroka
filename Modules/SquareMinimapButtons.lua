@@ -53,10 +53,6 @@ local AcceptedFrames = {
 	'VendomaticButtonFrame',
 }
 
-local AddButtonsToBar = {
-	'SmartBuff_MiniMapButton',
-}
-
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
 
 function SMB:LockButton(Button)
@@ -322,7 +318,8 @@ function SMB:GrabMinimapButtons()
 		for i = 1, Frame:GetNumChildren() do
 			local object = select(i, Frame:GetChildren())
 			if object then
-				if object:IsObjectType('Button') and object:GetName() then
+				local name = object:GetName()
+				if name and (object:IsObjectType('Button') or object:IsObjectType('Frame') and AcceptedFrames[name]) then
 					self:SkinMinimapButton(object)
 				end
 			end

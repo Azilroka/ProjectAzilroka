@@ -120,8 +120,8 @@ local function OnDragStop(self)
 	self:StopMovingOrSizing()
 	local Name = self:GetName()
 	if MF.db[Name] and MF.db[Name]['Permanent'] then
-		local a, b, c, d, e = self:GetPoint()
-		b = self:GetParent():GetName() or 'UIParent'
+		local a, _, c, d, e = self:GetPoint()
+		local b = self:GetParent():GetName() or 'UIParent'
 		if Name == 'QuestFrame' or Name == 'GossipFrame' then
 			MF.db['GossipFrame'].Points = {a, b, c, d, e}
 			MF.db['QuestFrame'].Points = {a, b, c, d, e}
