@@ -319,7 +319,7 @@ function SMB:GrabMinimapButtons()
 			local object = select(i, Frame:GetChildren())
 			if object then
 				local name = object:GetName()
-				if name and (object:IsObjectType('Button') or object:IsObjectType('Frame') and tContains(AcceptedFrames, name) == 1) then
+				if name and (object:IsObjectType('Button') or object:IsObjectType('Frame') and tContains(AcceptedFrames, name)) then
 					self:SkinMinimapButton(object)
 				end
 			end
