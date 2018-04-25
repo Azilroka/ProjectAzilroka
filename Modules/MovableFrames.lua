@@ -110,6 +110,8 @@ local function LoadPosition(self)
 		self:ClearAllPoints()
 		self:SetPoint(unpack(MF.db[Name]['Points']))
 	end
+
+	tinsert(UISpecialFrames, Name)
 end
 
 local function OnDragStart(self)
@@ -151,6 +153,7 @@ function MF:MakeMovable(Name)
 	Frame:HookScript('OnDragStart', OnDragStart)
 	Frame:HookScript('OnDragStop', OnDragStop)
 	Frame:HookScript('OnHide', OnDragStop)
+
 	if Name == 'WorldStateAlwaysUpFrame' then
 		Frame:HookScript('OnEnter', function(self) self:SetTemplate() end)
 		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
