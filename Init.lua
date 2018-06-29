@@ -62,6 +62,7 @@ PA.ClassColor = { Color.r, Color.g, Color.b }
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
 PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI', PA.MyName)
+PA.CUI = PA:IsAddOnEnabled('ElvUI_ChaoticUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 
