@@ -61,7 +61,6 @@ PA.ClassColor = { Color.r, Color.g, Color.b }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
-PA.NUI = PA:IsAddOnEnabled('ElvUI_NenaUI', PA.MyName)
 PA.CUI = PA:IsAddOnEnabled('ElvUI_ChaoticUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
@@ -161,7 +160,7 @@ PA.Options = {
 					order = 4,
 					type = 'toggle',
 					name = PA.ACL['Enhanced Shadows'],
-					disabled = function() return (PA.SLE or PA.NUI) end,
+					disabled = function() return (PA.SLE or PA.CUI) end,
 				},
 				FG = {
 					order = 5,
@@ -213,7 +212,7 @@ function PA:UpdateProfile()
 		},
 	}
 
-	if (PA.SLE or PA.NUI) then
+	if (PA.SLE or PA.CUI) then
 		Defaults.profile.ES = false
 	end
 
@@ -236,7 +235,7 @@ function PA:PLAYER_LOGIN()
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
-	if not (PA.SLE or PA.NUI) and PA.db['ES'] then
+	if not (PA.SLE or PA.CUI) and PA.db['ES'] then
 		PA.ES:Initialize()
 	end
 	if PA.db['BB'] then

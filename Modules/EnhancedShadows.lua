@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-if (PA.SLE or PA.NUI) then return end
+if (PA.SLE or PA.CUI) then return end
 
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0')
 PA.ES, _G.EnhancedShadows = ES, ES
