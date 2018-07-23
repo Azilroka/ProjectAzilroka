@@ -299,8 +299,8 @@ function DO:BuildProfile()
 		if PA.ElvUI then
 			Defaults.profile[Option].relativeTo = 'ElvUF_Target'
 		end
-		if PA.NUI then
-			Defaults.profile[Option].relativeTo = 'NenaUF_TargetVerticalUnitFrame'
+		if PA.CUI then
+			Defaults.profile[Option].relativeTo = 'ChaoticUF_Target'
 		end
 		if PA.AzilUI then
 			Defaults.profile[Option].relativeTo = 'oUF_AzilUITarget'
