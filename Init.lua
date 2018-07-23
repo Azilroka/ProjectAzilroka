@@ -236,7 +236,7 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 	if not (PA.SLE or PA.CUI) and PA.db['ES'] then
-		PA.ES:Initialize()
+		pcall(PA.ES.Initialize, PA)
 	end
 	if PA.db['BB'] then
 		pcall(PA.BB.Initialize, PA)
