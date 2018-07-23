@@ -297,12 +297,12 @@ function MF:Initialize()
 			end
 		end
 	end
-
+--[[
 	hooksecurefunc(ExtendedUI['CAPTUREPOINT'], 'create', function(id)
 		if _G['WorldStateCaptureBar'..id].MoverAssigned then return end
 		MF:MakeMovable(_G['WorldStateCaptureBar'..id])
 		_G['WorldStateCaptureBar'..id].MoverAssigned = true
 	end)
-
+]]
 	self:RegisterEvent('ADDON_LOADED')
 end
