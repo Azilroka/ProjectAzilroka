@@ -236,34 +236,34 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 	if not (PA.SLE or PA.CUI) and PA.db['ES'] then
-		pcall(PA.ES.Initialize, PA)
+		pcall(PA.ES.Initialize)
 	end
 	if PA.db['BB'] then
-		pcall(PA.BB.Initialize, PA)
+		pcall(PA.BB.Initialize)
 	end
 	if PA.db['BrokerLDB'] then
-		pcall(PA.BrokerLDB.Initialize, PA)
+		pcall(PA.BrokerLDB.Initialize)
 	end
 	if PA.db['DO'] then
-		pcall(PA.DO.Initialize, PA)
+		pcall(PA.DO.Initialize)
 	end
 	if PA.db['FG'] then -- Has to be before EFL
-		pcall(PA.FG.Initialize, PA)
+		pcall(PA.FG.Initialize)
 	end
 	if PA.db['EFL'] then
-		pcall(PA.EFL.Initialize, PA)
+		pcall(PA.EFL.Initialize)
 	end
 	if PA.db['LC'] then
-		pcall(PA.LC.Initialize, PA)
+		pcall(PA.LC.Initialize)
 	end
 	if PA.db['MF'] then
-		pcall(PA.MF.Initialize, PA)
+		pcall(PA.MF.Initialize)
 	end
 	if PA.db['SMB'] and not PA.SLE then
-		pcall(PA.SMB.Initialize, PA)
+		pcall(PA.SMB.Initialize)
 	end
 	if PA.db['stAM'] then
-		pcall(PA.stAM.Initialize, PA)
+		pcall(PA.stAM.Initialize)
 	end
 	if PA.Tukui and GetAddOnEnableState(PA.MyName, 'Tukui_Config') > 0 then
 		PA:TukuiOptions()
