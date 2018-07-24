@@ -111,8 +111,8 @@ function ES:SetupProfile()
 end
 
 function ES:Initialize()
-	self:BuildProfile()
-	self:GetOptions()
+	ES:BuildProfile()
+	ES:GetOptions()
 
-	self:UpdateShadows()
+	ES:UpdateShadows()
 end

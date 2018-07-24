@@ -463,12 +463,12 @@ function EFL:SetupProfile()
 end
 
 function EFL:Initialize()
-	self:BuildProfile()
-	self:GetOptions()
+	EFL:BuildProfile()
+	EFL:GetOptions()
 
 	if PA.db.FG then
-		self:SecureHook(PA.FG, 'FriendGroups_UpdateFriendButton', function(self, button) EFL:UpdateFriends(button) end)
+		EFL:SecureHook(PA.FG, 'FriendGroups_UpdateFriendButton', function(self, button) EFL:UpdateFriends(button) end)
 	else
-		self:SecureHook("FriendsFrame_UpdateFriendButton", 'UpdateFriends')
+		EFL:SecureHook("FriendsFrame_UpdateFriendButton", 'UpdateFriends')
 	end
 end

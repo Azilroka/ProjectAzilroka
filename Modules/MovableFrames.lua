@@ -285,18 +285,18 @@ function MF:Initialize()
 		sort(Frames)
 	end
 
-	self:BuildProfile()
-	self:GetOptions()
+	MF:BuildProfile()
+	MF:GetOptions()
 
 	for i = 1, #Frames do
-		self:MakeMovable(Frames[i])
+		MF:MakeMovable(Frames[i])
 	end
 
 	-- Check Forced Loaded AddOns
 	for AddOn, Table in pairs(AddOnFrames) do
 		if IsAddOnLoaded(AddOn) then
 			for _, Frame in pairs(Table) do
-				self:MakeMovable(Frame)
+				MF:MakeMovable(Frame)
 			end
 		end
 	end
@@ -307,5 +307,5 @@ function MF:Initialize()
 		_G['WorldStateCaptureBar'..id].MoverAssigned = true
 	end)
 ]]
-	self:RegisterEvent('ADDON_LOADED')
+	MF:RegisterEvent('ADDON_LOADED')
 end

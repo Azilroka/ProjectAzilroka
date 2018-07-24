@@ -666,23 +666,23 @@ function stAM:SetupProfile()
 end
 
 function stAM:Initialize()
-	self:BuildProfile()
-	self:GetOptions()
+	stAM:BuildProfile()
+	stAM:GetOptions()
 
-	self.AddOnInfo = {}
-	self.Profiles = {}
+	stAM.AddOnInfo = {}
+	stAM.Profiles = {}
 
 	for i = 1, GetNumAddOns() do
 		local name, title, notes = GetAddOnInfo(i)
 		local requireddeps, optionaldeps = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
 		local author = GetAddOnMetadata(i, "Author")
-		self.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
+		stAM.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
 	end
 
-	self.SelectedCharacter = PA.MyName
+	stAM.SelectedCharacter = PA.MyName
 
 	stAM.Menu = {
-		{ text = 'All', checked = function() return self.SelectedCharacter == true end, func = function() self.SelectedCharacter = true stAM:UpdateAddonList() end}
+		{ text = 'All', checked = function() return stAM.SelectedCharacter == true end, func = function() stAM.SelectedCharacter = true stAM:UpdateAddonList() end}
 	}
 
 	_G.stAddonManagerServerDB[PA.MyRealm] = _G.stAddonManagerServerDB[PA.MyRealm] or {}
@@ -690,14 +690,14 @@ function stAM:Initialize()
 
 	local index = 2
 	for Character in PA:PairsByKeys(_G.stAddonManagerServerDB[PA.MyRealm]) do
-		stAM.Menu[index] = { text = Character, checked = function() return self.SelectedCharacter == Character end, func = function() self.SelectedCharacter = Character stAM:UpdateAddonList() end }
+		stAM.Menu[index] = { text = Character, checked = function() return stAM.SelectedCharacter == Character end, func = function() stAM.SelectedCharacter = Character stAM:UpdateAddonList() end }
 		index = index + 1
 	end
 
-	self.MenuOffset = index
+	stAM.MenuOffset = index
 
-	self.scrollOffset = 0
+	stAM.scrollOffset = 0
 
-	self:BuildFrame()
-	self:InitProfiles()
+	stAM:BuildFrame()
+	stAM:InitProfiles()
 end

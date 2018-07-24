@@ -324,10 +324,10 @@ function DO:Initialize()
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)
 	frame.Texture = frame:CreateTexture(nil, 'ARTWORK')
 	frame.Texture:SetAllPoints()
-	self.frame = frame
+	DO.frame = frame
 
-	self:RegisterEvent('PLAYER_ENTERING_WORLD', 'SetupProfile')
-	self:RegisterEvent('PLAYER_TARGET_CHANGED', 'SetOverlay')
+	DO:RegisterEvent('PLAYER_ENTERING_WORLD', 'SetupProfile')
+	DO:RegisterEvent('PLAYER_TARGET_CHANGED', 'SetOverlay')
 
-	self:GetOptions()
+	DO:GetOptions()
 end

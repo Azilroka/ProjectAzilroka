@@ -147,23 +147,23 @@ function LC:SetupProfile()
 end
 
 function LC:Initialize()
-	self:BuildProfile()
-	self:GetOptions()
+	LC:BuildProfile()
+	LC:GetOptions()
 
 	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
 	UIParent:UnregisterEvent('CONFIRM_DISENCHANT_ROLL')
 	UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')
 
-	self:RegisterEvent('CONFIRM_DISENCHANT_ROLL', 'HandleEvent')
-	self:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
-	self:RegisterEvent('LOOT_OPENED', 'HandleEvent')
-	self:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
-	self:RegisterEvent('LOOT_READY', 'HandleEvent')
+	LC:RegisterEvent('CONFIRM_DISENCHANT_ROLL', 'HandleEvent')
+	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
+	LC:RegisterEvent('LOOT_OPENED', 'HandleEvent')
+	LC:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
+	LC:RegisterEvent('LOOT_READY', 'HandleEvent')
 
-	--self:RegisterEvent('START_LOOT_ROLL')
+	--LC:RegisterEvent('START_LOOT_ROLL')
 
 	if PA.ElvUI then
 		ElvUI[1].db.general.autoRoll = false
-		self:RegisterEvent("ADDON_LOADED")
+		LC:RegisterEvent("ADDON_LOADED")
 	end
 end
