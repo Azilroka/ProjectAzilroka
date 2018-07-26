@@ -44,6 +44,7 @@ local GenericIgnores = {
 	'NauticusMiniIcon',
 	'WestPointer',
 	'Cork',
+	'DugisArrowMinimapPoint',
 }
 
 local PartialIgnores = { 'Node', 'Note', 'Pin', 'POI' }
