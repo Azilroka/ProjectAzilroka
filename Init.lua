@@ -200,7 +200,7 @@ function PA:UpdateProfile()
 	local Defaults = {
 		profile = {
 			['BB'] = true,
-			['BrokerLDB'] = true,
+			['BrokerLDB'] = false,
 			['DO'] = true,
 			['EFL'] = true,
 			['ES'] = true,
