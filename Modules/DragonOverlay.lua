@@ -111,19 +111,19 @@ function DO:GetOptions()
 						order = 4,
 						type = 'range',
 						name = PA.ACL['Icon Size'],
-						min = 16, max = 64, step = 1,
+						min = 1, max = 255, step = 1,
 					},
 					Width = {
 						order = 5,
 						type = 'range',
 						name = PA.ACL['Width'],
-						min = 16, max = 128, step = 1,
+						min = 1, max = 255, step = 1,
 					},
 					Height = {
 						order = 6,
 						type = 'range',
 						name = PA.ACL['Height'],
-						min = 16, max = 64, step = 1,
+						min = 1, max = 255, step = 1,
 					},
 					Desc = {
 						order = 7,
