@@ -39,7 +39,7 @@ local Frames = {
 	'PetitionFrame',
 	'PetStableFrame',
 	'PVEFrame',
-	'PVPReadyDialog',
+--	'PVPReadyDialog',
 	'QuestFrame',
 	'QuestLogPopupDetailFrame',
 	'RaidBrowserFrame',
@@ -62,14 +62,12 @@ local Frames = {
 	'TradeFrame',
 	'TutorialFrame',
 	'VideoOptionsFrame',
-	'WorldStateAlwaysUpFrame',
 	'WorldStateScoreFrame',
 }
 
 local AddOnFrames = {
 	['Blizzard_AchievementUI'] = { 'AchievementFrame' },
 	['Blizzard_ArchaeologyUI'] = { 'ArchaeologyFrame' },
-	['Blizzard_ArtifactUI'] = { 'ArtifactRelicForgeFrame' },
 	['Blizzard_AuctionUI'] = { 'AuctionFrame' },
 	['Blizzard_BarberShopUI'] = { 'BarberShopFrame' },
 	['Blizzard_BindingUI'] = { 'KeyBindingFrame' },
@@ -154,15 +152,10 @@ function MF:MakeMovable(Name)
 	Frame:HookScript('OnDragStop', OnDragStop)
 	Frame:HookScript('OnHide', OnDragStop)
 
-	if Name == 'WorldStateAlwaysUpFrame' then
-		Frame:HookScript('OnEnter', function(self) self:SetTemplate() end)
-		Frame:HookScript('OnLeave', function(self) self:StripTextures() end)
-	end
-
 	Frame.ignoreFramePositionManager = true
 	if UIPanelWindows[Name] then
 		for Key in pairs(UIPanelWindows[Name]) do
-			if Key == 'area' or Key == "pushable" then
+			if Key == "pushable" then
 				UIPanelWindows[Name][Key] = nil
 			end
 		end
@@ -248,6 +241,9 @@ function MF:GetOptions()
 	end
 
 	self.AllFrames = nil
+
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles.order = -2
 
 	PA.Options.args.MovableFrames = Options
 end

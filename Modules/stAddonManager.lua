@@ -638,6 +638,9 @@ function stAM:GetOptions()
 		},
 	}
 
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles.order = -2
+
 	PA.Options.args.stAM = Options
 end
 

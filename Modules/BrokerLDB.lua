@@ -95,6 +95,9 @@ function BrokerLDB:GetOptions()
 		},
 	}
 
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles.order = -2
+
 	PA.Options.args.BrokerLDB = Options
 end
 

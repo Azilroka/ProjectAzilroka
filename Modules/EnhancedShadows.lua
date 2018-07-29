@@ -24,6 +24,7 @@ function ES:UpdateShadows()
 end
 
 function ES:RegisterShadow(shadow)
+	if not shadow then return end
 	if shadow.isRegistered then return end
 	ES.RegisteredShadows[shadow] = true
 	shadow.isRegistered = true
@@ -88,6 +89,9 @@ function ES:GetOptions()
 			},
 		},
 	}
+
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles.order = -2
 
 	PA.Options.args.EnhancedShadows = Options
 end

@@ -196,7 +196,7 @@ function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
 end
 
-function PA:UpdateProfile()
+function PA:BuildProfile()
 	local Defaults = {
 		profile = {
 			['BB'] = true,
@@ -217,6 +217,11 @@ function PA:UpdateProfile()
 	end
 
 	PA.data = PA.ADB:New('ProjectAzilrokaDB', Defaults)
+
+	PA.db = PA.data.profile
+end
+
+function PA:SetupProfile()
 	PA.db = PA.data.profile
 end
 
@@ -224,7 +229,7 @@ function PA:ADDON_LOADED(event, addon)
 	if addon == AddOnName then
 		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
-		PA:UpdateProfile()
+		PA:BuildProfile()
 		PA:UnregisterEvent(event)
 	end
 end
