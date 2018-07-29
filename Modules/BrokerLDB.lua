@@ -25,12 +25,12 @@ function BrokerLDB:GetOptions()
 		order = 101,
 		args = {
 			header = {
-				order = 0,
+				order = 1,
 				type = 'header',
 				name = BrokerLDB['Title'],
 			},
 			general = {
-				order = 1,
+				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,

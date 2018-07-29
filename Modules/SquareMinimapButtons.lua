@@ -394,12 +394,12 @@ function SMB:GetOptions()
 		set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 		args = {
 			Header = {
-				order = 0,
+				order = 1,
 				type = 'header',
 				name = PA:Color(SMB.Title),
 			},
 			mbb = {
-				order = 1,
+				order = 2,
 				type = 'group',
 				name = PA.ACL['Minimap Buttons / Bar'],
 				guiInline = true,

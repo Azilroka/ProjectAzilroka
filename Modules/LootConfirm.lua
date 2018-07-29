@@ -71,7 +71,7 @@ function LC:GetOptions()
 		order = 208,
 		args = {
 			header = {
-				order = 0,
+				order = 1,
 				type = 'header',
 				name = PA:Color(LC.Title)
 			},

@@ -233,7 +233,7 @@ function EFL:GetOptions()
 		order = 206,
 		args = {
 			header = {
-				order = 0,
+				order = 1,
 				type = 'header',
 				name = PA:Color(EFL.Title)
 			},

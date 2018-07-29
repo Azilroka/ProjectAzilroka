@@ -44,11 +44,7 @@ function DO:SetOverlay()
 		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[TargetClass]))
 		Points = 'ClassIconPoints'
 	else
-		if Texture and strfind(Texture, 'Classic') then
-			self.frame:SetSize(80, 80)
-		else
-			self.frame:SetSize(128, 32)
-		end
+		self.frame:SetSize(DO.db.Width, DO.db.Height)
 		self.frame.Texture:SetTexture(Texture)
 		self.frame.Texture:SetTexCoord(self.db['FlipDragon'] and 1 or 0, self.db['FlipDragon'] and 0 or 1, 0, 1)
 	end
@@ -68,12 +64,12 @@ function DO:GetOptions()
 		order = 103,
 		args = {
 			header = {
-				order = 0,
+				order = 1,
 				type = 'header',
 				name = PA:Color(DO.Title)
 			},
 			general = {
-				order = 1,
+				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,
@@ -111,29 +107,47 @@ function DO:GetOptions()
 						name = PA.ACL['Frame Level'],
 						min = 0, max = 255, step = 1,
 					},
-					Desc = {
+					IconSize = {
 						order = 4,
+						type = 'range',
+						name = PA.ACL['Height'],
+						min = 16, max = 64, step = 1,
+					},
+					Width = {
+						order = 5,
+						type = 'range',
+						name = PA.ACL['Width'],
+						min = 16, max = 128, step = 1,
+					},
+					Height = {
+						order = 6,
+						type = 'range',
+						name = PA.ACL['Height'],
+						min = 16, max = 64, step = 1,
+					},
+					Desc = {
+						order = 7,
 						type = 'description',
 						name = '',
 					},
 					AuthorHeader = {
-						order = 20,
+						order = -4,
 						type = 'header',
 						name = PA.ACL['Authors:'],
 					},
 					Authors = {
-						order = 21,
+						order = -3,
 						type = 'description',
 						name = DO.Authors,
 						fontSize = 'large',
 					},
 					CreditsHeader = {
-						order = 22,
+						order = -2,
 						type = 'header',
 						name = PA.ACL['Image Credits:'],
 					},
 					Credits = {
-						order = 23,
+						order = -1,
 						type = 'description',
 						name = DO.ImageCredits,
 						fontSize = 'large',
@@ -143,7 +157,7 @@ function DO:GetOptions()
 		},
 	}
 
-	local Order = 4
+	local Order = 8
 	for Option, Name in pairs({ ['ClassIconPoints'] = PA.ACL['Class Icon Points'], ['DragonPoints'] = PA.ACL['Dragon Points'] }) do
 		Options.args.general.args[Option] = {
 			order = Order,
@@ -172,7 +186,7 @@ function DO:GetOptions()
 					values = {},
 				},
 				xOffset = {
-					order = 5,
+					order = 4,
 					type = 'range',
 					name = PA.ACL['X Offset'],
 					min = -350, max = 350, step = 1,
@@ -227,7 +241,6 @@ function DO:GetOptions()
 		['worldboss'] = PA.ACL['World Boss'],
 	}
 
-	Order = 6
 	for Option, Name in pairs(MenuItems) do
 		Options.args.general.args[Option] = {
 			order = Order,
