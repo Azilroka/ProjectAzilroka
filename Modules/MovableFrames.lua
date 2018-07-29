@@ -242,7 +242,7 @@ function MF:GetOptions()
 
 	self.AllFrames = nil
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(MF.data)
 	Options.args.profiles.order = -2
 
 	PA.Options.args.MovableFrames = Options

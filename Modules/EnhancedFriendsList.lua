@@ -414,7 +414,7 @@ function EFL:GetOptions()
 		}
 	end
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(EFL.data)
 	Options.args.profiles.order = -2
 
 	PA.Options.args.EnhancedFriendsList = Options

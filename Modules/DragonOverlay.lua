@@ -274,7 +274,7 @@ function DO:GetOptions()
 		Order = Order + 2
 	end
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(DO.data)
 	Options.args.profiles.order = -2
 
 	PA.Options.args.DragonOverlay = Options
