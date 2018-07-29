@@ -39,7 +39,7 @@ function DO:SetOverlay()
 
 	if UnitIsPlayer('target') and self.db['ClassIcon'] then
 		TargetClass = select(2, UnitClass('target'))
-		self.frame:SetSize(32, 32)
+		self.frame:SetSize(DO.db.IconSize, DO.db.IconSize)
 		self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
 		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[TargetClass]))
 		Points = 'ClassIconPoints'
@@ -110,7 +110,7 @@ function DO:GetOptions()
 					IconSize = {
 						order = 4,
 						type = 'range',
-						name = PA.ACL['Height'],
+						name = PA.ACL['Icon Size'],
 						min = 16, max = 64, step = 1,
 					},
 					Width = {
@@ -285,6 +285,9 @@ function DO:BuildProfile()
 		profile = {
 			['Strata'] = '2-MEDIUM',
 			['Level'] = 12,
+			['IconSize'] = 32,
+			['Width'] = 128,
+			['Height'] = 64,
 			['worldboss'] = 'Chromatic',
 			['elite'] = 'HeavenlyGolden',
 			['rare'] = 'Onyx',
