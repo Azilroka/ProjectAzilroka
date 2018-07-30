@@ -261,7 +261,7 @@ function MF:BuildProfile()
 
 	for _, Frame in pairs(self.AllFrames) do
 		if not Defaults.profile[Frame] then
-			Defaults.profile[Frame] = { ['Permanent'] = false }
+			Defaults.profile[Frame] = { ['Permanent'] = true }
 		end
 	end
 

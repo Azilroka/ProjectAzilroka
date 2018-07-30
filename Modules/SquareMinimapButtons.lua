@@ -499,10 +499,10 @@ function SMB:BuildProfile()
 			['ButtonsPerRow'] = 12,
 			['ButtonSpacing'] = 2,
 			['HideGarrison'] = false,
-			['MoveGarrison'] = false,
-			['MoveMail'] = false,
-			['MoveTracker'] = false,
-			['MoveQueue'] = false,
+			['MoveGarrison'] = true,
+			['MoveMail'] = true,
+			['MoveTracker'] = true,
+			['MoveQueue'] = true,
 		},
 	})
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')

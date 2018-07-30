@@ -647,7 +647,7 @@ end
 function stAM:BuildProfile()
 	self.data = PA.ADB:New('stAddonManagerDB', {
 		profile = {
-			['NumAddOns'] = 15,
+			['NumAddOns'] = 30,
 			['FrameWidth'] = 550,
 			['Font'] = 'PT Sans Narrow',
 			['FontSize'] = 16,
