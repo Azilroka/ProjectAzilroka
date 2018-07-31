@@ -4,7 +4,7 @@ PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
 SMB.Title = '|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r'
 SMB.Description = 'Minimap Button Bar / Minimap Button Skinning'
-SMB.Authors = 'Azilroka    Infinitron    Sinaris    Omega    Durc'
+SMB.Authors = 'Azilroka    Whiro    Sinaris    Omega    Durc'
 
 local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
 local tinsert, pairs, unpack, select, tContains = tinsert, pairs, unpack, select, tContains

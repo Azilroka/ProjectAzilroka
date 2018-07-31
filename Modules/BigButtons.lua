@@ -4,7 +4,7 @@ PA.BB, _G.BigButtons = BB, BB
 
 BB.Title = '|cFF16C3F2Big|r|cFFFFFFFFButtons|r'
 BB.Description = 'A farm tool for Sunsong Ranch.'
-BB.Authors = 'Azilroka    ChaoticVoid'
+BB.Authors = 'Azilroka    Whiro'
 
 local GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown = GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown
 local NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem = NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem

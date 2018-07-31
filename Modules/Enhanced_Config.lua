@@ -11,7 +11,7 @@ local DEVELOPERS = {
 	'Elv',
 	'Tukz',
 	'Hydrazine',
-	'Infinitron',
+	'Whiro',
 }
 
 local DEVELOPER_STRING = ''
