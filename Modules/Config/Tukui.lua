@@ -25,10 +25,10 @@ function PA:TukuiOptions()
 		},
 	}
 
-	local MyRealm = GetRealmName()
-	local MyName = UnitName("Player")
+	local MyRealm = PA.MyRealm
+	local MyName = PA.MyName
 	local SavedVars
-	local Locale = GetLocale()
+	local Locale = PA.Locale
 	if (Locale == "enGB") then
 		Locale = "enUS"
 	end

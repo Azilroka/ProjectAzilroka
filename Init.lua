@@ -28,6 +28,7 @@ PA.LAB = LibStub('LibActionButton-1.0')
 PA.MyClass = select(2, UnitClass('player'))
 PA.MyName = UnitName('player')
 PA.MyRealm = GetRealmName()
+PA.Locale = GetLocale()
 PA.Noop = function() end
 PA.TexCoords = {.08, .92, .08, .92}
 PA.UIScale = UIParent:GetScale()
