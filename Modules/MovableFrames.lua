@@ -152,14 +152,14 @@ function MF:MakeMovable(Name)
 	Frame:HookScript('OnDragStop', OnDragStop)
 	Frame:HookScript('OnHide', OnDragStop)
 
-	Frame.ignoreFramePositionManager = true
-	if UIPanelWindows[Name] then
-		for Key in pairs(UIPanelWindows[Name]) do
-			if Key == "pushable" then
-				UIPanelWindows[Name][Key] = nil
-			end
-		end
-	end
+	--Frame.ignoreFramePositionManager = true
+	--if UIPanelWindows[Name] then
+	--	for Key in pairs(UIPanelWindows[Name]) do
+	--		if Key == "pushable" then
+	--			UIPanelWindows[Name][Key] = nil
+	--		end
+	--	end
+	--end
 
 	C_Timer.After(0, function()
 		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then
