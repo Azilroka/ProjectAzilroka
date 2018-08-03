@@ -47,7 +47,6 @@ function ES:UpdateShadow(shadow)
 	shadow:SetOutside(shadow:GetParent(), Size, Size)
 
 	backdrop.edgeSize = ES:Scale(Size > 3 and Size or 3)
-	backdrop.insets = {left = ES:Scale(5), right = ES:Scale(5), top = ES:Scale(5), bottom = ES:Scale(5)}
 
 	shadow:SetBackdrop(backdrop)
 	shadow:SetBackdropColor(r, g, b, 0)
