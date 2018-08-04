@@ -108,8 +108,6 @@ local function LoadPosition(self)
 		self:ClearAllPoints()
 		self:SetPoint(unpack(MF.db[Name]['Points']))
 	end
-
-	tinsert(UISpecialFrames, Name)
 end
 
 local function OnDragStart(self)
