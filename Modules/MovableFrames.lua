@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0')
+local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
 MF.Title = '|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'
@@ -97,29 +97,30 @@ local AddOnFrames = {
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
 }
 
-local function LoadPosition(self)
-	local Name = self:GetName()
+function MF:LoadPosition(frame)
+	local Name = frame:GetName()
 
-	if not self:GetPoint() then
-		self:SetPoint('TOPLEFT', 'UIParent', 'TOPLEFT', 16, -116)
+	if not frame:GetPoint() then
+		frame:SetPoint('TOPLEFT', 'UIParent', 'TOPLEFT', 16, -116)
 	end
 
 	if MF.db[Name] and MF.db[Name]['Permanent'] and MF.db[Name]['Points'] then
-		self:ClearAllPoints()
-		self:SetPoint(unpack(MF.db[Name]['Points']))
+		frame:ClearAllPoints()
+		frame:SetPoint(unpack(MF.db[Name]['Points']))
 	end
 end
 
-local function OnDragStart(self)
-	self:StartMoving()
+function MF:OnDragStart(frame)
+	self:Unhook(frame, 'OnUpdate')
+	frame:StartMoving()
 end
 
-local function OnDragStop(self)
-	self:StopMovingOrSizing()
-	local Name = self:GetName()
+function MF:OnDragStop(frame)
+	frame:StopMovingOrSizing()
+	local Name = frame:GetName()
 	if MF.db[Name] and MF.db[Name]['Permanent'] then
-		local a, _, c, d, e = self:GetPoint()
-		local b = self:GetParent():GetName() or 'UIParent'
+		local a, _, c, d, e = frame:GetPoint()
+		local b = frame:GetParent():GetName() or 'UIParent'
 		if Name == 'QuestFrame' or Name == 'GossipFrame' then
 			MF.db['GossipFrame'].Points = {a, b, c, d, e}
 			MF.db['QuestFrame'].Points = {a, b, c, d, e}
@@ -127,7 +128,10 @@ local function OnDragStop(self)
 			MF.db[Name].Points = {a, b, c, d, e}
 		end
 	else
-		self:SetUserPlaced(false)
+		frame:SetUserPlaced(false)
+	end
+	if (not self:IsHooked(frame, 'OnUpdate')) then
+		self:HookScript(frame, 'OnUpdate', 'LoadPosition')
 	end
 end
 
@@ -145,19 +149,19 @@ function MF:MakeMovable(Name)
 	Frame:SetMovable(true)
 	Frame:RegisterForDrag('LeftButton')
 	Frame:SetClampedToScreen(true)
-	Frame:HookScript('OnShow', LoadPosition)
-	Frame:HookScript('OnDragStart', OnDragStart)
-	Frame:HookScript('OnDragStop', OnDragStop)
-	Frame:HookScript('OnHide', OnDragStop)
+	self:HookScript(Frame, 'OnUpdate', 'LoadPosition')
+	self:HookScript(Frame, 'OnDragStart', 'OnDragStart')
+	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
+	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
-	--Frame.ignoreFramePositionManager = true
-	--if UIPanelWindows[Name] then
-	--	for Key in pairs(UIPanelWindows[Name]) do
-	--		if Key == "pushable" then
-	--			UIPanelWindows[Name][Key] = nil
-	--		end
-	--	end
-	--end
+	Frame.ignoreFramePositionManager = true
+	if UIPanelWindows[Name] then
+		for Key in pairs(UIPanelWindows[Name]) do
+			if Key == "pushable" then
+				UIPanelWindows[Name][Key] = nil
+			end
+		end
+	end
 
 	C_Timer.After(0, function()
 		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then

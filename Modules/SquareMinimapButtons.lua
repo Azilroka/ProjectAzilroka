@@ -547,6 +547,6 @@ function SMB:Initialize()
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 
-	SMB:ScheduleRepeatingTimer('GrabMinimapButtons', 5)
-	SMB:ScheduleTimer('HandleBlizzardButtons', 6)
+	SMB:ScheduleRepeatingTimer('GrabMinimapButtons', 6)
+	SMB:ScheduleTimer('HandleBlizzardButtons', 7)
 end
