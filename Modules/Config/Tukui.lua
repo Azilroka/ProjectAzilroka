@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 local type = type
 
 function PA:TukuiOptions()
-	local Options = {
+	local OptionsTable = {
 		type = 'group',
 		name = '|cffff8000Tukui Config|r',
 		order = 215,
@@ -39,77 +39,58 @@ function PA:TukuiOptions()
 		SavedVars = TukuiConfigShared[MyRealm][MyName]
 	end
 
+	local FontTable = tInvert(Tukui[1].FontTable)
+
 	local GroupIndex, OptionIndex = 1
 	for Group in PA:PairsByKeys(Tukui[2]) do
 		if not TukuiConfig.Filter[Group] then
-			Options.args.main.args[Group] = {
+			OptionsTable.args.main.args[Group] = {
 				order = GroupIndex,
 				type = 'group',
 				name = (type(TukuiConfig[Locale][Group]) == 'string' and TukuiConfig[Locale][Group]) or tostring(Group),
 				args = {},
-				get = function(info) return SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]] end,
-				set = function(info, value)
-					if (not SavedVars[Group]) then
-						SavedVars[Group] = {}
-					end
-
-					SavedVars[Group][info[#info]] = value
-				end
+				get = function(info) return tostring(SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]) end,
+				set = function(info, value) TukuiConfig:SetOption(Group, info[#info], value) end,
 			}
 
 			GroupIndex = GroupIndex + 1
 			OptionIndex = 1
 
 			for Option, Value in PA:PairsByKeys(Tukui[2][Group]) do
-				Options.args.main.args[Group].args[Option] = { order = OptionIndex, name = tostring(Option) }
+				OptionsTable.args.main.args[Group].args[Option] = { order = OptionIndex, name = tostring(Option) }
 
 				if TukuiConfig[Locale][Group] and type(TukuiConfig[Locale][Group][Option]) == "table" then
-					Options.args.main.args[Group].args[Option].name = TukuiConfig[Locale][Group][Option].Name
-					Options.args.main.args[Group].args[Option].desc = TukuiConfig[Locale][Group][Option].Desc
+					OptionsTable.args.main.args[Group].args[Option].name = TukuiConfig[Locale][Group][Option].Name
+					OptionsTable.args.main.args[Group].args[Option].desc = TukuiConfig[Locale][Group][Option].Desc
 				end
-
 				if (type(Value) == "boolean") then -- Button
-					Options.args.main.args[Group].args[Option].type = 'toggle'
+					OptionsTable.args.main.args[Group].args[Option].type = 'toggle'
 				elseif (type(Value) == "number") then -- EditBox
-					Options.args.main.args[Group].args[Option].type = 'input'
-					Options.args.main.args[Group].args[Option].width = 'normal'
-					Options.args.main.args[Group].args[Option].get = function(info) return tostring(SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]) end
-					Options.args.main.args[Group].args[Option].set = function(info, value)
-						if (not SavedVars[Group]) then
-							SavedVars[Group] = {}
-						end
-
-						SavedVars[Group][info[#info]] = tonumber(value)
-					end
+					OptionsTable.args.main.args[Group].args[Option].type = 'input'
+					OptionsTable.args.main.args[Group].args[Option].width = 'normal'
 				elseif (type(Value) == "table") then -- Color Picker / Custom DropDown
 					if Value.Options then
-						Options.args.main.args[Group].args[Option].type = 'select'
-						Options.args.main.args[Group].args[Option].values = Value.Options
+						OptionsTable.args.main.args[Group].args[Option].type = 'select'
+						OptionsTable.args.main.args[Group].args[Option].get = function(info) return SavedVars[Group] and SavedVars[Group][info[#info]] and SavedVars[Group][info[#info]]['Value'] or Tukui[2][Group][info[#info]]['Value'] end
+						OptionsTable.args.main.args[Group].args[Option].set = function(info, value) Value['Value'] = value TukuiConfig:SetOption(Group, info[#info], Value) end
+						OptionsTable.args.main.args[Group].args[Option].values = Value['Options']
 					else
-						Options.args.main.args[Group].args[Option].type = 'color'
-						Options.args.main.args[Group].args[Option].get = function(info) return unpack(SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]) end
-						Options.args.main.args[Group].args[Option].set = function(info, r, g, b)
-							if (not SavedVars[Group]) then
-								SavedVars[Group] = {}
-							end
-
-							SavedVars[Group][info[#info]] = { r, g, b }
-						end
+						OptionsTable.args.main.args[Group].args[Option].type = 'color'
+						OptionsTable.args.main.args[Group].args[Option].get = function(info) return unpack(SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]) end
+						OptionsTable.args.main.args[Group].args[Option].set = function(info, r, g, b, a) TukuiConfig:SetOption(Group, info[#info], { r, g, b, a}) end
 					end
 				elseif (type(Value) == "string") then -- DropDown / EditBox
-					Options.args.main.args[Group].args[Option].type = 'select'
+					OptionsTable.args.main.args[Group].args[Option].type = 'select'
 					if strfind(strlower(Option), "font") then
-						Options.args.main.args[Group].args[Option].values = tInvert(Tukui[1].FontTable)
-						Options.args.main.args[Group].args[Option].get = function(info)
+						OptionsTable.args.main.args[Group].args[Option].values = FontTable
+						--OptionsTable.args.main.args[Group].args[Option].dialogControl = 'LSM30_Font'
+						OptionsTable.args.main.args[Group].args[Option].get = function(info)
 							local Font = SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]
-							return Tukui[1].GetFont(Font)
+							return Tukui[1].FontTable[Font]
 						end
 					elseif strfind(strlower(Option), "texture") then
-						Options.args.main.args[Group].args[Option].values = tInvert(Tukui[1].TextureTable)
-						Options.args.main.args[Group].args[Option].get = function(info)
-							local Texture = SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]
-							return Tukui[1].GetTexture(Texture)
-						end
+						OptionsTable.args.main.args[Group].args[Option].values = Tukui[1].TextureTable
+						OptionsTable.args.main.args[Group].args[Option].dialogControl = 'LSM30_Statusbar'
 					end
 				end
 				OptionIndex = OptionIndex + 1
@@ -117,5 +98,5 @@ function PA:TukuiOptions()
 		end
 	end
 
-	_G.Enhanced_Config.Options.args.TukuiOptions = Options
+	_G.Enhanced_Config.Options.args.TukuiOptions = OptionsTable
 end
