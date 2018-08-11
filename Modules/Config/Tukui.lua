@@ -29,7 +29,8 @@ function PA:TukuiOptions()
 	local MyName = PA.MyName
 	local SavedVars
 	local Locale = PA.Locale
-	if (Locale == "enGB") then
+
+	if (not TukuiConfig[Locale]) then
 		Locale = "enUS"
 	end
 
