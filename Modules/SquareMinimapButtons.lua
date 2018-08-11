@@ -83,16 +83,6 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
 		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
 
-		GarrisonLandingPageMinimapButton:SetNormalTexture(1044517)
-		GarrisonLandingPageMinimapButton:GetNormalTexture():SetTexCoord(unpack(self.TexCoords))
-		GarrisonLandingPageMinimapButton:GetNormalTexture():SetInside()
-
-		GarrisonLandingPageMinimapButton:SetPushedTexture(1044517)
-		GarrisonLandingPageMinimapButton:GetPushedTexture():SetTexCoord(unpack(self.TexCoords))
-		GarrisonLandingPageMinimapButton:GetPushedTexture():SetInside()
-
-		GarrisonLandingPageMinimapButton:SetHighlightTexture(nil)
-
 		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
 			self:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
