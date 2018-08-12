@@ -119,6 +119,16 @@ StaticPopupDialogs["PA_RELOAD"] = {
 	hideOnEscape = false,
 }
 
+StaticPopupDialogs["PA_INCOMPATIBLE"] = { -- This gets replaced so it doesn't need localized, Mera
+	text = 'Incompatible',
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = ReloadUI,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+}
+
 PA.Options = {
 	type = 'group',
 	name = PA:Color(PA.Title),
@@ -267,7 +277,7 @@ function PA:PLAYER_LOGIN()
 	if PA.db['MF'] then
 		tinsert(InitializeModules, 'MF')
 	end
-	if PA.db['SMB'] and not PA.SLE then
+	if PA.db['SMB'] then
 		tinsert(InitializeModules, 'SMB')
 	end
 	if PA.db['stAM'] then

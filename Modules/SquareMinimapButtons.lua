@@ -517,6 +517,18 @@ function SMB:SetupProfile()
 end
 
 function SMB:Initialize()
+	if PA.ElvUI and PA.SLE then
+		if ElvUI[1].private.sle.minimap.mapicons.enable then
+			StaticPopupDialogs["PA_INCOMPATIBLE"].text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
+			StaticPopupDialogs["PA_INCOMPATIBLE"].button1 = 'Square Minimap Buttons'
+			StaticPopupDialogs["PA_INCOMPATIBLE"].button2 = 'S&L MiniMap Buttons'
+			StaticPopupDialogs["PA_INCOMPATIBLE"].OnAccept = function() ElvUI[1].private.sle.minimap.mapicons.enable = false ReloadUI() end
+			StaticPopupDialogs["PA_INCOMPATIBLE"].OnCancel = function() PA.db['SMB'] = false ReloadUI() end
+			StaticPopup_Show("PA_INCOMPATIBLE")
+			return
+		end
+	end
+
 	SMB:BuildProfile()
 	SMB:GetOptions()
 
