@@ -207,8 +207,10 @@ function EFL:UpdateFriends(button)
 				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db[client]])
 			end
 			nameColor = FRIENDS_BNET_NAME_COLOR
-			if button.gameIcon:GetTexture() == EFL.GameIcons['App'][self.db['App']] then
+			if button.gameIcon:GetTexture() == EFL.GameIcons['App'].BlizzardChat then
 				button.gameIcon:SetTexture(MediaPath..'GameIcons\\Bnet')
+			else
+				button.gameIcon:SetTexCoord(0, 1, 0, 1)
 			end
 		else
 			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
