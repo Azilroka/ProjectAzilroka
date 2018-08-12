@@ -365,6 +365,12 @@ function SMB:Update()
 	local BarHeight = (Spacing + ((Size * (AnchorY * Mult)) + ((Spacing * (AnchorY - 1)) * Mult) + (Spacing * Mult)))
 	self.Bar:SetSize(BarWidth, BarHeight)
 
+	if self.db.Backdrop then
+		self.Bar:SetTemplate('Transparent', true)
+	else
+		self.Bar:SetBackdrop(nil)
+	end
+
 	self.Bar:Show()
 
 	if self.db['BarMouseOver'] then
@@ -403,6 +409,11 @@ function SMB:GetOptions()
 						order = 2,
 						type = 'toggle',
 						name = PA.ACL['Bar MouseOver'],
+					},
+					Backdrop = {
+						order = 3,
+						type = 'toggle',
+						name = PA.ACL['Bar Backdrop'],
 					},
 					IconSize = {
 						order = 4,
@@ -485,6 +496,7 @@ function SMB:BuildProfile()
 		profile = {
 			['BarMouseOver'] = false,
 			['BarEnabled'] = false,
+			['Backdrop'] = false,
 			['IconSize'] = 27,
 			['ButtonsPerRow'] = 12,
 			['ButtonSpacing'] = 2,
@@ -518,7 +530,6 @@ function SMB:Initialize()
 	SMB.Bar:SetMovable(true)
 	SMB.Bar:EnableMouse(true)
 	SMB.Bar:SetSize(SMB.db.IconSize, SMB.db.IconSize)
-	SMB.Bar:SetTemplate('Transparent', true)
 
 	SMB.Bar:SetScript('OnEnter', function(self) UIFrameFadeIn(self, 0.2, self:GetAlpha(), 1) end)
 	SMB.Bar:SetScript('OnLeave', function(self)

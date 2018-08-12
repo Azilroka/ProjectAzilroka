@@ -104,6 +104,7 @@ ACL['Reset Moving'] = true
 
 -- SquareMinimapButtons
 ACL['Bar MouseOver'] = true
+ACL['Bar Backdrop'] = true
 ACL['Buttons Per Row'] = true
 ACL['Button Spacing'] = true
 ACL['Enable Bar'] = true
