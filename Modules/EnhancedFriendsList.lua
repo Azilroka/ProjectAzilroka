@@ -71,6 +71,7 @@ EFL.GameIcons = {
 		Flat = MediaPath..'GameIcons\\Flat\\BattleNet',
 		Gloss = MediaPath..'GameIcons\\Gloss\\BattleNet',
 		Launcher = MediaPath..'GameIcons\\Launcher\\BattleNet',
+		Animated = MediaPath..'GameIcons\\Bnet',
 	},
 	BSAp = {
 		Default = BNet_GetClientTexture(BNET_CLIENT_APP),
@@ -78,6 +79,7 @@ EFL.GameIcons = {
 		Flat = MediaPath..'GameIcons\\Flat\\BattleNet',
 		Gloss = MediaPath..'GameIcons\\Gloss\\BattleNet',
 		Launcher = MediaPath..'GameIcons\\Launcher\\BattleNet',
+		Animated = MediaPath..'GameIcons\\Bnet',
 	},
 	Hero = {
 		Default = BNet_GetClientTexture(BNET_CLIENT_HEROES),
@@ -172,10 +174,6 @@ function EFL:UpdateFriends(button)
 			nameText = UNKNOWN
 		end
 
-		if not EFL.GameIcons[client] then
-			client = 'App'
-		end
-
 		if characterName then
 			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(toonID)
 			if client == BNET_CLIENT_WOW then
@@ -185,6 +183,9 @@ function EFL:UpdateFriends(button)
 				nameText = format('%s |cFFFFFFFF(|r%s%s|r - %s %s%s|r|cFFFFFFFF)|r', nameText, classcolor, characterName, LEVEL, diff, level)
 				Cooperate = CanCooperateWithGameAccount(toonID)
 			else
+				if not EFL.ClientColor[client] then
+					client = 'App'
+				end
 				nameText = format('|cFF%s%s|r', EFL.ClientColor[client] or 'FFFFFF', nameText)
 			end
 		end
@@ -203,15 +204,14 @@ function EFL:UpdateFriends(button)
 				end
 				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db[faction]])
 			else
+				if not EFL.GameIcons[client] then
+					client = 'App'
+				end
 				infoText = gameText
 				button.gameIcon:SetTexture(EFL.GameIcons[client][self.db[client]])
 			end
 			nameColor = FRIENDS_BNET_NAME_COLOR
-			if button.gameIcon:GetTexture() == EFL.GameIcons['App'].BlizzardChat then
-				button.gameIcon:SetTexture(MediaPath..'GameIcons\\Bnet')
-			else
-				button.gameIcon:SetTexCoord(0, 1, 0, 1)
-			end
+			button.gameIcon:SetTexCoord(0, 1, 0, 1)
 		else
 			button.status:SetTexture(EFL.StatusIcons[self.db.StatusIconPack].Offline)
 			nameColor = FRIENDS_GRAY_COLOR
@@ -410,6 +410,9 @@ function EFL:GetOptions()
 			image = function(info) return EFL.GameIcons[info[#info]][EFL.db[Key]], 32, 32 end,
 		}
 	end
+
+	Options.args.GameIcons.args['App'].values['Animated'] = 'Animated'
+	Options.args.GameIcons.args['BSAp'].values['Animated'] = 'Animated'
 
 	local StatusIconsOptions = {
 		Online = FRIENDS_LIST_ONLINE,
