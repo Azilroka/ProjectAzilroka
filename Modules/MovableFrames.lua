@@ -99,6 +99,14 @@ local AddOnFrames = {
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
 }
 
+local SpecialFrame = {
+	"GameMenuFrame",
+	"VideoOptionsFrame",
+	"AudioOptionsFrame",
+	"InterfaceOptionsFrame",
+	"HelpFrame",
+}
+
 function MF:LoadPosition(frame)
 	local Name = frame:GetName()
 
@@ -156,7 +164,10 @@ function MF:MakeMovable(Name)
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
-	SetUIPanelAttribute(Frame, 'area', nil)
+	if not tContains(SpecialFrame, Name) then
+		SetUIPanelAttribute(Frame, 'area', nil)
+		tinsert(UISpecialFrames, Name)
+	end
 
 	C_Timer.After(0, function()
 		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then
