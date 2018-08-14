@@ -62,6 +62,7 @@ local Frames = {
 	'TradeFrame',
 	'TutorialFrame',
 	'VideoOptionsFrame',
+	'WorldMapFrame',
 	'WorldStateScoreFrame',
 }
 
@@ -155,14 +156,7 @@ function MF:MakeMovable(Name)
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
-	Frame.ignoreFramePositionManager = true
-	if UIPanelWindows[Name] then
-		for Key in pairs(UIPanelWindows[Name]) do
-			if Key == "pushable" then
-				UIPanelWindows[Name][Key] = nil
-			end
-		end
-	end
+	SetUIPanelAttribute(Frame, 'area', nil)
 
 	C_Timer.After(0, function()
 		if MF.db[Name] and MF.db[Name]['Permanent'] == true and MF.db[Name]['Points'] then
