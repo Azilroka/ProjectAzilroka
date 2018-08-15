@@ -200,7 +200,7 @@ function EFL:UpdateFriends(button)
 						infoText = zoneName
 					else
 						local a, b = strsplit("-", gameText)
-						infoText = format('%s - %s', zoneName, b)
+						infoText = format('%s - %s', zoneName, b or '')
 					end
 				end
 				button.gameIcon:SetTexture(EFL.GameIcons[faction][self.db[faction]])
