@@ -39,7 +39,6 @@ local Frames = {
 	'PetitionFrame',
 	'PetStableFrame',
 	'PVEFrame',
---	'PVPReadyDialog',
 	'QuestFrame',
 	'QuestLogPopupDetailFrame',
 	'RaidBrowserFrame',
@@ -165,7 +164,6 @@ function MF:MakeMovable(Name)
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
 	if not tContains(SpecialFrame, Name) then
-		SetUIPanelAttribute(Frame, 'area', nil)
 		tinsert(UISpecialFrames, Name)
 	end
 
@@ -276,6 +274,7 @@ function MF:BuildProfile()
 	self.data = PA.ADB:New('MovableFramesDB', Defaults)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
 	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
 	self.db = self.data.profile
 end
 
@@ -304,12 +303,6 @@ function MF:Initialize()
 			end
 		end
 	end
---[[
-	hooksecurefunc(ExtendedUI['CAPTUREPOINT'], 'create', function(id)
-		if _G['WorldStateCaptureBar'..id].MoverAssigned then return end
-		MF:MakeMovable(_G['WorldStateCaptureBar'..id])
-		_G['WorldStateCaptureBar'..id].MoverAssigned = true
-	end)
-]]
+
 	MF:RegisterEvent('ADDON_LOADED')
 end
