@@ -11,8 +11,6 @@ ES.Author = 'Azilroka     Whiro'
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
 
-local ClassColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
-
 ES.RegisteredShadows = {}
 
 function ES:UpdateShadows()
@@ -38,7 +36,7 @@ function ES:UpdateShadow(shadow)
 	local r, g, b, a = unpack(ES.db.Color)
 
 	if ES.db.ColorByClass then
-		r, g, b = ClassColor['r'], ClassColor['g'], ClassColor['b']
+		r, g, b = PA.ClassColor['r'], PA.ClassColor['g'], PA.ClassColor['b']
 	end
 
 	local backdrop = shadow:GetBackdrop()
