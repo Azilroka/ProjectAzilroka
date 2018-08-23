@@ -178,10 +178,10 @@ PA.Options = {
 					type = 'toggle',
 					name = 'Friend Groups',
 				},
-				LC = {
+				FL = {
 					order = 6,
 					type = 'toggle',
-					name = PA.ACL['Loot Confirm'],
+					name = PA.ACL['Faster Loot'],
 				},
 				MF = {
 					order = 7,
@@ -216,7 +216,7 @@ function PA:BuildProfile()
 			['EFL'] = true,
 			['ES'] = true,
 			['FG'] = false,
-			['LC'] = false,
+			['FL'] = false,
 			['MF'] = true,
 			['SMB'] = true,
 			['stAM'] = true,
@@ -271,8 +271,8 @@ function PA:PLAYER_LOGIN()
 	if PA.db['EFL'] then
 		tinsert(InitializeModules, 'EFL')
 	end
-	if PA.db['LC'] then
-		tinsert(InitializeModules, 'LC')
+	if PA.db['FL'] then
+		tinsert(InitializeModules, 'FL')
 	end
 	if PA.db['MF'] then
 		tinsert(InitializeModules, 'MF')
@@ -285,10 +285,12 @@ function PA:PLAYER_LOGIN()
 	end
 
 	for _, Module in pairs(InitializeModules) do
-		pcall(PA[Module].Initialize)
+		if PA[Module] then
+			pcall(PA[Module].Initialize)
+		end
 	end
 
-	if PA.Tukui and GetAddOnEnableState(PA.MyName, 'Tukui_Config') > 0 then
+	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
 		PA:TukuiOptions()
 	end
 end
