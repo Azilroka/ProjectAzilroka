@@ -85,11 +85,8 @@ function PA:TukuiOptions()
 					OptionsTable.args.main.args[Group].args[Option].type = 'select'
 					if strfind(strlower(Option), "font") then
 						OptionsTable.args.main.args[Group].args[Option].values = FontTable
-						--OptionsTable.args.main.args[Group].args[Option].dialogControl = 'LSM30_Font'
-						OptionsTable.args.main.args[Group].args[Option].get = function(info)
-							local Font = SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]
-							return Tukui[1].FontTable[Font]
-						end
+						OptionsTable.args.main.args[Group].args[Option].get = function(info) return Tukui[1].FontTable[SavedVars[Group] and SavedVars[Group][info[#info]] or Tukui[2][Group][info[#info]]] end
+						OptionsTable.args.main.args[Group].args[Option].set = function(info, value) TukuiConfig:SetOption(Group, info[#info], FontTable[value])	end
 					elseif strfind(strlower(Option), "texture") then
 						OptionsTable.args.main.args[Group].args[Option].values = Tukui[1].TextureTable
 						OptionsTable.args.main.args[Group].args[Option].dialogControl = 'LSM30_Statusbar'
