@@ -68,6 +68,9 @@ function EC:Initialize()
 	function EC:ToggleConfig()
 		if not PA.ACD.OpenFrames['Enhanced_Config'] then
 			local Container = PA.GUI:Create('Frame')
+			if PA.AS then
+				PA.AS:CreateShadow(Container.frame)
+			end
 			PA.ACD.OpenFrames['Enhanced_Config'] = Container
 			Container:SetCallback('OnClose', EC.OnConfigClosed)
 			PA.ACD:Open('Enhanced_Config', Container)

@@ -247,6 +247,7 @@ end
 
 function PA:PLAYER_LOGIN()
 	PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
+	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
 	local InitializeModules = {}
 
