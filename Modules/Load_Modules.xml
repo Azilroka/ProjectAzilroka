@@ -8,6 +8,7 @@
 	<Script file="MovableFrames.lua"/>
 	<Script file="SquareMinimapButtons.lua"/>
 	<Script file="stAddonManager.lua"/>
+	<Script file="QuestSounds.lua"/>
 
 	<Script file="Config\Tukui.lua"/>
 </Ui>

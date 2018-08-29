@@ -198,6 +198,11 @@ PA.Options = {
 					type = 'toggle',
 					name = PA.ACL['stAddOnManager'],
 				},
+				QS = {
+					order = 9,
+					type = 'toggle',
+					name = 'Quest Sounds',
+				},
 			},
 		},
 	},
@@ -220,6 +225,7 @@ function PA:BuildProfile()
 			['MF'] = true,
 			['SMB'] = true,
 			['stAM'] = true,
+			['QS'] = true,
 		},
 	}
 
@@ -283,6 +289,9 @@ function PA:PLAYER_LOGIN()
 	end
 	if PA.db['stAM'] then
 		tinsert(InitializeModules, 'stAM')
+	end
+	if PA.db['QS'] then
+		tinsert(InitializeModules, 'QS')
 	end
 
 	for _, Module in pairs(InitializeModules) do
