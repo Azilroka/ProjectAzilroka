@@ -36,7 +36,7 @@ function QS:PlaySoundFile(file)
 		return
 	end
 
-	PlaySoundFile(file)
+	PlaySoundFile(PA.LSM:Fetch('sound', file))
 end
 
 function QS:CheckQuest()
@@ -45,7 +45,6 @@ function QS:CheckQuest()
 		local _, _, _, _, _, _, _, id = GetQuestLogTitle(index)
 		if id == self.QuestID then
 			self.ObjectivesCompleted, self.ObjectivesTotal = QS:CountCompletedObjectives(index)
-			--print(self.ObjectivesCompleted, self.ObjectivesTotal)
 			if self.ObjectivesCompleted == self.ObjectivesTotal then
 				QS:PlaySoundFile(self.db.QuestComplete)
 			elseif self.ObjectivesCompleted > self.ObjectivesTotal then
@@ -82,6 +81,24 @@ function QS:GetOptions()
 				type = 'header',
 				name = PA:Color(QS.Title),
 			},
+			QuestComplete = {
+				type = "select", dialogControl = 'LSM30_Sound',
+				order = 1,
+				name = 'Quest Complete',
+				values = PA.LSM:HashTable('sound'),
+			},
+			ObjectiveComplete = {
+				type = "select", dialogControl = 'LSM30_Sound',
+				order = 2,
+				name = 'Objective Complete',
+				values = PA.LSM:HashTable('sound'),
+			},
+			ObjectiveProgress = {
+				type = "select", dialogControl = 'LSM30_Sound',
+				order = 3,
+				name = 'Objective Progress',
+				values = PA.LSM:HashTable('sound'),
+			},
 			AuthorHeader = {
 				order = 11,
 				type = 'header',
@@ -96,28 +113,6 @@ function QS:GetOptions()
 		},
 	}
 
-	for Key, Option in pairs({ 'QuestComplete', 'ObjectiveComplete', 'ObjectiveProgress' }) do
-		Options.args[Option] = {
-			name = Option,
-			order = Key,
-			type = 'select',
-			values = {
-				["Sound/Doodad/G_GongTroll01.ogg"] = 'Gong Quest Complete',
-				["Sound/Doodad/G_BearTrapReverse_Close01.ogg"] = 'Gong Objective Complete',
-				["Sound/Spells/Bonk1.ogg"] = 'Gong Objective Progress',
-				["Sound/Doodad/Goblin_Lottery_Open02.ogg"] = 'Wacky Quest Complete',
-				["Sound/Events/UD_DiscoBallSpawn.ogg"] = 'Wacky Objectives Complete',
---				["Sound/Doodad/Goblin_Lottery_Open02.ogg"] = 'Wacky Objective Progress',
-				["Sound/Creature/Chicken/ChickenDeathA.ogg"] = 'Creature Quest Complete',
-				["Sound/Creature/Frog/FrogFootstep2.ogg"] = 'Creature Objective Complete',
-				["Sound/Creature/Crab/CrabWoundC.ogg"] = 'Creature Objective Progress',
-				["Sound/Creature/Peon/PeonBuildingComplete1.ogg"] = 'Peon Quest Complete',
-				["Sound/Creature/Peon/PeonReady1.ogg"] = 'Peon Objective Complete',
-				["Sound/Creature/Peasant/PeasantWhat3.ogg"] = 'Peon Objective Progress',
-			},
-		}
-	end
-
 	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(QS.data)
 	Options.args.profiles.order = -2
 
@@ -127,9 +122,9 @@ end
 function QS:BuildProfile()
 	self.data = PA.ADB:New('QuestSoundsDB', {
 		profile = {
-			['QuestComplete'] = "Sound/Creature/Peon/PeonBuildingComplete1.ogg",
-			['ObjectiveComplete'] = "Sound/Creature/Peon/PeonReady1.ogg",
-			['ObjectiveProgress'] = "Sound/Creature/Peasant/PeasantWhat3.ogg",
+			['QuestComplete'] = 'Peon Quest Complete',
+			['ObjectiveComplete'] = 'Peon Objective Complete',
+			['ObjectiveProgress'] = 'Peon Objective Progress',
 		},
 	}, true)
 	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
@@ -141,7 +136,40 @@ function QS:SetupProfile()
 	self.db = self.data.profile
 end
 
+function QS:RegisterSounds()
+	PA.LSM:Register("sound", "Rubber Ducky", [[Sound\Doodad\Goblin_Lottery_Open01.ogg]])
+	PA.LSM:Register("sound", "Cartoon FX", [[Sound\Doodad\Goblin_Lottery_Open03.ogg]])
+	PA.LSM:Register("sound", "Explosion", [[Sound\Doodad\Hellfire_Raid_FX_Explosion05.ogg]])
+	PA.LSM:Register("sound", "Shing!", [[Sound\Doodad\PortcullisActive_Closed.ogg]])
+	PA.LSM:Register("sound", "Wham!", [[Sound\Doodad\PVP_Lordaeron_Door_Open.ogg]])
+	PA.LSM:Register("sound", "Simon Chime", [[Sound\Doodad\SimonGame_LargeBlueTree.ogg]])
+	PA.LSM:Register("sound", "War Drums", [[Sound\Event Sounds\Event_wardrum_ogre.ogg]])
+	PA.LSM:Register("sound", "Cheer", [[Sound\Event Sounds\OgreEventCheerUnique.ogg]])
+	PA.LSM:Register("sound", "Humm", [[Sound\Spells\SimonGame_Visual_GameStart.ogg]])
+	PA.LSM:Register("sound", "Short Circuit", [[Sound\Spells\SimonGame_Visual_BadPress.ogg]])
+	PA.LSM:Register("sound", "Fel Portal", [[Sound\Spells\Sunwell_Fel_PortalStand.ogg]])
+	PA.LSM:Register("sound", "Fel Nova", [[Sound\Spells\SeepingGaseous_Fel_Nova.ogg]])
+	PA.LSM:Register("sound", "You Will Die!", [[Sound\Creature\CThun\CThunYouWillDIe.ogg]])
+	PA.LSM:Register("sound", 'Gong Quest Complete', [[Sound\Doodad\G_GongTroll01.ogg]])
+	PA.LSM:Register("sound", 'Gong Objective Complete', [[Sound\Doodad\G_BearTrapReverse_Close01.ogg]])
+	PA.LSM:Register("sound", 'Gong Objective Progress', [[Sound\Spells\Bonk1.ogg]])
+	PA.LSM:Register("sound", 'Wacky Quest Complete', [[Sound\Doodad\Goblin_Lottery_Open02.ogg]])
+	PA.LSM:Register("sound", 'Wacky Objectives Complete', [[Sound\Events\UD_DiscoBallSpawn.ogg]])
+	PA.LSM:Register("sound", 'Wacky Objective Progress', [[Sound\Doodad\Goblin_Lottery_Open02.ogg]])
+	PA.LSM:Register("sound", 'Creature Quest Complete', [[Sound\Creature\Chicken\ChickenDeathA.ogg]])
+	PA.LSM:Register("sound", 'Creature Objective Complete', [[Sound\Creature\Frog\FrogFootstep2.ogg]])
+	PA.LSM:Register("sound", 'Creature Objective Progress', [[Sound\Creature\Crab\CrabWoundC.ogg]])
+	PA.LSM:Register("sound", 'Peon Quest Complete', [[Sound\Creature\Peon\PeonBuildingComplete1.ogg]])
+	PA.LSM:Register("sound", 'Peon Objective Complete', [[Sound\Creature\Peon\PeonReady1.ogg]])
+	PA.LSM:Register("sound", 'Peon Objective Progress', [[Sound\Creature\Peasant\PeasantWhat3.ogg]])
+	PA.LSM:Register("sound", 'QuestGuru Quest Complete', [[Sound\Interface\levelup2.ogg]])
+	PA.LSM:Register("sound", 'QuestGuru Objective Complete', [[Sound\Interface\AuctionWindowClose.ogg]])
+	PA.LSM:Register("sound", 'QuestGuru Objective Progress', [[Sound\Interface\AuctionWindowOpen.ogg]])
+end
+
 function QS:Initialize()
+	QS:RegisterSounds()
+
 	QS:BuildProfile()
 	QS:GetOptions()
 
