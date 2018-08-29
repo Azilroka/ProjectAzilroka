@@ -45,7 +45,7 @@ function QS:CheckQuest()
 		local _, _, _, _, _, _, _, id = GetQuestLogTitle(index)
 		if id == self.QuestID then
 			self.ObjectivesCompleted, self.ObjectivesTotal = QS:CountCompletedObjectives(index)
-			print(self.ObjectivesCompleted, self.ObjectivesTotal)
+			--print(self.ObjectivesCompleted, self.ObjectivesTotal)
 			if self.ObjectivesCompleted == self.ObjectivesTotal then
 				QS:PlaySoundFile(self.db.QuestComplete)
 			elseif self.ObjectivesCompleted > self.ObjectivesTotal then
