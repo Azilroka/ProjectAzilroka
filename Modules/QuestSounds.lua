@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0')
+local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.QS = QS
 
 QS.Title = '|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'
@@ -26,11 +26,13 @@ function QS:SetQuest(index)
 end
 
 function QS:PlaySoundFile(file)
-	if file == nil or file == '' then
+	if QS.IsPlaying or file == nil or file == '' then
 		return
 	end
 
 	PlaySoundFile(PA.LSM:Fetch('sound', file))
+	QS.IsPlaying = true
+	QS:ScheduleTimer(function() QS.IsPlaying = false end, 2)
 end
 
 function QS:CheckQuest()
@@ -169,6 +171,7 @@ function QS:Initialize()
 	QS.QuestIndex = 0
 	QS.ObjectivesComplete = 0
 	QS.ObjectivesTotal = 0
+	QS.IsPlaying = false
 
 	QS:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
 	QS:RegisterEvent('QUEST_WATCH_UPDATE')
