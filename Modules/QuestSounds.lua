@@ -6,7 +6,7 @@ QS.Title = '|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'
 QS.Description = 'Audio for Quest Progress & Completions.'
 QS.Authors = 'Azilroka'
 
-local GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, GetQuestLogTitle, PlaySoundFile = GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, GetQuestLogTitle, PlaySoundFile
+local GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile = GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile
 
 function QS:CountCompletedObjectives(index)
 	local Completed, Total = 0, GetNumQuestLeaderBoards(index)
@@ -21,14 +21,8 @@ function QS:CountCompletedObjectives(index)
 end
 
 function QS:SetQuest(index)
-	self.QuestIndex = index
-	if index > 0 then
-		local _, _, _, _, _, _, _, id = GetQuestLogTitle(index)
-		self.QuestID = id
-		if id and id > 0 then
-			self.ObjectivesCompleted, self.ObjectivesTotal = QS:CountCompletedObjectives(index)
-		end
-	end
+	QS.QuestIndex = index
+	QS:CheckQuest()
 end
 
 function QS:PlaySoundFile(file)
@@ -40,30 +34,29 @@ function QS:PlaySoundFile(file)
 end
 
 function QS:CheckQuest()
-	if self.QuestIndex > 0 then
-		local index = self.QuestIndex
-		local _, _, _, _, _, _, _, id = GetQuestLogTitle(index)
-		if id == self.QuestID then
-			self.ObjectivesCompleted, self.ObjectivesTotal = QS:CountCompletedObjectives(index)
-			if self.ObjectivesCompleted == self.ObjectivesTotal then
-				QS:PlaySoundFile(self.db.QuestComplete)
-			elseif self.ObjectivesCompleted > self.ObjectivesTotal then
-				QS:PlaySoundFile(self.db.ObjectiveComplete)
-			else
-				QS:PlaySoundFile(self.db.ObjectiveProgress)
-			end
-		end
-		self.QuestIndex = 0
+	if QS.QuestIndex == 0 then
+		return
+	end
+
+	QS.ObjectivesCompleted, QS.ObjectivesTotal = QS:CountCompletedObjectives(QS.QuestIndex)
+	if QS.ObjectivesCompleted == QS.ObjectivesTotal then
+		QS:PlaySoundFile(QS.db.QuestComplete)
+	elseif QS.ObjectivesCompleted > QS.ObjectivesTotal then
+		QS:PlaySoundFile(QS.db.ObjectiveComplete)
+	else
+		QS:PlaySoundFile(QS.db.ObjectiveProgress)
 	end
 end
 
-function QS:UNIT_QUEST_LOG_CHANGED(event, unit)
-	if unit == "player" then
-		QS:CheckQuest()
+function QS:UNIT_QUEST_LOG_CHANGED(_, unit)
+	if unit ~= 'player' then
+		return
 	end
+
+	QS:CheckQuest()
 end
 
-function QS:QUEST_WATCH_UPDATE(event, index)
+function QS:QUEST_WATCH_UPDATE(_, index)
 	QS:SetQuest(index)
 end
 
@@ -120,20 +113,20 @@ function QS:GetOptions()
 end
 
 function QS:BuildProfile()
-	self.data = PA.ADB:New('QuestSoundsDB', {
+	QS.data = PA.ADB:New('QuestSoundsDB', {
 		profile = {
 			['QuestComplete'] = 'Peon Quest Complete',
 			['ObjectiveComplete'] = 'Peon Objective Complete',
 			['ObjectiveProgress'] = 'Peon Objective Progress',
 		},
 	}, true)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
+	QS.data.RegisterCallback(QS, 'OnProfileChanged', 'SetupProfile')
+	QS.data.RegisterCallback(QS, 'OnProfileCopied', 'SetupProfile')
+	QS.db = QS.data.profile
 end
 
 function QS:SetupProfile()
-	self.db = self.data.profile
+	QS.db = QS.data.profile
 end
 
 function QS:RegisterSounds()
@@ -173,11 +166,10 @@ function QS:Initialize()
 	QS:BuildProfile()
 	QS:GetOptions()
 
-	QS:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-	QS:RegisterEvent('QUEST_WATCH_UPDATE')
-
 	QS.QuestIndex = 0
-	QS.QuestID = 0
 	QS.ObjectivesComplete = 0
 	QS.ObjectivesTotal = 0
+
+	QS:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+	QS:RegisterEvent('QUEST_WATCH_UPDATE')
 end

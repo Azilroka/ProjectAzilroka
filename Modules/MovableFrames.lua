@@ -106,6 +106,10 @@ local SpecialFrame = {
 	"AudioOptionsFrame",
 	"InterfaceOptionsFrame",
 	"HelpFrame",
+	'StaticPopup1',
+	'StaticPopup2',
+	'StaticPopup3',
+	'StaticPopup4',
 }
 
 function MF:LoadPosition(frame)
