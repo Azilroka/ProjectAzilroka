@@ -122,7 +122,7 @@ local AddOnFrames = {
 	['Blizzard_AchievementUI'] = { 'AchievementFrame' },
 	['Blizzard_ArchaeologyUI'] = { 'ArchaeologyFrame' },
 	['Blizzard_AuctionUI'] = { 'AuctionFrame' },
-	['Blizzard_BarberShopUI'] = { 'BarberShopFrame' },
+	['Blizzard_BarbershopUI'] = { 'BarberShopFrame' },
 	['Blizzard_BindingUI'] = { 'KeyBindingFrame' },
 	['Blizzard_BlackMarketUI'] = { 'BlackMarketFrame' },
 	['Blizzard_Calendar'] = { 'CalendarCreateEventFrame', 'CalendarFrame', 'CalendarViewEventFrame', 'CalendarViewHolidayFrame' },
@@ -152,6 +152,91 @@ local AddOnFrames = {
 	['Blizzard_TrainerUI'] = { 'ClassTrainerFrame' },
 	['Blizzard_VoidStorageUI'] = { 'VoidStorageFrame' },
 }
+
+--[[
+local AddOnFrames = {
+	['Blizzard_AchievementUI'] = {
+		["AchievementFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 96, -116 }
+	},
+	['Blizzard_ArchaeologyUI'] = {
+		["ArchaeologyFrame"] = { "TOPLEFT", "IParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_AuctionUI'] = {
+		["AuctionFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+	},
+	['Blizzard_BarbershopUI'] = {
+		["BarberShopFrame"] = { "RIGHT", "UIParent", "RIGHT", -18, -54 }
+	},
+	['Blizzard_BindingUI'] = {
+		["KeyBindingFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
+	['Blizzard_BlackMarketUI'] = { 'BlackMarketFrame' },
+	['Blizzard_Calendar'] = {
+		["CalendarCreateEventFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
+		["CalendarFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 },
+		["CalendarViewEventFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
+		["CalendarViewHolidayFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
+	},
+	['Blizzard_ChallengesUI'] = { 'ChallengesKeystoneFrame' }, -- 'ChallengesLeaderboardFrame'
+	['Blizzard_Collections'] = {
+		["CollectionsJournal"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_Communities'] = {
+		["CommunitiesFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+	},
+	['Blizzard_EncounterJournal'] = {
+		["EncounterJournal"] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
+	['Blizzard_GarrisonUI'] = {
+		["GarrisonBuildingFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonCapacitiveDisplayFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 27, -108 },
+		["GarrisonLandingPage"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonMissionFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonRecruiterFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonRecruitSelectFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonShipyardFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+	},
+	['Blizzard_GMChatUI'] = { 'GMChatStatusFrame' },
+	['Blizzard_GMSurveyUI'] = { 'GMSurveyFrame' },
+	['Blizzard_GuildBankUI'] = {
+		['GuildBankFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+	},
+	['Blizzard_GuildControlUI'] = { 'GuildControlUI' },
+	['Blizzard_InspectUI'] = {
+		["InspectFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_ItemSocketingUI'] = {
+		["ItemSocketingFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_ItemUpgradeUI'] = { 'ItemUpgradeFrame' },
+	['Blizzard_LookingForGuildUI'] = { 'LookingForGuildFrame' },
+	['Blizzard_MacroUI'] = {
+		{ "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_OrderHallUI'] = {
+		["OrderHallTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 32, -116 }
+	},
+	['Blizzard_QuestChoice'] = {
+		['QuestChoiceFrame'] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
+	['Blizzard_TalentUI'] = {
+		["PlayerTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 }
+	},
+	['Blizzard_ScrappingMachineUI'] = { 'ScrappingMachineFrame' },
+	['Blizzard_TalkingHeadUI'] = {
+		["TalkingHeadFrame"] = { "BOTTOM", "UIParent", "BOTTOM", 0, 96 }
+	},
+	['Blizzard_TradeSkillUI'] = {
+		["TradeSkillFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_TrainerUI'] = {
+		["ClassTrainerFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	['Blizzard_VoidStorageUI'] = {
+		["VoidStorageFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+}
+]]
 
 local SpecialFrame = {
 	"GameMenuFrame",

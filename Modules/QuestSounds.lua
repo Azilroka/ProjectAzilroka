@@ -22,10 +22,12 @@ end
 
 function QS:SetQuest(index)
 	QS.QuestIndex = index
-	QS:CheckQuest()
+
+	QS:ScheduleTimer(function() QS:CheckQuest() end, .5)
 end
 
 function QS:PlaySoundFile(file)
+	QS.QuestIndex = 0
 	if QS.IsPlaying or file == nil or file == '' then
 		return
 	end
@@ -55,7 +57,7 @@ function QS:UNIT_QUEST_LOG_CHANGED(_, unit)
 		return
 	end
 
-	QS:CheckQuest()
+	QS:ScheduleTimer(function() QS:CheckQuest() end, .5)
 end
 
 function QS:QUEST_WATCH_UPDATE(_, index)
