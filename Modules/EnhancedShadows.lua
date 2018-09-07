@@ -49,7 +49,7 @@ function ES:UpdateShadow(shadow)
 	local r, g, b, a = unpack(ES.db.Color)
 
 	if ES.db.ColorByClass then
-		r, g, b = PA.ClassColor['r'], PA.ClassColor['g'], PA.ClassColor['b']
+		r, g, b = unpack(PA.ClassColor)
 	end
 
 	local backdrop = shadow:GetBackdrop()
@@ -128,5 +128,5 @@ function ES:Initialize()
 	ES:BuildProfile()
 	ES:GetOptions()
 
-	ES:UpdateShadows()
+	ES:ScheduleTimer('UpdateShadows', 1)
 end
