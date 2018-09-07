@@ -10,7 +10,7 @@ local GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLoc
 local NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem = NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem
 local _G = _G
 local select, tinsert, unpack, pairs = select, tinsert, unpack, pairs
-local AS, ES
+local AS
 local Locale = GetLocale()
 if Locale == 'esMX' then Locale = 'esES' end
 if Locale == 'enGB' then Locale = 'enUS' end
@@ -120,9 +120,6 @@ function BB:CreateBigButton(ItemID)
 	if AS then
 		AS:SkinButton(Button)
 		AS:CreateShadow(Button)
-		if ES then
-			ES:RegisterShadow(Button.Shadow)
-		end
 	end
 
 	for _, event in pairs(BB.Events) do
@@ -215,9 +212,6 @@ function BB:CreateSeedButton(ItemID)
 	if AS then
 		AS:SkinButton(Button)
 		AS:CreateShadow(Button)
-		if ES then
-			ES:RegisterShadow(Button.Shadow)
-		end
 	end
 
 	tinsert(self.Bar.SeedsFrame.Buttons, Button)
@@ -310,7 +304,7 @@ function BB:Initialize()
 	BB:BuildProfile()
 	BB:GetOptions()
 
-	ES, AS = _G.EnhancedShadows, _G.AddOnSkins and _G.AddOnSkins[1]
+	AS = _G.AddOnSkins and _G.AddOnSkins[1]
 
 	local Bar = CreateFrame('Frame', 'BigButtonsBar', UIParent, "SecureHandlerStateTemplate")
 	BB.Bar = Bar
@@ -376,8 +370,5 @@ function BB:Initialize()
 		AS:CreateShadow(Bar.SeedsFrame)
 		AS:SetTemplate(Bar.SeedsFrame, 'Transparent')
 		Bar.SeedsFrame.BorderColor = { Bar.SeedsFrame:GetBackdropBorderColor() }
-		if ES then
-			ES:RegisterShadow(Bar.SeedsFrame.Shadow)
-		end
 	end
 end
