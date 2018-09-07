@@ -21,6 +21,19 @@ function ES:UpdateShadows()
 	end
 end
 
+function ES:RegisterFrameShadows(frame)
+	local shadow = frame.shadow or frame.Shadow;
+	if shadow and not shadow.isRegistered then
+		ES.shadows[shadow] = true
+		shadow.isRegistered = true
+	end
+	local ishadow = frame.invertedshadow or frame.InvertedShadow;
+	if ishadow and not ishadow.isRegistered then
+		ES.shadows[ishadow] = true;
+		shadow.isRegistered = true;
+	end
+end
+
 function ES:RegisterShadow(shadow)
 	if not shadow then return end
 	if shadow.isRegistered then return end
