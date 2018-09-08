@@ -17,7 +17,7 @@ PA.AC = LibStub('AceConfig-3.0')
 PA.GUI = LibStub('AceGUI-3.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
 PA.ACD = LibStub('AceConfigDialog-3.0')
-PA.ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false);
+PA.ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false)
 PA.ADB = LibStub('AceDB-3.0')
 
 PA.LSM = LibStub('LibSharedMedia-3.0')
@@ -145,7 +145,7 @@ PA.Options = {
 			name = PA:Color(PA.ACL['AddOns']),
 			guiInline = true,
 			get = function(info) return PA.db[info[#info]] end,
-			set = function(info, value) PA.db[info[#info]] = value; StaticPopup_Show("PA_RELOAD") end,
+			set = function(info, value) PA.db[info[#info]] = value StaticPopup_Show("PA_RELOAD") end,
 			args = {
 				BB = {
 					order = 0,

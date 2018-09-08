@@ -111,7 +111,7 @@ function SMB:HandleBlizzardButtons()
 		Frame:EnableMouse(true)
 		Frame:HookScript('OnEnter', function(self)
 			if HasNewMail() then
-				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT");
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
 				if GameTooltip:IsOwned(self) then
 					MinimapMailFrameUpdate()
 				end

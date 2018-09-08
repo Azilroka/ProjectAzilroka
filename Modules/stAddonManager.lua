@@ -39,7 +39,7 @@ _G.StaticPopupDialogs['STADDONMANAGER_NEWPROFILE'] = {
 	whileDead = 1,
 	OnAccept = function(self) stAM:NewAddOnProfile(self.editBox:GetText()) end,
 	EditBoxOnEnterPressed = function(self) stAM:NewAddOnProfile(self:GetText()) self:GetParent():Hide() end,
-	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
+	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
 }
 
 _G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE'] = {
@@ -49,7 +49,7 @@ _G.StaticPopupDialogs['STADDONMANAGER_RENAMEPROFILE'] = {
 	timeout = 0,
 	hasEditBox = 1,
 	whileDead = 1,
-	EditBoxOnEscapePressed = function(self) self:GetParent():Hide(); end,
+	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
 }
 
 _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION'] = {
@@ -100,10 +100,10 @@ function stAM:BuildFrame()
 	Close:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	Close:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Close:SetScript('OnClick', function(self) Frame:Hide() end)
+
 	Close.Text = Close:CreateFontString(nil, 'OVERLAY')
 	Close.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	Close.Text:SetJustifyH('CENTER')
-	Close.Text:SetJustifyV('MIDDLE')
 	Close.Text:SetText('x')
 	Close.Text:SetPoint('CENTER', 1, 1)
 
@@ -162,6 +162,7 @@ function stAM:BuildFrame()
 	Profiles:SetScript('OnEnter', function(self) self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor'])) end)
 	Profiles:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Profiles:SetScript('OnClick', function() stAM:ToggleProfiles() end)
+
 	Profiles.Text = Profiles:CreateFontString(nil, 'OVERLAY')
 	Profiles.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	Profiles.Text:SetText(PA.ACL['Profiles'])
@@ -220,7 +221,7 @@ function stAM:BuildFrame()
 	AddOns:SetScript('OnMouseWheel', OnScroll)
 	Slider:SetScript('OnMouseWheel', OnScroll)
 	Slider:SetScript('OnValueChanged', function(self, value)
-		stAM.scrollOffset = value;
+		stAM.scrollOffset = value
 		OnScroll()
 	end)
 
