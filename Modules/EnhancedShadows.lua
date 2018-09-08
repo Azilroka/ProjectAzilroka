@@ -52,11 +52,16 @@ function ES:UpdateShadow(shadow)
 		r, g, b = unpack(PA.ClassColor)
 	end
 
+	local backdrop = shadow:GetBackdrop()
+
 	local Size = ES.db.Size
 	shadow:SetOutside(shadow:GetParent(), Size, Size)
 
 	backdrop.edgeSize = ES:Scale(Size > 3 and Size or 3)
 
+	shadow:SetBackdrop(backdrop)
+	shadow:SetBackdropColor(r, g, b, 0)
+	shadow:SetBackdropBorderColor(r, g, b, a)
 end
 
 function ES:GetOptions()
