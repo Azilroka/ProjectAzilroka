@@ -281,6 +281,9 @@ function PA:PLAYER_LOGIN()
 	if PA.db['FL'] then
 		tinsert(InitializeModules, 'FL')
 	end
+	if PA.db['MF'] then
+		tinsert(InitializeModules, 'MF')
+	end
 	if PA.db['SMB'] then
 		tinsert(InitializeModules, 'SMB')
 	end
