@@ -234,7 +234,7 @@ function EFL:UpdateFriends(button)
 					if realmName == EFL.MyRealm then
 						infoText = zoneName
 					else
-						infoText = gsub(gameText, '&apos', "'")
+						infoText = gsub(gameText, '&apos;', "'")
 					end
 				end
 				button.gameIcon:SetTexture(EFL.Icons.Game[faction][self.db[faction]])
