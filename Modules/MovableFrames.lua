@@ -175,6 +175,7 @@ function MF:OnDragStop(frame)
 		else
 			MF.db[Name].Points = {a, b, c, d, e}
 		end
+		frame:SetUserPlaced(true)
 	else
 		frame:SetUserPlaced(false)
 	end

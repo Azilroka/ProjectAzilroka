@@ -231,8 +231,7 @@ function SMB:HandleBlizzardButtons()
 end
 
 function SMB:SkinMinimapButton(Button)
-	if (not Button) then return end
-	if Button.isSkinned then return end
+	if (not Button) or Button.isSkinned then return end
 
 	local Name = Button:GetName()
 	if not Name then return end
@@ -308,7 +307,8 @@ function SMB:GrabMinimapButtons()
 			local object = select(i, Frame:GetChildren())
 			if object then
 				local name = object:GetName()
-				if name and (object:IsObjectType('Button') or object:IsObjectType('Frame') and tContains(AcceptedFrames, name)) then
+				local width = object:GetWidth()
+				if name and width > 15 and width < 40 and (object:IsObjectType('Button') or object:IsObjectType('Frame') and tContains(AcceptedFrames, name)) then
 					self:SkinMinimapButton(object)
 				end
 			end
@@ -354,6 +354,7 @@ function SMB:Update()
 			Button:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
 			Button:SetScript('OnDragStart', nil)
 			Button:SetScript('OnDragStop', nil)
+			--Button:SetScript('OnEvent', nil)
 
 			SMB:LockButton(Button)
 
