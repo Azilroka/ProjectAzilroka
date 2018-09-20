@@ -253,28 +253,32 @@ function SMB:SkinMinimapButton(Button)
 		if Region:GetObjectType() == 'Texture' then
 			local Texture = Region:GetTexture()
 
-			if Texture and (strfind(Texture, 'Border') or strfind(Texture, 'Background') or strfind(Texture, 'AlphaMask') or strfind(Texture, 'Highlight')) then
-				Region:SetAlpha(0)
-			else
-				if Name == 'BagSync_MinimapButton' then
-					Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
-				elseif Name == 'DBMMinimapButton' then
-					Region:SetTexture('Interface\\Icons\\INV_Helmet_87')
-				elseif Name == 'OutfitterMinimapButton' then
-					if Region:GetTexture() == 'Interface\\Addons\\Outfitter\\Textures\\MinimapButton' then
-						Region:SetTexture(nil)
+			if Texture then
+				if (strfind(Texture, "Interface\\CharacterFrame") or strfind(Texture, "Interface\\Minimap")) then
+					Region:SetTexture(nil)
+				elseif (strfind(Texture, 'Border') or strfind(Texture, 'Background') or strfind(Texture, 'AlphaMask') or strfind(Texture, 'Highlight')) then
+					Region:SetAlpha(0)
+				else
+					if Name == 'BagSync_MinimapButton' then
+						Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
+					elseif Name == 'DBMMinimapButton' then
+						Region:SetTexture('Interface\\Icons\\INV_Helmet_87')
+					elseif Name == 'OutfitterMinimapButton' then
+						if Region:GetTexture() == 'Interface\\Addons\\Outfitter\\Textures\\MinimapButton' then
+							Region:SetTexture(nil)
+						end
+					elseif Name == 'SmartBuff_MiniMapButton' then
+						Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
+					elseif Name == 'VendomaticButtonFrame' then
+						Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
 					end
-				elseif Name == 'SmartBuff_MiniMapButton' then
-					Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
-				elseif Name == 'VendomaticButtonFrame' then
-					Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
+					Region:ClearAllPoints()
+					Region:SetInside()
+					Region:SetTexCoord(unpack(self.TexCoords))
+					Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
+					Region:SetDrawLayer('ARTWORK')
+					Region.SetPoint = function() return end
 				end
-				Region:ClearAllPoints()
-				Region:SetInside()
-				Region:SetTexCoord(unpack(self.TexCoords))
-				Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
-				Region:SetDrawLayer('ARTWORK')
-				Region.SetPoint = function() return end
 			end
 		end
 	end
