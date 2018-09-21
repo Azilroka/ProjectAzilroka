@@ -250,35 +250,32 @@ function SMB:SkinMinimapButton(Button)
 
 	for i = 1, Button:GetNumRegions() do
 		local Region = select(i, Button:GetRegions())
-		if Region:GetObjectType() == 'Texture' then
-			local Texture = Region:GetTexture()
+		if Region.IsObjectType and Region:IsObjectType('Texture') then
+			local Texture = strlower(Region:GetTexture())
 
-			if Texture then
-				if (strfind(Texture, "Interface\\CharacterFrame") or strfind(Texture, "Interface\\Minimap")) then
-					Region:SetTexture(nil)
-				elseif (strfind(Texture, 'Border') or strfind(Texture, 'Background') or strfind(Texture, 'AlphaMask') or strfind(Texture, 'Highlight')) then
-					Region:SetAlpha(0)
-				else
-					if Name == 'BagSync_MinimapButton' then
-						Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
-					elseif Name == 'DBMMinimapButton' then
-						Region:SetTexture('Interface\\Icons\\INV_Helmet_87')
-					elseif Name == 'OutfitterMinimapButton' then
-						if Region:GetTexture() == 'Interface\\Addons\\Outfitter\\Textures\\MinimapButton' then
-							Region:SetTexture(nil)
-						end
-					elseif Name == 'SmartBuff_MiniMapButton' then
-						Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
-					elseif Name == 'VendomaticButtonFrame' then
-						Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
+			if (strfind(Texture, "interface\\characterframe") or strfind(Texture, "interface\\minimap") or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
+				Region:SetTexture(nil)
+				Region:SetAlpha(0)
+			else
+				if Name == 'BagSync_MinimapButton' then
+					Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
+				elseif Name == 'DBMMinimapButton' then
+					Region:SetTexture('Interface\\Icons\\INV_Helmet_87')
+				elseif Name == 'OutfitterMinimapButton' then
+					if Texture == 'interface\\addons\\outfitter\\textures\\minimapbutton' then
+						Region:SetTexture(nil)
 					end
-					Region:ClearAllPoints()
-					Region:SetInside()
-					Region:SetTexCoord(unpack(self.TexCoords))
-					Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
-					Region:SetDrawLayer('ARTWORK')
-					Region.SetPoint = function() return end
+				elseif Name == 'SmartBuff_MiniMapButton' then
+					Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
+				elseif Name == 'VendomaticButtonFrame' then
+					Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
 				end
+				Region:ClearAllPoints()
+				Region:SetInside()
+				Region:SetTexCoord(unpack(self.TexCoords))
+				Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
+				Region:SetDrawLayer('ARTWORK')
+				Region.SetPoint = function() return end
 			end
 		end
 	end
@@ -307,7 +304,9 @@ function SMB:GrabMinimapButtons()
 	if (InCombatLockdown() or C_PetBattles.IsInBattle()) then return end
 
 	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
-		for i = 1, Frame:GetNumChildren() do
+		local NumChildren = Frame:GetNumChildren()
+		if NumChildren < (Frame.SMBNumChildren or 0) then return end
+		for i = 1, NumChildren do
 			local object = select(i, Frame:GetChildren())
 			if object then
 				local name = object:GetName()
@@ -317,6 +316,7 @@ function SMB:GrabMinimapButtons()
 				end
 			end
 		end
+		Frame.SMBNumChildren = NumChildren
 	end
 
 	self:Update()
