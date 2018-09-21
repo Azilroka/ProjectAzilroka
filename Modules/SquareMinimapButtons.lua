@@ -376,7 +376,7 @@ function SMB:Update()
 		self.Bar:SetBackdrop(nil)
 	end
 
-	self.Bar:Show()
+	self.Bar[ActualButtons == 0 and 'Hide' or 'Show']()
 
 	if self.db['BarMouseOver'] then
 		UIFrameFadeOut(self.Bar, 0.2, self.Bar:GetAlpha(), 0)
