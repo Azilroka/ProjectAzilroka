@@ -42,23 +42,7 @@ EC.Options = {
 	},
 }
 
--- "legioninvasion-map-icon-portal-large"
-
 function EC:Initialize()
-	local Anchor = GameMenuButtonUIOptions -- IsAddOnLoaded('Tukui_ConfigUI') and GameMenuTukuiButtonOptions
-	local ConfigButton = CreateFrame('Button', 'Enhanced_ConfigButton', GameMenuFrame, 'GameMenuButtonTemplate')
-	ConfigButton:Size(Anchor:GetWidth(), Anchor:GetHeight())
-	ConfigButton:Point('TOP', Anchor, 'BOTTOM', 0 , -1)
-	ConfigButton:SetScript('OnClick', function() EC:ToggleConfig() HideUIPanel(GameMenuFrame) end)
-	ConfigButton:SetText(EC.Title)
-	GameMenuFrame:HookScript('OnShow', function(self) self:SetHeight(self:GetHeight() + Anchor:GetHeight()) end)
-	GameMenuButtonKeybindings:ClearAllPoints()
-	GameMenuButtonKeybindings:Point("TOP", ConfigButton, "BOTTOM", 0, -1)
-
-	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)
-	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
-	EC:RegisterChatCommand('ec', 'ToggleConfig')
-
 	function EC.OnConfigClosed(widget, event)
 		PA.ACD.OpenFrames['Enhanced_Config'] = nil
 		PA.GUI:Release(widget)
@@ -76,6 +60,19 @@ function EC:Initialize()
 		end
 		GameTooltip:Hide()
 	end
+
+	local ConfigButton = CreateFrame('Button', 'Enhanced_ConfigButton', GameMenuFrame, 'GameMenuButtonTemplate')
+	ConfigButton:Size(GameMenuButtonUIOptions:GetWidth(), GameMenuButtonUIOptions:GetHeight())
+	ConfigButton:Point('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0 , -1)
+	ConfigButton:SetText(EC.Title)
+	ConfigButton:SetScript('OnClick', function() EC:ToggleConfig() HideUIPanel(GameMenuFrame) end)
+	GameMenuFrame:HookScript('OnShow', function(self) self:SetHeight(self:GetHeight() + GameMenuButtonUIOptions:GetHeight()) end)
+	GameMenuButtonKeybindings:ClearAllPoints()
+	GameMenuButtonKeybindings:SetPoint("TOP", ConfigButton, "BOTTOM", 0, -1)
+
+	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)
+	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
+	EC:RegisterChatCommand('ec', 'ToggleConfig')
 end
 
 EC:RegisterEvent('PLAYER_LOGIN', 'Initialize')
