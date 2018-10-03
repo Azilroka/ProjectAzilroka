@@ -101,11 +101,25 @@ function stAM:BuildFrame()
 	Close:SetScript('OnLeave', function(self) self:SetTemplate() end)
 	Close:SetScript('OnClick', function(self) Frame:Hide() end)
 
-	Close.Text = Close:CreateFontString(nil, 'OVERLAY')
-	Close.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	Close.Text:SetJustifyH('CENTER')
-	Close.Text:SetText('x')
-	Close.Text:SetPoint('CENTER', 1, 1)
+	local Mask = Close:CreateMaskTexture()
+	Mask:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\Close]], 'CLAMPTOBLACKADDITIVE', 'CLAMPTOBLACKADDITIVE')
+	Mask:SetSize(10, 10)
+	Mask:SetPoint('CENTER')
+
+	Close.Mask = Mask
+
+	Close:SetNormalTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+	Close:SetPushedTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+
+	local Normal, Pushed = Close:GetNormalTexture(), Close:GetPushedTexture()
+
+	Normal:SetInside(Close)
+	Normal:SetVertexColor(1, 1, 1)
+	Normal:AddMaskTexture(Mask)
+
+	Pushed:SetInside(Close)
+	Pushed:SetVertexColor(1, .2, .2)
+	Pushed:AddMaskTexture(Mask)
 
 	Search:SetPoint('TOPLEFT', Title, 'BOTTOMLEFT', 10, -10)
 	Search:SetPoint('BOTTOMRIGHT', Profiles, 'BOTTOMLEFT', -5, 0)

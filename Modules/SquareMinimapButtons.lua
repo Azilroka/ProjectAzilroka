@@ -253,22 +253,22 @@ function SMB:SkinMinimapButton(Button)
 		if Region.IsObjectType and Region:IsObjectType('Texture') then
 			local Texture = strlower(Region:GetTexture())
 
-			if (strfind(Texture, "interface\\characterframe") or strfind(Texture, "interface\\minimap") or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
+			if (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
 				Region:SetTexture(nil)
 				Region:SetAlpha(0)
 			else
 				if Name == 'BagSync_MinimapButton' then
-					Region:SetTexture('Interface\\AddOns\\BagSync\\media\\icon')
+					Region:SetTexture([[Interface\AddOns\BagSync\media\icon]])
 				elseif Name == 'DBMMinimapButton' then
-					Region:SetTexture('Interface\\Icons\\INV_Helmet_87')
+					Region:SetTexture([[Interface\Icons\INV_Helmet_87]])
 				elseif Name == 'OutfitterMinimapButton' then
-					if Texture == 'interface\\addons\\outfitter\\textures\\minimapbutton' then
+					if Texture == [[interface\addons\outfitter\textures\minimapbutton]] then
 						Region:SetTexture(nil)
 					end
 				elseif Name == 'SmartBuff_MiniMapButton' then
-					Region:SetTexture('Interface\\Icons\\Spell_Nature_Purge')
+					Region:SetTexture([[Interface\Icons\Spell_Nature_Purge]])
 				elseif Name == 'VendomaticButtonFrame' then
-					Region:SetTexture('Interface\\Icons\\INV_Misc_Rabbit_2')
+					Region:SetTexture([[Interface\Icons\INV_Misc_Rabbit_2]])
 				end
 				Region:ClearAllPoints()
 				Region:SetInside()

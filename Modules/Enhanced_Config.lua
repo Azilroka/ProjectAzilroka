@@ -54,7 +54,6 @@ function EC:Initialize()
 	GameMenuFrame:HookScript('OnShow', function(self) self:SetHeight(self:GetHeight() + Anchor:GetHeight()) end)
 	GameMenuButtonKeybindings:ClearAllPoints()
 	GameMenuButtonKeybindings:Point("TOP", ConfigButton, "BOTTOM", 0, -1)
-	ConfigButton:SkinButton()
 
 	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)
 	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
