@@ -1,7 +1,7 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-local MAJOR, MINOR = "LibElvUIPlugin-1.0", 21
+local MAJOR, MINOR = "LibElvUIPlugin-1.0", 22
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -88,8 +88,10 @@ function lib:RegisterPlugin(name, callback)
 	lib.plugins[name] = plugin
 	if not lib.vcframe then
 		RegisterAddonMessagePrefix(lib.prefix)
+		JoinTemporaryChannel('ElvUIGVC')
 		local f = CreateFrame('Frame')
 		f:RegisterEvent("GROUP_ROSTER_UPDATE")
+		f:RegisterEvent("PLAYER_ENTERING_WORLD")
 		f:RegisterEvent("CHAT_MSG_ADDON")
 		f:SetScript('OnEvent', lib.VersionCheck)
 		lib.vcframe = f
@@ -177,9 +179,19 @@ end
 
 function lib:SendPluginVersionCheck(message)
 	if (not message) or strmatch(message, "^%s-$") then return end
+	local ChatType, Channel
 
-	local ChatType = ((not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) or (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE))) and "INSTANCE_CHAT" or (IsInRaid() and "RAID") or (IsInGroup() and "PARTY") or (IsInGuild() and 'GUILD') or nil
-	if not ChatType then return end
+	if IsInRaid() then
+		ChatType = (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID"
+	elseif IsInGroup() then
+		ChatType = (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"
+	else
+		if GetChannelName('ElvUIGVC') then
+			ChatType, Channel = "CHANNEL", GetChannelName('ElvUIGVC')
+		elseif IsInGuild() then
+			ChatType = "GUILD"
+		end
+	end
 
 	local delay, maxChar, msgLength = 0, 250, strlen(message)
 	if msgLength > maxChar then
@@ -188,12 +200,12 @@ function lib:SendPluginVersionCheck(message)
 			splitMessage = strmatch(strsub(message, 1, maxChar), '.+;')
 			if splitMessage then -- incase the string is over 250 but doesnt contain `;`
 				message = gsub(message, "^"..gsub(splitMessage, '([%(%)%.%%%+%-%*%?%[%^%$])','%%%1'), "")
-				C_Timer.After(delay, function() SendAddonMessage(lib.prefix, splitMessage, ChatType) end)
+				C_Timer.After(delay, C_ChatInfo_SendAddonMessage, lib.prefix, splitMessage, ChatType, Channel)
 				delay = delay + 1
 			end
 		end
 	else
-		SendAddonMessage(lib.prefix, message, ChatType)
+		SendAddonMessage(lib.prefix, message, ChatType, Channel)
 	end
 end
 
