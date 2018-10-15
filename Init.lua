@@ -27,6 +27,7 @@ PA.LAB = LibStub('LibActionButton-1.0')
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
 PA.MyName = UnitName('player')
+PA.MyRace = select(2, UnitRace("player"))
 PA.MyRealm = GetRealmName()
 PA.Locale = GetLocale()
 PA.Noop = function() end
@@ -203,6 +204,11 @@ PA.Options = {
 					type = 'toggle',
 					name = 'Quest Sounds',
 				},
+				RR = {
+					order = 9,
+					type = 'toggle',
+					name = 'Reputation Reward',
+				},
 			},
 		},
 	},
@@ -226,6 +232,7 @@ function PA:BuildProfile()
 			['SMB'] = true,
 			['stAM'] = true,
 			['QS'] = false,
+			['RR'] = false,
 		},
 	}
 
@@ -292,6 +299,9 @@ function PA:PLAYER_LOGIN()
 	end
 	if PA.db['QS'] then
 		tinsert(InitializeModules, 'QS')
+	end
+	if PA.db['RR'] then
+		tinsert(InitializeModules, 'RR')
 	end
 
 	for _, Module in pairs(InitializeModules) do

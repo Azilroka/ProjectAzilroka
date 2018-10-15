@@ -62,8 +62,8 @@ function EC:Initialize()
 	end
 
 	local ConfigButton = CreateFrame('Button', 'Enhanced_ConfigButton', GameMenuFrame, 'GameMenuButtonTemplate')
-	ConfigButton:Size(GameMenuButtonUIOptions:GetWidth(), GameMenuButtonUIOptions:GetHeight())
-	ConfigButton:Point('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0 , -1)
+	ConfigButton:SetSize(GameMenuButtonUIOptions:GetWidth(), GameMenuButtonUIOptions:GetHeight())
+	ConfigButton:SetPoint('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0 , -1)
 	ConfigButton:SetText(EC.Title)
 	ConfigButton:SetScript('OnClick', function() EC:ToggleConfig() HideUIPanel(GameMenuFrame) end)
 	GameMenuFrame:HookScript('OnShow', function(self) self:SetHeight(self:GetHeight() + GameMenuButtonUIOptions:GetHeight()) end)

@@ -12,7 +12,7 @@ DO.Description = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and Ra
 DO.Authors = 'Azilroka    Whiro'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
 
-local MediaPath = 'Interface\\AddOns\\ProjectAzilroka\\Media\\DragonOverlay\\'
+local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\DragonOverlay\]]
 
 DO.Textures = {
 	['Azure'] = MediaPath..'Azure',
