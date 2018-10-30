@@ -157,7 +157,7 @@ function RR:Initialize()
 	ReputationRewardsFrame.Header:SetJustifyH('LEFT')
 	ReputationRewardsFrame.Header:SetJustifyV('TOP')
 	ReputationRewardsFrame.Header:SetTextColor(1, .9, .1)
-	ReputationRewardsFrame.Header:SetText('Reputation')
+	ReputationRewardsFrame.Header:SetText(REPUTATION)
 
 	ReputationRewardsFrame.Description = ReputationRewardsFrame:CreateFontString(nil, 'ARTWORK', 'QuestFontNormalSmall')
 	ReputationRewardsFrame.Description:SetSize(288, 20)

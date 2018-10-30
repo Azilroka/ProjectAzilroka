@@ -22,8 +22,8 @@ local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
 lib.plugins = {}
 lib.index = 0
+lib.groupSize = 0
 lib.prefix = "ElvUIPluginVC"
-lib.groupSize = -1
 
 -- MULTI Language Support (Default Language: English)
 local MSG_OUTDATED = "Your version of %s is out of date (latest is version %s). You can download the latest version from http://www.tukui.org"
@@ -80,21 +80,26 @@ local function RGBToHex(r, g, b)
 	return format('|cff%02x%02x%02x', r*255, g*255, b*255)
 end
 
-function lib:RegisterPlugin(name, callback)
-	local plugin = {}
-	plugin.name = name
-	plugin.version = name == MAJOR and MINOR or GetAddOnMetadata(name, "Version")
-	plugin.callback = callback
+function lib:RegisterPlugin(name, callback, isLib)
+    local plugin = {
+		name = name,
+		callback = callback,
+		version = name == MAJOR and MINOR or GetAddOnMetadata(name, 'Version')
+	}
+
+	if isLib then
+		plugin.isLib = true
+		plugin.version = 1
+	end
+
 	lib.plugins[name] = plugin
-	if not lib.vcframe then
-		RegisterAddonMessagePrefix(lib.prefix)
-		JoinTemporaryChannel('ElvUIGVC')
-		local f = CreateFrame('Frame')
-		f:RegisterEvent("GROUP_ROSTER_UPDATE")
-		f:RegisterEvent("PLAYER_ENTERING_WORLD")
-		f:RegisterEvent("CHAT_MSG_ADDON")
-		f:SetScript('OnEvent', lib.VersionCheck)
-		lib.vcframe = f
+
+	if not lib.registeredPrefix then
+		C_ChatInfo.RegisterAddonMessagePrefix(lib.prefix)
+		lib.VCFrame:RegisterEvent('CHAT_MSG_ADDON')
+		lib.VCFrame:RegisterEvent('GROUP_ROSTER_UPDATE')
+		lib.VCFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+		lib.registeredPrefix = true
 	end
 
 	callback()
@@ -104,39 +109,37 @@ function lib:RegisterPlugin(name, callback)
 	return plugin
 end
 
-function lib:GetPluginOptions()
-	_G.Enhanced_Config.Options.args.plugins = Options
-end
-
 function lib:GenerateVersionCheckMessage()
-	local list = ""
+	local list = ''
 	for _, plugin in pairs(lib.plugins) do
 		if plugin.name ~= MAJOR then
-			list = list..plugin.name.."="..plugin.version..";"
+			list = list..plugin.name..'='..plugin.version..';'
 		end
 	end
 	return list
 end
 
-local function SendPluginVersionCheck(self)
-	lib:SendPluginVersionCheck(lib:GenerateVersionCheckMessage())
+function lib:GetPluginOptions()
+	_G.Enhanced_Config.Options.args.plugins = Options
 end
 
 function lib:VersionCheck(event, prefix, message, channel, sender)
-	if (event == "CHAT_MSG_ADDON") and sender and message and (not strmatch(message, "^%s-$")) and (prefix == lib.prefix) then
+	if (event == 'CHAT_MSG_ADDON' and prefix == lib.prefix) and (sender and message and not strmatch(message, '^%s-$')) then
 		if not lib.myName then lib.myName = PA.MyName..'-'..gsub(PA.MyRealm,'[%s%-]','') end
 		if sender == lib.myName then return end
+
 		if not self["pluginRecievedOutOfDateMessage"] then
-			local name, version, plugin, Pname
+			local name, version, plugin, Pname, Pver, ver
 			for _, p in pairs({strsplit(";",message)}) do
-				if not strmatch(p, "^%s-$") then
-					name, version = strmatch(p, "([%w_]+)=([%d%p]+)")
-					if lib.plugins[name] then
-						plugin = lib.plugins[name]
-						if plugin.version ~= 'BETA' and version ~= nil and tonumber(version) ~= nil and plugin.version ~= nil and tonumber(plugin.version) ~= nil and tonumber(version) > tonumber(plugin.version) then
-							plugin.old = true
-							plugin.newversion = tonumber(version)
-							Pname = GetAddOnMetadata(plugin.name, "Title")
+				if not strmatch(p, '^%s-$') then
+					name, version = strmatch(p, '([%w_]+)=([%d%p]+)')
+					plugin = name and lib.plugins[name]
+
+					if version and plugin and plugin.version and (plugin.version ~= 'BETA') then
+						Pver, ver = tonumber(plugin.version), tonumber(version)
+						if (ver and Pver) and (ver > Pver) then
+							plugin.old, plugin.newversion = true, ver
+							Pname = GetAddOnMetadata(plugin.name, 'Title')
 							print(format(MSG_OUTDATED,Pname,plugin.newversion))
 							self["pluginRecievedOutOfDateMessage"] = true
 						end
@@ -144,14 +147,16 @@ function lib:VersionCheck(event, prefix, message, channel, sender)
 				end
 			end
 		end
-	else
+	elseif event == 'GROUP_ROSTER_UPDATE' then
 		local num = GetNumGroupMembers()
 		if num ~= lib.groupSize then
-			if num > 1 and lib.groupSize and num > lib.groupSize then
-				C_Timer.After(12, SendPluginVersionCheck)
+			if num > 1 and num > lib.groupSize then
+				lib:DelayedSendVersionCheck()
 			end
 			lib.groupSize = num
 		end
+	elseif event == 'PLAYER_ENTERING_WORLD' then
+		lib:DelayedSendVersionCheck(15)
 	end
 end
 
@@ -163,34 +168,37 @@ function lib:GeneratePluginList()
 			author = GetAddOnMetadata(plugin.name, "Author")
 			Pname = GetAddOnMetadata(plugin.name, "Title") or plugin.name
 			color = plugin.old and RGBToHex(1,0,0) or RGBToHex(0,1,0)
-			list = list .. Pname
-			if author then
-			  list = list .. " ".. INFO_BY .." " .. author
-			end
-			list = list .. color ..(plugin.isLib and " "..LIBRARY or " - " .. INFO_VERSION .." " .. plugin.version)
-			if plugin.old then
-			  list = list .. INFO_NEW .. plugin.newversion .. ")"
-			end
-			list = list .. "|r\n"
+			list = list..Pname
+			if author then list = list..' '..INFO_BY..' '..author end
+			list = list..color..(plugin.isLib and ' '..LIBRARY or ' - '..INFO_VERSION..' '..plugin.version)
+			if plugin.old then list = list..INFO_NEW..plugin.newversion..')' end
+			list = list..'|r\n'
 		end
 	end
 	return list
 end
 
 function lib:SendPluginVersionCheck(message)
-	if (not message) or strmatch(message, "^%s-$") then return end
-	local ChatType, Channel
+	if (not message) or strmatch(message, '^%s-$') then
+		return
+	end
 
+	local ChatType, Channel
 	if IsInRaid() then
-		ChatType = (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID"
+		ChatType = (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and 'INSTANCE_CHAT' or 'RAID'
 	elseif IsInGroup() then
-		ChatType = (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY"
+		ChatType = (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and 'INSTANCE_CHAT' or 'PARTY'
 	else
-		if GetChannelName('ElvUIGVC') then
-			ChatType, Channel = "CHANNEL", GetChannelName('ElvUIGVC')
+		local ElvUI_VC = GetChannelName('ElvUI_VC')
+		if ElvUI_VC and ElvUI_VC > 0 then
+			ChatType, Channel = 'CHANNEL', ElvUI_VC
 		elseif IsInGuild() then
-			ChatType = "GUILD"
+			ChatType = 'GUILD'
 		end
+	end
+
+	if not ChatType then
+		return
 	end
 
 	local delay, maxChar, msgLength = 0, 250, strlen(message)
@@ -200,13 +208,46 @@ function lib:SendPluginVersionCheck(message)
 			splitMessage = strmatch(strsub(message, 1, maxChar), '.+;')
 			if splitMessage then -- incase the string is over 250 but doesnt contain `;`
 				message = gsub(message, "^"..gsub(splitMessage, '([%(%)%.%%%+%-%*%?%[%^%$])','%%%1'), "")
-				C_Timer.After(delay, C_ChatInfo_SendAddonMessage, lib.prefix, splitMessage, ChatType, Channel)
+				C_Timer.After(delay, function() SendAddonMessage(lib.prefix, splitMessage, ChatType, Channel) end)
 				delay = delay + 1
+				C_Timer.After(delay, lib.ClearSendMessageTimer) -- keep this after `delay = delay + 1`
 			end
 		end
 	else
 		SendAddonMessage(lib.prefix, message, ChatType, Channel)
 	end
 end
+
+local function SendPluginVersionCheck()
+	lib:SendPluginVersionCheck(lib:GenerateVersionCheckMessage())
+end
+
+function lib:DelayedSendVersionCheck(delay)
+	if not lib.SendMessageTimer then
+		lib.SendMessageTimer = C_Timer.After(delay or 10, SendPluginVersionCheck)
+	end
+end
+
+lib.VCFrame = CreateFrame('Frame')
+lib.VCFrame:SetScript('OnEvent', lib.VersionCheck)
+lib.VCFrame:SetScript("OnUpdate", function(self, elapsed)
+	self.delayed = (self.delayed or 0) + elapsed
+	if self.delayed > 1 then
+		local numActiveChannels = C_ChatInfo.GetNumActiveChannels()
+		if numActiveChannels and (numActiveChannels >= 1) then
+			if (GetChannelName('ElvUIGVC') == 0) and (numActiveChannels < MAX_WOW_CHAT_CHANNELS) then
+				JoinChannelByName('ElvUIGVC', nil, nil, true)
+
+				if not lib.SendMessageTimer then
+					lib.SendMessageTimer = C_Timer.After(10, SendPluginVersionCheck)
+				end
+
+				self:SetScript("OnUpdate", nil)
+			end
+		end
+	elseif self.delayed > 30 then
+		self:SetScript("OnUpdate", nil)
+	end
+end)
 
 lib:RegisterPlugin(MAJOR, lib.GetPluginOptions)

@@ -2,7 +2,7 @@ local AddOnName = ...
 local _G = _G
 local LibStub = LibStub
 
-local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0')
+local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0', 'AceTimer-3.0')
 
 _G.ProjectAzilroka = PA
 

@@ -86,6 +86,9 @@ local AddOnFrames = {
 	['Blizzard_ChallengesUI'] = {
 		['ChallengesKeystoneFrame'] = { "CENTER", "UIParent", "CENTER", 0, 0 },
 	},
+	['Blizzard_Channels'] = {
+		['ChannelFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 },
+	},
 	['Blizzard_Collections'] = {
 		["CollectionsJournal"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
 	},

@@ -251,7 +251,7 @@ function SMB:SkinMinimapButton(Button)
 	for i = 1, Button:GetNumRegions() do
 		local Region = select(i, Button:GetRegions())
 		if Region.IsObjectType and Region:IsObjectType('Texture') then
-			local Texture = strlower(Region:GetTexture())
+			local Texture = strlower(tostring(Region:GetTexture()))
 
 			if (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
 				Region:SetTexture(nil)
@@ -440,7 +440,7 @@ function SMB:GetOptions()
 						order = 6,
 						type = 'range',
 						name = PA.ACL['Buttons Per Row'],
-						min = 1, max = 12, step = 1,
+						min = 1, max = 100, step = 1,
 					},
 				},
 			},
