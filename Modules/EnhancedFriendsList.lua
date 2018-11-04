@@ -4,7 +4,8 @@ PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 
 EFL.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r'
 EFL.Description = 'Provides Friends List Customization'
-EFL.Author = 'Azilroka    Marotheit'
+EFL.Authors = 'Azilroka'
+EFL.Credits = 'Marotheit'
 
 local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
 local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
@@ -426,9 +427,6 @@ function EFL:GetOptions()
 			image = function(info) return EFL.Icons.Status[info[#info]][EFL.db.StatusIconPack], 16, 16 end,
 		}
 	end
-
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(EFL.data)
-	Options.args.profiles.order = -2
 
 	PA.Options.args.EnhancedFriendsList = Options
 end

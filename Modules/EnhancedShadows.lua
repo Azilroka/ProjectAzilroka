@@ -100,9 +100,6 @@ function ES:GetOptions()
 		},
 	}
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(ES.data)
-	Options.args.profiles.order = -2
-
 	PA.Options.args.EnhancedShadows = Options
 end
 

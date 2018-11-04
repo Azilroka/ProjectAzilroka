@@ -5,6 +5,7 @@ PA.QS = QS
 QS.Title = '|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'
 QS.Description = 'Audio for Quest Progress & Completions.'
 QS.Authors = 'Azilroka'
+QS.Credits = 'Yoco'
 
 local GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile = GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile
 
@@ -109,9 +110,6 @@ function QS:GetOptions()
 			},
 		},
 	}
-
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(QS.data)
-	Options.args.profiles.order = -2
 
 	PA.Options.args.QuestSounds = Options
 end

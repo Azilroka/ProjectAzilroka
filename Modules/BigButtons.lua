@@ -277,9 +277,6 @@ function BB:GetOptions()
 		},
 	}
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(BB.data)
-	Options.args.profiles.order = -2
-
 	PA.Options.args.BigButtons = Options
 end
 

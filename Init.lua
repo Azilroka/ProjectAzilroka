@@ -233,7 +233,7 @@ function PA:BuildProfile()
 			['SMB'] = true,
 			['stAM'] = true,
 			['QS'] = false,
-			['RR'] = false,
+			['RR'] = true,
 		},
 	}
 

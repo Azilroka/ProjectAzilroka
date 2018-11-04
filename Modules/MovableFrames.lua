@@ -6,8 +6,6 @@ MF.Title = '|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'
 MF.Desciption = 'Make Blizzard Frames Movable'
 MF.Authors = 'Azilroka    Simpy'
 
-ExportData = {}
-
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
 local _G = _G
 local IsAddOnLoaded, C_Timer = IsAddOnLoaded, C_Timer
@@ -277,9 +275,6 @@ function MF:GetOptions()
 
 		Index = Index + 1
 	end
-
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(MF.data)
-	Options.args.profiles.order = -2
 
 	PA.Options.args.MovableFrames = Options
 end

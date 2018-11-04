@@ -7,7 +7,8 @@ _G.stAddonManagerServerDB = {}
 
 stAM.Title = '|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'
 stAM.Description = 'A simple and minimalistic addon to disable/enabled addons without logging out.'
-stAM.Authors = 'Safturento    Azilroka'
+stAM.Authors = 'Azilroka'
+stAM.Credits = 'Safturento'
 
 local _G = _G
 local unpack, tinsert, wipe, pairs, sort, format = unpack, tinsert, wipe, pairs, sort, format
@@ -653,9 +654,6 @@ function stAM:GetOptions()
 		},
 	}
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(stAM.data)
-	Options.args.profiles.order = -2
-
 	PA.Options.args.stAM = Options
 end
 
@@ -674,8 +672,7 @@ function stAM:BuildProfile()
 			['CheckTexture'] = 'Blizzard Raid Bar'
 		},
 	}, true)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
+
 	self.db = self.data.profile
 end
 

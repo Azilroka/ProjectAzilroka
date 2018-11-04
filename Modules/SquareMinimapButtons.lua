@@ -499,9 +499,6 @@ function SMB:GetOptions()
 		},
 	}
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(SMB.data)
-	Options.args.profiles.order = -2
-
 	PA.Options.args.SquareMinimapButton = Options
 end
 
