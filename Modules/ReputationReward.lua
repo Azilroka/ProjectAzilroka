@@ -98,12 +98,16 @@ function RR:Show()
 	-- Build a table so I can filter it.
 	for i = 1, numRepFactions do
 		local factionID, amtBase = GetQuestLogRewardFactionInfo(i)
-		local factionName, _, _, _, _, _, _, _, isHeader = GetFactionInfoByID(factionID)
-		amtBase = floor(amtBase / 100)
 
-		local amtBonus = RR:GetBonusReputation(amtBase, factionID)
+		local factionName, _, _, _, _, _, AtWar, ToggleAtWar, isHeader = GetFactionInfoByID(factionID)
 
-		RR.ReputationInfo[factionID] = { Name = factionName, Base = amtBase, Bonus = amtBonus, Header = isHeader, FactionID = factionID, Child = RR:GetFactionHeader(factionID) }
+		if factionName and (AtWar and ToggleAtWar or (not AtWar)) then
+			amtBase = floor(amtBase / 100)
+
+			local amtBonus = RR:GetBonusReputation(amtBase, factionID)
+
+			RR.ReputationInfo[factionID] = { Name = factionName, Base = amtBase, Bonus = amtBonus, Header = isHeader, FactionID = factionID, Child = RR:GetFactionHeader(factionID) }
+		end
 	end
 
 	-- Filter the table
@@ -138,9 +142,9 @@ function RR:Show()
 	if QuestInfoFrame.mapView then
 		ReputationRewardsFrame:SetParent(QuestInfoDescriptionText:GetParent())
 		ReputationRewardsFrame:SetPoint('TOPLEFT', QuestInfoDescriptionText, 'BOTTOMLEFT', 0, -10)
-	elseif QuestInfoFrame.rewardsFrame.XPFrame then
+	elseif QuestInfoFrame.rewardsFrame then
 		ReputationRewardsFrame:SetParent(QuestInfoFrame.rewardsFrame)
-		ReputationRewardsFrame:SetPoint('TOPLEFT', QuestInfoFrame.rewardsFrame.XPFrame, 'BOTTOMLEFT', 0, -6)
+		ReputationRewardsFrame:SetPoint('TOPLEFT', QuestInfoFrame.rewardsFrame, 'BOTTOMLEFT', 0, -6)
 	end
 
 	ReputationRewardsFrame:Show()
@@ -156,7 +160,7 @@ function RR:Initialize()
 	ReputationRewardsFrame.Header:SetPoint('TOPLEFT', ReputationRewardsFrame, 'TOPLEFT')
 	ReputationRewardsFrame.Header:SetJustifyH('LEFT')
 	ReputationRewardsFrame.Header:SetJustifyV('TOP')
-	ReputationRewardsFrame.Header:SetTextColor(1, .9, .1)
+	ReputationRewardsFrame.Header:SetTextColor(1, .82, .1)
 	ReputationRewardsFrame.Header:SetText(REPUTATION)
 
 	ReputationRewardsFrame.Description = ReputationRewardsFrame:CreateFontString(nil, 'ARTWORK', 'QuestFontNormalSmall')
@@ -191,3 +195,133 @@ function RR:Initialize()
 
 	RR:SecureHook('QuestInfo_Display', 'Show')
 end
+
+--[[
+RR.FactionID = {
+	['Horde'] = {
+		[68] = true,	-- Undercity
+		[76] = true,	-- Orgrimmar
+		[81] = true,	-- Thunder Bluff
+		[510] = true,	-- The Defilers
+		[530] = true,	-- Darkspear Trolls
+		[729] = true,	-- Frostwolf Clan
+		[889] = true,	-- Warsong Outriders
+		[911] = true,	-- Silvermoon City
+		[922] = true,	-- Tranquillien
+		[941] = true,	-- The Mag'har
+		[947] = true,	-- Thrallmar
+		[1052] = true,	-- Horde Expedition
+		[1064] = true,	-- The Taunka
+		[1067] = true,	-- The Hand of Vengeance
+		[1085] = true,	-- Warsong Offensive
+		[1124] = true,	-- The Sunreavers
+		[1133] = true,	-- Bilgewater Cartel
+		[1172] = true,	-- Dragonmaw Clan
+		[1178] = true,	-- Hellscream's Reach
+		[1228] = true,	-- Forest Hozen
+		[1352] = true,	-- Huojin Pandaren
+		[1374] = true,	-- Brawl'gar Arena
+		[1375] = true,	-- Dominance Offensive
+		[1388] = true,	-- Sunreaver Onslaught
+		[2103] = true,	-- Zandalari Empire
+		[2156] = true,	-- Talanji's Expedition
+		[2157] = true,	-- The Honorbound
+		[2158] = true,	-- Voldunai
+		[2163] = true,	-- Tortollan Seekers
+		[2164] = true,	-- Champions of Azeroth
+	},
+	['Alliance'] = {
+		[47] = true,	-- Ironforge
+		[54] = true,	-- Gnomeregan
+		[69] = true,	-- Darnassus
+		[72] = true,	-- Stormwind
+		[509] = true,	-- The League of Arathor
+		[589] = true,	-- Wintersaber Trainers
+		[730] = true,	-- Stormpike Guard
+		[890] = true,	-- Silverwing Sentinels
+		[930] = true,	-- Exodar
+		[946] = true,	-- Honor Hold
+		[978] = true,	-- Kurenai
+		[1037] = true,	-- Alliance Vanguard
+		[1050] = true,	-- Valiance Expedition
+		[1068] = true,	-- Explorers' League
+		[1094] = true,	-- The Silver Covenant
+		[1126] = true,	-- The Frostborn
+		[1134] = true,	-- Gilneas
+		[1174] = true,	-- Wildhammer Clan
+		[1177] = true,	-- Baradin's Wardens
+		[1242] = true,	-- Pearlfin Jinyu
+		[1353] = true,	-- Tushui Pandaren
+		[1376] = true,	-- Operation: Shieldwall
+		[1387] = true,	-- Kirin Tor Offensive
+		[1419] = true,	-- Bizmo's Brawlpub
+		[2160] = true,	-- Proudmoore Admiralty
+		[2161] = true,	-- Order of Embers
+		[2162] = true,	-- Storm's Wake
+	},
+	['All'] = {
+		[21] = true,	-- Booty Bay
+		[59] = true,	-- Thorium Brotherhood
+		[70] = true,	-- Syndicate
+		[87] = true,	-- Bloodsail Buccaneers
+		[92] = true, 	-- Gelkis Clan Centaur
+		[93] = true,	-- Magram Clan Centaur
+		[270] = true,	-- Zandalar Tribe
+		[349] = true,	-- Ravenholdt
+		[369] = true,	-- Gadgetzan
+		[470] = true,	-- Ratchet
+		[529] = true,	-- Argent Dawn
+		[576] = true,	-- Timbermaw Hold
+		[577] = true,	-- Everlook
+		[609] = true,	-- Cenarion Circle
+		[749] = true,	-- Hydraxian Waterlords
+		[809] = true,	-- Shen'dralar
+		[909] = true,	-- Darkmoon Faire
+		[910] = true,	-- Brood of Nozdormu
+		[932] = true,	-- The Aldor
+		[933] = true,	-- The Consortium
+		[934] = true,	-- The Scryers
+		[935] = true,	-- The Sha'tar
+		[942] = true,	-- Cenarion Expedition
+		[967] = true,	-- The Violet Eye
+		[970] = true,	-- Sporeggar
+		[989] = true,	-- Keepers of Time
+		[990] = true,	-- The Scale of the Sands
+		[1011] = true,	-- Lower City
+		[1012] = true,	-- Ashtongue Deathsworn
+		[1015] = true,	-- Netherwing
+		[1031] = true,	-- Sha'tari Skyguard
+		[1038] = true,	-- Ogri'la
+		[1073] = true,	-- The Kalu'ak
+		[1077] = true,	-- Shattered Sun Offensive
+		[1090] = true,	-- Kirin Tor
+		[1091] = true,	-- The Wyrmrest Accord
+		[1098] = true,	-- Knights of the Ebon Blade
+		[1104] = true,	-- Frenzyheart Tribe
+		[1105] = true,	-- The Oracles
+		[1106] = true,	-- Argent Crusade
+		[1119] = true,	-- The Sons of Hodir
+		[1135] = true,	-- The Earthen Ring
+		[1156] = true,	-- The Ashen Verdict
+		[1158] = true,	-- Guardians of Hyjal
+		[1171] = true,	-- Therazane
+		[1173] = true,	-- Ramkahen
+		[1204] = true,	-- Avengers of Hyjal
+		[1216] = true,	-- Shang Xi's Academy
+		[1269] = true,	-- Golden Lotus
+		[1270] = true,	-- Shado-Pan
+		[1271] = true,	-- Order of the Cloud Serpent
+		[1272] = true,	-- The Tillers
+		[1302] = true,	-- The Anglers
+		[1337] = true,	-- The Klaxxi
+		[1341] = true,	-- The August Celestials
+		[1345] = true,	-- The Lorewalkers
+		[1359] = true,	-- The Black Prince
+		[1416] = true,	-- Akama's Trust
+		[1435] = true,	-- Shado-Pan Assault
+		[2045] = true,	-- Armies of Legionfall
+		[2165] = true,	-- Army of the Light
+		[2170] = true,	-- Argussian Reach
+	},
+}
+]]

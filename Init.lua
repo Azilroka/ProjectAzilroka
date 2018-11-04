@@ -33,6 +33,7 @@ PA.Locale = GetLocale()
 PA.Noop = function() end
 PA.TexCoords = {.08, .92, .08, .92}
 PA.UIScale = UIParent:GetScale()
+PA.MyFaction = UnitFactionGroup('player')
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
