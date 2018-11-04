@@ -17,10 +17,12 @@ local GetNumFactions = _G.GetNumFactions
 local GetNumQuestLogRewardFactions = _G.GetNumQuestLogRewardFactions
 local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
 local UnitAura = _G.UnitAura
+local Immersion
 
 RR.Title = '|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r'
 RR.Description = 'Adds Reputation into Quest Log & Quest Frame.'
-RR.Authors = 'Azilroka    jayd'
+RR.Authors = 'Azilroka'
+RR.Credits = 'jayd'
 
 function RR:BuildFactionHeaders()
 	RR.FactionHeaders = {}
@@ -95,7 +97,6 @@ function RR:Show()
 
 	wipe(RR.ReputationInfo)
 
-	-- Build a table so I can filter it.
 	for i = 1, numRepFactions do
 		local factionID, amtBase = GetQuestLogRewardFactionInfo(i)
 
@@ -110,14 +111,12 @@ function RR:Show()
 		end
 	end
 
-	-- Filter the table
 	for _, Info in pairs(RR.ReputationInfo) do
 		if (Info.FactionID ~= RR:GetFactionHeader(Info.Child)) and (Info.Child == RR:GetFactionHeader(Info.FactionID)) and (Info.Base == (RR.ReputationInfo[Info.Child] and RR.ReputationInfo[Info.Child].Base or 0)) then
 			RR.ReputationInfo[Info.FactionID] = nil
 		end
 	end
 
-	-- Show the Filtered Table
 	local QuestString, NumShown = nil, 0
 	for _, Info in pairs(RR.ReputationInfo) do
 		local Color = Info.Base < 0 and "|cEFF00000" or "|cFFFFFFFF"
@@ -133,13 +132,18 @@ function RR:Show()
 		NumShown = NumShown + 1
 	end
 
+	if NumShown == 0 then return end
+
 	ReputationRewardsFrame.Description:SetHeight((NumShown * 12) + 10)
 	ReputationRewardsFrame.Description:SetText(QuestString)
 	ReputationRewardsFrame:SetHeight((NumShown * 12) + 30)
 
 	ReputationRewardsFrame:ClearAllPoints()
 
-	if QuestInfoFrame.mapView then
+	if Immersion and ImmersionContentFrame.RewardsFrame then
+		ReputationRewardsFrame:SetParent(ImmersionContentFrame.RewardsFrame)
+		ReputationRewardsFrame:SetPoint('TOPLEFT', ImmersionContentFrame.RewardsFrame, 'TOPRIGHT', -1, 0)
+	elseif QuestInfoFrame.mapView then
 		ReputationRewardsFrame:SetParent(QuestInfoDescriptionText:GetParent())
 		ReputationRewardsFrame:SetPoint('TOPLEFT', QuestInfoDescriptionText, 'BOTTOMLEFT', 0, -10)
 	elseif QuestInfoFrame.rewardsFrame then
@@ -151,6 +155,7 @@ function RR:Show()
 end
 
 function RR:Initialize()
+	Immersion = IsAddOnLoaded('Immersion')
 	local ReputationRewardsFrame = CreateFrame('Frame', 'ReputationRewardsFrame', QuestInfoFrame)
 	ReputationRewardsFrame:SetSize(288, 40)
 	ReputationRewardsFrame:Hide()
@@ -165,7 +170,7 @@ function RR:Initialize()
 
 	ReputationRewardsFrame.Description = ReputationRewardsFrame:CreateFontString(nil, 'ARTWORK', 'QuestFontNormalSmall')
 	ReputationRewardsFrame.Description:SetSize(288, 20)
-	ReputationRewardsFrame.Description:SetPoint('TOPLEFT', ReputationRewardsFrame.Header, 'BOTTOMLEFT', 0, -3)
+	ReputationRewardsFrame.Description:SetPoint('TOPLEFT', ReputationRewardsFrame.Header, 'BOTTOMLEFT', 0, -6)
 	ReputationRewardsFrame.Description:SetJustifyH('LEFT')
 	ReputationRewardsFrame.Description:SetJustifyV('TOP')
 	ReputationRewardsFrame.Description:SetTextColor(1, 1, 1)
@@ -194,6 +199,10 @@ function RR:Initialize()
 	RR:BuildFactionHeaders()
 
 	RR:SecureHook('QuestInfo_Display', 'Show')
+
+	if Immersion then
+		RR:SecureHook(ImmersionFrame, 'QUEST_DETAIL', 'Show')
+	end
 end
 
 --[[
