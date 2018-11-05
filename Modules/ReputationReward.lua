@@ -121,14 +121,14 @@ function RR:Show()
 
 	for i = 1, numRepFactions do
 		local factionID, amtBase = GetQuestLogRewardFactionInfo(i)
-		local factionName, _, _, _, _, _, AtWar, ToggleAtWar, isHeader = GetFactionInfoByID(factionID)
+		local factionName, _, standingID, _, _, _, AtWar, ToggleAtWar, isHeader = GetFactionInfoByID(factionID)
 
 		if factionName and (AtWar and ToggleAtWar or (not AtWar)) then
 			amtBase = floor(amtBase / 100)
 
 			local amtBonus = RR:GetBonusReputation(amtBase, factionID)
 
-			RR.ReputationInfo[factionID] = { Name = factionName, Base = amtBase, Bonus = amtBonus, Header = isHeader, FactionID = factionID, Child = RR:GetFactionHeader(factionID) }
+			RR.ReputationInfo[factionID] = { Name = factionName, Base = amtBase, Bonus = amtBonus, Header = isHeader, FactionID = factionID, Child = RR:GetFactionHeader(factionID), Standing = standingID }
 		end
 	end
 
@@ -148,6 +148,7 @@ function RR:Show()
 
 		questItem.Name:SetText(Info.Name)
 		questItem.Icon:SetTexture(UnitFactionGroup('player') and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(UnitFactionGroup('player')))
+--		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 		questItem.Count:SetText(Info.Base + Info.Bonus)
 
 		if Info.Base < 0 then
