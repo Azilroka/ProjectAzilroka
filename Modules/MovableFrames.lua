@@ -3,7 +3,7 @@ local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
 MF.Title = '|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'
-MF.Desciption = 'Make Blizzard Frames Movable'
+MF.Description = 'Make Blizzard Frames Movable'
 MF.Authors = 'Azilroka    Simpy'
 
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
@@ -218,7 +218,8 @@ function MF:GetOptions()
 		order = 209,
 		type = 'group',
 		name = MF.Title,
-		desc = MF.Desciption,
+		desc = MF.Description,
+		childGroups = 'tab',
 		args = {
 			Header = {
 				order = 0,
@@ -253,10 +254,10 @@ function MF:GetOptions()
 		},
 	}
 
-	sort(self.AllFrames)
+	sort(MF.AllFrames)
 
 	local Index = 1
-	for _, Name in pairs(self.AllFrames) do
+	for _, Name in pairs(MF.AllFrames) do
 		Options.args.permanent.args[Name] = {
 			order = Index,
 			type = 'toggle',
@@ -309,8 +310,7 @@ end
 
 function MF:Initialize()
 	if PA.Tukui then
-		tinsert(Frames, 'LossOfControlFrame')
-		sort(Frames)
+		Frames['LossOfControlFrame'] = { "CENTER", "UIParent", "CENTER", 0, 60 }
 	end
 
 	MF:BuildProfile()

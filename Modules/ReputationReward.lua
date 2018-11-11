@@ -17,7 +17,7 @@ local GetNumFactions = _G.GetNumFactions
 local GetNumQuestLogRewardFactions = _G.GetNumQuestLogRewardFactions
 local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
 local UnitAura = _G.UnitAura
-local Immersion
+local REWARDS_SECTION_OFFSET = 5
 
 RR.Title = '|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r'
 RR.Description = 'Adds Reputation into Quest Log & Quest Frame.'
@@ -95,7 +95,7 @@ function RR:Show()
 		return
 	end
 
-	local numQuestRewards, numQuestChoices, numQuestCurrencies, totalHeight = 0, 0, 0, 0
+	local numQuestRewards, numQuestChoices, numQuestCurrencies = 0, 0, 0
 
 	if ( QuestInfoFrame.questLog ) then
 		local questID = select(8, GetQuestLogTitle(GetQuestLogSelection()));
@@ -110,11 +110,32 @@ function RR:Show()
 		numQuestCurrencies = GetNumRewardCurrencies();
 	end
 
+	local rewardsFrame = QuestInfoFrame.rewardsFrame
+	local rewardButtons = rewardsFrame.RewardButtons
+
 	local totalRewards = numQuestRewards + numQuestChoices + numQuestCurrencies;
+	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight();
+	local lastFrame = rewardsFrame.ItemReceiveText
+
+	if ( QuestInfoFrame.mapView ) then
+		if rewardsFrame.XPFrame:IsShown() then
+			lastFrame = rewardsFrame.XPFrame;
+		end
+		if rewardsFrame.MoneyFrame:IsShown() then
+			lastFrame = rewardsFrame.MoneyFrame;
+		end
+	else
+		if rewardsFrame.XPFrame:IsShown() then
+			lastFrame = rewardsFrame.XPFrame;
+		end
+	end
+
+	if rewardsFrame.SkillPointFrame:IsShown() then
+		lastFrame = rewardsFrame.SkillPointFrame;
+	end
 
 	local index
 	local baseIndex = totalRewards
-	local lastFrame
 	local buttonIndex = baseIndex
 
 	wipe(RR.ReputationInfo)
@@ -139,12 +160,17 @@ function RR:Show()
 	end
 
 	local i = 1
+	local Height = QuestInfoFrame.rewardsFrame:GetHeight()
+
 	for _, Info in pairs(RR.ReputationInfo) do
 		buttonIndex = buttonIndex + 1
 		index = i + baseIndex
 
-		local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, index)
+		local questItem = QuestInfo_GetRewardButton(rewardsFrame, index)
 		questItem:Show()
+
+		questItem.type = nil
+		questItem.objectType = nil
 
 		questItem.Name:SetText(Info.Name)
 		questItem.Icon:SetTexture(UnitFactionGroup('player') and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(UnitFactionGroup('player')))
@@ -161,23 +187,26 @@ function RR:Show()
 
 		if ( buttonIndex > 1 ) then
 			if ( mod(buttonIndex, 2) == 1 ) then
-				questItem:SetPoint('TOPLEFT', QuestInfoFrame.rewardsFrame.RewardButtons[index - 2], 'BOTTOMLEFT', 0, -2)
+				questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -2)
+				Height = Height + buttonHeight + 2;
 				lastFrame = questItem
 			else
-				questItem:SetPoint('TOPLEFT', QuestInfoFrame.rewardsFrame.RewardButtons[index - 1], 'TOPRIGHT', 1, 0)
+				questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 1, -2)
 			end
 		else
-			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -5)
+			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+			Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 			lastFrame = questItem
 		end
 
 		i = i + 1
 	end
+
+	QuestInfoFrame.rewardsFrame:Show()
+	QuestInfoFrame.rewardsFrame:SetHeight(Height)
 end
 
 function RR:Initialize()
-	Immersion = IsAddOnLoaded('Immersion')
-
 	RR.ReputationInfo = {}
 
 	-- ID = { bonus = .%, faction = factionID or 0 }
@@ -199,8 +228,4 @@ function RR:Initialize()
 	RR:BuildFactionHeaders()
 
 	RR:SecureHook('QuestInfo_Display', 'Show')
-
-	if Immersion then
-		RR:SecureHook(ImmersionFrame, 'QUEST_DETAIL', 'Show')
-	end
 end
