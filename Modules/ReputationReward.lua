@@ -142,9 +142,9 @@ function RR:Show()
 
 	for i = 1, numRepFactions do
 		local factionID, amtBase = GetQuestLogRewardFactionInfo(i)
-		local factionName, _, standingID, _, _, _, AtWar, ToggleAtWar, isHeader = GetFactionInfoByID(factionID)
+		local factionName, _, standingID, barMin, barMax, _, AtWar, ToggleAtWar, isHeader = GetFactionInfoByID(factionID)
 
-		if factionName and (AtWar and ToggleAtWar or (not AtWar)) then
+		if factionName and (AtWar and ToggleAtWar or (not AtWar)) and (not (barMin == barMax)) then
 			amtBase = floor(amtBase / 100)
 
 			if PA.MyRace == 'Human' then
@@ -195,11 +195,11 @@ function RR:Show()
 
 		if ( buttonIndex > 1 ) then
 			if ( mod(buttonIndex, 2) == 1 ) then
-				questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -2)
-				Height = Height + buttonHeight + 2
+				questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+				Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 				lastFrame = questItem
 			else
-				questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 1, -2)
+				questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 2, 0)
 			end
 		else
 			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
