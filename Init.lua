@@ -252,10 +252,6 @@ function PA:ADDON_LOADED(event, addon)
 		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
 		PA:UnregisterEvent(event)
-
-		if PA.db and not PA.db.DBConverted then
-			PA:DBConversion()
-		end
 	end
 end
 
@@ -270,6 +266,10 @@ function PA:PLAYER_LOGIN()
 	end
 
 	PA:BuildProfile()
+
+	if PA.db and not PA.db.DBConverted then
+		PA:DBConversion()
+	end
 
 	local InitializeModules = {}
 
