@@ -104,21 +104,11 @@ function ES:GetOptions()
 end
 
 function ES:BuildProfile()
-	self.data = PA.ADB:New("EnhancedShadowsDB", {
-		profile = {
-			['Color'] = { 0, 0, 0, 1 },
-			['ColorByClass'] = false,
-			['Size'] = 3,
-		},
-	})
+	PA.Defaults.profile['EnhancedShadows']['Color'] = { 0, 0, 0, 1 }
+	PA.Defaults.profile['EnhancedShadows']['ColorByClass'] = false
+	PA.Defaults.profile['EnhancedShadows']['Size'] = 3
 
-	self.data.RegisterCallback(self, "OnProfileChanged", "SetupProfile")
-	self.data.RegisterCallback(self, "OnProfileCopied", "SetupProfile")
-	self.db = self.data.profile
-end
-
-function ES:SetupProfile()
-	self.db = self.data.profile
+	ES.db = PA.Defaults.profile['EnhancedShadows']
 end
 
 function ES:Initialize()

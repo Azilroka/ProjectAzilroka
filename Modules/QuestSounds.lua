@@ -115,20 +115,11 @@ function QS:GetOptions()
 end
 
 function QS:BuildProfile()
-	QS.data = PA.ADB:New('QuestSoundsDB', {
-		profile = {
-			['QuestComplete'] = 'Peon Quest Complete',
-			['ObjectiveComplete'] = 'Peon Objective Complete',
-			['ObjectiveProgress'] = 'Peon Objective Progress',
-		},
-	}, true)
-	QS.data.RegisterCallback(QS, 'OnProfileChanged', 'SetupProfile')
-	QS.data.RegisterCallback(QS, 'OnProfileCopied', 'SetupProfile')
-	QS.db = QS.data.profile
-end
+	PA.Defaults.profile['QuestSounds']['QuestComplete'] = 'Peon Quest Complete'
+	PA.Defaults.profile['QuestSounds']['ObjectiveComplete'] = 'Peon Objective Complete'
+	PA.Defaults.profile['QuestSounds']['ObjectiveProgress'] = 'Peon Objective Progress'
 
-function QS:SetupProfile()
-	QS.db = QS.data.profile
+	QS.db = PA.Defaults.profile['QuestSounds']
 end
 
 function QS:RegisterSounds()
@@ -179,20 +170,25 @@ function QS:Initialize()
 	local KT = LibStub("AceAddon-3.0"):GetAddon('!KalielsTracker', true)
 
 	if KT.db.profile.soundQuest then
-		StaticPopupDialogs["PA_INCOMPATIBLE"].text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].button1 = 'KT Quest Sound'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].button2 = 'Quest Sounds'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].OnAccept = function() KT.db.profile.soundQuest = false end
-		StaticPopupDialogs["PA_INCOMPATIBLE"].OnCancel = function() PA.db.QS = false ReloadUI() end
-		StaticPopup_Show("PA_INCOMPATIBLE")
-	end
-
-	if AS:CheckAddOn('QuestGuruSounds') then
-		StaticPopupDialogs["PA_INCOMPATIBLE"].text = 'QuestGuru Sounds and QuestSounds will make double sounds. Which one do you want to disable?'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].button1 = 'KT Quest Sound'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].button2 = 'Quest Sounds'
-		StaticPopupDialogs["PA_INCOMPATIBLE"].OnAccept = function() DisableAddOn('QuestGuruSounds') ReloadUI() end
-		StaticPopupDialogs["PA_INCOMPATIBLE"].OnCancel = function() PA.db.QS = false ReloadUI() end
-		StaticPopup_Show("PA_INCOMPATIBLE")
+		StaticPopupDialogs["PROJECTAZILROKA"].text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'
+		StaticPopupDialogs["PROJECTAZILROKA"].button1 = 'KT Quest Sound'
+		StaticPopupDialogs["PROJECTAZILROKA"].button2 = 'Quest Sounds'
+		StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = function()
+			KT.db.profile.soundQuest = false
+			StaticPopupDialogs["PROJECTAZILROKA"].text = PA.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."]
+			StaticPopupDialogs["PROJECTAZILROKA"].button1 = ACCEPT
+			StaticPopupDialogs["PROJECTAZILROKA"].button2 = CANCEL
+			StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = ReloadUI
+			StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = nil
+		end
+		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() PA.db.QS = false ReloadUI() end
+		StaticPopup_Show("PROJECTAZILROKA")
+	elseif PA:IsAddOnEnabled('QuestGuruSounds', PA.MyName) then
+		StaticPopupDialogs["PROJECTAZILROKA"].text = 'QuestGuru Sounds and QuestSounds will make double sounds. Which one do you want to disable?'
+		StaticPopupDialogs["PROJECTAZILROKA"].button1 = 'KT Quest Sound'
+		StaticPopupDialogs["PROJECTAZILROKA"].button2 = 'Quest Sounds'
+		StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = function() DisableAddOn('QuestGuruSounds') ReloadUI() end
+		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() PA.db.QS = false ReloadUI() end
+		StaticPopup_Show("PROJECTAZILROKA")
 	end
 end

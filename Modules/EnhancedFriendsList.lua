@@ -432,41 +432,29 @@ function EFL:GetOptions()
 end
 
 function EFL:BuildProfile()
-	local Defaults = {
-		profile = {
-			['NameFont'] = 'Arial Narrow',
-			['NameFontSize'] = 12,
-			['NameFontFlag'] = 'OUTLINE',
-			['InfoFont'] = 'Arial Narrow',
-			['InfoFontSize'] = 12,
-			['InfoFontFlag'] = 'OUTLINE',
-			['StatusIconPack'] = 'Default',
-		}
-	}
+	PA.Defaults.profile['EnhancedFriendsList']['NameFont'] = 'Arial Narrow'
+	PA.Defaults.profile['EnhancedFriendsList']['NameFontSize'] = 12
+	PA.Defaults.profile['EnhancedFriendsList']['NameFontFlag'] = 'OUTLINE'
+	PA.Defaults.profile['EnhancedFriendsList']['InfoFont'] = 'Arial Narrow'
+	PA.Defaults.profile['EnhancedFriendsList']['InfoFontSize'] = 12
+	PA.Defaults.profile['EnhancedFriendsList']['InfoFontFlag'] = 'OUTLINE'
+	PA.Defaults.profile['EnhancedFriendsList']['StatusIconPack'] = 'Default'
 
 	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do
-		Defaults.profile[GameIcon] = 'Launcher'
+		PA.Defaults.profile['EnhancedFriendsList'][GameIcon] = 'Launcher'
 	end
 
-	if self.ElvUI then
-		Defaults.profile['NameFont'] = ElvUI[1].db.general.font
-		Defaults.profile['InfoFont'] = ElvUI[1].db.general.font
-	elseif self.Tukui then
-		Defaults.profile['NameFont'] = 'Tukui Pixel'
-		Defaults.profile['InfoFont'] = 'Tukui Pixel'
-		Defaults.profile['NameFontFlag'] = 'MONOCHROMEOUTLINE'
-		Defaults.profile['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
+	if PA.ElvUI then
+		PA.Defaults.profile['EnhancedFriendsList']['NameFont'] = ElvUI[1].db.general.font
+		PA.Defaults.profile['EnhancedFriendsList']['InfoFont'] = ElvUI[1].db.general.font
+	elseif PA.Tukui then
+		PA.Defaults.profile['EnhancedFriendsList']['NameFont'] = 'Tukui Pixel'
+		PA.Defaults.profile['EnhancedFriendsList']['InfoFont'] = 'Tukui Pixel'
+		PA.Defaults.profile['EnhancedFriendsList']['NameFontFlag'] = 'MONOCHROMEOUTLINE'
+		PA.Defaults.profile['EnhancedFriendsList']['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
 	end
 
-	self.data = PA.ADB:New('EnhancedFriendsListDB', Defaults)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-
-	self.db = self.data.profile
-end
-
-function EFL:SetupProfile()
-	self.db = self.data.profile
+	EFL.db = PA.Defaults.profile['EnhancedFriendsList']
 end
 
 function EFL:Initialize()

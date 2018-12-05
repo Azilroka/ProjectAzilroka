@@ -1,5 +1,6 @@
 local PA = _G.ProjectAzilroka
 local RR = PA:NewModule('ReputationReward', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
+local AS
 PA.RR = RR
 
 local _G = _G
@@ -10,7 +11,6 @@ local tinsert = tinsert
 local wipe = wipe
 local format = format
 
-local CreateFrame = _G.CreateFrame
 local GetFactionInfo = _G.GetFactionInfo
 local GetFactionInfoByID = _G.GetFactionInfoByID
 local GetNumFactions = _G.GetNumFactions
@@ -63,7 +63,7 @@ function RR:GetFactionHeader(factionID)
 end
 
 function RR:GetBonusReputation(amtBase, factionID)
-	local mult = PA.MyRace == 'Human' and 1.1 or 1
+	local mult = 1
 	local rep = amtBase
 
 	if factionID == 609 or factionID == 576 or factionID == 529 then
@@ -98,40 +98,40 @@ function RR:Show()
 	local numQuestRewards, numQuestChoices, numQuestCurrencies = 0, 0, 0
 
 	if ( QuestInfoFrame.questLog ) then
-		local questID = select(8, GetQuestLogTitle(GetQuestLogSelection()));
+		local questID = select(8, GetQuestLogTitle(GetQuestLogSelection()))
 		if C_QuestLog.ShouldShowQuestRewards(questID) then
-			numQuestRewards = GetNumQuestLogRewards();
-			numQuestChoices = GetNumQuestLogChoices();
-			numQuestCurrencies = GetNumQuestLogRewardCurrencies();
+			numQuestRewards = GetNumQuestLogRewards()
+			numQuestChoices = GetNumQuestLogChoices()
+			numQuestCurrencies = GetNumQuestLogRewardCurrencies()
 		end
 	else
-		numQuestRewards = GetNumQuestRewards();
-		numQuestChoices = GetNumQuestChoices();
-		numQuestCurrencies = GetNumRewardCurrencies();
+		numQuestRewards = GetNumQuestRewards()
+		numQuestChoices = GetNumQuestChoices()
+		numQuestCurrencies = GetNumRewardCurrencies()
 	end
 
 	local rewardsFrame = QuestInfoFrame.rewardsFrame
 	local rewardButtons = rewardsFrame.RewardButtons
 
-	local totalRewards = numQuestRewards + numQuestChoices + numQuestCurrencies;
-	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight();
+	local totalRewards = numQuestRewards + numQuestChoices + numQuestCurrencies
+	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
 	local lastFrame = rewardsFrame.ItemReceiveText
 
 	if ( QuestInfoFrame.mapView ) then
 		if rewardsFrame.XPFrame:IsShown() then
-			lastFrame = rewardsFrame.XPFrame;
+			lastFrame = rewardsFrame.XPFrame
 		end
 		if rewardsFrame.MoneyFrame:IsShown() then
-			lastFrame = rewardsFrame.MoneyFrame;
+			lastFrame = rewardsFrame.MoneyFrame
 		end
 	else
 		if rewardsFrame.XPFrame:IsShown() then
-			lastFrame = rewardsFrame.XPFrame;
+			lastFrame = rewardsFrame.XPFrame
 		end
 	end
 
 	if rewardsFrame.SkillPointFrame:IsShown() then
-		lastFrame = rewardsFrame.SkillPointFrame;
+		lastFrame = rewardsFrame.SkillPointFrame
 	end
 
 	local index
@@ -146,6 +146,10 @@ function RR:Show()
 
 		if factionName and (AtWar and ToggleAtWar or (not AtWar)) then
 			amtBase = floor(amtBase / 100)
+
+			if PA.MyRace == 'Human' then
+				amtBase = amtBase * 1.1
+			end
 
 			local amtBonus = RR:GetBonusReputation(amtBase, factionID)
 
@@ -177,6 +181,10 @@ function RR:Show()
 --		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 		questItem.Count:SetText(Info.Base + Info.Bonus)
 
+		if questItem.Icon.Backdrop then
+			questItem.Icon.Backdrop:SetBackdropBorderColor(unpack(AS.BorderColor))
+		end
+
 		if Info.Base < 0 then
 			questItem.Count:SetTextColor(1, 0, 0)
 		elseif Info.Bonus > 0 then
@@ -188,7 +196,7 @@ function RR:Show()
 		if ( buttonIndex > 1 ) then
 			if ( mod(buttonIndex, 2) == 1 ) then
 				questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -2)
-				Height = Height + buttonHeight + 2;
+				Height = Height + buttonHeight + 2
 				lastFrame = questItem
 			else
 				questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 1, -2)
@@ -207,6 +215,9 @@ function RR:Show()
 end
 
 function RR:Initialize()
+	if PA.AddOnSkins then
+		AS = unpack(AddOnSkins)
+	end
 	RR.ReputationInfo = {}
 
 	-- ID = { bonus = .%, faction = factionID or 0 }

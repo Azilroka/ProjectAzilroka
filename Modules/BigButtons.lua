@@ -281,20 +281,11 @@ function BB:GetOptions()
 end
 
 function BB:BuildProfile()
-	self.data = PA.ADB:New('BigButtonsDB', {
-		profile = {
-			['DropTools'] = false,
-			['ToolSize'] = 50,
-			['SeedSize'] = 30,
-		},
-	}, true)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
+	PA.Defaults.profile['BigButtons']['DropTools'] = false
+	PA.Defaults.profile['BigButtons']['ToolSize'] = 50
+	PA.Defaults.profile['BigButtons']['SeedSize'] = 30
 
-function BB:SetupProfile()
-	self.db = self.data.profile
+	BB.db = PA.Defaults.profile['BigButtons']
 end
 
 function BB:Initialize()

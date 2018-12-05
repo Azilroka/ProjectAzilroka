@@ -278,72 +278,58 @@ function DO:GetOptions()
 end
 
 function DO:BuildProfile()
-	local Defaults = {
-		profile = {
-			['Strata'] = '2-MEDIUM',
-			['Level'] = 12,
-			['IconSize'] = 32,
-			['Width'] = 128,
-			['Height'] = 64,
-			['worldboss'] = 'Chromatic',
-			['elite'] = 'HeavenlyGolden',
-			['rare'] = 'Onyx',
-			['rareelite'] = 'HeavenlyOnyx',
-			['ClassIcon'] = false,
-			['ClassIconPoints'] = {
-				['point'] = 'CENTER',
-				['relativeTo'] = 'oUF_Target',
-				['relativePoint'] = 'TOP',
-				['xOffset'] = 0,
-				['yOffset'] = 5,
-			},
-			['DragonPoints'] = {
-				['point'] = 'CENTER',
-				['relativeTo'] = 'oUF_Target',
-				['relativePoint'] = 'TOP',
-				['xOffset'] = 0,
-				['yOffset'] = 5,
-			},
-			['FlipDragon'] = false,
-		},
+	PA.Defaults.profile['DragonOverlay']['Strata'] = '2-MEDIUM'
+	PA.Defaults.profile['DragonOverlay']['Level'] = 12
+	PA.Defaults.profile['DragonOverlay']['IconSize'] = 32
+	PA.Defaults.profile['DragonOverlay']['Width'] = 128
+	PA.Defaults.profile['DragonOverlay']['Height'] = 64
+	PA.Defaults.profile['DragonOverlay']['worldboss'] = 'Chromatic'
+	PA.Defaults.profile['DragonOverlay']['elite'] = 'HeavenlyGolden'
+	PA.Defaults.profile['DragonOverlay']['rare'] = 'Onyx'
+	PA.Defaults.profile['DragonOverlay']['rareelite'] = 'HeavenlyOnyx'
+	PA.Defaults.profile['DragonOverlay']['ClassIcon'] = false
+	PA.Defaults.profile['DragonOverlay']['FlipDragon'] = false
+	PA.Defaults.profile['DragonOverlay']['ClassIconPoints'] = {
+		['point'] = 'CENTER',
+		['relativeTo'] = 'oUF_Target',
+		['relativePoint'] = 'TOP',
+		['xOffset'] = 0,
+		['yOffset'] = 5,
+	}
+	PA.Defaults.profile['DragonOverlay']['DragonPoints'] = {
+		['point'] = 'CENTER',
+		['relativeTo'] = 'oUF_Target',
+		['relativePoint'] = 'TOP',
+		['xOffset'] = 0,
+		['yOffset'] = 5,
 	}
 
-	for _, Option in pairs({'ClassIconPoints', 'DragonPoints' }) do
+	for _, Option in pairs({ 'ClassIconPoints', 'DragonPoints' }) do
 		if PA.Tukui then
-			Defaults.profile[Option].relativeTo = 'oUF_TukuiTarget'
+			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'oUF_TukuiTarget'
 		end
 		if PA.ElvUI then
-			Defaults.profile[Option].relativeTo = 'ElvUF_Target'
+			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'ElvUF_Target'
 		end
 		if PA.CUI then
-			Defaults.profile[Option].relativeTo = 'ChaoticUF_Target'
+			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'ChaoticUF_Target'
 		end
 		if PA.AzilUI then
-			Defaults.profile[Option].relativeTo = 'oUF_AzilUITarget'
+			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'oUF_AzilUITarget'
 		end
 	end
 
-	self.data = PA.ADB:New('DragonOverlayDB', Defaults)
-
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
-
-function DO:SetupProfile()
-	self.db = self.data.profile
+	DO.db = PA.Defaults.profile['DragonOverlay']
 end
 
 function DO:Initialize()
 	DO:BuildProfile()
+	DO:GetOptions()
 
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)
 	frame.Texture = frame:CreateTexture(nil, 'ARTWORK')
 	frame.Texture:SetAllPoints()
 	DO.frame = frame
 
-	DO:RegisterEvent('PLAYER_ENTERING_WORLD', 'SetupProfile')
 	DO:RegisterEvent('PLAYER_TARGET_CHANGED', 'SetOverlay')
-
-	DO:GetOptions()
 end

@@ -7,8 +7,8 @@ local pairs, tinsert, tremove, select, unpack = pairs, tinsert, tremove, select,
 local strfind, strsub, strmatch = strfind, strsub, strmatch
 
 BrokerLDB.Title = '|cFF16C3F2Broker|r|cFFFFFFFFLDB|r'
-BrokerLDB.Description = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite'
-BrokerLDB.Authors = 'Azilroka    Whiro'
+BrokerLDB.Description = 'Provides a Custom DataBroker Bar'
+BrokerLDB.Authors = 'Azilroka'
 
 function BrokerLDB:TextUpdate(_, Name, _, Data)
 	self.PluginObjects[Name]:SetText(Data)
@@ -310,25 +310,16 @@ function BrokerLDB:New(_, Name, Object)
 end
 
 function BrokerLDB:BuildProfile()
-	self.data = PA.ADB:New('SquareMinimapButtonsDB', {
-		profile = {
-			['PanelHeight'] = 20,
-			['PanelWidth'] = 140,
-			['MouseOver'] = false,
-			['ShowIcon'] = false,
-			['ShowText'] = true,
-			['Font'] = 'Tukui Pixel',
-			['FontSize'] = 12,
-			['FontFlag'] = 'MONOCHROMEOUTLINE',
-		},
-	})
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
+	PA.Defaults.profile['BrokerLDB']['PanelHeight'] = 20
+	PA.Defaults.profile['BrokerLDB']['PanelWidth'] = 140
+	PA.Defaults.profile['BrokerLDB']['MouseOver'] = false
+	PA.Defaults.profile['BrokerLDB']['ShowIcon'] = false
+	PA.Defaults.profile['BrokerLDB']['ShowText'] = true
+	PA.Defaults.profile['BrokerLDB']['Font'] = 'Tukui Pixel'
+	PA.Defaults.profile['BrokerLDB']['FontSize'] = 12
+	PA.Defaults.profile['BrokerLDB']['FontFlag'] = 'MONOCHROMEOUTLINE'
 
-function BrokerLDB:SetupProfile()
-	self.db = self.data.profile
+	BrokerLDB.db = PA.Defaults.profile['BrokerLDB']
 end
 
 function BrokerLDB:Initialize()

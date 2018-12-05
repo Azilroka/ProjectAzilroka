@@ -12,6 +12,7 @@ LSM:Register('statusbar', 'Sinaris', Path..[[StatusBars\Sinaris]])
 LSM:Register('statusbar', 'Slate', Path..[[StatusBars\Slate]])
 LSM:Register('statusbar', 'Smooth', Path..[[StatusBars\Smooth]])
 LSM:Register('statusbar', 'Tukui', Path..[[StatusBars\Tukui]])
+LSM:Register('statusbar', 'Solid', [[Interface\Buttons\WHITE8X8]])
 
 LSM:Register('statusbar', 'Aluminium Vertical', Path..[[StatusBars\Vertical\Aluminium]])
 LSM:Register('statusbar', 'Asphyxia Vertical', Path..[[StatusBars\Vertical\Asphyxia]])

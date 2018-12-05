@@ -503,39 +503,30 @@ function SMB:GetOptions()
 end
 
 function SMB:BuildProfile()
-	self.data = PA.ADB:New('SquareMinimapButtonsDB', {
-		profile = {
-			['BarMouseOver'] = false,
-			['BarEnabled'] = false,
-			['Backdrop'] = false,
-			['IconSize'] = 27,
-			['ButtonsPerRow'] = 12,
-			['ButtonSpacing'] = 2,
-			['HideGarrison'] = false,
-			['MoveGarrison'] = true,
-			['MoveMail'] = true,
-			['MoveTracker'] = true,
-			['MoveQueue'] = true,
-		},
-	})
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
+	PA.Defaults.profile['SquareMinimapButtons']['BarMouseOver'] = false
+	PA.Defaults.profile['SquareMinimapButtons']['BarEnabled'] = false
+	PA.Defaults.profile['SquareMinimapButtons']['Backdrop'] = false
+	PA.Defaults.profile['SquareMinimapButtons']['IconSize'] = 27
+	PA.Defaults.profile['SquareMinimapButtons']['ButtonsPerRow'] = 12
+	PA.Defaults.profile['SquareMinimapButtons']['ButtonSpacing'] = 2
+	PA.Defaults.profile['SquareMinimapButtons']['HideGarrison'] = false
+	PA.Defaults.profile['SquareMinimapButtons']['MoveGarrison'] = true
+	PA.Defaults.profile['SquareMinimapButtons']['MoveMail'] = true
+	PA.Defaults.profile['SquareMinimapButtons']['MoveTracker'] = true
+	PA.Defaults.profile['SquareMinimapButtons']['MoveQueue'] = true
 
-function SMB:SetupProfile()
-	self.db = self.data.profile
+	SMB.db = PA.Defaults.profile['SquareMinimapButtons']
 end
 
 function SMB:Initialize()
 	if PA.ElvUI and PA.SLE then
 		if ElvUI[1].private.sle.minimap.mapicons.enable then
-			StaticPopupDialogs["PA_INCOMPATIBLE"].text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
-			StaticPopupDialogs["PA_INCOMPATIBLE"].button1 = 'Square Minimap Buttons'
-			StaticPopupDialogs["PA_INCOMPATIBLE"].button2 = 'S&L MiniMap Buttons'
-			StaticPopupDialogs["PA_INCOMPATIBLE"].OnAccept = function() ElvUI[1].private.sle.minimap.mapicons.enable = false ReloadUI() end
-			StaticPopupDialogs["PA_INCOMPATIBLE"].OnCancel = function() PA.db['SMB'] = false ReloadUI() end
-			StaticPopup_Show("PA_INCOMPATIBLE")
+			StaticPopupDialogs["PROJECTAZILROKA"].text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
+			StaticPopupDialogs["PROJECTAZILROKA"].button1 = 'Square Minimap Buttons'
+			StaticPopupDialogs["PROJECTAZILROKA"].button2 = 'S&L MiniMap Buttons'
+			StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = function() ElvUI[1].private.sle.minimap.mapicons.enable = false ReloadUI() end
+			StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() PA.db['SquareMinimapButtons']['Enable'] = false ReloadUI() end
+			StaticPopup_Show("PROJECTAZILROKA")
 			return
 		end
 	end

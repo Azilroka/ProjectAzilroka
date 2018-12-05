@@ -915,7 +915,7 @@ FriendGroups_Menu.initialize = function(self, level)
 	end
 end
 
-local frame = CreateFrame("Frame")
+--local frame = CreateFrame("Frame")
 -- frame:RegisterEvent("PLAYER_LOGIN")
 
 -- frame:SetScript("OnEvent", function(self, event, ...)

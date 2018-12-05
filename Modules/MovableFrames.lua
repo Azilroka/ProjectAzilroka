@@ -283,29 +283,19 @@ end
 function MF:BuildProfile()
 	self.AllFrames = {}
 
-	local Defaults = { profile = {} }
-
 	for Frame, DefaultPoints in pairs(Frames) do
 		tinsert(self.AllFrames, Frame)
-		Defaults.profile[Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
+		PA.Defaults.profile['MovableFrames'][Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
 	end
 
 	for _, Table in pairs(AddOnFrames) do
 		for Frame, DefaultPoints in pairs(Table) do
 			tinsert(self.AllFrames, Frame)
-			Defaults.profile[Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
+			PA.Defaults.profile['MovableFrames'][Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
 		end
 	end
 
-	self.data = PA.ADB:New('MovableFramesDB', Defaults)
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-
-	self.db = self.data.profile
-end
-
-function MF:SetupProfile()
-	self.db = self.data.profile
+	MF.db = PA.Defaults.profile['MovableFrames']
 end
 
 function MF:Initialize()

@@ -67,6 +67,7 @@ PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
 PA.CUI = PA:IsAddOnEnabled('ElvUI_ChaoticUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
+PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
 PA.Classes = {}
 
@@ -111,18 +112,8 @@ function PA:PairsByKeys(t, f)
 	return iter
 end
 
-StaticPopupDialogs["PA_RELOAD"] = {
+StaticPopupDialogs["PROJECTAZILROKA"] = {
 	text = PA.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
-	button1 = ACCEPT,
-	button2 = CANCEL,
-	OnAccept = ReloadUI,
-	timeout = 0,
-	whileDead = 1,
-	hideOnEscape = false,
-}
-
-StaticPopupDialogs["PA_INCOMPATIBLE"] = { -- This gets replaced so it doesn't need localized, Mera
-	text = 'Incompatible',
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = ReloadUI,
@@ -146,10 +137,10 @@ PA.Options = {
 			type = 'group',
 			name = PA:Color(PA.ACL['AddOns']),
 			guiInline = true,
-			get = function(info) return PA.db[info[#info]] end,
-			set = function(info, value) PA.db[info[#info]] = value StaticPopup_Show("PA_RELOAD") end,
+			get = function(info) return PA.db[info[#info]]['Enable'] end,
+			set = function(info, value) PA.db[info[#info]]['Enable'] = value StaticPopup_Show("PROJECTAZILROKA") end,
 			args = {
-				BB = {
+				BigButtons = {
 					order = 0,
 					type = 'toggle',
 					name = PA.ACL['BigButtons'],
@@ -159,53 +150,53 @@ PA.Options = {
 					type = 'toggle',
 					name = 'BrokerLDB',
 				},
-				DO = {
+				DragonOverlay = {
 					order = 2,
 					type = 'toggle',
 					name = PA.ACL['Dragon Overlay'],
 				},
-				EFL = {
+				EnhancedFriendsList = {
 					order = 3,
 					type = 'toggle',
 					name = PA.ACL['Enhanced Friends List'],
 				},
-				ES = {
+				EnhancedShadows = {
 					order = 4,
 					type = 'toggle',
 					name = PA.ACL['Enhanced Shadows'],
 					disabled = function() return (PA.SLE or PA.CUI) end,
 				},
-				FG = {
+				FriendGroups = {
 					order = 5,
 					type = 'toggle',
 					name = 'Friend Groups',
 				},
-				FL = {
+				FasterLoot = {
 					order = 6,
 					type = 'toggle',
 					name = PA.ACL['Faster Loot'],
 				},
-				MF = {
+				MovableFrames = {
 					order = 7,
 					type = 'toggle',
 					name = PA.ACL['MovableFrames'],
 				},
-				SMB = {
+				SquareMinimapButtons = {
 					order = 8,
 					type = 'toggle',
 					name = PA.ACL['Square Minimap Buttons / Bar'],
 				},
-				stAM = {
+				stAddonManager = {
 					order = 9,
 					type = 'toggle',
 					name = PA.ACL['stAddOnManager'],
 				},
-				QS = {
+				QuestSounds = {
 					order = 9,
 					type = 'toggle',
 					name = 'Quest Sounds',
 				},
-				RR = {
+				ReputationReward = {
 					order = 9,
 					type = 'toggle',
 					name = 'Reputation Reward',
@@ -215,33 +206,39 @@ PA.Options = {
 	},
 }
 
+PA.Defaults = {
+	profile = {
+		['BigButtons'] = { ['Enable'] = false },
+		['BrokerLDB'] = { ['Enable'] = false },
+		['DragonOverlay'] = { ['Enable'] = true },
+		['EnhancedFriendsList'] = { ['Enable'] = true },
+		['EnhancedShadows'] = { ['Enable'] = true },
+		['FriendGroups'] = { ['Enable'] = false },
+		['FasterLoot'] = { ['Enable'] = false },
+		['MovableFrames'] = { ['Enable'] = true },
+		['SquareMinimapButtons'] = { ['Enable'] = true },
+		['stAddonManager'] = { ['Enable'] = true },
+		['QuestSounds'] = { ['Enable'] = false },
+		['ReputationReward'] = { ['Enable'] = true },
+	},
+}
+
 function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
 end
 
 function PA:BuildProfile()
-	local Defaults = {
-		profile = {
-			['BB'] = false,
-			['BrokerLDB'] = false,
-			['DO'] = true,
-			['EFL'] = true,
-			['ES'] = true,
-			['FG'] = false,
-			['FL'] = false,
-			['MF'] = true,
-			['SMB'] = true,
-			['stAM'] = true,
-			['QS'] = false,
-			['RR'] = true,
-		},
-	}
-
 	if (PA.SLE or PA.CUI) then
-		Defaults.profile.ES = false
+		PA.Defaults.profile['EnhancedShadows']['Enable'] = false
 	end
 
-	PA.data = PA.ADB:New('ProjectAzilrokaDB', Defaults)
+	PA.data = PA.ADB:New('ProjectAzilrokaDB', PA.Defaults)
+
+	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
+	PA.data.RegisterCallback(PA, 'OnProfileCopied', 'SetupProfile')
+
+	PA.Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
+	PA.Options.args.profiles.order = -2
 
 	PA.db = PA.data.profile
 end
@@ -256,6 +253,10 @@ function PA:ADDON_LOADED(event, addon)
 		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
 		PA:BuildProfile()
 		PA:UnregisterEvent(event)
+
+		if PA.db and not PA.db.DBConverted then
+			PA:DBConversion()
+		end
 	end
 end
 
@@ -268,40 +269,40 @@ function PA:PLAYER_LOGIN()
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
-	if not (PA.SLE or PA.CUI) and PA.db['ES'] then
+	if not (PA.SLE or PA.CUI) and PA.db['EnhancedShadows']['Enable'] then
 		tinsert(InitializeModules, 'ES')
 	end
-	if PA.db['BB'] then
+	if PA.db['BigButtons']['Enable'] then
 		tinsert(InitializeModules, 'BB')
 	end
-	if PA.db['BrokerLDB'] then
+	if PA.db['BrokerLDB']['Enable'] then
 		tinsert(InitializeModules, 'BrokerLDB')
 	end
-	if PA.db['DO'] then
+	if PA.db['DragonOverlay']['Enable'] then
 		tinsert(InitializeModules, 'DO')
 	end
-	if PA.db['FG'] then -- Has to be before EFL
+	if PA.db['FriendGroups']['Enable'] then -- Has to be before EFL
 		--tinsert(InitializeModules, 'FG')
 	end
-	if PA.db['EFL'] then
+	if PA.db['EnhancedFriendsList']['Enable'] then
 		tinsert(InitializeModules, 'EFL')
 	end
-	if PA.db['FL'] then
+	if PA.db['FasterLoot']['Enable'] then
 		tinsert(InitializeModules, 'FL')
 	end
-	if PA.db['MF'] then
+	if PA.db['MovableFrames']['Enable'] then
 		tinsert(InitializeModules, 'MF')
 	end
-	if PA.db['SMB'] then
+	if PA.db['SquareMinimapButtons']['Enable'] then
 		tinsert(InitializeModules, 'SMB')
 	end
-	if PA.db['stAM'] then
+	if PA.db['stAddonManager']['Enable'] then
 		tinsert(InitializeModules, 'stAM')
 	end
-	if PA.db['QS'] then
+	if PA.db['QuestSounds']['Enable'] then
 		tinsert(InitializeModules, 'QS')
 	end
-	if PA.db['RR'] then
+	if PA.db['ReputationReward']['Enable'] then
 		tinsert(InitializeModules, 'RR')
 	end
 
@@ -314,6 +315,26 @@ function PA:PLAYER_LOGIN()
 	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
 		PA:TukuiOptions()
 	end
+end
+
+function PA:DBConversion()
+	for _, DBEntry in pairs({'SquareMinimapButtons', 'MovableFrames', 'EnhancedFriendsList', 'EnhancedShadows', 'DragonOverlay', 'stAddonManager', 'BigButtons', 'FriendGroups', 'QuestSounds'}) do
+		local DB = _G[DBEntry..'DB']
+		if DB then
+			local profileKeys = DB.profileKeys
+			if profileKeys then
+				local profile = DB.profileKeys[format("%s - %s", PA.MyName, PA.MyRealm)]
+				local table = DB.profiles[profile]
+				if table then
+					for Key, Value in pairs(table) do
+						PA.db[DBEntry][Key] = Value
+					end
+				end
+			end
+		end
+	end
+
+	PA.db.DBConverted = true
 end
 
 PA:RegisterEvent('ADDON_LOADED')
