@@ -318,12 +318,11 @@ function BrokerLDB:BuildProfile()
 	PA.Defaults.profile['BrokerLDB']['Font'] = 'Tukui Pixel'
 	PA.Defaults.profile['BrokerLDB']['FontSize'] = 12
 	PA.Defaults.profile['BrokerLDB']['FontFlag'] = 'MONOCHROMEOUTLINE'
-
-	BrokerLDB.db = PA.Defaults.profile['BrokerLDB']
 end
 
 function BrokerLDB:Initialize()
-	BrokerLDB:BuildProfile()
+	BrokerLDB.db = PA.db['BrokerLDB']
+
 	BrokerLDB:GetOptions()
 
 	BrokerLDB.DropDown = CreateFrame('Frame', 'BrokerLDBDropDown', UIParent, 'UIDropDownMenuTemplate')

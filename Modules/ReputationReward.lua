@@ -218,6 +218,7 @@ function RR:Initialize()
 	if PA.AddOnSkins then
 		AS = unpack(AddOnSkins)
 	end
+
 	RR.ReputationInfo = {}
 
 	-- ID = { bonus = .%, faction = factionID or 0 }

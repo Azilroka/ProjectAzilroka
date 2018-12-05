@@ -514,8 +514,6 @@ function SMB:BuildProfile()
 	PA.Defaults.profile['SquareMinimapButtons']['MoveMail'] = true
 	PA.Defaults.profile['SquareMinimapButtons']['MoveTracker'] = true
 	PA.Defaults.profile['SquareMinimapButtons']['MoveQueue'] = true
-
-	SMB.db = PA.Defaults.profile['SquareMinimapButtons']
 end
 
 function SMB:Initialize()
@@ -531,7 +529,8 @@ function SMB:Initialize()
 		end
 	end
 
-	SMB:BuildProfile()
+	SMB.db = PA.db['SquareMinimapButtons']
+
 	SMB:GetOptions()
 
 	SMB.Hider = CreateFrame("Frame", nil, UIParent)
@@ -558,7 +557,7 @@ function SMB:Initialize()
 		ElvUI[1]:CreateMover(SMB.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
 
-	SMB.TexCoords = { .08, .92, .08, .92 }
+	SMB.TexCoords = PA.TexCoords
 
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
 

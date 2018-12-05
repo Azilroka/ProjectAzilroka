@@ -668,12 +668,11 @@ function stAM:BuildProfile()
 	PA.Defaults.profile['stAddonManager']['CheckColor'] = { 0, .66, 1}
 	PA.Defaults.profile['stAddonManager']['ClassColor'] = false
 	PA.Defaults.profile['stAddonManager']['CheckTexture'] = 'Blizzard Raid Bar'
-
-	stAM.db = PA.Defaults.profile['stAddonManager']
 end
 
 function stAM:Initialize()
-	stAM:BuildProfile()
+	stAM.db = PA.db['stAddonManager']
+
 	stAM:GetOptions()
 
 	stAM.AddOnInfo = {}

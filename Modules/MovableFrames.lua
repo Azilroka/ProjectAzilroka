@@ -283,6 +283,10 @@ end
 function MF:BuildProfile()
 	self.AllFrames = {}
 
+	if PA.Tukui then
+		Frames['LossOfControlFrame'] = { "CENTER", "UIParent", "CENTER", 0, 60 }
+	end
+
 	for Frame, DefaultPoints in pairs(Frames) do
 		tinsert(self.AllFrames, Frame)
 		PA.Defaults.profile['MovableFrames'][Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
@@ -294,16 +298,11 @@ function MF:BuildProfile()
 			PA.Defaults.profile['MovableFrames'][Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
 		end
 	end
-
-	MF.db = PA.Defaults.profile['MovableFrames']
 end
 
 function MF:Initialize()
-	if PA.Tukui then
-		Frames['LossOfControlFrame'] = { "CENTER", "UIParent", "CENTER", 0, 60 }
-	end
+	MF.db = PA.db.profile['MovableFrames']
 
-	MF:BuildProfile()
 	MF:GetOptions()
 
 	for Frame, _ in pairs(Frames) do

@@ -284,12 +284,11 @@ function BB:BuildProfile()
 	PA.Defaults.profile['BigButtons']['DropTools'] = false
 	PA.Defaults.profile['BigButtons']['ToolSize'] = 50
 	PA.Defaults.profile['BigButtons']['SeedSize'] = 30
-
-	BB.db = PA.Defaults.profile['BigButtons']
 end
 
 function BB:Initialize()
-	BB:BuildProfile()
+	BB.db = PA.db['BigButtons']
+
 	BB:GetOptions()
 
 	AS = _G.AddOnSkins and _G.AddOnSkins[1]

@@ -453,12 +453,11 @@ function EFL:BuildProfile()
 		PA.Defaults.profile['EnhancedFriendsList']['NameFontFlag'] = 'MONOCHROMEOUTLINE'
 		PA.Defaults.profile['EnhancedFriendsList']['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
 	end
-
-	EFL.db = PA.Defaults.profile['EnhancedFriendsList']
 end
 
 function EFL:Initialize()
-	EFL:BuildProfile()
+	EFL.db = PA.db['EnhancedFriendsList']
+
 	EFL:GetOptions()
 
 	--if PA.db.FG then

@@ -251,7 +251,6 @@ function PA:ADDON_LOADED(event, addon)
 	if addon == AddOnName then
 		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
-		PA:BuildProfile()
 		PA:UnregisterEvent(event)
 
 		if PA.db and not PA.db.DBConverted then
@@ -264,11 +263,20 @@ function PA:PLAYER_LOGIN()
 	PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
 	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
+	for _, Module in pairs({ 'ES', 'BB', 'BrokerLDB', 'DO', 'FG', 'EFL', 'FL', 'MF', 'SMB', 'stAM', 'QS', 'RR' }) do
+		if PA[Module] then
+			pcall(PA[Module].BuildProfile)
+		end
+	end
+
+	PA:BuildProfile()
+
 	local InitializeModules = {}
 
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
+
 	if not (PA.SLE or PA.CUI) and PA.db['EnhancedShadows']['Enable'] then
 		tinsert(InitializeModules, 'ES')
 	end

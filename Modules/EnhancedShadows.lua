@@ -107,12 +107,11 @@ function ES:BuildProfile()
 	PA.Defaults.profile['EnhancedShadows']['Color'] = { 0, 0, 0, 1 }
 	PA.Defaults.profile['EnhancedShadows']['ColorByClass'] = false
 	PA.Defaults.profile['EnhancedShadows']['Size'] = 3
-
-	ES.db = PA.Defaults.profile['EnhancedShadows']
 end
 
 function ES:Initialize()
-	ES:BuildProfile()
+	ES.db = PA.db['EnhancedShadows']
+
 	ES:GetOptions()
 
 	ES:ScheduleTimer('UpdateShadows', 1)

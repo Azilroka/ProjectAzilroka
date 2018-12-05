@@ -118,8 +118,6 @@ function QS:BuildProfile()
 	PA.Defaults.profile['QuestSounds']['QuestComplete'] = 'Peon Quest Complete'
 	PA.Defaults.profile['QuestSounds']['ObjectiveComplete'] = 'Peon Objective Complete'
 	PA.Defaults.profile['QuestSounds']['ObjectiveProgress'] = 'Peon Objective Progress'
-
-	QS.db = PA.Defaults.profile['QuestSounds']
 end
 
 function QS:RegisterSounds()
@@ -154,9 +152,10 @@ function QS:RegisterSounds()
 end
 
 function QS:Initialize()
+	QS.db = PA.db['QuestSounds']
+
 	QS:RegisterSounds()
 
-	QS:BuildProfile()
 	QS:GetOptions()
 
 	QS.QuestIndex = 0

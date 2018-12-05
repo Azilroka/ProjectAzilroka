@@ -318,12 +318,11 @@ function DO:BuildProfile()
 			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'oUF_AzilUITarget'
 		end
 	end
-
-	DO.db = PA.Defaults.profile['DragonOverlay']
 end
 
 function DO:Initialize()
-	DO:BuildProfile()
+	DO.db = PA.db['DragonOverlay']
+
 	DO:GetOptions()
 
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)
