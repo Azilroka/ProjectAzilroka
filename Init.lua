@@ -220,6 +220,7 @@ end
 
 function PA:BuildProfile()
 	if (PA.SLE or PA.CUI) then
+		if PA.Defaults.profile['EnhancedShadows'] == nil then PA.Defaults.profile['EnhancedShadows'] = {} end
 		PA.Defaults.profile['EnhancedShadows']['Enable'] = false
 	end
 
