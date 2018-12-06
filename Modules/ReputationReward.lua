@@ -215,6 +215,10 @@ function RR:Show()
 end
 
 function RR:Initialize()
+	if PA.db.ReputationReward.Enable ~= true then
+		return
+	end
+
 	if PA.AddOnSkins then
 		AS = unpack(AddOnSkins)
 	end

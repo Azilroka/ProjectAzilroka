@@ -461,6 +461,10 @@ end
 function EFL:Initialize()
 	EFL.db = PA.db['EnhancedFriendsList']
 
+	if EFL.db.Enable ~= true then
+		return
+	end
+
 	EFL:GetOptions()
 
 	--if PA.db.FG then

@@ -38,6 +38,7 @@ PA.MyFaction = UnitFactionGroup('player')
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
+PA.Solid = PA.LSM:Fetch('background', 'Solid')
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
@@ -110,6 +111,46 @@ function PA:PairsByKeys(t, f)
 		end
 	end
 	return iter
+end
+
+function PA:SetTemplate(frame)
+	if PA.AddOnSkins then
+		AddOnSkins[1]:SetTemplate(frame)
+	elseif frame.SetTemplate then
+		frame:SetTemplate('Transparent', true)
+	else
+		frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+		frame:SetBackdropColor(.2, .2, .2, .8)
+		frame:SetBackdropBorderColor(1, 1, 1)
+	end
+end
+
+function PA:SetInside(obj, anchor, xOffset, yOffset, anchor2)
+	xOffset = xOffset or 1
+	yOffset = yOffset or 1
+	anchor = anchor or obj:GetParent()
+
+	assert(anchor)
+	if obj:GetPoint() then
+		obj:ClearAllPoints()
+	end
+
+	obj:Point('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
+	obj:Point('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
+end
+
+function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
+	xOffset = xOffset or 1
+	yOffset = yOffset or 1
+	anchor = anchor or obj:GetParent()
+
+	assert(anchor)
+	if obj:GetPoint() then
+		obj:ClearAllPoints()
+	end
+
+	obj:Point('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
+	obj:Point('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
 StaticPopupDialogs["PROJECTAZILROKA"] = {
@@ -219,11 +260,6 @@ function PA:GetOptions()
 end
 
 function PA:BuildProfile()
-	if (PA.SLE or PA.CUI) then
-		if PA.Defaults.profile['EnhancedShadows'] == nil then PA.Defaults.profile['EnhancedShadows'] = {} end
-		PA.Defaults.profile['EnhancedShadows']['Enable'] = false
-	end
-
 	PA.data = PA.ADB:New('ProjectAzilrokaDB', PA.Defaults)
 
 	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
@@ -251,9 +287,9 @@ function PA:PLAYER_LOGIN()
 	PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
 	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
-	for _, Module in pairs({ 'ES', 'BB', 'BrokerLDB', 'DO', 'FG', 'EFL', 'FL', 'MF', 'SMB', 'stAM', 'QS', 'RR' }) do
-		if PA[Module] then
-			pcall(PA[Module].BuildProfile)
+	for _, module in PA:IterateModules() do
+		if module.BuildProfile then
+			module:BuildProfile()
 		end
 	end
 
@@ -263,52 +299,13 @@ function PA:PLAYER_LOGIN()
 		PA:DBConversion()
 	end
 
-	local InitializeModules = {}
-
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 
-	if not (PA.SLE or PA.CUI) and PA.db['EnhancedShadows']['Enable'] then
-		tinsert(InitializeModules, 'ES')
-	end
-	if PA.db['BigButtons']['Enable'] then
-		tinsert(InitializeModules, 'BB')
-	end
-	if PA.db['BrokerLDB']['Enable'] then
-		tinsert(InitializeModules, 'BrokerLDB')
-	end
-	if PA.db['DragonOverlay']['Enable'] then
-		tinsert(InitializeModules, 'DO')
-	end
-	if PA.db['FriendGroups']['Enable'] then -- Has to be before EFL
-		--tinsert(InitializeModules, 'FG')
-	end
-	if PA.db['EnhancedFriendsList']['Enable'] then
-		tinsert(InitializeModules, 'EFL')
-	end
-	if PA.db['FasterLoot']['Enable'] then
-		tinsert(InitializeModules, 'FL')
-	end
-	if PA.db['MovableFrames']['Enable'] then
-		tinsert(InitializeModules, 'MF')
-	end
-	if PA.db['SquareMinimapButtons']['Enable'] then
-		tinsert(InitializeModules, 'SMB')
-	end
-	if PA.db['stAddonManager']['Enable'] then
-		tinsert(InitializeModules, 'stAM')
-	end
-	if PA.db['QuestSounds']['Enable'] then
-		tinsert(InitializeModules, 'QS')
-	end
-	if PA.db['ReputationReward']['Enable'] then
-		tinsert(InitializeModules, 'RR')
-	end
-
-	for _, Module in pairs(InitializeModules) do
-		if PA[Module] then
-			pcall(PA[Module].Initialize)
+	for _, module in PA:IterateModules() do
+		if module.Initialize then
+			module:Initialize()
 		end
 	end
 

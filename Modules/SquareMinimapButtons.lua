@@ -290,7 +290,7 @@ function SMB:SkinMinimapButton(Button)
 
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
-	Button:SetTemplate()
+	PA:SetTemplate(Button)
 	Button:CreateShadow()
 	Button:HookScript('OnEnter', function(self)
 		self:SetBackdropBorderColor(unpack(PA.ClassColor))
@@ -299,7 +299,7 @@ function SMB:SkinMinimapButton(Button)
 		end
 	end)
 	Button:HookScript('OnLeave', function(self)
-		self:SetTemplate()
+		PA:SetTemplate(self)
 		if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 			UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 		end
@@ -357,7 +357,7 @@ function SMB:Update()
 
 			SMB:UnlockButton(Button)
 
-			Button:SetTemplate()
+			PA:SetTemplate(Button)
 			Button:SetParent(self.Bar)
 			Button:ClearAllPoints()
 			Button:SetPoint('TOPLEFT', self.Bar, 'TOPLEFT', (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
@@ -380,7 +380,7 @@ function SMB:Update()
 	self.Bar:SetSize(BarWidth, BarHeight)
 
 	if self.db.Backdrop then
-		self.Bar:SetTemplate('Transparent', true)
+		PA:SetTemplate(self.Bar)
 	else
 		self.Bar:SetBackdrop(nil)
 	end
@@ -524,6 +524,12 @@ function SMB:BuildProfile()
 end
 
 function SMB:Initialize()
+	SMB.db = PA.db['SquareMinimapButtons']
+
+	if SMB.db.Enable ~= true then
+		return
+	end
+
 	if PA.ElvUI and PA.SLE then
 		if ElvUI[1].private.sle.minimap.mapicons.enable then
 			StaticPopupDialogs["PROJECTAZILROKA"].text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
@@ -535,8 +541,6 @@ function SMB:Initialize()
 			return
 		end
 	end
-
-	SMB.db = PA.db['SquareMinimapButtons']
 
 	SMB:GetOptions()
 

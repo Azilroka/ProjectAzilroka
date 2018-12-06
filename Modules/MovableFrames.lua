@@ -305,6 +305,10 @@ end
 function MF:Initialize()
 	MF.db = PA.db['MovableFrames']
 
+	if MF.db.Enable ~= true then
+		return
+	end
+
 	MF:GetOptions()
 
 	for Frame, _ in pairs(Frames) do

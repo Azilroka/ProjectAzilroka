@@ -326,6 +326,10 @@ end
 function BrokerLDB:Initialize()
 	BrokerLDB.db = PA.db['BrokerLDB']
 
+	if BrokerLDB.db.Enable ~= true then
+		return
+	end
+
 	BrokerLDB:GetOptions()
 
 	BrokerLDB.DropDown = CreateFrame('Frame', 'BrokerLDBDropDown', UIParent, 'UIDropDownMenuTemplate')

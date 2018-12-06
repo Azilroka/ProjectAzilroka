@@ -676,6 +676,10 @@ end
 function stAM:Initialize()
 	stAM.db = PA.db['stAddonManager']
 
+	if stAM.db.Enable ~= true then
+		return
+	end
+
 	stAM:GetOptions()
 
 	stAM.AddOnInfo = {}

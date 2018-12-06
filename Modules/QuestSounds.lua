@@ -157,6 +157,10 @@ end
 function QS:Initialize()
 	QS.db = PA.db['QuestSounds']
 
+	if QS.db.Enable ~= true then
+		return
+	end
+
 	QS:RegisterSounds()
 
 	QS:GetOptions()

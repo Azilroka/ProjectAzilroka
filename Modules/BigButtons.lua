@@ -292,6 +292,10 @@ end
 function BB:Initialize()
 	BB.db = PA.db['BigButtons']
 
+	if BB.db.Enable ~= true then
+		return
+	end
+
 	BB:GetOptions()
 
 	AS = _G.AddOnSkins and _G.AddOnSkins[1]

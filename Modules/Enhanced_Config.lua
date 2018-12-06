@@ -74,5 +74,3 @@ function EC:Initialize()
 	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
 	EC:RegisterChatCommand('ec', 'ToggleConfig')
 end
-
-EC:RegisterEvent('PLAYER_LOGIN', 'Initialize')

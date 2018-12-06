@@ -31,5 +31,9 @@ function FL:LOOT_READY()
 end
 
 function FL:Initialize()
+	if PA.db.FasterLoot.Enable ~= true then
+		return
+	end
+
 	FL:RegisterEvent('LOOT_READY')
 end

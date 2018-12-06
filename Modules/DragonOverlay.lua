@@ -326,6 +326,10 @@ end
 function DO:Initialize()
 	DO.db = PA.db['DragonOverlay']
 
+	if DO.db.Enable ~= true then
+		return
+	end
+
 	DO:GetOptions()
 
 	local frame = CreateFrame("Frame", 'DragonOverlayFrame', UIParent)

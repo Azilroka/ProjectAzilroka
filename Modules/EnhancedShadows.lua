@@ -115,6 +115,10 @@ end
 function ES:Initialize()
 	ES.db = PA.db['EnhancedShadows']
 
+	if ES.db.Enable ~= true then
+		return
+	end
+
 	ES:GetOptions()
 
 	ES:ScheduleTimer('UpdateShadows', 1)
