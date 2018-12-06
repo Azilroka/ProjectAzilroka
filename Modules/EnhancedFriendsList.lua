@@ -432,13 +432,16 @@ function EFL:GetOptions()
 end
 
 function EFL:BuildProfile()
-	PA.Defaults.profile['EnhancedFriendsList']['NameFont'] = 'Arial Narrow'
-	PA.Defaults.profile['EnhancedFriendsList']['NameFontSize'] = 12
-	PA.Defaults.profile['EnhancedFriendsList']['NameFontFlag'] = 'OUTLINE'
-	PA.Defaults.profile['EnhancedFriendsList']['InfoFont'] = 'Arial Narrow'
-	PA.Defaults.profile['EnhancedFriendsList']['InfoFontSize'] = 12
-	PA.Defaults.profile['EnhancedFriendsList']['InfoFontFlag'] = 'OUTLINE'
-	PA.Defaults.profile['EnhancedFriendsList']['StatusIconPack'] = 'Default'
+	PA.Defaults.profile['EnhancedFriendsList'] = {
+		['Enable'] = true,
+		['NameFont'] = 'Arial Narrow',
+		['NameFontSize'] = 12,
+		['NameFontFlag'] = 'OUTLINE',
+		['InfoFont'] = 'Arial Narrow',
+		['InfoFontSize'] = 12,
+		['InfoFontFlag'] = 'OUTLINE',
+		['StatusIconPack'] = 'Default',
+	}
 
 	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do
 		PA.Defaults.profile['EnhancedFriendsList'][GameIcon] = 'Launcher'

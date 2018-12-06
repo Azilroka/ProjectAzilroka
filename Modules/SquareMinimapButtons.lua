@@ -133,6 +133,10 @@ function SMB:HandleBlizzardButtons()
 		MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0)	end)
 		MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
 
+		if MiniMapMailFrame:IsShown() then
+			Frame.Icon:SetVertexColor(0, 1, 0)
+		end
+
 		-- Hide Icon & Border
 		MiniMapMailIcon:Hide()
 		MiniMapMailBorder:Hide()
@@ -503,17 +507,20 @@ function SMB:GetOptions()
 end
 
 function SMB:BuildProfile()
-	PA.Defaults.profile['SquareMinimapButtons']['BarMouseOver'] = false
-	PA.Defaults.profile['SquareMinimapButtons']['BarEnabled'] = false
-	PA.Defaults.profile['SquareMinimapButtons']['Backdrop'] = false
-	PA.Defaults.profile['SquareMinimapButtons']['IconSize'] = 27
-	PA.Defaults.profile['SquareMinimapButtons']['ButtonsPerRow'] = 12
-	PA.Defaults.profile['SquareMinimapButtons']['ButtonSpacing'] = 2
-	PA.Defaults.profile['SquareMinimapButtons']['HideGarrison'] = false
-	PA.Defaults.profile['SquareMinimapButtons']['MoveGarrison'] = true
-	PA.Defaults.profile['SquareMinimapButtons']['MoveMail'] = true
-	PA.Defaults.profile['SquareMinimapButtons']['MoveTracker'] = true
-	PA.Defaults.profile['SquareMinimapButtons']['MoveQueue'] = true
+	PA.Defaults.profile['SquareMinimapButtons'] = {
+		['Enable'] = true,
+		['BarMouseOver'] = false,
+		['BarEnabled'] = false,
+		['Backdrop'] = false,
+		['IconSize'] = 27,
+		['ButtonsPerRow'] = 12,
+		['ButtonSpacing'] = 2,
+		['HideGarrison'] = false,
+		['MoveGarrison'] = true,
+		['MoveMail'] = true,
+		['MoveTracker'] = true,
+		['MoveQueue'] = true,
+	}
 end
 
 function SMB:Initialize()

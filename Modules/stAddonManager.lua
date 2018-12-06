@@ -658,16 +658,19 @@ function stAM:GetOptions()
 end
 
 function stAM:BuildProfile()
-	PA.Defaults.profile['stAddonManager']['NumAddOns'] = 30
-	PA.Defaults.profile['stAddonManager']['FrameWidth'] = 550
-	PA.Defaults.profile['stAddonManager']['Font'] = 'PT Sans Narrow'
-	PA.Defaults.profile['stAddonManager']['FontSize'] = 16
-	PA.Defaults.profile['stAddonManager']['FontFlag'] = 'OUTLINE'
-	PA.Defaults.profile['stAddonManager']['ButtonHeight'] = 18
-	PA.Defaults.profile['stAddonManager']['ButtonWidth'] = 22
-	PA.Defaults.profile['stAddonManager']['CheckColor'] = { 0, .66, 1}
-	PA.Defaults.profile['stAddonManager']['ClassColor'] = false
-	PA.Defaults.profile['stAddonManager']['CheckTexture'] = 'Blizzard Raid Bar'
+	PA.Defaults.profile['stAddonManager'] = {
+		['Enable'] = true,
+		['NumAddOns'] = 30,
+		['FrameWidth'] = 550,
+		['Font'] = 'PT Sans Narrow',
+		['FontSize'] = 16,
+		['FontFlag'] = 'OUTLINE',
+		['ButtonHeight'] = 18,
+		['ButtonWidth'] = 22,
+		['CheckColor'] = { 0, .66, 1},
+		['ClassColor'] = false,
+		['CheckTexture'] = 'Blizzard Raid Bar',
+	}
 end
 
 function stAM:Initialize()

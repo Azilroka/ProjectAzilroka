@@ -208,17 +208,8 @@ PA.Options = {
 
 PA.Defaults = {
 	profile = {
-		['BigButtons'] = { ['Enable'] = false },
-		['BrokerLDB'] = { ['Enable'] = false },
-		['DragonOverlay'] = { ['Enable'] = true },
-		['EnhancedFriendsList'] = { ['Enable'] = true },
-		['EnhancedShadows'] = { ['Enable'] = true },
 		['FriendGroups'] = { ['Enable'] = false },
 		['FasterLoot'] = { ['Enable'] = false },
-		['MovableFrames'] = { ['Enable'] = true },
-		['SquareMinimapButtons'] = { ['Enable'] = true },
-		['stAddonManager'] = { ['Enable'] = true },
-		['QuestSounds'] = { ['Enable'] = false },
 		['ReputationReward'] = { ['Enable'] = true },
 	},
 }

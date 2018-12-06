@@ -177,11 +177,11 @@ function RR:Show()
 		questItem.objectType = nil
 
 		questItem.Name:SetText(Info.Name)
-		questItem.Icon:SetTexture(UnitFactionGroup('player') and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(UnitFactionGroup('player')))
+		questItem.Icon:SetTexture(PA.Faction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.Faction))
 --		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 		questItem.Count:SetText(Info.Base + Info.Bonus)
 
-		if questItem.Icon.Backdrop then
+		if PA.AddOnSkins and questItem.Icon.Backdrop then
 			questItem.Icon.Backdrop:SetBackdropBorderColor(unpack(AS.BorderColor))
 		end
 

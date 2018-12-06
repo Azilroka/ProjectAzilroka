@@ -104,9 +104,12 @@ function ES:GetOptions()
 end
 
 function ES:BuildProfile()
-	PA.Defaults.profile['EnhancedShadows']['Color'] = { 0, 0, 0, 1 }
-	PA.Defaults.profile['EnhancedShadows']['ColorByClass'] = false
-	PA.Defaults.profile['EnhancedShadows']['Size'] = 3
+	PA.Defaults.profile['EnhancedShadows'] = {
+		['Enable'] = true,
+		['Color'] = { 0, 0, 0, 1 },
+		['ColorByClass'] = false,
+		['Size'] = 3,
+	}
 end
 
 function ES:Initialize()

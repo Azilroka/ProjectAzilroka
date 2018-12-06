@@ -278,30 +278,33 @@ function DO:GetOptions()
 end
 
 function DO:BuildProfile()
-	PA.Defaults.profile['DragonOverlay']['Strata'] = '2-MEDIUM'
-	PA.Defaults.profile['DragonOverlay']['Level'] = 12
-	PA.Defaults.profile['DragonOverlay']['IconSize'] = 32
-	PA.Defaults.profile['DragonOverlay']['Width'] = 128
-	PA.Defaults.profile['DragonOverlay']['Height'] = 64
-	PA.Defaults.profile['DragonOverlay']['worldboss'] = 'Chromatic'
-	PA.Defaults.profile['DragonOverlay']['elite'] = 'HeavenlyGolden'
-	PA.Defaults.profile['DragonOverlay']['rare'] = 'Onyx'
-	PA.Defaults.profile['DragonOverlay']['rareelite'] = 'HeavenlyOnyx'
-	PA.Defaults.profile['DragonOverlay']['ClassIcon'] = false
-	PA.Defaults.profile['DragonOverlay']['FlipDragon'] = false
-	PA.Defaults.profile['DragonOverlay']['ClassIconPoints'] = {
-		['point'] = 'CENTER',
-		['relativeTo'] = 'oUF_Target',
-		['relativePoint'] = 'TOP',
-		['xOffset'] = 0,
-		['yOffset'] = 5,
-	}
-	PA.Defaults.profile['DragonOverlay']['DragonPoints'] = {
-		['point'] = 'CENTER',
-		['relativeTo'] = 'oUF_Target',
-		['relativePoint'] = 'TOP',
-		['xOffset'] = 0,
-		['yOffset'] = 5,
+	PA.Defaults.profile['DragonOverlay'] = {
+		['Enable'] = true,
+		['Strata'] = '2-MEDIUM',
+		['Level'] = 12,
+		['IconSize'] = 32,
+		['Width'] = 128,
+		['Height'] = 64,
+		['worldboss'] = 'Chromatic',
+		['elite'] = 'HeavenlyGolden',
+		['rare'] = 'Onyx',
+		['rareelite'] = 'HeavenlyOnyx',
+		['ClassIcon'] = false,
+		['FlipDragon'] = false,
+		['ClassIconPoints'] = {
+			['point'] = 'CENTER',
+			['relativeTo'] = 'oUF_Target',
+			['relativePoint'] = 'TOP',
+			['xOffset'] = 0,
+			['yOffset'] = 5,
+		},
+		['DragonPoints'] = {
+			['point'] = 'CENTER',
+			['relativeTo'] = 'oUF_Target',
+			['relativePoint'] = 'TOP',
+			['xOffset'] = 0,
+			['yOffset'] = 5,
+		},
 	}
 
 	for _, Option in pairs({ 'ClassIconPoints', 'DragonPoints' }) do

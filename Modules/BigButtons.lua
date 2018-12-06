@@ -281,9 +281,12 @@ function BB:GetOptions()
 end
 
 function BB:BuildProfile()
-	PA.Defaults.profile['BigButtons']['DropTools'] = false
-	PA.Defaults.profile['BigButtons']['ToolSize'] = 50
-	PA.Defaults.profile['BigButtons']['SeedSize'] = 30
+	PA.Defaults.profile['BigButtons'] = {
+		['Enable'] = false,
+		['DropTools'] = false,
+		['ToolSize'] = 50,
+		['SeedSize'] = 30,
+	}
 end
 
 function BB:Initialize()

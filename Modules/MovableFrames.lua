@@ -281,6 +281,8 @@ function MF:GetOptions()
 end
 
 function MF:BuildProfile()
+	PA.Defaults.profile['MovableFrames'] = { ['Enable'] = true }
+
 	self.AllFrames = {}
 
 	if PA.Tukui then
@@ -301,7 +303,7 @@ function MF:BuildProfile()
 end
 
 function MF:Initialize()
-	MF.db = PA.db.profile['MovableFrames']
+	MF.db = PA.db['MovableFrames']
 
 	MF:GetOptions()
 

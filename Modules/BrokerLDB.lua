@@ -310,14 +310,17 @@ function BrokerLDB:New(_, Name, Object)
 end
 
 function BrokerLDB:BuildProfile()
-	PA.Defaults.profile['BrokerLDB']['PanelHeight'] = 20
-	PA.Defaults.profile['BrokerLDB']['PanelWidth'] = 140
-	PA.Defaults.profile['BrokerLDB']['MouseOver'] = false
-	PA.Defaults.profile['BrokerLDB']['ShowIcon'] = false
-	PA.Defaults.profile['BrokerLDB']['ShowText'] = true
-	PA.Defaults.profile['BrokerLDB']['Font'] = 'Tukui Pixel'
-	PA.Defaults.profile['BrokerLDB']['FontSize'] = 12
-	PA.Defaults.profile['BrokerLDB']['FontFlag'] = 'MONOCHROMEOUTLINE'
+	PA.Defaults.profile['BrokerLDB'] = {
+		['Enable'] = false,
+		['PanelHeight'] = 20,
+		['PanelWidth'] = 140,
+		['MouseOver'] = false,
+		['ShowIcon'] = false,
+		['ShowText'] = true,
+		['Font'] = 'Tukui Pixel',
+		['FontSize'] = 12,
+		['FontFlag'] = 'MONOCHROMEOUTLINE',
+	}
 end
 
 function BrokerLDB:Initialize()

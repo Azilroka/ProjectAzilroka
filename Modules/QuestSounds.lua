@@ -115,9 +115,12 @@ function QS:GetOptions()
 end
 
 function QS:BuildProfile()
-	PA.Defaults.profile['QuestSounds']['QuestComplete'] = 'Peon Quest Complete'
-	PA.Defaults.profile['QuestSounds']['ObjectiveComplete'] = 'Peon Objective Complete'
-	PA.Defaults.profile['QuestSounds']['ObjectiveProgress'] = 'Peon Objective Progress'
+	PA.Defaults.profile['QuestSounds'] = {
+		['Enable'] = false,
+		['QuestComplete'] = 'Peon Quest Complete',
+		['ObjectiveComplete'] = 'Peon Objective Complete',
+		['ObjectiveProgress'] = 'Peon Objective Progress',
+	}
 end
 
 function QS:RegisterSounds()
@@ -168,7 +171,7 @@ function QS:Initialize()
 
 	local KT = LibStub("AceAddon-3.0"):GetAddon('!KalielsTracker', true)
 
-	if KT.db.profile.soundQuest then
+	if KT and KT.db.profile.soundQuest then
 		StaticPopupDialogs["PROJECTAZILROKA"].text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'
 		StaticPopupDialogs["PROJECTAZILROKA"].button1 = 'KT Quest Sound'
 		StaticPopupDialogs["PROJECTAZILROKA"].button2 = 'Quest Sounds'
@@ -180,14 +183,17 @@ function QS:Initialize()
 			StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = ReloadUI
 			StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = nil
 		end
-		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() PA.db.QS = false ReloadUI() end
+		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() QS.db['Enable'] = false ReloadUI() end
 		StaticPopup_Show("PROJECTAZILROKA")
-	elseif PA:IsAddOnEnabled('QuestGuruSounds', PA.MyName) then
+		return
+	end
+
+	if PA:IsAddOnEnabled('QuestGuruSounds', PA.MyName) then
 		StaticPopupDialogs["PROJECTAZILROKA"].text = 'QuestGuru Sounds and QuestSounds will make double sounds. Which one do you want to disable?'
 		StaticPopupDialogs["PROJECTAZILROKA"].button1 = 'KT Quest Sound'
 		StaticPopupDialogs["PROJECTAZILROKA"].button2 = 'Quest Sounds'
 		StaticPopupDialogs["PROJECTAZILROKA"].OnAccept = function() DisableAddOn('QuestGuruSounds') ReloadUI() end
-		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() PA.db.QS = false ReloadUI() end
+		StaticPopupDialogs["PROJECTAZILROKA"].OnCancel = function() QS.db['Enable'] = false ReloadUI() end
 		StaticPopup_Show("PROJECTAZILROKA")
 	end
 end
