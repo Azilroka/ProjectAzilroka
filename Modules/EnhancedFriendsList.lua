@@ -215,8 +215,16 @@ function EFL:UpdateFriends(button)
 			if client == BNET_CLIENT_WOW then
 				if (level == nil or tonumber(level) == nil) then level = 0 end
 				local classcolor = PA:ClassColorCode(class)
-				local diff = level ~= 0 and format('|cFF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or '|cFFFFFFFF'
-				nameText = format('%s |cFFFFFFFF(|r%s%s|r - %s %s%s|r|cFFFFFFFF)|r', nameText, classcolor, characterName, LEVEL, diff, level)
+				if EFL.db.ShowLevel then
+					if EFL.db.DiffLevel then
+						local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
+						nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
+					else
+						nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+					end
+				else
+					nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
+				end
 				Cooperate = CanCooperateWithGameAccount(toonID)
 			else
 				if not EFL.Icons.Game[client] then
@@ -227,7 +235,7 @@ function EFL:UpdateFriends(button)
 		end
 
 		if isOnline then
-			button.status:SetTexture(EFL.Icons.Status[(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')][self.db.StatusIconPack])
+			button.status:SetTexture(EFL.Icons.Status[(isDND and 'DND' or isAFK and 'AFK' or 'Online')][self.db.StatusIconPack])
 			if client == BNET_CLIENT_WOW then
 				if not zoneName or zoneName == '' then
 					infoText = UNKNOWN
@@ -357,13 +365,24 @@ function EFL:GetOptions()
 					StatusIconPack = {
 						name = PA.ACL['Status Icon Pack'],
 						desc = PA.ACL['Different Status Icons.'],
-						order = 8,
+						order = 7,
 						type = 'select',
 						values = {
 							['Default'] = 'Default',
 							['Square'] = 'Square',
 							['D3'] = 'Diablo 3',
 						},
+					},
+					ShowLevel = {
+						type = 'toggle',
+						order = 8,
+						name = PA.ACL['Show Level'],
+					},
+					DiffLevel = {
+						type = 'toggle',
+						order = 9,
+						name = PA.ACL['Level by Difficulty'],
+						disabled = function() return (not EFL.db.ShowLevel) end,
 					},
 				},
 			},
@@ -441,6 +460,8 @@ function EFL:BuildProfile()
 		['InfoFontSize'] = 12,
 		['InfoFontFlag'] = 'OUTLINE',
 		['StatusIconPack'] = 'Default',
+		['ShowLevel'] = true,
+		['DiffLevel'] = true,
 	}
 
 	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do
