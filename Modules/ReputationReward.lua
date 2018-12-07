@@ -214,6 +214,16 @@ function RR:Show()
 	QuestInfoFrame.rewardsFrame:SetHeight(Height)
 end
 
+function RR:BuildProfile()
+	PA.Defaults.profile['ReputationReward'] = { ['Enable'] = true }
+
+	PA.Options.args.general.args.ReputationReward = {
+		type = 'toggle',
+		name = RR.Title,
+		desc = RR.Description,
+	}
+end
+
 function RR:Initialize()
 	if PA.db.ReputationReward.Enable ~= true then
 		return

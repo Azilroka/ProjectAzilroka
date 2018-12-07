@@ -321,6 +321,12 @@ function DO:BuildProfile()
 			PA.Defaults.profile['DragonOverlay'][Option].relativeTo = 'oUF_AzilUITarget'
 		end
 	end
+
+	PA.Options.args.general.args.DragonOverlay = {
+		type = 'toggle',
+		name = DO.Title,
+		desc = DO.Description,
+	}
 end
 
 function DO:Initialize()

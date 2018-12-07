@@ -180,91 +180,12 @@ PA.Options = {
 			guiInline = true,
 			get = function(info) return (PA.db[info[#info]] and PA.db[info[#info]]['Enable']) end,
 			set = function(info, value) PA.db[info[#info]]['Enable'] = value StaticPopup_Show("PROJECTAZILROKA") end,
-			args = {
-				BigButtons = {
-					order = 0,
-					type = 'toggle',
-					name = PA.ACL['BigButtons'],
-					desc = 'A farm tool for Sunsong Ranch.',
-				},
-				BrokerLDB = {
-					order = 1,
-					type = 'toggle',
-					name = 'BrokerLDB',
-					desc = 'Provides a Custom DataBroker Bar',
-				},
-				DragonOverlay = {
-					order = 2,
-					type = 'toggle',
-					name = PA.ACL['Dragon Overlay'],
-					desc = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite',
-				},
-				EnhancedFriendsList = {
-					order = 3,
-					type = 'toggle',
-					name = PA.ACL['Enhanced Friends List'],
-					desc = 'Provides Friends List Customization',
-				},
-				EnhancedShadows = {
-					order = 4,
-					type = 'toggle',
-					name = PA.ACL['Enhanced Shadows'],
-					desc = 'Adds options for registered shadows',
-					disabled = function() return (PA.SLE or PA.CUI) end,
-				},
-				FriendGroups = {
-					order = 5,
-					type = 'toggle',
-					name = 'Friend Groups',
-				},
-				FasterLoot = {
-					order = 6,
-					type = 'toggle',
-					name = PA.ACL['Faster Loot'],
-					desc = 'Increases auto loot speed near instantaneous.',
-				},
-				MovableFrames = {
-					order = 7,
-					type = 'toggle',
-					name = PA.ACL['MovableFrames'],
-					desc = 'Make Blizzard Frames Movable',
-				},
-				QuestSounds = {
-					order = 8,
-					type = 'toggle',
-					name = 'Quest Sounds',
-					desc = 'Audio for Quest Progress & Completions.',
-				},
-				ReputationReward = {
-					order = 9,
-					type = 'toggle',
-					name = 'Reputation Reward',
-					desc = 'Adds Reputation into Quest Log & Quest Frame.',
-				},
-				SquareMinimapButtons = {
-					order = 10,
-					type = 'toggle',
-					name = PA.ACL['Square Minimap Buttons / Bar'],
-					desc = 'Minimap Button Bar / Minimap Button Skinning',
-				},
-				stAddonManager = {
-					order = 11,
-					type = 'toggle',
-					name = PA.ACL['stAddOnManager'],
-					desc = 'A simple and minimalistic addon to disable/enabled addons without logging out.',
-				},
-			},
+			args = {},
 		},
 	},
 }
 
-PA.Defaults = {
-	profile = {
-		['FriendGroups'] = { ['Enable'] = false },
-		['FasterLoot'] = { ['Enable'] = false },
-		['ReputationReward'] = { ['Enable'] = true },
-	},
-}
+PA.Defaults = { profile = {} }
 
 function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options

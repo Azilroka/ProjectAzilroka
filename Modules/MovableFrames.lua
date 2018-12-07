@@ -300,6 +300,12 @@ function MF:BuildProfile()
 			PA.Defaults.profile['MovableFrames'][Frame] = { ['Permanent'] = true, ['Points'] = DefaultPoints }
 		end
 	end
+
+	PA.Options.args.general.args.MovableFrames = {
+		type = 'toggle',
+		name = MF.Title,
+		desc = MF.Description,
+	}
 end
 
 function MF:Initialize()

@@ -521,6 +521,12 @@ function SMB:BuildProfile()
 		['MoveTracker'] = true,
 		['MoveQueue'] = true,
 	}
+
+	PA.Options.args.general.args.SquareMinimapButtons = {
+		type = 'toggle',
+		name = SMB.Title,
+		desc = SMB.Description,
+	}
 end
 
 function SMB:Initialize()

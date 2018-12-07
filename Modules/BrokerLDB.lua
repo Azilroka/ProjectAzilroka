@@ -321,6 +321,12 @@ function BrokerLDB:BuildProfile()
 		['FontSize'] = 12,
 		['FontFlag'] = 'MONOCHROMEOUTLINE',
 	}
+
+	PA.Options.args.general.args.BrokerLDB = {
+		type = 'toggle',
+		name = BrokerLDB.Title,
+		desc = BrokerLDB.Description,
+	}
 end
 
 function BrokerLDB:Initialize()

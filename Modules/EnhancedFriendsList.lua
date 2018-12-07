@@ -456,6 +456,12 @@ function EFL:BuildProfile()
 		PA.Defaults.profile['EnhancedFriendsList']['NameFontFlag'] = 'MONOCHROMEOUTLINE'
 		PA.Defaults.profile['EnhancedFriendsList']['InfoFontFlag'] = 'MONOCHROMEOUTLINE'
 	end
+
+	PA.Options.args.general.args.EnhancedFriendsList = {
+		type = 'toggle',
+		name = EFL.Title,
+		desc = EFL.Description,
+	}
 end
 
 function EFL:Initialize()

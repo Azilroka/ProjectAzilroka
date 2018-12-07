@@ -121,6 +121,12 @@ function QS:BuildProfile()
 		['ObjectiveComplete'] = 'Peon Objective Complete',
 		['ObjectiveProgress'] = 'Peon Objective Progress',
 	}
+
+	PA.Options.args.general.args.QuestSounds = {
+		type = 'toggle',
+		name = QS.Title,
+		desc = QS.Description,
+	}
 end
 
 function QS:RegisterSounds()

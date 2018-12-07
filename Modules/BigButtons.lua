@@ -287,6 +287,12 @@ function BB:BuildProfile()
 		['ToolSize'] = 50,
 		['SeedSize'] = 30,
 	}
+
+	PA.Options.args.general.args.BigButtons = {
+		type = 'toggle',
+		name = BB.Title,
+		desc = BB.Description,
+	}
 end
 
 function BB:Initialize()

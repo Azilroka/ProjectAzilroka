@@ -30,6 +30,16 @@ function FL:LOOT_READY()
 	end
 end
 
+function FL:BuildProfile()
+	PA.Defaults.profile['FasterLoot'] = { ['Enable'] = false }
+
+	PA.Options.args.general.args.FasterLoot = {
+		type = 'toggle',
+		name = FL.Title,
+		desc = FL.Description,
+	}
+end
+
 function FL:Initialize()
 	if PA.db.FasterLoot.Enable ~= true then
 		return

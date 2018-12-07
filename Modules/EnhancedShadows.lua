@@ -110,6 +110,12 @@ function ES:BuildProfile()
 		['ColorByClass'] = false,
 		['Size'] = 3,
 	}
+
+	PA.Options.args.general.args.EnhancedShadows = {
+		type = 'toggle',
+		name = ES.Title,
+		desc = ES.Description,
+	}
 end
 
 function ES:Initialize()
