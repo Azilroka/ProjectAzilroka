@@ -27,15 +27,26 @@ function QS:SetQuest(index)
 	QS:ScheduleTimer(function() QS:CheckQuest() end, .5)
 end
 
+function QS:ResetSoundPlayback()
+	QS.IsPlaying = false
+end
+
 function QS:PlaySoundFile(file)
 	QS.QuestIndex = 0
+
 	if QS.IsPlaying or file == nil or file == '' then
 		return
 	end
 
-	PlaySoundFile(PA.LSM:Fetch('sound', file))
 	QS.IsPlaying = true
-	QS:ScheduleTimer(function() QS.IsPlaying = false end, 2)
+
+	if QS.db.UseSoundID then
+		PlaySoundFile(file)
+	else
+		PlaySoundFile(PA.LSM:Fetch('sound', file))
+	end
+
+	QS:ScheduleTimer('ResetSoundPlayback', 3)
 end
 
 function QS:CheckQuest()
@@ -45,11 +56,24 @@ function QS:CheckQuest()
 
 	QS.ObjectivesCompleted, QS.ObjectivesTotal = QS:CountCompletedObjectives(QS.QuestIndex)
 	if QS.ObjectivesCompleted == QS.ObjectivesTotal then
-		QS:PlaySoundFile(QS.db.QuestComplete)
+		QS:ResetSoundPlayback()
+		if QS.db.UseSoundID then
+			QS:PlaySoundFile(QS.db.QuestCompleteID)
+		else
+			QS:PlaySoundFile(QS.db.QuestComplete)
+		end
 	elseif QS.ObjectivesCompleted > QS.ObjectivesTotal then
-		QS:PlaySoundFile(QS.db.ObjectiveComplete)
+		if QS.db.UseSoundID then
+			QS:PlaySoundFile(QS.db.ObjectiveCompleteID)
+		else
+			QS:PlaySoundFile(QS.db.ObjectiveComplete)
+		end
 	else
-		QS:PlaySoundFile(QS.db.ObjectiveProgress)
+		if QS.db.UseSoundID then
+			QS:PlaySoundFile(QS.db.ObjectiveProgressID)
+		else
+			QS:PlaySoundFile(QS.db.ObjectiveProgress)
+		end
 	end
 end
 
@@ -70,32 +94,80 @@ function QS:GetOptions()
 		type = 'group',
 		name = QS.Title,
 		desc = QS.Description,
-		order = 219,
 		get = function(info) return QS.db[info[#info]] end,
 		set = function(info, value) QS.db[info[#info]] = value end,
+		order = 219,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
 				name = PA:Color(QS.Title),
 			},
-			QuestComplete = {
-				type = "select", dialogControl = 'LSM30_Sound',
+			general = {
 				order = 1,
-				name = 'Quest Complete',
-				values = PA.LSM:HashTable('sound'),
+				type = 'group',
+				name = 'Sounds by LSM',
+				guiInline = true,
+				get = function(info) return QS.db[info[#info]] end,
+				set = function(info, value) QS.db[info[#info]] = value end,
+				args = {
+					QuestComplete = {
+						type = "select", dialogControl = 'LSM30_Sound',
+						order = 1,
+						name = 'Quest Complete',
+						values = PA.LSM:HashTable('sound'),
+						disabled = function() return QS.db.UseSoundID end,
+					},
+					ObjectiveComplete = {
+						type = "select", dialogControl = 'LSM30_Sound',
+						order = 2,
+						name = 'Objective Complete',
+						values = PA.LSM:HashTable('sound'),
+						disabled = function() return QS.db.UseSoundID end,
+					},
+					ObjectiveProgress = {
+						type = "select", dialogControl = 'LSM30_Sound',
+						order = 3,
+						name = 'Objective Progress',
+						values = PA.LSM:HashTable('sound'),
+						disabled = function() return QS.db.UseSoundID end,
+					},
+				},
 			},
-			ObjectiveComplete = {
-				type = "select", dialogControl = 'LSM30_Sound',
+			soundbyid = {
 				order = 2,
-				name = 'Objective Complete',
-				values = PA.LSM:HashTable('sound'),
-			},
-			ObjectiveProgress = {
-				type = "select", dialogControl = 'LSM30_Sound',
-				order = 3,
-				name = 'Objective Progress',
-				values = PA.LSM:HashTable('sound'),
+				type = 'group',
+				name = 'Sound by SoundID',
+				guiInline = true,
+				get = function(info) return tostring(QS.db[info[#info]]) end,
+				set = function(info, value) QS.db[info[#info]] = tonumber(value) end,
+				args = {
+					UseSoundID = {
+						order = 1,
+						type = 'toggle',
+						get = function(info) return QS.db[info[#info]] end,
+						set = function(info, value) QS.db[info[#info]] = value end,
+						name = PA.ACL['Use Sound ID'],
+					},
+					QuestCompleteID = {
+						order = 2,
+						type = "input",
+						name = 'Quest Complete Sound ID',
+						disabled = function() return (not QS.db.UseSoundID) end,
+					},
+					ObjectiveCompleteID = {
+						order = 3,
+						type = "input",
+						name = 'Objective Complete Sound ID',
+						disabled = function() return (not QS.db.UseSoundID) end,
+					},
+					ObjectiveProgressID = {
+						order = 4,
+						type = "input",
+						name = 'Objective Progress Sound ID',
+						disabled = function() return (not QS.db.UseSoundID) end,
+					},
+				},
 			},
 			AuthorHeader = {
 				order = 11,
@@ -106,6 +178,17 @@ function QS:GetOptions()
 				order = 12,
 				type = 'description',
 				name = QS.Authors,
+				fontSize = 'large',
+			},
+			CreditsHeader = {
+				order = 13,
+				type = 'header',
+				name = PA.ACL['Credits:'],
+			},
+			Credits = {
+				order = 14,
+				type = 'description',
+				name = QS.Credits,
 				fontSize = 'large',
 			},
 		},
@@ -120,6 +203,10 @@ function QS:BuildProfile()
 		['QuestComplete'] = 'Peon Quest Complete',
 		['ObjectiveComplete'] = 'Peon Objective Complete',
 		['ObjectiveProgress'] = 'Peon Objective Progress',
+		['UseSoundID'] = false,
+		['QuestCompleteID'] = PA.MyFaction == 'Alliance' and 61525 or 95834,
+		['ObjectiveCompleteID'] = 6573,
+		['ObjectiveProgressID'] = 9873,
 	}
 
 	PA.Options.args.general.args.QuestSounds = {

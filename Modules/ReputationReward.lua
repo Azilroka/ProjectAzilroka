@@ -214,6 +214,48 @@ function RR:Show()
 	QuestInfoFrame.rewardsFrame:SetHeight(Height)
 end
 
+function RR:GetOptions()
+	local Options = {
+		type = 'group',
+		name = RR.Title,
+		desc = RR.Description,
+		order = 211,
+		get = function(info) return RR.db[info[#info]] end,
+		set = function(info, value) RR.db[info[#info]] = value end,
+		args = {
+			Header = {
+				order = 1,
+				type = 'header',
+				name = PA:Color(RR.Title),
+			},
+			AuthorHeader = {
+				order = 2,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = 3,
+				type = 'description',
+				name = RR.Authors,
+				fontSize = 'large',
+			},
+			CreditsHeader = {
+				order = 4,
+				type = 'header',
+				name = PA.ACL['Credits:'],
+			},
+			Credits = {
+				order = 5,
+				type = 'description',
+				name = RR.Credits,
+				fontSize = 'large',
+			},
+		},
+	}
+
+	PA.Options.args.ReputationReward = Options
+end
+
 function RR:BuildProfile()
 	PA.Defaults.profile['ReputationReward'] = { ['Enable'] = true }
 
@@ -225,13 +267,17 @@ function RR:BuildProfile()
 end
 
 function RR:Initialize()
-	if PA.db.ReputationReward.Enable ~= true then
+	RR.db = PA.db.ReputationReward
+
+	if RR.db.Enable ~= true then
 		return
 	end
 
 	if PA.AddOnSkins then
 		AS = unpack(AddOnSkins)
 	end
+
+	RR:GetOptions()
 
 	RR.ReputationInfo = {}
 

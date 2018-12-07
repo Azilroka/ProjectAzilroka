@@ -33,27 +33,27 @@ DO.Textures = {
 }
 
 function DO:SetOverlay()
-	local Points = 'DragonPoints'
-	local TargetClass = UnitClassification('target')
-	local Texture = DO.Textures[self.db[TargetClass]]
+	local Points
 
 	if UnitIsPlayer('target') and self.db['ClassIcon'] then
-		TargetClass = select(2, UnitClass('target'))
 		self.frame:SetSize(DO.db.IconSize, DO.db.IconSize)
 		self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
-		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[TargetClass]))
+		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass('target'))]))
 		Points = 'ClassIconPoints'
 	else
 		self.frame:SetSize(DO.db.Width, DO.db.Height)
-		self.frame.Texture:SetTexture(Texture)
+		self.frame.Texture:SetTexture(DO.Textures[self.db[UnitClassification('target')]])
 		self.frame.Texture:SetTexCoord(self.db['FlipDragon'] and 1 or 0, self.db['FlipDragon'] and 0 or 1, 0, 1)
+		Points = 'DragonPoints'
 	end
 
-	self.frame:ClearAllPoints()
-	self.frame:SetPoint(self.db[Points]['point'], _G[self.db[Points]['relativeTo']].Health, self.db[Points]['relativePoint'], self.db[Points]['xOffset'], self.db[Points]['yOffset'])
-	self.frame:SetParent(self.db[Points]['relativeTo'])
-	self.frame:SetFrameStrata(strsub(self.db['Strata'], 3))
-	self.frame:SetFrameLevel(self.db['Level'])
+	if _G[self.db[Points]['relativeTo']] then
+		self.frame:ClearAllPoints()
+		self.frame:SetPoint(self.db[Points]['point'], _G[self.db[Points]['relativeTo']].Health, self.db[Points]['relativePoint'], self.db[Points]['xOffset'], self.db[Points]['yOffset'])
+		self.frame:SetParent(self.db[Points]['relativeTo'])
+		self.frame:SetFrameStrata(strsub(self.db['Strata'], 3))
+		self.frame:SetFrameLevel(self.db['Level'])
+	end
 end
 
 function DO:GetOptions()
@@ -280,7 +280,7 @@ end
 function DO:BuildProfile()
 	PA.Defaults.profile['DragonOverlay'] = {
 		['Enable'] = true,
-		['Strata'] = '2-MEDIUM',
+		['Strata'] = '3-MEDIUM',
 		['Level'] = 12,
 		['IconSize'] = 32,
 		['Width'] = 128,

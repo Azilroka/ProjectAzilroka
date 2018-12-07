@@ -549,7 +549,6 @@ function stAM:Update()
 
 	-- Frame fonts
 	self.Frame.Title:SetFont(PA.LSM:Fetch('font', self.db['Font']), 14, self.db['FontFlag'])
-	self.Frame.Close.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	self.Frame.Search:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	self.Frame.Reload.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	self.Frame.Profiles.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
@@ -651,6 +650,17 @@ function stAM:GetOptions()
 				name = stAM.Authors,
 				fontSize = 'large',
 			},
+			CreditsHeader = {
+				order = 13,
+				type = 'header',
+				name = PA.ACL['Credits:'],
+			},
+			Credits = {
+				order = 14,
+				type = 'description',
+				name = stAM.Credits,
+				fontSize = 'large',
+			},
 		},
 	}
 
@@ -662,7 +672,7 @@ function stAM:BuildProfile()
 		['Enable'] = true,
 		['NumAddOns'] = 30,
 		['FrameWidth'] = 550,
-		['Font'] = 'PT Sans Narrow',
+		['Font'] = 'PT Sans Narrow Bold',
 		['FontSize'] = 16,
 		['FontFlag'] = 'OUTLINE',
 		['ButtonHeight'] = 18,

@@ -4,7 +4,8 @@ _G.FriendGroup = FG
 
 FG.Title = '|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'
 FG.Desciption = 'Manage Firends List with Groups'
-FG.Authors = 'Azilroka    Mikeprod    frankkkkk'
+FG.Authors = 'Azilroka'
+FG.Credits = 'Mikeprod    frankkkkk'
 
 local hooks = {}
 
