@@ -177,7 +177,7 @@ function RR:Show()
 		questItem.objectType = nil
 
 		questItem.Name:SetText(Info.Name)
-		questItem.Icon:SetTexture(PA.Faction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.Faction))
+		questItem.Icon:SetTexture(PA.MyFaction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.MyFaction))
 --		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 		questItem.Count:SetText(Info.Base + Info.Bonus)
 
@@ -285,7 +285,7 @@ function RR:Initialize()
 	RR.AuraInfo = {
 		[61849] = { bonus = .1, faction = 0 },		--
 		[24705] = { bonus = .1, faction = 0 },		--
-	    [95987] = { bonus = .1, faction = 0 },		--
+		[95987] = { bonus = .1, faction = 0 },		--
 		[39913] = { bonus = .1, faction = 947 },	-- Thrallmar
 		[39911] = { bonus = .1, faction = 946 },	-- Honor Hold
 		[39953] = { bonus = .1, faction = 1031 },	-- Sha'tar
