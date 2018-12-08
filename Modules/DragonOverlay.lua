@@ -130,6 +130,22 @@ function DO:GetOptions()
 						type = 'description',
 						name = '',
 					},
+					Dragons = {
+						order = -6,
+						type = 'group',
+						name = 'Dragons',
+						guiInline = true,
+						get = function(info) return DO.db[info[#info]] end,
+						set = function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end,
+						args = {},
+					},
+					textures = {
+						order = -5,
+						type = 'group',
+						name = 'Preview',
+						guiInline = true,
+						args = {},
+					},
 					AuthorHeader = {
 						order = -4,
 						type = 'header',
@@ -157,10 +173,9 @@ function DO:GetOptions()
 		},
 	}
 
-	local Order = 8
 	for Option, Name in pairs({ ['ClassIconPoints'] = PA.ACL['Class Icon Points'], ['DragonPoints'] = PA.ACL['Dragon Points'] }) do
 		Options.args.general.args[Option] = {
-			order = Order,
+			order = 8,
 			type = 'group',
 			name = Name,
 			guiInline = true,
@@ -231,8 +246,9 @@ function DO:GetOptions()
 				end
 			end
 		end
-		Order = Order + 1
 	end
+
+	Options.args.general.args.ClassIconPoints.disabled = function() return (not DO.db.ClassIcon) end
 
 	local MenuItems = {
 		['elite'] = PA.ACL['Elite'],
@@ -241,8 +257,9 @@ function DO:GetOptions()
 		['worldboss'] = PA.ACL['World Boss'],
 	}
 
+	local Order = 1
 	for Option, Name in pairs(MenuItems) do
-		Options.args.general.args[Option] = {
+		Options.args.general.args.Dragons.args[Option] = {
 			order = Order,
 			name = Name,
 			type = "select",
@@ -264,14 +281,19 @@ function DO:GetOptions()
 				['ClassicBoss'] = 'Classic Boss',
 			},
 		}
-		Options.args.general.args[Option..'Desc'] = {
-			order = Order + 1,
-			type = 'description',
-			name = '',
+		Order = Order + 1
+	end
+
+	Order = 1
+	for Option, Name in pairs(MenuItems) do
+		Options.args.general.args.textures.args[Option] = {
+			order = Order,
+			type = 'execute',
+			name = Name,
 			image = function() return DO.Textures[DO.db[Option]], 128, 32 end,
 			imageCoords = function() return {DO.db[Option]['FlipDragon'] and 1 or 0, DO.db[Option]['FlipDragon'] and 0 or 1, 0, 1} end,
 		}
-		Order = Order + 2
+		Order = Order + 1
 	end
 
 	PA.Options.args.DragonOverlay = Options
