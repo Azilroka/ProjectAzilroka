@@ -227,10 +227,6 @@ function PA:PLAYER_LOGIN()
 
 	PA:BuildProfile()
 
-	if PA.db and not PA.db.DBConverted then
-		PA:DBConversion()
-	end
-
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
@@ -244,26 +240,6 @@ function PA:PLAYER_LOGIN()
 	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
 		PA:TukuiOptions()
 	end
-end
-
-function PA:DBConversion()
-	for _, DBEntry in pairs({'SquareMinimapButtons', 'MovableFrames', 'EnhancedFriendsList', 'EnhancedShadows', 'DragonOverlay', 'stAddonManager', 'BigButtons', 'FriendGroups', 'QuestSounds'}) do
-		local DB = _G[DBEntry..'DB']
-		if DB then
-			local profileKeys = DB.profileKeys
-			if profileKeys then
-				local profile = DB.profileKeys[format("%s - %s", PA.MyName, PA.MyRealm)]
-				local table = DB.profiles[profile]
-				if table then
-					for Key, Value in pairs(table) do
-						PA.db[DBEntry][Key] = Value
-					end
-				end
-			end
-		end
-	end
-
-	PA.db.DBConverted = true
 end
 
 PA:RegisterEvent('ADDON_LOADED')

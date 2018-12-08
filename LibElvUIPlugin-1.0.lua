@@ -232,7 +232,7 @@ lib.VCFrame = CreateFrame('Frame')
 lib.VCFrame:SetScript('OnEvent', lib.VersionCheck)
 lib.VCFrame:SetScript("OnUpdate", function(self, elapsed)
 	self.delayed = (self.delayed or 0) + elapsed
-	if self.delayed > 1 then
+	if self.delayed > 10 then
 		local numActiveChannels = C_ChatInfo.GetNumActiveChannels()
 		if numActiveChannels and (numActiveChannels >= 1) then
 			if (GetChannelName('ElvUIGVC') == 0) and (numActiveChannels < MAX_WOW_CHAT_CHANNELS) then
