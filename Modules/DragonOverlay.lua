@@ -290,8 +290,7 @@ function DO:GetOptions()
 			order = Order,
 			type = 'execute',
 			name = Name,
-			image = function() return DO.Textures[DO.db[Option]], 128, 32 end,
-			imageCoords = function() return {DO.db[Option]['FlipDragon'] and 1 or 0, DO.db[Option]['FlipDragon'] and 0 or 1, 0, 1} end,
+			image = function() return DO.Textures[DO.db[Option]], strfind(DO.db[Option], 'Classic') and 32 or 128, 32 end,
 		}
 		Order = Order + 1
 	end
