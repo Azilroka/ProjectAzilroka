@@ -96,7 +96,6 @@ function QS:GetOptions()
 		desc = QS.Description,
 		get = function(info) return QS.db[info[#info]] end,
 		set = function(info, value) QS.db[info[#info]] = value end,
-		order = 219,
 		args = {
 			Header = {
 				order = 0,

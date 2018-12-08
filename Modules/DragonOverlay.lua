@@ -61,7 +61,6 @@ function DO:GetOptions()
 		type = 'group',
 		name = DO.Title,
 		desc = DO.Description,
-		order = 103,
 		args = {
 			header = {
 				order = 1,

@@ -67,7 +67,6 @@ end
 function ES:GetOptions()
 	local Options = {
 		type = "group",
-		order = 207,
 		name = ES.Title,
 		desc = ES.Description,
 		get = function(info) return ES.db[info[#info]] end,

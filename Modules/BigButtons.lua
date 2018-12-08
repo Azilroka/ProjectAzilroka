@@ -237,7 +237,6 @@ function BB:GetOptions()
 		type = 'group',
 		name = BB.Title,
 		desc = BB.Description,
-		order = 219,
 		get = function(info) return BB.db[info[#info]] end,
 		set = function(info, value) BB.db[info[#info]] = value BB:Update() end,
 		args = {

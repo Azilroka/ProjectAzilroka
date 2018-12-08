@@ -22,7 +22,6 @@ function BrokerLDB:GetOptions()
 	local Options = {
 		type = 'group',
 		name = BrokerLDB['Title'],
-		order = 101,
 		args = {
 			header = {
 				order = 1,

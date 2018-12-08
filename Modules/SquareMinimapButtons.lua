@@ -403,7 +403,6 @@ function SMB:GetOptions()
 		type = 'group',
 		name = SMB.Title,
 		desc = SMB.Description,
-		order = 211,
 		get = function(info) return SMB.db[info[#info]] end,
 		set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 		args = {

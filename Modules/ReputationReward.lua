@@ -219,7 +219,6 @@ function RR:GetOptions()
 		type = 'group',
 		name = RR.Title,
 		desc = RR.Description,
-		order = 211,
 		get = function(info) return RR.db[info[#info]] end,
 		set = function(info, value) RR.db[info[#info]] = value end,
 		args = {

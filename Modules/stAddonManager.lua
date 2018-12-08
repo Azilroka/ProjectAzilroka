@@ -561,7 +561,6 @@ function stAM:GetOptions()
 		type = 'group',
 		name = stAM.Title,
 		desc = stAM.Description,
-		order = 219,
 		get = function(info) return stAM.db[info[#info]] end,
 		set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
 		args = {
@@ -667,7 +666,7 @@ function stAM:BuildProfile()
 		['ButtonWidth'] = 22,
 		['CheckColor'] = { 0, .66, 1},
 		['ClassColor'] = false,
-		['CheckTexture'] = 'Blizzard Raid Bar',
+		['CheckTexture'] = 'Solid',
 	}
 
 	PA.Options.args.general.args.stAddonManager = {

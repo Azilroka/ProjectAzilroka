@@ -215,7 +215,6 @@ end
 
 function MF:GetOptions()
 	local Options = {
-		order = 209,
 		type = 'group',
 		name = MF.Title,
 		desc = MF.Description,
