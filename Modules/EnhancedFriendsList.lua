@@ -5,7 +5,7 @@ PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 EFL.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r'
 EFL.Description = 'Provides Friends List Customization'
 EFL.Authors = 'Azilroka'
-EFL.Credits = 'Marotheit'
+EFL.Credits = 'Marotheit    Merathilis'
 
 local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
 local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
@@ -408,6 +408,28 @@ function EFL:GetOptions()
 				name = PA.ACL['Status Icon Preview'],
 				guiInline = true,
 				args = {},
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = EFL.Authors,
+				fontSize = 'large',
+			},
+			CreditsHeader = {
+				order = -2,
+				type = 'header',
+				name = PA.ACL['Credits:'],
+			},
+			Credits = {
+				order = -1,
+				type = 'description',
+				name = EFL.Credits,
+				fontSize = 'large',
 			},
 		},
 	}

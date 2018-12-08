@@ -6,7 +6,7 @@ PA.ES, _G.EnhancedShadows = ES, ES
 
 ES.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r'
 ES.Description = 'Adds options for registered shadows'
-ES.Author = 'Azilroka     Whiro'
+ES.Authors = 'Azilroka     Whiro'
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -96,6 +96,17 @@ function ES:GetOptions()
 				type = 'range',
 				name = PA.ACL['Size'],
 				min = 3, max = 10, step = 1,
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = ES.Authors,
+				fontSize = 'large',
 			},
 		},
 	}

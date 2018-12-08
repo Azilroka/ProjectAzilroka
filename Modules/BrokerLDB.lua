@@ -55,14 +55,12 @@ function BrokerLDB:GetOptions()
 					PanelHeight = {
 						order = 6,
 						type = 'range',
-						width = 'full',
 						name = PA.ACL['Panel Height'],
 						min = 20, max = 40, step = 1,
 					},
 					PanelWidth = {
 						order = 8,
 						type = 'range',
-						width = 'full',
 						name = PA.ACL['Panel Width'],
 						min = 0, softMin = 140, max = 280, step = 1,
 					},
@@ -91,6 +89,17 @@ function BrokerLDB:GetOptions()
 						},
 					},
 				},
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = BrokerLDB.Authors,
+				fontSize = 'large',
 			},
 		},
 	}
@@ -135,8 +144,7 @@ function BrokerLDB:SlideOut()
 		self:AnimSlideIn(Slides)
 	end
 	self:AnimSlideIn(self.Frame)
-	self.Frame.Text:SetPoint('CENTER', self.Frame, -1, 0)
-	self.Frame.Text:SetText('◄')
+	self.Frame.Arrow:SetRotation(1.57)
 	self.Slide = 'Out'
 end
 
@@ -144,8 +152,7 @@ function BrokerLDB:SlideIn()
 	for _, Slides in pairs(self.Buttons) do
 		Slides:Hide()
 	end
-	self.Frame.Text:SetPoint('CENTER', self.Frame, 2, 0)
-	self.Frame.Text:SetText('►')
+	self.Frame.Arrow:SetRotation(-1.57)
 	self.Slide = 'In'
 end
 
@@ -354,9 +361,10 @@ function BrokerLDB:Initialize()
 	PA.LDB.RegisterCallback(BrokerLDB, 'LibDataBroker_DataObjectCreated', 'New')
 
 	local Frame = CreateFrame('Button', nil, UIParent)
-	Frame.Text = Frame:CreateFontString(nil, 'OVERLAY')
-	Frame.Text:SetFont(PA.LSM:Fetch('font', 'Arial Narrow'), 12)
-	Frame.Text:SetPoint('CENTER', Frame, 0, 0)
+	Frame.Arrow = Frame:CreateTexture(nil, 'OVERLAY')
+	Frame.Arrow:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\Arrow]])
+	Frame.Arrow:SetSize(12, 12)
+	Frame.Arrow:SetPoint('CENTER', Frame, 0, 0)
 	Frame:SetFrameStrata('BACKGROUND')
 	Frame:SetWidth(15)
 	Frame:SetPoint('LEFT', UIParent, 'LEFT', 1, 0)
