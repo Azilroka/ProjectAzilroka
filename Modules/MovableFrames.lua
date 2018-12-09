@@ -255,10 +255,8 @@ function MF:GetOptions()
 
 	sort(MF.AllFrames)
 
-	local Index = 1
 	for _, Name in pairs(MF.AllFrames) do
 		Options.args.permanent.args[Name] = {
-			order = Index,
 			type = 'toggle',
 			name = Name,
 			get = function(info) return MF.db[info[#info]]['Permanent'] end,
@@ -266,14 +264,11 @@ function MF:GetOptions()
 		}
 
 		Options.args.reset.args[Name] = {
-			order = Index,
 			type = 'execute',
 			name = Name,
 			disabled = function(info) return not MF.db[info[#info]]['Permanent'] end,
 			func = function(info) HideUIPanel(_G[info[#info]]) end,
 		}
-
-		Index = Index + 1
 	end
 
 	PA.Options.args.MovableFrames = Options
