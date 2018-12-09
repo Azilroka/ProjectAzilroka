@@ -120,8 +120,16 @@ function PA:SetTemplate(frame)
 		frame:SetTemplate('Transparent', true)
 	else
 		frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
-		frame:SetBackdropColor(.2, .2, .2, .8)
-		frame:SetBackdropBorderColor(1, 1, 1)
+		frame:SetBackdropColor(.08, .08, .08, .8)
+		frame:SetBackdropBorderColor(0, 0, 0)
+	end
+end
+
+function PA:CreateShadow(frame)
+	if PA.AddOnSkins then
+		AddOnSkins[1]:CreateShadow(frame)
+	elseif frame.CreateShadow then
+		frame:CreateShadow()
 	end
 end
 
@@ -135,8 +143,8 @@ function PA:SetInside(obj, anchor, xOffset, yOffset, anchor2)
 		obj:ClearAllPoints()
 	end
 
-	obj:Point('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
-	obj:Point('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
+	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
+	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
 end
 
 function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
@@ -149,8 +157,8 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 		obj:ClearAllPoints()
 	end
 
-	obj:Point('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
-	obj:Point('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
+	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
+	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
 StaticPopupDialogs["PROJECTAZILROKA"] = {

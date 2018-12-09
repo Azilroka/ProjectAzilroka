@@ -25,6 +25,8 @@ local ignoreButtons = {
 	'GarrisonLandingPageMinimapButton',
 	'MiniMapMailFrame',
 	'MiniMapTracking',
+	'MinimapZoomIn',
+	'MinimapZoomOut',
 	'TukuiMinimapZone',
 	'TukuiMinimapCoord',
 }
@@ -82,7 +84,7 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
 		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
 		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
-		GarrisonLandingPageMinimapButton:CreateShadow()
+		PA:CreateShadow(GarrisonLandingPageMinimapButton)
 
 		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
 			self:SetBackdropBorderColor(unpack(PA.ClassColor))
@@ -91,7 +93,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 		GarrisonLandingPageMinimapButton:HookScript('OnLeave', function(self)
-			self:SetTemplate()
+			AS:SetTemplate(self)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
@@ -109,7 +111,7 @@ function SMB:HandleBlizzardButtons()
 		Frame.Icon:SetPoint('CENTER')
 		Frame.Icon:Size(18)
 		Frame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
-		Frame:CreateShadow()
+		PA:CreateShadow(Frame)
 		Frame:EnableMouse(true)
 		Frame:HookScript('OnEnter', function(self)
 			if HasNewMail() then
@@ -125,7 +127,7 @@ function SMB:HandleBlizzardButtons()
 		end)
 		Frame:HookScript('OnLeave', function(self)
 			GameTooltip:Hide()
-			self:SetTemplate()
+			PA:SetTemplate(self)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
@@ -152,7 +154,7 @@ function SMB:HandleBlizzardButtons()
 
 		MiniMapTracking:SetParent(self.Bar)
 		MiniMapTracking:SetSize(self.db['IconSize'], self.db['IconSize'])
-		MiniMapTracking:CreateShadow()
+		PA:CreateShadow(MiniMapTracking)
 
 		MiniMapTrackingIcon:ClearAllPoints()
 		MiniMapTrackingIcon:SetPoint('CENTER')
@@ -175,7 +177,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 		MiniMapTrackingButton:HookScript('OnLeave', function(self)
-			MiniMapTracking:SetTemplate()
+			PA:SetTemplate(MiniMapTracking)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
@@ -187,8 +189,8 @@ function SMB:HandleBlizzardButtons()
 
 	if self.db["MoveQueue"] and not QueueStatusMinimapButton.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_QueueFrame', self.Bar)
-		Frame:SetTemplate()
-		Frame:CreateShadow()
+		PA:SetTemplate(Frame)
+		PA:CreateShadow(Frame)
 		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 		Frame.Icon:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
@@ -210,7 +212,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 		Frame:HookScript('OnLeave', function(self)
-			self:SetTemplate()
+			PA:SetTemplate(self)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
@@ -279,7 +281,7 @@ function SMB:SkinMinimapButton(Button)
 					Region:SetTexture([[Interface\Icons\INV_Misc_Rabbit_2]])
 				end
 				Region:ClearAllPoints()
-				Region:SetInside()
+				PA:SetInside(Region)
 				Region:SetTexCoord(unpack(self.TexCoords))
 				Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
 				Region:SetDrawLayer('ARTWORK')
@@ -291,7 +293,7 @@ function SMB:SkinMinimapButton(Button)
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 	PA:SetTemplate(Button)
-	Button:CreateShadow()
+	PA:CreateShadow(Button)
 	Button:HookScript('OnEnter', function(self)
 		self:SetBackdropBorderColor(unpack(PA.ClassColor))
 		if SMB.Bar:IsShown() then

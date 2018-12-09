@@ -204,8 +204,7 @@ function stAM:BuildFrame()
 	Slider:EnableMouseWheel(true)
 
 	local Thumb = Slider:GetThumbTexture()
-	Thumb:Width(8)
-	Thumb:Height(16)
+	Thumb:SetSize(16, 8)
 	Thumb:SetVertexColor(Slider:GetBackdropBorderColor())
 
 	AddOns.ScrollBar = Slider
