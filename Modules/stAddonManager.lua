@@ -372,10 +372,10 @@ function stAM:InitProfiles()
 		stAM:UpdateAddonList()
 	end)
 
+	ProfileMenu.NewButton.Text:SetText(PA.ACL['New Profile'])
 	ProfileMenu.NewButton:SetPoint('TOPLEFT', ProfileMenu.EnableAll, 'BOTTOMLEFT', 0, -5)
 	ProfileMenu.NewButton:SetPoint('TOPRIGHT', ProfileMenu.DisableAll, 'BOTTOMRIGHT', 0, -5)
 	ProfileMenu.NewButton:SetScript('OnClick', function() _G.StaticPopup_Show('STADDONMANAGER_NEWPROFILE') end)
-	ProfileMenu.NewButton.Text:SetText(PA.ACL['New Profile'])
 
 	ProfileMenu.Buttons = {}
 
@@ -551,6 +551,16 @@ function stAM:Update()
 	self.Frame.Reload.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	self.Frame.Profiles.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
 	self.Frame.CharacterSelect.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+
+	self.ProfileMenu.EnableAll.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	self.ProfileMenu.DisableAll.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	self.ProfileMenu.NewButton.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+
+	for i in ipairs(self.ProfileMenu.Buttons) do
+		self.ProfileMenu.Buttons[i].Load.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+		self.ProfileMenu.Buttons[i].Update.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+		self.ProfileMenu.Buttons[i].Delete.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	end
 
 	stAM:UpdateAddonList()
 end
