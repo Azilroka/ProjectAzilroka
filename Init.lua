@@ -200,7 +200,7 @@ function PA:GetOptions()
 end
 
 function PA:BuildProfile()
-	PA.data = PA.ADB:New('ProjectAzilrokaDB', PA.Defaults)
+	PA.data = PA.ADB:New('ProjectAzilrokaDB', PA.Defaults, true)
 
 	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
 	PA.data.RegisterCallback(PA, 'OnProfileCopied', 'SetupProfile')
