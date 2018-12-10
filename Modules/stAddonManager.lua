@@ -189,8 +189,8 @@ function stAM:BuildFrame()
 
 	RequiredAddons.Text = RequiredAddons:CreateFontString(nil, 'OVERLAY')
 	RequiredAddons.Text:SetPoint('LEFT', RequiredAddons, 'RIGHT', 5, 0)
-	RequiredAddons.Text:SetFont(font, 14, fontFlag)
-	RequiredAddons.Text:SetText(PA.ACL['Enable Required'])
+	RequiredAddons.Text:SetFont(font, 12, fontFlag)
+	RequiredAddons.Text:SetText(PA.ACL['Required'])
 
 	RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
 
@@ -219,8 +219,8 @@ function stAM:BuildFrame()
 
 	OptionalAddons.Text = OptionalAddons:CreateFontString(nil, 'OVERLAY')
 	OptionalAddons.Text:SetPoint('LEFT', OptionalAddons, 'RIGHT', 5, 0)
-	OptionalAddons.Text:SetFont(font, 14, fontFlag)
-	OptionalAddons.Text:SetText(PA.ACL['Enable Optional'])
+	OptionalAddons.Text:SetFont(font, 12, fontFlag)
+	OptionalAddons.Text:SetText(PA.ACL['Optional'])
 
 	OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
 
@@ -363,7 +363,6 @@ function stAM:BuildFrame()
 		CheckButton:SetHighlightTexture('')
 
 		local Text = CheckButton:CreateFontString(nil, 'OVERLAY')
-		Text:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
 		Text:SetFont(font, fontSize, fontFlag)
 		Text:SetText('')
 		Text:SetJustifyH('CENTER')
@@ -377,7 +376,6 @@ function stAM:BuildFrame()
 		CheckButton.Text = Text
 
 		local StatusText = CheckButton:CreateFontString(nil, 'OVERLAY')
-		StatusText:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
 		StatusText:SetFont(font, fontSize, fontFlag)
 		StatusText:SetText('')
 		StatusText:SetJustifyH('CENTER')
@@ -630,10 +628,12 @@ function stAM:UpdateAddonList()
 			if info.Missing then
 				button.Icon:Show()
 				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
+				button.Text:SetPoint("RIGHT", self.Frame.AddOns, "CENTER", 0, 0)
 				button.StatusText:SetText(PA.ACL['Missing: ']..table.concat(info.Missing, ', '))
 			else
 				button.Icon:Hide()
 				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
+				button.Text:SetPoint("RIGHT", self.Frame.AddOns, "RIGHT", -10, 0)
 				button.StatusText:SetText('')
 			end
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
@@ -671,6 +671,8 @@ function stAM:Update()
 	self.Frame.Reload.Text:SetFont(font, 12, fontFlag)
 	self.Frame.Profiles.Text:SetFont(font, 12, fontFlag)
 	self.Frame.CharacterSelect.Text:SetFont(font, 12, fontFlag)
+	self.Frame.RequiredAddons.Text:SetFont(font, 12, fontFlag)
+	self.Frame.OptionalAddons.Text:SetFont(font, 12, fontFlag)
 
 	self.Frame.RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
 	self.Frame.OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
