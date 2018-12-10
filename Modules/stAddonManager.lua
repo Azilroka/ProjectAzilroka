@@ -606,9 +606,9 @@ function stAM:UpdateAddonList()
 		wipe(self.Frame.Search.AddOns)
 
 		for i = 1, #self.AddOnInfo do
-			local name, title = self.AddOnInfo[i]['Name'], self.AddOnInfo[i]['Title']
+			local name, title, authors = self.AddOnInfo[i]['Name'], self.AddOnInfo[i]['Title'], self.AddOnInfo[i]['Authors']
 
-			if strfind(strlower(name), query) or strfind(strlower(title), query) then
+			if strfind(strlower(name), query) or strfind(strlower(title), query) or (authors and strfind(strlower(authors), query)) then
 				tinsert(self.Frame.Search.AddOns, i)
 			end
 		end
