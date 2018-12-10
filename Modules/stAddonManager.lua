@@ -68,14 +68,21 @@ end
 function stAM:BuildFrame()
 	local Frame = CreateFrame("Frame", 'stAMFrame', UIParent)
 	local Close = CreateFrame('Button', 'stAMCloseButton', Frame)
-	local Reload = CreateFrame('Button', 'stAMReload', Frame)
 	local Search = CreateFrame('EditBox', 'stAMSearchBox', Frame)
-	local CharacterSelect = CreateFrame('Button', nil, Frame)
+
 	local Profiles = CreateFrame('Button', 'stAMProfiles', Frame)
 	local AddOns = CreateFrame("Frame", 'stAMAddOns', Frame)
 	local Slider = CreateFrame("Slider", nil, AddOns)
 
+	local Reload = CreateFrame('Button', 'stAMReload', Frame)
+	local RequiredAddons = CreateFrame('CheckButton', nil, Frame)
+	local OptionalAddons = CreateFrame('CheckButton', nil, Frame)
+	local CharacterSelect = CreateFrame('Button', nil, Frame)
+
 	local Title = Frame:CreateFontString(nil, 'OVERLAY')
+
+	-- Defines
+	local font, fontSize, fontFlag = PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag']
 
 	Frame:SetSize(self.db['FrameWidth'], 10 + self.db['NumAddOns'] * 25 + 40)
 	Frame:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
@@ -89,7 +96,7 @@ function stAM:BuildFrame()
 
 	Title:SetPoint('TOPLEFT', 0, -5)
 	Title:SetPoint('TOPRIGHT', 0, -5)
-	Title:SetFont(PA.LSM:Fetch('font', self.db['Font']), 14, self.db['FontFlag'])
+	Title:SetFont(font, 14, fontFlag)
 	Title:SetText(stAM.Title)
 	Title:SetJustifyH('CENTER')
 	Title:SetJustifyV('MIDDLE')
@@ -128,7 +135,7 @@ function stAM:BuildFrame()
 	Search:SetAutoFocus(false)
 	Search:SetTextInsets(5, 5, 0, 0)
 	Search:SetTextColor(1, 1, 1)
-	Search:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	Search:SetFont(font, 12, fontFlag)
 	Search:SetShadowOffset(0,0)
 	Search:SetText(PA.ACL['Search'])
 	Search.AddOns = {}
@@ -151,11 +158,71 @@ function stAM:BuildFrame()
 	Reload:SetScript('OnLeave', function(self) PA:SetTemplate(self) end)
 	Reload:SetScript('OnClick', _G.ReloadUI)
 	Reload.Text = Reload:CreateFontString(nil, 'OVERLAY')
-	Reload.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	Reload.Text:SetFont(font, 12, fontFlag)
 	Reload.Text:SetText(PA.ACL['Reload'])
 	Reload.Text:SetPoint('CENTER', 0, 0)
 	Reload.Text:SetJustifyH('CENTER')
 	Reload:SetPoint('TOPLEFT', AddOns, 'BOTTOMLEFT', 0, -10)
+
+	RequiredAddons:SetPoint('LEFT', Reload, 'RIGHT', 50, 0)
+	PA:SetTemplate(RequiredAddons)
+	RequiredAddons:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
+	RequiredAddons:SetScript('OnClick', function(self)
+		stAM.db.EnableRequiredAddons = not stAM.db.EnableRequiredAddons
+	end)
+	RequiredAddons:SetScript('OnEnter', function(self)
+		GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine(PA.ACL['Enable Required AddOns'], 1, 1, 1)
+		GameTooltip:AddLine(PA.ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'], 1, 1, 1)
+		GameTooltip:Show()
+	end)
+	RequiredAddons:SetScript('OnLeave', function(self) PA:SetTemplate(self) GameTooltip:Hide() end)
+
+	RequiredAddons.CheckTexture = RequiredAddons:CreateTexture(nil, 'OVERLAY', nil, 1)
+	RequiredAddons.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+	RequiredAddons.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
+	PA:SetInside(RequiredAddons.CheckTexture, RequiredAddons)
+
+	RequiredAddons:SetCheckedTexture(RequiredAddons.CheckTexture)
+	RequiredAddons:SetHighlightTexture('')
+
+	RequiredAddons.Text = RequiredAddons:CreateFontString(nil, 'OVERLAY')
+	RequiredAddons.Text:SetPoint('LEFT', RequiredAddons, 'RIGHT', 5, 0)
+	RequiredAddons.Text:SetFont(font, 14, fontFlag)
+	RequiredAddons.Text:SetText(PA.ACL['Enable Required'])
+
+	RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
+
+	OptionalAddons:SetPoint('LEFT', RequiredAddons, 'RIGHT', 100, 0)
+	PA:SetTemplate(OptionalAddons)
+	OptionalAddons:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
+	OptionalAddons:SetScript('OnClick', function(self)
+		stAM.db.EnableOptionalAddons = not stAM.db.EnableOptionalAddons
+	end)
+	OptionalAddons:SetScript('OnEnter', function(self)
+		GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine(PA.ACL['Enable Optional AddOns'], 1, 1, 1)
+		GameTooltip:AddLine(PA.ACL['This will attempt to enable all the "Optional" AddOns for the selected AddOn.'], 1, 1, 1)
+		GameTooltip:Show()
+	end)
+	OptionalAddons:SetScript('OnLeave', function(self) PA:SetTemplate(self) GameTooltip:Hide() end)
+
+	OptionalAddons.CheckTexture = OptionalAddons:CreateTexture(nil, 'OVERLAY', nil, 1)
+	OptionalAddons.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
+	OptionalAddons.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
+	PA:SetInside(OptionalAddons.CheckTexture, OptionalAddons)
+
+	OptionalAddons:SetCheckedTexture(OptionalAddons.CheckTexture)
+	OptionalAddons:SetHighlightTexture('')
+
+	OptionalAddons.Text = OptionalAddons:CreateFontString(nil, 'OVERLAY')
+	OptionalAddons.Text:SetPoint('LEFT', OptionalAddons, 'RIGHT', 5, 0)
+	OptionalAddons.Text:SetFont(font, 14, fontFlag)
+	OptionalAddons.Text:SetText(PA.ACL['Enable Optional'])
+
+	OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
 
 	CharacterSelect:SetPoint('TOPRIGHT', AddOns, 'BOTTOMRIGHT', 0, -10)
 	CharacterSelect.DropDown = CreateFrame('Frame', 'stAMCharacterSelectDropDown', CharacterSelect, 'UIDropDownMenuTemplate')
@@ -165,7 +232,7 @@ function stAM:BuildFrame()
 	CharacterSelect:SetScript('OnLeave', function(self) PA:SetTemplate(self) end)
 	CharacterSelect:SetScript('OnClick', function(self) EasyMenu(stAM.Menu, self.DropDown, self, 0, 38 + (stAM.MenuOffset * 16), "MENU", 5) end)
 	CharacterSelect.Text = CharacterSelect:CreateFontString(nil, 'OVERLAY')
-	CharacterSelect.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	CharacterSelect.Text:SetFont(font, 12, fontFlag)
 	CharacterSelect.Text:SetText(PA.ACL['Character Select'])
 	CharacterSelect.Text:SetPoint('CENTER', 0, 0)
 	CharacterSelect.Text:SetJustifyH('CENTER')
@@ -178,7 +245,7 @@ function stAM:BuildFrame()
 	Profiles:SetScript('OnClick', function() stAM:ToggleProfiles() end)
 
 	Profiles.Text = Profiles:CreateFontString(nil, 'OVERLAY')
-	Profiles.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	Profiles.Text:SetFont(font, 12, fontFlag)
 	Profiles.Text:SetText(PA.ACL['Profiles'])
 	Profiles.Text:SetPoint('CENTER', 0, 0)
 	Profiles.Text:SetJustifyH('CENTER')
@@ -204,7 +271,7 @@ function stAM:BuildFrame()
 	Slider:EnableMouseWheel(true)
 
 	local Thumb = Slider:GetThumbTexture()
-	Thumb:SetSize(16, 8)
+	Thumb:SetSize(8, 16)
 	Thumb:SetVertexColor(Slider:GetBackdropBorderColor())
 
 	AddOns.ScrollBar = Slider
@@ -249,6 +316,16 @@ function stAM:BuildFrame()
 					DisableAddOn(self.name, stAM.SelectedCharacter)
 				else
 					EnableAddOn(self.name, stAM.SelectedCharacter)
+					if stAM.db.EnableRequiredAddons and self.required then
+						for _, AddOn in pairs(self.required) do
+							EnableAddOn(AddOn)
+						end
+					end
+					if stAM.db.EnableOptionalAddons and self.optional then
+						for _, AddOn in pairs(self.optional) do
+							EnableAddOn(AddOn)
+						end
+					end
 				end
 				stAM:UpdateAddonList()
 			end
@@ -257,16 +334,18 @@ function stAM:BuildFrame()
 			GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
 			GameTooltip:ClearLines()
 			GameTooltip:AddDoubleLine('AddOn:', self.title, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine(PA.ACL['Authors:'], self.author, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine('Notes:', self.notes, 1, 1, 1, 1, 1, 1)
-			if self.requireddeps or self.optionaldeps then
+			GameTooltip:AddDoubleLine(PA.ACL['Authors:'], self.authors, 1, 1, 1, 1, 1, 1)
+			if self.notes ~= nil then
+				GameTooltip:AddDoubleLine('Notes:', self.notes, 1, 1, 1, 1, 1, 1)
+			end
+			if self.required or self.optional then
 				GameTooltip:AddLine(' ')
 			end
-			if self.requireddeps then
-				GameTooltip:AddDoubleLine('Required Dependencies:', self.requireddeps, 1, 1, 1, 1, 1, 1)
+			if self.required then
+				GameTooltip:AddDoubleLine('Required Dependencies:', table.concat(self.required, ", "), 1, 1, 1, 1, 1, 1)
 			end
-			if self.optionaldeps then
-				GameTooltip:AddDoubleLine('Optional Dependencies:', self.optionaldeps, 1, 1, 1, 1, 1, 1)
+			if self.optional then
+				GameTooltip:AddDoubleLine('Optional Dependencies:', table.concat(self.optional, ", "), 1, 1, 1, 1, 1, 1)
 			end
 			GameTooltip:Show()
 			self:SetBackdropBorderColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
@@ -284,18 +363,41 @@ function stAM:BuildFrame()
 		CheckButton:SetHighlightTexture('')
 
 		local Text = CheckButton:CreateFontString(nil, 'OVERLAY')
-		Text:SetPoint('LEFT', 5, 0)
-		Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag'])
+		Text:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
+		Text:SetFont(font, fontSize, fontFlag)
 		Text:SetText('')
 		Text:SetJustifyH('CENTER')
 		Text:ClearAllPoints()
 		Text:SetPoint("LEFT", CheckButton, "RIGHT", 10, 0)
 		Text:SetPoint("TOP", CheckButton, "TOP")
 		Text:SetPoint("BOTTOM", CheckButton, "BOTTOM")
-		Text:SetPoint("RIGHT", AddOns, "RIGHT", -10, 0)
+		Text:SetPoint("RIGHT", AddOns, "CENTER", 0, 0)
 		Text:SetJustifyH("LEFT")
 
 		CheckButton.Text = Text
+
+		local MissingText = CheckButton:CreateFontString(nil, 'OVERLAY')
+		MissingText:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
+		MissingText:SetFont(font, fontSize, fontFlag)
+		MissingText:SetText('')
+		MissingText:SetJustifyH('CENTER')
+		MissingText:ClearAllPoints()
+		MissingText:SetPoint("LEFT", Text, "RIGHT", 0, 0)
+		MissingText:SetPoint("TOP", CheckButton, "TOP")
+		MissingText:SetPoint("BOTTOM", CheckButton, "BOTTOM")
+		MissingText:SetPoint("RIGHT", AddOns, "RIGHT", -10, 0)
+		MissingText:SetJustifyH("LEFT")
+		MissingText:SetVertexColor(.77, .12, .24)
+
+		CheckButton.MissingText = MissingText
+
+		local Icon = CheckButton:CreateTexture(nil, 'OVERLAY')
+		Icon:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang]])
+		Icon:SetPoint('CENTER', CheckButton, 'RIGHT', 10, 0)
+		Icon:SetSize(32, 32)
+		Icon:SetVertexColor(.77, .12, .24)
+
+		CheckButton.Icon = Icon
 
 		AddOns.Buttons[i] = CheckButton
 	end
@@ -504,7 +606,7 @@ function stAM:UpdateAddonList()
 		wipe(self.Frame.Search.AddOns)
 
 		for i = 1, #self.AddOnInfo do
-			local name, title = unpack(self.AddOnInfo[i])
+			local name, title = self.AddOnInfo[i]['Name'], self.AddOnInfo[i]['Title']
 
 			if strfind(strlower(name), query) or strfind(strlower(title), query) then
 				tinsert(self.Frame.Search.AddOns, i)
@@ -515,9 +617,19 @@ function stAM:UpdateAddonList()
 	for i = 1, self.db['NumAddOns'] do
 		local addonIndex = (not self.searchQuery and (stAM.scrollOffset + i)) or self.Frame.Search.AddOns[stAM.scrollOffset + i]
 		local button = self.Frame.AddOns.Buttons[i]
+		local info = self.AddOnInfo[addonIndex]
 		if addonIndex and addonIndex <= #self.AddOnInfo then
-			button.name, button.title, button.author, button.notes, button.requireddeps, button.optionaldeps = unpack(self.AddOnInfo[addonIndex])
+			button.name, button.title, button.authors, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Notes, info.Required, info.Optional
 			button.Text:SetText(button.title)
+			if info.Missing then
+				button.Icon:Show()
+				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
+				button.MissingText:SetText(PA.ACL['Missing: ']..table.concat(info.Missing, ', '))
+			else
+				button.Icon:Hide()
+				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
+				button.MissingText:SetText('')
+			end
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
 			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 			button:Show()
@@ -529,37 +641,41 @@ function stAM:UpdateAddonList()
 	for i = self.db['NumAddOns'] + 1, #self.Frame.AddOns.Buttons do
 		self.Frame.AddOns.Buttons[i]:Hide()
 	end
-
-	self.Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
-	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
 end
 
 function stAM:Update()
-	for i = 1, 30 do
+	self.Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
+	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
+
+	local font, fontSize, fontFlag = PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag']
+
+	for i in pairs(self.Frame.AddOns.Buttons) do
 		local CheckButton = self.Frame.AddOns.Buttons[i]
 
 		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
-		CheckButton.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag'])
+		CheckButton.Text:SetFont(font, fontSize, fontFlag)
+		CheckButton.MissingText:SetFont(font, fontSize, fontFlag)
 		CheckButton.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
 		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
 	end
 
-	-- Frame fonts
-	self.Frame.Title:SetFont(PA.LSM:Fetch('font', self.db['Font']), 14, self.db['FontFlag'])
-	self.Frame.Search:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	self.Frame.Reload.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	self.Frame.Profiles.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	self.Frame.CharacterSelect.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	self.Frame.Title:SetFont(font, 14, fontFlag)
+	self.Frame.Search:SetFont(font, 12, fontFlag)
+	self.Frame.Reload.Text:SetFont(font, 12, fontFlag)
+	self.Frame.Profiles.Text:SetFont(font, 12, fontFlag)
+	self.Frame.CharacterSelect.Text:SetFont(font, 12, fontFlag)
 
-	self.ProfileMenu.EnableAll.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	self.ProfileMenu.DisableAll.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-	self.ProfileMenu.NewButton.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	self.ProfileMenu.EnableAll.Text:SetFont(font, 12, fontFlag)
+	self.ProfileMenu.DisableAll.Text:SetFont(font, 12, fontFlag)
+	self.ProfileMenu.NewButton.Text:SetFont(font, 12, fontFlag)
 
-	for i in ipairs(self.ProfileMenu.Buttons) do
-		self.ProfileMenu.Buttons[i].Load.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-		self.ProfileMenu.Buttons[i].Update.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
-		self.ProfileMenu.Buttons[i].Delete.Text:SetFont(PA.LSM:Fetch('font', self.db['Font']), 12, self.db['FontFlag'])
+	for i in pairs(self.ProfileMenu.Buttons) do
+		local Button = self.ProfileMenu.Buttons[i]
+
+		Button.Load.Text:SetFont(font, 12, fontFlag)
+		Button.Update.Text:SetFont(font, 12, fontFlag)
+		Button.Delete.Text:SetFont(font, 12, fontFlag)
 	end
 
 	stAM:UpdateAddonList()
@@ -570,81 +686,111 @@ function stAM:GetOptions()
 		type = 'group',
 		name = stAM.Title,
 		desc = stAM.Description,
-		get = function(info) return stAM.db[info[#info]] end,
-		set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
 				name = PA:Color(stAM.Title),
 			},
-			NumAddOns = {
+			General = {
 				order = 1,
-				type = 'range',
-				name = PA.ACL['# Shown AddOns'],
-				min = 3, max = 30, step = 1,
-			},
-			FrameWidth = {
-				order = 2,
-				type = 'range',
-				name = PA.ACL['Frame Width'],
-				min = 225, max = 1024, step = 1,
-			},
-			ButtonHeight = {
-				order = 3,
-				type = 'range',
-				name = PA.ACL['Button Height'],
-				min = 3, max = 30, step = 1,
-			},
-			ButtonWidth = {
-				order = 4,
-				type = 'range',
-				name = PA.ACL['Button Width'],
-				min = 3, max = 30, step = 1,
-			},
-			Font = {
-				type = 'select', dialogControl = 'LSM30_Font',
-				order = 5,
-				name = PA.ACL['Font'],
-				values = PA.LSM:HashTable('font'),
-			},
-			FontSize = {
-				order = 6,
-				name = FONT_SIZE,
-				type = 'range',
-				min = 6, max = 22, step = 1,
-			},
-			FontFlag = {
-				order = 7,
-				name = PA.ACL['Font Outline'],
-				type = 'select',
-				values = {
-					['NONE'] = 'None',
-					['OUTLINE'] = 'OUTLINE',
-					['MONOCHROME'] = 'MONOCHROME',
-					['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
-					['THICKOUTLINE'] = 'THICKOUTLINE',
+				type = 'group',
+				name = PA.ACL['General'],
+				guiInline = true,
+				get = function(info) return stAM.db[info[#info]] end,
+				set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
+				args = {
+					NumAddOns = {
+						order = 1,
+						type = 'range',
+						name = PA.ACL['# Shown AddOns'],
+						min = 3, max = 30, step = 1,
+					},
+					FrameWidth = {
+						order = 2,
+						type = 'range',
+						name = PA.ACL['Frame Width'],
+						min = 225, max = 1024, step = 1,
+					},
+					ButtonHeight = {
+						order = 3,
+						type = 'range',
+						name = PA.ACL['Button Height'],
+						min = 3, max = 30, step = 1,
+					},
+					ButtonWidth = {
+						order = 4,
+						type = 'range',
+						name = PA.ACL['Button Width'],
+						min = 3, max = 30, step = 1,
+					},
+					EnableRequiredAddons ={
+						order = 5,
+						type = 'toggle',
+						name = PA.ACL['Enable Required AddOns'],
+						desc = PA.ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.']
+					},
+					EnableOptionalAddons ={
+						order = 6,
+						type = 'toggle',
+						name = PA.ACL['Enable Optional AddOns'],
+						desc = PA.ACL['This will attempt to enable all the "Optional" AddOns for the selected AddOn.']
+					},
+					CheckTexture = {
+						order = 7,
+						type = 'select', dialogControl = 'LSM30_Statusbar',
+						name = PA.ACL['Texture'],
+						values = PA.LSM:HashTable('statusbar'),
+					},
+					CheckColor = {
+						order = 8,
+						type = 'color',
+						name = COLOR_PICKER,
+						hasAlpha = true,
+						get = function(info) return unpack(stAM.db[info[#info]]) end,
+						set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end,
+						disabled = function() return stAM.db['ClassColor'] end,
+					},
+					ClassColor = {
+						order = 9,
+						type = 'toggle',
+						name = PA.ACL['Class Color Check Texture'],
+					},
 				},
 			},
-			CheckTexture = {
-				order = 8,
-				type = 'select', dialogControl = 'LSM30_Statusbar',
-				name = PA.ACL['Texture'],
-				values = PA.LSM:HashTable('statusbar'),
-			},
-			CheckColor = {
-				order = 9,
-				type = 'color',
-				name = COLOR_PICKER,
-				hasAlpha = true,
-				get = function(info) return unpack(stAM.db[info[#info]]) end,
-				set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end,
-				disabled = function() return stAM.db['ClassColor'] end,
-			},
-			ClassColor = {
-				order = 10,
-				type = 'toggle',
-				name = PA.ACL['Class Color Check Texture'],
+			FontSettings = {
+				order = 2,
+				type = 'group',
+				name = PA.ACL['Font Settings'],
+				guiInline = true,
+				get = function(info) return stAM.db[info[#info]] end,
+				set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
+				args = {
+					Font = {
+						type = 'select', dialogControl = 'LSM30_Font',
+						order = 1,
+						name = PA.ACL['Font'],
+						values = PA.LSM:HashTable('font'),
+					},
+					FontSize = {
+						order = 2,
+						name = FONT_SIZE,
+						type = 'range',
+						min = 6, max = 22, step = 1,
+					},
+					FontFlag = {
+						order = 3,
+						name = PA.ACL['Font Outline'],
+						type = 'select',
+						values = {
+							['NONE'] = 'None',
+							['OUTLINE'] = 'OUTLINE',
+							['MONOCHROME'] = 'MONOCHROME',
+							['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+							['THICKOUTLINE'] = 'THICKOUTLINE',
+						},
+					},
+				},
 			},
 			AuthorHeader = {
 				order = 11,
@@ -676,6 +822,8 @@ function stAM:BuildProfile()
 		['CheckColor'] = { 0, .66, 1},
 		['ClassColor'] = false,
 		['CheckTexture'] = 'Solid',
+		['EnableRequiredAddons'] = true,
+		['EnableOptionalAddons'] = false,
 	}
 
 	PA.Options.args.general.args.stAddonManager = {
@@ -698,10 +846,27 @@ function stAM:Initialize()
 	stAM.Profiles = {}
 
 	for i = 1, GetNumAddOns() do
-		local name, title, notes = GetAddOnInfo(i)
-		local requireddeps, optionaldeps = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
-		local author = GetAddOnMetadata(i, "Author")
-		stAM.AddOnInfo[i] = { name, title, author, notes, requireddeps, optionaldeps }
+		local Name, Title, Notes = GetAddOnInfo(i)
+		local Required, Optional = nil, nil
+		local MissingAddons
+
+		if GetAddOnDependencies(i) ~= nil then
+			Required = { GetAddOnDependencies(i) }
+			for _, addon in pairs(Required) do
+				if select(5, GetAddOnInfo(addon)) == 'MISSING' then
+					MissingAddons = MissingAddons or {}
+					tinsert(MissingAddons, addon)
+				end
+			end
+		end
+
+		if GetAddOnOptionalDependencies(i) then
+			Optional = { GetAddOnOptionalDependencies(i) }
+		end
+
+		local Authors = GetAddOnMetadata(i, "Author")
+
+		stAM.AddOnInfo[i] = { ['Name'] = Name, ['Title'] = Title, ['Authors'] = Authors, ['Notes'] = Notes, ['Required'] = Required, ['Optional'] = Optional, ['Missing'] = MissingAddons }
 	end
 
 	stAM.SelectedCharacter = PA.MyName
