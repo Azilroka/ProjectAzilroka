@@ -166,7 +166,7 @@ function stAM:BuildFrame()
 
 	RequiredAddons:SetPoint('LEFT', Reload, 'RIGHT', 50, 0)
 	PA:SetTemplate(RequiredAddons)
-	RequiredAddons:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
+	RequiredAddons:SetSize(20, 20)
 	RequiredAddons:SetScript('OnClick', function(self)
 		stAM.db.EnableRequiredAddons = not stAM.db.EnableRequiredAddons
 	end)
@@ -196,7 +196,7 @@ function stAM:BuildFrame()
 
 	OptionalAddons:SetPoint('LEFT', RequiredAddons, 'RIGHT', 100, 0)
 	PA:SetTemplate(OptionalAddons)
-	OptionalAddons:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
+	OptionalAddons:SetSize(20, 20)
 	OptionalAddons:SetScript('OnClick', function(self)
 		stAM.db.EnableOptionalAddons = not stAM.db.EnableOptionalAddons
 	end)
@@ -405,10 +405,16 @@ function stAM:BuildFrame()
 	Frame.Title = Title
 	Frame.Close = Close
 	Frame.Reload = Reload
+	Frame.RequiredAddons = RequiredAddons
+	Frame.OptionalAddons = OptionalAddons
 	Frame.Search = Search
 	Frame.CharacterSelect = CharacterSelect
 	Frame.Profiles = Profiles
 	Frame.AddOns = AddOns
+
+	Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
+	Frame:SetSize(self.db['FrameWidth'], Frame.Title:GetHeight() + 5 + Frame.Search:GetHeight() + 5  + Frame.AddOns:GetHeight() + 10 + Frame.Profiles:GetHeight() + 20)
+
 	self.Frame = Frame
 
 	tinsert(_G.UISpecialFrames, self.Frame:GetName())
