@@ -376,20 +376,20 @@ function stAM:BuildFrame()
 
 		CheckButton.Text = Text
 
-		local MissingText = CheckButton:CreateFontString(nil, 'OVERLAY')
-		MissingText:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
-		MissingText:SetFont(font, fontSize, fontFlag)
-		MissingText:SetText('')
-		MissingText:SetJustifyH('CENTER')
-		MissingText:ClearAllPoints()
-		MissingText:SetPoint("LEFT", Text, "RIGHT", 0, 0)
-		MissingText:SetPoint("TOP", CheckButton, "TOP")
-		MissingText:SetPoint("BOTTOM", CheckButton, "BOTTOM")
-		MissingText:SetPoint("RIGHT", AddOns, "RIGHT", -10, 0)
-		MissingText:SetJustifyH("LEFT")
-		MissingText:SetVertexColor(.77, .12, .24)
+		local StatusText = CheckButton:CreateFontString(nil, 'OVERLAY')
+		StatusText:SetPoint('LEFT', CheckButton, 'RIGHT', 5, 0)
+		StatusText:SetFont(font, fontSize, fontFlag)
+		StatusText:SetText('')
+		StatusText:SetJustifyH('CENTER')
+		StatusText:ClearAllPoints()
+		StatusText:SetPoint("LEFT", Text, "RIGHT", 0, 0)
+		StatusText:SetPoint("TOP", CheckButton, "TOP")
+		StatusText:SetPoint("BOTTOM", CheckButton, "BOTTOM")
+		StatusText:SetPoint("RIGHT", AddOns, "RIGHT", -10, 0)
+		StatusText:SetJustifyH("LEFT")
+		StatusText:SetVertexColor(.77, .12, .24)
 
-		CheckButton.MissingText = MissingText
+		CheckButton.StatusText = StatusText
 
 		local Icon = CheckButton:CreateTexture(nil, 'OVERLAY')
 		Icon:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang]])
@@ -624,11 +624,11 @@ function stAM:UpdateAddonList()
 			if info.Missing then
 				button.Icon:Show()
 				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
-				button.MissingText:SetText(PA.ACL['Missing: ']..table.concat(info.Missing, ', '))
+				button.StatusText:SetText(PA.ACL['Missing: ']..table.concat(info.Missing, ', '))
 			else
 				button.Icon:Hide()
 				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
-				button.MissingText:SetText('')
+				button.StatusText:SetText('')
 			end
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
 			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
@@ -654,7 +654,7 @@ function stAM:Update()
 
 		CheckButton:SetSize(self.db['ButtonWidth'], self.db['ButtonHeight'])
 		CheckButton.Text:SetFont(font, fontSize, fontFlag)
-		CheckButton.MissingText:SetFont(font, fontSize, fontFlag)
+		CheckButton.StatusText:SetFont(font, fontSize, fontFlag)
 		CheckButton.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
 		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
@@ -665,6 +665,9 @@ function stAM:Update()
 	self.Frame.Reload.Text:SetFont(font, 12, fontFlag)
 	self.Frame.Profiles.Text:SetFont(font, 12, fontFlag)
 	self.Frame.CharacterSelect.Text:SetFont(font, 12, fontFlag)
+
+	self.Frame.RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
+	self.Frame.OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
 
 	self.ProfileMenu.EnableAll.Text:SetFont(font, 12, fontFlag)
 	self.ProfileMenu.DisableAll.Text:SetFont(font, 12, fontFlag)
