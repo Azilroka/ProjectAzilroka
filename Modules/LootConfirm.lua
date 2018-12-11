@@ -133,6 +133,8 @@ function LC:Initialize()
 		return
 	end
 
+	LC:GetOptions()
+
 	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
 	UIParent:UnregisterEvent('CONFIRM_DISENCHANT_ROLL')
 	UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')
