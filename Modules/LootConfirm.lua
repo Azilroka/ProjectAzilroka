@@ -25,12 +25,6 @@ function LC:HandleEvent(event, ...)
 		for slot = 1, NumLootItems do
 			ConfirmLootSlot(slot)
 		end
-	elseif event == 'LOOT_READY' then
-		if not IsModifierKeyDown() and GetCVarBool("autoLootDefault") == true then
-			for i = NumLootItems, 1, -1 do
-				LootSlot(i)
-			end
-		end
 	end
 end
 
@@ -147,7 +141,6 @@ function LC:Initialize()
 	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
 	LC:RegisterEvent('LOOT_OPENED', 'HandleEvent')
 	LC:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
-	LC:RegisterEvent('LOOT_READY', 'HandleEvent')
 
 	--LC:RegisterEvent('START_LOOT_ROLL')
 end
