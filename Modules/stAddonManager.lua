@@ -194,36 +194,6 @@ function stAM:BuildFrame()
 
 	RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
 
-	OptionalAddons:SetPoint('LEFT', RequiredAddons, 'RIGHT', 100, 0)
-	PA:SetTemplate(OptionalAddons)
-	OptionalAddons:SetSize(20, 20)
-	OptionalAddons:SetScript('OnClick', function(self)
-		stAM.db.EnableOptionalAddons = not stAM.db.EnableOptionalAddons
-	end)
-	OptionalAddons:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
-		GameTooltip:ClearLines()
-		GameTooltip:AddLine(PA.ACL['Enable Optional AddOns'], 1, 1, 1)
-		GameTooltip:AddLine(PA.ACL['This will attempt to enable all the "Optional" AddOns for the selected AddOn.'], 1, 1, 1)
-		GameTooltip:Show()
-	end)
-	OptionalAddons:SetScript('OnLeave', function(self) PA:SetTemplate(self) GameTooltip:Hide() end)
-
-	OptionalAddons.CheckTexture = OptionalAddons:CreateTexture(nil, 'OVERLAY', nil, 1)
-	OptionalAddons.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', self.db['CheckTexture']))
-	OptionalAddons.CheckTexture:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
-	PA:SetInside(OptionalAddons.CheckTexture, OptionalAddons)
-
-	OptionalAddons:SetCheckedTexture(OptionalAddons.CheckTexture)
-	OptionalAddons:SetHighlightTexture('')
-
-	OptionalAddons.Text = OptionalAddons:CreateFontString(nil, 'OVERLAY')
-	OptionalAddons.Text:SetPoint('LEFT', OptionalAddons, 'RIGHT', 5, 0)
-	OptionalAddons.Text:SetFont(font, 12, fontFlag)
-	OptionalAddons.Text:SetText(PA.ACL['Optional'])
-
-	OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
-
 	CharacterSelect:SetPoint('TOPRIGHT', AddOns, 'BOTTOMRIGHT', 0, -10)
 	CharacterSelect.DropDown = CreateFrame('Frame', 'stAMCharacterSelectDropDown', CharacterSelect, 'UIDropDownMenuTemplate')
 	CharacterSelect:SetSize(150, 20)
@@ -318,11 +288,6 @@ function stAM:BuildFrame()
 					EnableAddOn(self.name, stAM.SelectedCharacter)
 					if stAM.db.EnableRequiredAddons and self.required then
 						for _, AddOn in pairs(self.required) do
-							EnableAddOn(AddOn)
-						end
-					end
-					if stAM.db.EnableOptionalAddons and self.optional then
-						for _, AddOn in pairs(self.optional) do
 							EnableAddOn(AddOn)
 						end
 					end
@@ -672,7 +637,6 @@ function stAM:Update()
 	self.Frame.Profiles.Text:SetFont(font, 12, fontFlag)
 	self.Frame.CharacterSelect.Text:SetFont(font, 12, fontFlag)
 	self.Frame.RequiredAddons.Text:SetFont(font, 12, fontFlag)
-	self.Frame.OptionalAddons.Text:SetFont(font, 12, fontFlag)
 
 	self.Frame.RequiredAddons:SetChecked(stAM.db.EnableRequiredAddons)
 	self.Frame.OptionalAddons:SetChecked(stAM.db.EnableOptionalAddons)
@@ -741,20 +705,14 @@ function stAM:GetOptions()
 						name = PA.ACL['Enable Required AddOns'],
 						desc = PA.ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.']
 					},
-					EnableOptionalAddons ={
-						order = 6,
-						type = 'toggle',
-						name = PA.ACL['Enable Optional AddOns'],
-						desc = PA.ACL['This will attempt to enable all the "Optional" AddOns for the selected AddOn.']
-					},
 					CheckTexture = {
-						order = 7,
+						order = 6,
 						type = 'select', dialogControl = 'LSM30_Statusbar',
 						name = PA.ACL['Texture'],
 						values = PA.LSM:HashTable('statusbar'),
 					},
 					CheckColor = {
-						order = 8,
+						order = 7,
 						type = 'color',
 						name = COLOR_PICKER,
 						hasAlpha = true,
@@ -763,7 +721,7 @@ function stAM:GetOptions()
 						disabled = function() return stAM.db['ClassColor'] end,
 					},
 					ClassColor = {
-						order = 9,
+						order = 8,
 						type = 'toggle',
 						name = PA.ACL['Class Color Check Texture'],
 					},
