@@ -93,9 +93,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 		GarrisonLandingPageMinimapButton:HookScript('OnLeave', function(self)
-			if PA.AddOnSkins then
-				AddOnSkins[1]:SetTemplate(self)
-			end
+			PA:SetTemplate(self)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
