@@ -135,7 +135,7 @@ function RR:Show()
 	end
 
 	local index
-	local baseIndex = totalRewards
+	local baseIndex = totalRewards or 0
 	local buttonIndex = baseIndex
 
 	wipe(RR.ReputationInfo)
@@ -171,43 +171,45 @@ function RR:Show()
 		index = i + baseIndex
 
 		local questItem = QuestInfo_GetRewardButton(rewardsFrame, index)
-		questItem:Show()
+		if questItem then
+			questItem:Show()
 
-		questItem.type = nil
-		questItem.objectType = nil
+			questItem.type = nil
+			questItem.objectType = nil
 
-		questItem.Name:SetText(Info.Name)
-		questItem.Icon:SetTexture(PA.MyFaction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.MyFaction))
---		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
-		questItem.Count:SetText(Info.Base + Info.Bonus)
+			questItem.Name:SetText(Info.Name)
+			questItem.Icon:SetTexture(PA.MyFaction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.MyFaction))
+	--		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
+			questItem.Count:SetText(Info.Base + Info.Bonus)
 
-		if PA.AddOnSkins and questItem.Icon.Backdrop then
-			questItem.Icon.Backdrop:SetBackdropBorderColor(unpack(AS.BorderColor))
-		end
+			if PA.AddOnSkins and questItem.Icon.Backdrop then
+				questItem.Icon.Backdrop:SetBackdropBorderColor(unpack(AS.BorderColor))
+			end
 
-		if Info.Base < 0 then
-			questItem.Count:SetTextColor(1, 0, 0)
-		elseif Info.Bonus > 0 then
-			questItem.Count:SetTextColor(0, 1, 0)
-		else
-			questItem.Count:SetTextColor(1, 1, 1)
-		end
+			if Info.Base < 0 then
+				questItem.Count:SetTextColor(1, 0, 0)
+			elseif Info.Bonus > 0 then
+				questItem.Count:SetTextColor(0, 1, 0)
+			else
+				questItem.Count:SetTextColor(1, 1, 1)
+			end
 
-		if ( buttonIndex > 1 ) then
-			if ( mod(buttonIndex, 2) == 1 ) then
-				questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+			if ( buttonIndex > 1 ) then
+				if ( mod(buttonIndex, 2) == 1 ) then
+					questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
+					lastFrame = questItem
+				else
+					questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 2, 0)
+				end
+			else
+				questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 				Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 				lastFrame = questItem
-			else
-				questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 2, 0)
 			end
-		else
-			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
-			Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
-			lastFrame = questItem
-		end
 
-		i = i + 1
+			i = i + 1
+		end
 	end
 
 	QuestInfoFrame.rewardsFrame:Show()

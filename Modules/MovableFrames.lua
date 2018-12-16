@@ -153,14 +153,14 @@ local AddOnFrames = {
 }
 
 function MF:LoadPosition(frame)
-	if (not UnitAffectingCombat("player")) and frame:IsUserPlaced() then
+	if (not UnitAffectingCombat("player")) and (frame:IsUserPlaced()) then
+		local a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
 		frame:ClearAllPoints()
-		frame:SetPoint(unpack(MF.db[frame:GetName()]['Points']))
+		frame:SetPoint(a, b, c, d, e, true)
 	end
 end
 
 function MF:OnDragStart(frame)
-	self:Unhook(frame, 'OnUpdate')
 	frame:StartMoving()
 end
 
@@ -180,9 +180,6 @@ function MF:OnDragStop(frame)
 	else
 		frame:SetUserPlaced(false)
 	end
-	if (not self:IsHooked(frame, 'OnUpdate')) then
-		self:HookScript(frame, 'OnUpdate', 'LoadPosition')
-	end
 end
 
 function MF:MakeMovable(Name)
@@ -199,10 +196,17 @@ function MF:MakeMovable(Name)
 	Frame:SetMovable(true)
 	Frame:RegisterForDrag('LeftButton')
 	Frame:SetClampedToScreen(true)
-	self:HookScript(Frame, 'OnUpdate', 'LoadPosition')
+
+	self:HookScript(Frame, 'OnShow', 'LoadPosition')
 	self:HookScript(Frame, 'OnDragStart', 'OnDragStart')
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
+
+	self:SecureHook(Frame, 'SetPoint', function(a, b, c, d, e,locked)
+		if not locked then
+			MF:LoadPosition(Frame, true)
+		end
+	end)
 end
 
 function MF:ADDON_LOADED(_, addon)
