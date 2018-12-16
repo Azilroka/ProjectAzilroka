@@ -202,9 +202,9 @@ function MF:MakeMovable(Name)
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
-	self:SecureHook(Frame, 'SetPoint', function(a, b, c, d, e,locked)
+	self:SecureHook(Frame, 'SetPoint', function(a, b, c, d, e, locked)
 		if not locked then
-			MF:LoadPosition(Frame, true)
+			MF:LoadPosition(Frame)
 		end
 	end)
 end
