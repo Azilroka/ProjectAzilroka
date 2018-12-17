@@ -329,4 +329,12 @@ function MF:Initialize()
 	end
 
 	MF:RegisterEvent('ADDON_LOADED')
+
+	MF:Hook('UIParent_ManageFramePosition', function()
+		for _, Frame in pairs(MF.AllFrames) do
+			if _G[Frame] and _G[Frame]:IsShown() then
+				MF:LoadPosition(_G[Frame])
+			end
+		end
+	end, true)
 end

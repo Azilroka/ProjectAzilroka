@@ -37,7 +37,7 @@ PA.MyFaction = UnitFactionGroup('player')
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
-PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
+PA.Multiple = 1
 PA.Solid = PA.LSM:Fetch('background', 'Solid')
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
@@ -224,7 +224,8 @@ function PA:ADDON_LOADED(event, addon)
 end
 
 function PA:PLAYER_LOGIN()
-	PA.Multiple = 768 / PA.ScreenHeight / UIParent:GetScale()
+	PA.Multiple = PixelUtil.GetNearestPixelSize(1, UIParent:GetEffectiveScale())
+
 	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
 	for _, module in PA:IterateModules() do
