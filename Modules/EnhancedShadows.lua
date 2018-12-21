@@ -1,8 +1,5 @@
 local PA = _G.ProjectAzilroka
-if (PA.SLE or PA.CUI) then return end
-
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
-PA.ES, _G.EnhancedShadows = ES, ES
 
 ES.Title = '|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r'
 ES.Description = 'Adds options for registered shadows'
@@ -131,9 +128,11 @@ end
 function ES:Initialize()
 	ES.db = PA.db['EnhancedShadows']
 
-	if ES.db.Enable ~= true then
+	if PA.SLE or PA.CUI or ES.db.Enable ~= true then
 		return
 	end
+
+	PA.ES, _G.EnhancedShadows = ES, ES
 
 	ES:GetOptions()
 
