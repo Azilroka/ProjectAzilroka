@@ -178,7 +178,7 @@ function RR:Show()
 			questItem.objectType = nil
 
 			questItem.Name:SetText(Info.Name)
-			questItem.Icon:SetTexture(PA.MyFaction and ('Interface\\Icons\\PVPCurrency-Honor-%s'):format(PA.MyFaction))
+			questItem.Icon:SetTexture(PA.MyFaction and (PA.MyFaction == 'Neutral' and [[Interface\Icons\Achievement_Character_Pandaren_Female]] or ([[Interface\Icons\PVPCurrency-Conquestr-%s]]):format(PA.MyFaction)))
 	--		questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 			questItem.Count:SetText(Info.Base + Info.Bonus)
 
