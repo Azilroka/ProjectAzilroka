@@ -257,18 +257,12 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 
-end
-
-function PA:PLAYER_ENTERING_WORLD()
 	for _, module in PA:IterateModules() do
 		if module.Initialize then
 			module:Initialize()
 		end
 	end
-
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 PA:RegisterEvent('ADDON_LOADED')
 PA:RegisterEvent('PLAYER_LOGIN')
-PA:RegisterEvent('PLAYER_ENTERING_WORLD')
