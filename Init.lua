@@ -75,6 +75,19 @@ PA.Classes = {}
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
 
+function PA:GetUIScale()
+	local effectiveScale = _G.UIParent:GetEffectiveScale()
+	local magic = effectiveScale
+
+	local scale = max(.64, min(1.15, magic))
+
+	if strlen(scale) > 6 then
+		scale = tonumber(strsub(scale, 0, 6))
+	end
+
+	return magic/scale
+end
+
 function PA:ClassColorCode(class)
 	local color = class and (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.Classes[class]] or RAID_CLASS_COLORS[PA.Classes[class]]) or { r = 1, g = 1, b = 1 }
 
@@ -224,7 +237,7 @@ function PA:ADDON_LOADED(event, addon)
 end
 
 function PA:PLAYER_LOGIN()
-	PA.Multiple = PixelUtil.GetNearestPixelSize(1, UIParent:GetEffectiveScale())
+	PA.Multiple = PA:GetUIScale()
 
 	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
@@ -236,20 +249,26 @@ function PA:PLAYER_LOGIN()
 
 	PA:BuildProfile()
 
+	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
+		PA:TukuiOptions()
+	end
+
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 
+end
+
+function PA:PLAYER_ENTERING_WORLD()
 	for _, module in PA:IterateModules() do
 		if module.Initialize then
 			module:Initialize()
 		end
 	end
 
-	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
-		PA:TukuiOptions()
-	end
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 PA:RegisterEvent('ADDON_LOADED')
 PA:RegisterEvent('PLAYER_LOGIN')
+PA:RegisterEvent('PLAYER_ENTERING_WORLD')
