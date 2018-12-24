@@ -153,16 +153,16 @@ function RR:Show()
 	if ( QuestInfoFrame.mapView ) then
 		if rewardsFrame.XPFrame:IsShown() then
 			lastFrame = rewardsFrame.XPFrame
-			if buttonIndex == 0 then buttonIndex = 1 end
 		end
 		if rewardsFrame.MoneyFrame:IsShown() then
 			lastFrame = rewardsFrame.MoneyFrame
-			if buttonIndex == 0 then buttonIndex = 1 end
 		end
 	else
+		if rewardsFrame.MoneyFrame:IsShown() then
+			lastFrame = rewardsFrame.MoneyFrame
+		end
 		if rewardsFrame.XPFrame:IsShown() then
 			lastFrame = rewardsFrame.XPFrame
-			if buttonIndex == 0 then buttonIndex = 1 end
 		end
 	end
 
@@ -178,8 +178,8 @@ function RR:Show()
 		if questItem then
 			questItem:Show()
 
-			questItem.type = nil
-			questItem.objectType = nil
+			questItem.type = "reward"
+			questItem.objectType = "reputation"
 
 			questItem.Name:SetText(Info.Name)
 			questItem.Icon:SetTexture(PA.MyFaction and (PA.MyFaction == 'Neutral' and [[Interface\Icons\Achievement_Character_Pandaren_Female]] or ([[Interface\Icons\PVPCurrency-Conquest-%s]]):format(PA.MyFaction)))
