@@ -217,7 +217,7 @@ function RR:Show()
 		end
 	end
 
-	if ( numQuestChoices > 0 or numQuestRewards > 0 or numQuestCurrencies > 0 ) then
+	if ( numQuestChoices == 1 ) then
 		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5)
 	end
 
