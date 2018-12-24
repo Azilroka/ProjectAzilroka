@@ -395,7 +395,7 @@ function stAM:NewAddOnProfile(name, overwrite)
 	_G.stAddonManagerProfilesDB[name] = {}
 
 	for i = 1, #self.AddOnInfo do
-		local AddOn, isEnabled = unpack(self.AddOnInfo[i]), PA:IsAddOnEnabled(i, stAM.SelectedCharacter)
+		local AddOn, isEnabled = self.AddOnInfo[i].Name, PA:IsAddOnEnabled(i, stAM.SelectedCharacter)
 		if isEnabled then
 			tinsert(_G.stAddonManagerProfilesDB[name], AddOn)
 		end
