@@ -130,11 +130,10 @@ function RR:Show()
 		end
 	end
 
-	if rewardsFrame.SkillPointFrame:IsShown() then
-		lastFrame = rewardsFrame.SkillPointFrame
-	end
+	--if rewardsFrame.SkillPointFrame:IsShown() then
+	--	lastFrame = rewardsFrame.SkillPointFrame
+	--end
 
-	local index
 	local baseIndex = totalRewards or 0
 	local buttonIndex = numQuestChoices == 1 and 1 or baseIndex
 
@@ -163,6 +162,7 @@ function RR:Show()
 		end
 	end
 
+	local index
 	local i = 1
 	local Height = QuestInfoFrame.rewardsFrame:GetHeight()
 
@@ -213,7 +213,7 @@ function RR:Show()
 		end
 	end
 
---	QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5);
+	QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5)
 
 	QuestInfoFrame.rewardsFrame:Show()
 	QuestInfoFrame.rewardsFrame:SetHeight(Height)
