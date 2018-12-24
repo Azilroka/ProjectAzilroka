@@ -54,7 +54,10 @@ function QS:CheckQuest()
 		return
 	end
 
+	--local _, _, _, _, _, complete, daily, id = GetQuestLogTitle(index)
+
 	QS.ObjectivesCompleted, QS.ObjectivesTotal = QS:CountCompletedObjectives(QS.QuestIndex)
+
 	if QS.ObjectivesCompleted == QS.ObjectivesTotal then
 		QS:ResetSoundPlayback()
 		if QS.db.UseSoundID then
@@ -82,7 +85,7 @@ function QS:UNIT_QUEST_LOG_CHANGED(_, unit)
 		return
 	end
 
-	QS:ScheduleTimer(function() QS:CheckQuest() end, .5)
+	QS:ScheduleTimer('CheckQuest', 1)
 end
 
 function QS:QUEST_WATCH_UPDATE(_, index)

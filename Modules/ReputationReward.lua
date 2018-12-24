@@ -136,7 +136,7 @@ function RR:Show()
 
 	local index
 	local baseIndex = totalRewards or 0
-	local buttonIndex = baseIndex
+	local buttonIndex = numQuestChoices == 1 and 1 or baseIndex
 
 	wipe(RR.ReputationInfo)
 
@@ -181,6 +181,7 @@ function RR:Show()
 			questItem.Icon:SetTexture(PA.MyFaction and (PA.MyFaction == 'Neutral' and [[Interface\Icons\Achievement_Character_Pandaren_Female]] or ([[Interface\Icons\PVPCurrency-Conquest-%s]]):format(PA.MyFaction)))
 			--questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
 			questItem.Count:SetText(Info.Base + Info.Bonus)
+			questItem.Count:Show()
 
 			if PA.AddOnSkins and questItem.Icon.Backdrop then
 				questItem.Icon.Backdrop:SetBackdropBorderColor(unpack(AS.BorderColor))
@@ -211,6 +212,8 @@ function RR:Show()
 			i = i + 1
 		end
 	end
+
+--	QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5);
 
 	QuestInfoFrame.rewardsFrame:Show()
 	QuestInfoFrame.rewardsFrame:SetHeight(Height)

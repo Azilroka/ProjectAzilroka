@@ -1,6 +1,10 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
+if PA.Tukui then
+	Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
+end
+
 local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0')
 PA.EC, _G.Enhanced_Config = EC, EC
 
@@ -42,33 +46,49 @@ EC.Options = {
 	},
 }
 
-function EC:Initialize()
-	function EC.OnConfigClosed(widget, event)
-		PA.ACD.OpenFrames['Enhanced_Config'] = nil
-		PA.GUI:Release(widget)
+function EC:PositionGameMenuButton()
+	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
+	local _, relTo, _, _, offY = GameMenuButtonLogout:GetPoint()
+	if relTo ~= GameMenuFrame['EC'] then
+		GameMenuFrame['EC']:ClearAllPoints()
+		GameMenuFrame['EC']:Point("TOPLEFT", relTo, "BOTTOMLEFT", 0, -1)
+		GameMenuButtonLogout:ClearAllPoints()
+		GameMenuButtonLogout:Point("TOPLEFT", GameMenuFrame['EC'], "BOTTOMLEFT", 0, offY)
 	end
+end
 
-	function EC:ToggleConfig()
-		if not PA.ACD.OpenFrames['Enhanced_Config'] then
-			local Container = PA.GUI:Create('Frame')
-			if PA.AS then
-				PA.AS:CreateShadow(Container.frame)
-			end
-			PA.ACD.OpenFrames['Enhanced_Config'] = Container
-			Container:SetCallback('OnClose', EC.OnConfigClosed)
-			PA.ACD:Open('Enhanced_Config', Container)
+function EC.OnConfigClosed(widget, event)
+	PA.ACD.OpenFrames['Enhanced_Config'] = nil
+	PA.GUI:Release(widget)
+end
+
+function EC:ToggleConfig()
+	if not PA.ACD.OpenFrames['Enhanced_Config'] then
+		local Container = PA.GUI:Create('Frame')
+		if PA.AS then
+			PA.AS:CreateShadow(Container.frame)
 		end
-		GameTooltip:Hide()
+		PA.ACD.OpenFrames['Enhanced_Config'] = Container
+		Container:SetCallback('OnClose', EC.OnConfigClosed)
+		PA.ACD:Open('Enhanced_Config', Container)
 	end
+	GameTooltip:Hide()
+end
 
-	local ConfigButton = CreateFrame('Button', 'Enhanced_ConfigButton', GameMenuFrame, 'GameMenuButtonTemplate')
-	ConfigButton:SetSize(GameMenuButtonUIOptions:GetWidth(), GameMenuButtonUIOptions:GetHeight())
-	ConfigButton:SetPoint('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0 , -1)
-	ConfigButton:SetText(EC.Title)
-	ConfigButton:SetScript('OnClick', function() EC:ToggleConfig() HideUIPanel(GameMenuFrame) end)
-	GameMenuFrame:HookScript('OnShow', function(self) self:SetHeight(self:GetHeight() + GameMenuButtonUIOptions:GetHeight()) end)
-	GameMenuButtonKeybindings:ClearAllPoints()
-	GameMenuButtonKeybindings:SetPoint("TOP", ConfigButton, "BOTTOM", 0, -1)
+function EC:Initialize()
+	local GameMenuButton = CreateFrame("Button", nil, GameMenuFrame, "GameMenuButtonTemplate")
+	GameMenuButton:SetText(EC.Title)
+	GameMenuButton:SetScript("OnClick", function()
+		EC:ToggleConfig()
+		HideUIPanel(GameMenuFrame)
+	end)
+	GameMenuFrame['EC'] = GameMenuButton
+
+	if not IsAddOnLoaded("ConsolePortUI_Menu") then -- #390
+		GameMenuButton:Size(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
+		GameMenuButton:Point("TOPLEFT", GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
+		hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', self.PositionGameMenuButton)
+	end
 
 	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)
 	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)

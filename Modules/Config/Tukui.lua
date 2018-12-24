@@ -20,6 +20,24 @@ function PA:TukuiOptions()
 						get = function() return TukuiConfigPerAccount end,
 						set = function(_, value) TukuiConfigPerAccount = value end,
 					},
+					Config = {
+						order = 0,
+						type = 'execute',
+						name = 'Open Tukui Config',
+						func = function()
+							PA.ACD:Close('Enhanced_Config')
+							GameTooltip:Hide()
+							if (not TukuiConfigFrame) then
+								TukuiConfig:CreateConfigWindow()
+							end
+
+							if TukuiConfigFrame:IsVisible() then
+								TukuiConfigFrame:Hide()
+							else
+								TukuiConfigFrame:Show()
+							end
+						end,
+					},
 				},
 			},
 		},
