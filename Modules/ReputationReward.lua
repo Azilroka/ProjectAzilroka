@@ -218,6 +218,7 @@ function RR:Show()
 	end
 
 	if ( numQuestChoices == 1 ) then
+		QuestInfoFrame.rewardsFrame.ItemReceiveText:ClearAllPoints()
 		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5)
 	end
 
