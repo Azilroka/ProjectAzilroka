@@ -167,16 +167,18 @@ function RR:Show()
 		if ( QuestInfoFrame.mapView ) then
 			if rewardsFrame.XPFrame:IsShown() then
 				lastFrame = rewardsFrame.XPFrame
+				buttonIndex = 1
 			end
 			if rewardsFrame.MoneyFrame:IsShown() then
 				lastFrame = rewardsFrame.MoneyFrame
+				buttonIndex = 1
 			end
 		else
 			if rewardsFrame.XPFrame:IsShown() then
 				lastFrame = rewardsFrame.XPFrame
+				buttonIndex = 1
 			end
 		end
-		buttonIndex = 1
 	end
 
 	local index
