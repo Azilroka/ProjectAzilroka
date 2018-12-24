@@ -115,27 +115,13 @@ function RR:Show()
 
 	local totalRewards = numQuestRewards + numQuestChoices + numQuestCurrencies
 	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
-	local lastFrame = rewardsFrame.ItemReceiveText
-
-	if ( QuestInfoFrame.mapView ) then
-		if rewardsFrame.XPFrame:IsShown() then
-			lastFrame = rewardsFrame.XPFrame
-		end
-		if rewardsFrame.MoneyFrame:IsShown() then
-			lastFrame = rewardsFrame.MoneyFrame
-		end
-	else
-		if rewardsFrame.XPFrame:IsShown() then
-			lastFrame = rewardsFrame.XPFrame
-		end
-	end
 
 	--if rewardsFrame.SkillPointFrame:IsShown() then
 	--	lastFrame = rewardsFrame.SkillPointFrame
 	--end
 
 	local baseIndex = totalRewards or 0
-	local buttonIndex = numQuestChoices == 1 and 1 or baseIndex
+	local buttonIndex = numQuestChoices == 1 and 1 or numQuestRewards > 0 and numQuestRewards or numQuestCurrencies > 0 and numQuestCurrencies or 0
 
 	wipe(RR.ReputationInfo)
 
@@ -160,6 +146,37 @@ function RR:Show()
 		if (Info.FactionID ~= RR:GetFactionHeader(Info.Child)) and (Info.Child == RR:GetFactionHeader(Info.FactionID)) and (Info.Base == (RR.ReputationInfo[Info.Child] and RR.ReputationInfo[Info.Child].Base or 0)) then
 			RR.ReputationInfo[Info.FactionID] = nil
 		end
+	end
+
+	local lastFrame = rewardsFrame.ItemReceiveText
+
+	if ( QuestInfoFrame.mapView ) then
+		if rewardsFrame.XPFrame:IsShown() then
+			lastFrame = rewardsFrame.XPFrame
+		end
+		if rewardsFrame.MoneyFrame:IsShown() then
+			lastFrame = rewardsFrame.MoneyFrame
+		end
+	else
+		if rewardsFrame.XPFrame:IsShown() then
+			lastFrame = rewardsFrame.XPFrame
+		end
+	end
+
+	if buttonIndex == 0 then
+		if ( QuestInfoFrame.mapView ) then
+			if rewardsFrame.XPFrame:IsShown() then
+				lastFrame = rewardsFrame.XPFrame
+			end
+			if rewardsFrame.MoneyFrame:IsShown() then
+				lastFrame = rewardsFrame.MoneyFrame
+			end
+		else
+			if rewardsFrame.XPFrame:IsShown() then
+				lastFrame = rewardsFrame.XPFrame
+			end
+		end
+		buttonIndex = 1
 	end
 
 	local index
@@ -201,7 +218,7 @@ function RR:Show()
 					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 					lastFrame = questItem
 				else
-					questItem:SetPoint('TOPLEFT', rewardButtons[index - 1], 'TOPRIGHT', 2, 0)
+					questItem:SetPoint('TOPLEFT', rewardButtons[index - 1] or lastFrame, 'TOPRIGHT', 2, 0)
 				end
 			else
 				questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
