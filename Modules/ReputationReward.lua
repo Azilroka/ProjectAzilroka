@@ -218,8 +218,8 @@ function RR:Show()
 	end
 
 	if ( numQuestChoices == 1 ) then
-		QuestInfoFrame.rewardsFrame.ItemReceiveText:ClearAllPoints()
-		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint("TOPLEFT", lastFrame, "BOTTOMLEFT", 0, -5)
+		local a, b, c, d, e = QuestInfoFrame.rewardsFrame.ItemReceiveText:GetPoint()
+		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - ((i / 2) * buttonHeight))
 	end
 
 	QuestInfoFrame.rewardsFrame:Show()
