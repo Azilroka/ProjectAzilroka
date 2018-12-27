@@ -216,7 +216,7 @@ function RR:Show()
 
 	if ( numQuestChoices == 1 ) then
 		local a, b, c, d, e = QuestInfoFrame.rewardsFrame.ItemReceiveText:GetPoint()
-		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - (((i % 2) == 1 and ((i / 2) * buttonHeight)) or 0))
+		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - (((i % 2) == 1 and ((i / 2) * (buttonHeight + REWARDS_SECTION_OFFSET)) or 0)))
 	end
 
 	QuestInfoFrame.rewardsFrame:Show()
