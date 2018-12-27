@@ -79,7 +79,6 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
 		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
 		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
-		PA:CreateShadow(GarrisonLandingPageMinimapButton)
 
 		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
 			self:SetBackdropBorderColor(unpack(PA.ClassColor))
@@ -95,18 +94,22 @@ function SMB:HandleBlizzardButtons()
 		end)
 
 		GarrisonLandingPageMinimapButton.SMB = true
+
+		if SMB.db.Shadows then
+			PA:CreateShadow(GarrisonLandingPageMinimapButton)
+		end
+
 		tinsert(self.Buttons, GarrisonLandingPageMinimapButton)
 	end
 
 	if self.db["MoveMail"] and not MiniMapMailFrame.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', self.Bar)
 		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
-		Frame:SetTemplate()
+		PA:SetTemplate(Frame)
 		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 		Frame.Icon:SetPoint('CENTER')
-		Frame.Icon:Size(18)
+		Frame.Icon:SetSize(18)
 		Frame.Icon:SetTexture(MiniMapMailIcon:GetTexture())
-		PA:CreateShadow(Frame)
 		Frame:EnableMouse(true)
 		Frame:HookScript('OnEnter', function(self)
 			if HasNewMail() then
@@ -127,6 +130,7 @@ function SMB:HandleBlizzardButtons()
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 			end
 		end)
+
 		MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0)	end)
 		MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
 
@@ -137,6 +141,10 @@ function SMB:HandleBlizzardButtons()
 		-- Hide Icon & Border
 		MiniMapMailIcon:Hide()
 		MiniMapMailBorder:Hide()
+
+		if SMB.db.Shadows then
+			PA:CreateShadow(Frame)
+		end
 
 		MiniMapMailFrame.SMB = true
 		tinsert(self.Buttons, Frame)
@@ -149,7 +157,6 @@ function SMB:HandleBlizzardButtons()
 
 		MiniMapTracking:SetParent(self.Bar)
 		MiniMapTracking:SetSize(self.db['IconSize'], self.db['IconSize'])
-		PA:CreateShadow(MiniMapTracking)
 
 		MiniMapTrackingIcon:ClearAllPoints()
 		MiniMapTrackingIcon:SetPoint('CENTER')
@@ -179,13 +186,17 @@ function SMB:HandleBlizzardButtons()
 		end)
 
 		MiniMapTrackingButton.SMB = true
+
+		if SMB.db.Shadows then
+			PA:CreateShadow(MiniMapTracking)
+		end
+
 		tinsert(self.Buttons, MiniMapTracking)
 	end
 
 	if self.db["MoveQueue"] and not QueueStatusMinimapButton.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_QueueFrame', self.Bar)
 		PA:SetTemplate(Frame)
-		PA:CreateShadow(Frame)
 		Frame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 		Frame.Icon:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
@@ -229,6 +240,11 @@ function SMB:HandleBlizzardButtons()
 		end)
 
 		QueueStatusMinimapButton.SMB = true
+
+		if SMB.db.Shadows then
+			PA:CreateShadow(Frame)
+		end
+
 		tinsert(self.Buttons, Frame)
 	end
 
@@ -286,7 +302,11 @@ function SMB:SkinMinimapButton(Button)
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 	PA:SetTemplate(Button)
-	PA:CreateShadow(Button)
+
+	if SMB.db.Shadows then
+		PA:CreateShadow(Button)
+	end
+
 	Button:HookScript('OnEnter', function(self)
 		self:SetBackdropBorderColor(unpack(PA.ClassColor))
 		if SMB.Bar:IsShown() then
@@ -445,6 +465,11 @@ function SMB:GetOptions()
 						name = PA.ACL['Buttons Per Row'],
 						min = 1, max = 100, step = 1,
 					},
+					Shadows = {
+						order = 3,
+						type = 'toggle',
+						name = PA.ACL['Shadows'],
+					},
 				},
 			},
 			blizzard = {
@@ -514,6 +539,7 @@ function SMB:BuildProfile()
 		['MoveMail'] = true,
 		['MoveTracker'] = true,
 		['MoveQueue'] = true,
+		['Shadows'] = true,
 	}
 
 	PA.Options.args.general.args.SquareMinimapButtons = {
