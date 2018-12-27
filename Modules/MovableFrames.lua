@@ -315,6 +315,10 @@ function MF:Initialize()
 
 	MF:GetOptions()
 
+	if PA:IsAddOnEnabled('WorldQuestTracker') then
+		Frames["WorldMapFrame"] = nil
+	end
+
 	for Frame, _ in pairs(Frames) do
 		MF:MakeMovable(Frame)
 	end

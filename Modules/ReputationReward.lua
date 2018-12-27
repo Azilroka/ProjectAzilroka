@@ -7,9 +7,7 @@ local _G = _G
 local floor = floor
 local pairs = pairs
 local select = select
-local tinsert = tinsert
 local wipe = wipe
-local format = format
 
 local GetFactionInfo = _G.GetFactionInfo
 local GetFactionInfoByID = _G.GetFactionInfoByID
@@ -22,7 +20,6 @@ local REWARDS_SECTION_OFFSET = 5
 RR.Title = '|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r'
 RR.Description = 'Adds Reputation into Quest Log & Quest Frame.'
 RR.Authors = 'Azilroka'
-RR.Credits = 'jayd'
 
 function RR:BuildFactionHeaders()
 	RR.FactionHeaders = {}
@@ -199,8 +196,8 @@ function RR:Show()
 				questItem.Count:SetTextColor(1, 1, 1)
 			end
 
-			if ( buttonIndex > 1 ) then
-				if ( mod(buttonIndex, 2) == 1 ) then
+			if (buttonIndex > 1) then
+				if (buttonIndex % 2 == 1) then
 					questItem:SetPoint('TOPLEFT', rewardButtons[index - 2], 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 					lastFrame = questItem
@@ -219,7 +216,7 @@ function RR:Show()
 
 	if ( numQuestChoices == 1 ) then
 		local a, b, c, d, e = QuestInfoFrame.rewardsFrame.ItemReceiveText:GetPoint()
-		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - ((i % 2) and (floor(i / 2) * buttonHeight) or 0))
+		QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - (((i % 2) == 1 and ((i / 2) * buttonHeight)) or 0))
 	end
 
 	QuestInfoFrame.rewardsFrame:Show()
@@ -248,17 +245,6 @@ function RR:GetOptions()
 				order = 3,
 				type = 'description',
 				name = RR.Authors,
-				fontSize = 'large',
-			},
-			CreditsHeader = {
-				order = 4,
-				type = 'header',
-				name = PA.ACL['Credits:'],
-			},
-			Credits = {
-				order = 5,
-				type = 'description',
-				name = RR.Credits,
 				fontSize = 'large',
 			},
 		},
