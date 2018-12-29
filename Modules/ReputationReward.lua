@@ -148,11 +148,11 @@ function RR:Show()
 	local lastFrame = rewardsFrame.ItemReceiveText
 
 	if ( QuestInfoFrame.mapView ) then
-		if rewardsFrame.XPFrame:IsShown() then
-			lastFrame = rewardsFrame.XPFrame
-		end
 		if rewardsFrame.MoneyFrame:IsShown() then
 			lastFrame = rewardsFrame.MoneyFrame
+		end
+		if rewardsFrame.XPFrame:IsShown() then
+			lastFrame = rewardsFrame.XPFrame
 		end
 	else
 		if rewardsFrame.XPFrame:IsShown() then
