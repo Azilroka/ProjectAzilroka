@@ -155,9 +155,6 @@ function RR:Show()
 			lastFrame = rewardsFrame.MoneyFrame
 		end
 	else
-		if rewardsFrame.MoneyFrame:IsShown() then
-			lastFrame = rewardsFrame.MoneyFrame
-		end
 		if rewardsFrame.XPFrame:IsShown() then
 			lastFrame = rewardsFrame.XPFrame
 		end

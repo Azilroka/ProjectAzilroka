@@ -226,6 +226,12 @@ end
 
 function PA:SetupProfile()
 	PA.db = PA.data.profile
+
+	for _, module in PA:IterateModules() do
+		if module.UpdateSettings then
+			module:UpdateSettings()
+		end
+	end
 end
 
 function PA:ADDON_LOADED(event, addon)
