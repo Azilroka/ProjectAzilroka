@@ -319,8 +319,8 @@ function MF:Initialize()
 		Frames["WorldMapFrame"] = nil
 	end
 
-	for Frame, _ in pairs(Frames) do
-		MF:MakeMovable(Frame)
+	if PA.ElvUI then
+		AddOnFrames['Blizzard_TalkingHeadUI'] = nil
 	end
 
 	-- Check Forced Loaded AddOns
