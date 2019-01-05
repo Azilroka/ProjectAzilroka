@@ -77,16 +77,13 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:Show()
 		GarrisonLandingPageMinimapButton:SetScale(1)
 		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
-		GarrisonLandingPageMinimapButton:SetScript('OnEnter', nil)
-		GarrisonLandingPageMinimapButton:SetScript('OnLeave', nil)
-
-		GarrisonLandingPageMinimapButton:HookScript('OnEnter', function(self)
+		GarrisonLandingPageMinimapButton:SetScript('OnEnter', function(self)
 			self:SetBackdropBorderColor(unpack(PA.ClassColor))
 			if SMB.Bar:IsShown() then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
 		end)
-		GarrisonLandingPageMinimapButton:HookScript('OnLeave', function(self)
+		GarrisonLandingPageMinimapButton:SetScript('OnLeave', function(self)
 			PA:SetTemplate(self)
 			if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
 				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
@@ -113,7 +110,7 @@ function SMB:HandleBlizzardButtons()
 		Frame:EnableMouse(true)
 		Frame:HookScript('OnEnter', function(self)
 			if HasNewMail() then
-				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
 				if GameTooltip:IsOwned(self) then
 					MinimapMailFrameUpdate()
 				end
@@ -349,22 +346,17 @@ end
 function SMB:Update()
 	if not SMB.db['BarEnabled'] then return end
 
-	local AnchorX, AnchorY, MaxX = 0, 1, SMB.db['ButtonsPerRow'] or 12
+	local AnchorX, AnchorY = 0, 1
 	local ButtonsPerRow = SMB.db['ButtonsPerRow'] or 12
-	local NumColumns = ceil(#SMB.Buttons / ButtonsPerRow)
-	local Spacing, Mult = SMB.db['ButtonSpacing'] or 2, 1
+	local Spacing, Mult = SMB.db['ButtonSpacing'] or 2, PA.Multiple
 	local Size = SMB.db['IconSize'] or 27
 	local ActualButtons, Maxed = 0
-
-	if NumColumns == 1 and ButtonsPerRow > #SMB.Buttons then
-		ButtonsPerRow = #SMB.Buttons
-	end
 
 	for _, Button in pairs(SMB.Buttons) do
 		if Button:IsVisible() then
 			AnchorX = AnchorX + 1
 			ActualButtons = ActualButtons + 1
-			if AnchorX > MaxX then
+			if (AnchorX % (ButtonsPerRow + 1)) == 0 then
 				AnchorY = AnchorY + 1
 				AnchorX = 1
 				Maxed = true
