@@ -74,6 +74,8 @@ function SMB:HandleBlizzardButtons()
 		GarrisonLandingPageMinimapButton:Hide()
 	elseif self.db["MoveGarrison"] and not GarrisonLandingPageMinimapButton.SMB then
 		GarrisonLandingPageMinimapButton:SetParent(Minimap)
+		GarrisonLandingPageMinimapButton_OnLoad(GarrisonLandingPageMinimapButton)
+		GarrisonLandingPageMinimapButton_UpdateIcon(GarrisonLandingPageMinimapButton)
 		GarrisonLandingPageMinimapButton:Show()
 		GarrisonLandingPageMinimapButton:SetScale(1)
 		GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
