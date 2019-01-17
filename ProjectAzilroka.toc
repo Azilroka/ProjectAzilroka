@@ -1,7 +1,7 @@
 ## Interface: 80100
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
-## Version: 1.44
+## Version: 1.45
 ## OptionalDeps: AddOnSkins, ElvUI, Tukui
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 

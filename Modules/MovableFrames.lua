@@ -323,6 +323,10 @@ function MF:Initialize()
 		AddOnFrames['Blizzard_TalkingHeadUI'] = nil
 	end
 
+	for Frame, _ in pairs(Frames) do
+		MF:MakeMovable(Frame)
+	end
+
 	-- Check Forced Loaded AddOns
 	for AddOn, Table in pairs(AddOnFrames) do
 		if IsAddOnLoaded(AddOn) then
