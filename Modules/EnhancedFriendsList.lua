@@ -187,7 +187,17 @@ function EFL:UpdateFriends(button)
 		broadcastText = nil
 		if connected then
 			button.status:SetTexture(EFL.Icons.Status[(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')][self.db.StatusIconPack])
-			nameText = format('%s%s - (%s - %s %s)', PA:ClassColorCode(class), name, class, LEVEL, level)
+			local classcolor = PA:ClassColorCode(class)
+			if EFL.db.ShowLevel then
+				if EFL.db.DiffLevel then
+					local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
+					nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class, LEVEL, WrapTextInColorCode(level, diff))
+				else
+					nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class, LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+				end
+			else
+				nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class)
+			end
 			nameColor = FRIENDS_WOW_NAME_COLOR
 			Cooperate = true
 		else
