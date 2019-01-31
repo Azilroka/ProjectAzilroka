@@ -243,7 +243,7 @@ function stAM:BuildFrame()
 
 	local Thumb = Slider:GetThumbTexture()
 	Thumb:SetSize(8, 16)
-	Thumb:SetVertexColor(Slider:GetBackdropBorderColor())
+	Thumb:SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 
 	AddOns.ScrollBar = Slider
 
@@ -641,6 +641,7 @@ function stAM:Update()
 		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
 	end
 
+	self.Frame.AddOns.ScrollBar:GetThumbTexture():SetVertexColor(unpack(stAM.db['ClassColor'] and PA.ClassColor or stAM.db['CheckColor']))
 	self.Frame.Title:SetFont(font, 14, fontFlag)
 	self.Frame.Search:SetFont(font, 12, fontFlag)
 	self.Frame.Reload.Text:SetFont(font, 12, fontFlag)
