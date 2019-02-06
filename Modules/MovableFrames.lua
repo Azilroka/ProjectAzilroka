@@ -8,152 +8,153 @@ MF.Authors = 'Azilroka    Simpy'
 
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
 local _G = _G
-local IsAddOnLoaded, C_Timer = IsAddOnLoaded, C_Timer
+local IsAddOnLoaded = IsAddOnLoaded
 
 local Frames = {
-	["AddonList"] = { "CENTER", "UIParent", "CENTER", 0, 24 },
-	["BankFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["CharacterFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["DressUpFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 70, -104 },
-	["FriendsFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["FriendsFriendsFrame"] = { "CENTER", "UIParent", "CENTER", 0, 50 },
-	["GameMenuFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["GhostFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, 0 },
-	["GossipFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["GuildInviteFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["GuildRegistrarFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["HelpFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["InterfaceOptionsFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["ItemTextFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["LFGDungeonReadyDialog"] = { "TOPLEFT", "LFGDungeonReadyPopup", "TOPLEFT", 0, 0 },
-	["LootFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["LossOfControlFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["MailFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["MerchantFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["OpenMailFrame"] = { "TOPLEFT", "UIParent", "TOPRIGHT", 0, 0 },
-	["PetitionFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["PetStableFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 },
-	["PVEFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
-	["QuestFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["QuestLogPopupDetailFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, 0 },
-	["RaidBrowserFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+	["AddonList"] = { "CENTER", _G.UIParent, "CENTER", 0, 24 },
+	["BankFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["CharacterFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["DressUpFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 70, -104 },
+	["FriendsFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["FriendsFriendsFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 50 },
+	["GameMenuFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["GhostFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, 0 },
+	["GossipFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["GuildInviteFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["GuildRegistrarFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["HelpFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["InterfaceOptionsFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["ItemTextFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["LFGDungeonReadyDialog"] = { "TOPLEFT", _G.LFGDungeonReadyPopup, "TOPLEFT", 0, 0 },
+	["LootFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["LossOfControlFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["MailFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["MerchantFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["OpenMailFrame"] = { "TOPLEFT", _G.UIParent, "TOPRIGHT", 0, 0 },
+	["PetitionFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["PetStableFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, -104 },
+	["PVEFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 100, -84 },
+	["QuestFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["QuestLogPopupDetailFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, 0 },
+	["RaidBrowserFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	["RaidInfoFrame"] = { "TOPLEFT", "RaidFrame", "TOPRIGHT", 0, -27 },
-	["RaidParentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["ReadyCheckFrame"] = { "CENTER", "UIParent", "CENTER", 0, -10 },
-	["ScrollOfResurrectionSelectionFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["SpellBookFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["SplashFrame"] = { "CENTER", "UIParent", "CENTER", 0, 60 },
-	["StaticPopup1"] = { "TOP", "UIParent", "TOP", 0, -135 },
-	["StaticPopup2"] = { "TOP", "UIParent", "TOP", 0, -135 },
-	["StaticPopup3"] = { "TOP", "UIParent", "TOP", 0, -135 },
-	["StaticPopup4"] = { "TOP", "UIParent", "TOP", 0, -135 },
-	["TabardFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["TaxiFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 },
-	["TimeManagerFrame"] = { "TOPRIGHT", "UIParent", "TOPRIGHT", -10, -190 },
-	["TradeFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["VideoOptionsFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["WorldMapFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["WorldStateScoreFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+	["RaidParentFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["ReadyCheckFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, -10 },
+	["ScrollOfResurrectionSelectionFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["SpellBookFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["SplashFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 60 },
+	["StaticPopup1"] = { "TOP", _G.UIParent, "TOP", 0, -135 },
+	["StaticPopup2"] = { "TOP", _G.UIParent, "TOP", 0, -135 },
+	["StaticPopup3"] = { "TOP", _G.UIParent, "TOP", 0, -135 },
+	["StaticPopup4"] = { "TOP", _G.UIParent, "TOP", 0, -135 },
+	["TabardFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["TaxiFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, -104 },
+	["TimeManagerFrame"] = { "TOPRIGHT", _G.UIParent, "TOPRIGHT", -10, -190 },
+	["TradeFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
+	["VideoOptionsFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["WorldMapFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["WorldStateScoreFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 }
 
 local AddOnFrames = {
 	['Blizzard_AchievementUI'] = {
-		["AchievementFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 96, -116 }
+		["AchievementFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 96, -116 }
 	},
 	['Blizzard_ArchaeologyUI'] = {
-		["ArchaeologyFrame"] = { "TOPLEFT", "IParent", "TOPLEFT", 16, -116 }
+		["ArchaeologyFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_AuctionUI'] = {
-		["AuctionFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+		["AuctionFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, -104 }
 	},
 	['Blizzard_BarbershopUI'] = {
-		["BarberShopFrame"] = { "RIGHT", "UIParent", "RIGHT", -18, -54 }
+		["BarberShopFrame"] = { "RIGHT", _G.UIParent, "RIGHT", -18, -54 }
 	},
 	['Blizzard_BindingUI'] = {
-		["KeyBindingFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+		["KeyBindingFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 }
 	},
 	['Blizzard_BlackMarketUI'] = {
-		["BlackMarketFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+		["BlackMarketFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, -104 }
 	},
 	['Blizzard_Calendar'] = {
-		["CalendarCreateEventFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
-		["CalendarFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 },
-		["CalendarViewEventFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
-		["CalendarViewHolidayFrame"] = { "TOPLEFT", "CalendarFrame", "TOPRIGHT", 3, -24 },
+		["CalendarCreateEventFrame"] = { "TOPLEFT", _G.CalendarFrame, "TOPRIGHT", 3, -24 },
+		["CalendarFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -96 },
+		["CalendarViewEventFrame"] = { "TOPLEFT", _G.CalendarFrame, "TOPRIGHT", 3, -24 },
+		["CalendarViewHolidayFrame"] = { "TOPLEFT", _G.CalendarFrame, "TOPRIGHT", 3, -24 },
 	},
 	['Blizzard_ChallengesUI'] = {
-		['ChallengesKeystoneFrame'] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		['ChallengesKeystoneFrame'] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	},
 	['Blizzard_Channels'] = {
-		['ChannelFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 },
+		['ChannelFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -96 },
 	},
 	['Blizzard_Collections'] = {
-		["CollectionsJournal"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["CollectionsJournal"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_Communities'] = {
-		["CommunitiesFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["CommunitiesFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	},
 	['Blizzard_EncounterJournal'] = {
-		["EncounterJournal"] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+		["EncounterJournal"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 }
 	},
 	['Blizzard_GarrisonUI'] = {
-		["GarrisonBuildingFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-		["GarrisonCapacitiveDisplayFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 27, -108 },
-		["GarrisonLandingPage"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-		["GarrisonMissionFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-		["GarrisonRecruiterFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-		["GarrisonRecruitSelectFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-		["GarrisonShipyardFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		["GarrisonBuildingFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+		["GarrisonCapacitiveDisplayFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 27, -108 },
+		["GarrisonLandingPage"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+		["GarrisonMissionFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+		["GarrisonRecruiterFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+		["GarrisonRecruitSelectFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+		["GarrisonShipyardFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	},
 	['Blizzard_GuildBankUI'] = {
-		['GuildBankFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+		['GuildBankFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 0, -104 }
 	},
 	['Blizzard_GuildControlUI'] = {
-		['GuildControlUI'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		['GuildControlUI'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_InspectUI'] = {
-		["InspectFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["InspectFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_ItemSocketingUI'] = {
-		["ItemSocketingFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["ItemSocketingFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_ItemUpgradeUI'] = {
-		['ItemUpgradeFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		['ItemUpgradeFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_LookingForGuildUI'] = {
-		['LookingForGuildFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		['LookingForGuildFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_MacroUI'] = {
-		['MacroFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		['MacroFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_OrderHallUI'] = {
-		["OrderHallTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 32, -116 }
+		["OrderHallTalentFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 32, -116 }
 	},
 	['Blizzard_QuestChoice'] = {
-		['QuestChoiceFrame'] = { "CENTER", "UIParent", "CENTER", 0, 0 }
+		['QuestChoiceFrame'] = { "CENTER", _G.UIParent, "CENTER", 0, 0 }
 	},
 	['Blizzard_TalentUI'] = {
-		["PlayerTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 }
+		["PlayerTalentFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 100, -84 }
 	},
 	['Blizzard_ScrappingMachineUI'] = {
-		['ScrappingMachineFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		['ScrappingMachineFrame'] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_TalkingHeadUI'] = {
-		["TalkingHeadFrame"] = { "BOTTOM", "UIParent", "BOTTOM", 0, 96 }
+		["TalkingHeadFrame"] = { "BOTTOM", _G.UIParent, "BOTTOM", 0, 96 }
 	},
 	['Blizzard_TradeSkillUI'] = {
-		["TradeSkillFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["TradeSkillFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_TrainerUI'] = {
-		["ClassTrainerFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["ClassTrainerFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 	['Blizzard_VoidStorageUI'] = {
-		["VoidStorageFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+		["VoidStorageFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 }
 	},
 }
 
 function MF:LoadPosition(frame)
-	if (not UnitAffectingCombat("player")) and (frame:IsUserPlaced()) then
+	if frame.isMoving then return end
+	if (not _G.UnitAffectingCombat("player")) and (frame:IsUserPlaced()) then
 		local a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
 		frame:ClearAllPoints()
 		frame:SetPoint(a, b, c, d, e, true)
@@ -161,6 +162,7 @@ function MF:LoadPosition(frame)
 end
 
 function MF:OnDragStart(frame)
+	frame.isMoving = true
 	frame:StartMoving()
 end
 
@@ -169,7 +171,7 @@ function MF:OnDragStop(frame)
 	local Name = frame:GetName()
 	if MF.db[Name]['Permanent'] then
 		local a, _, c, d, e = frame:GetPoint()
-		local b = frame:GetParent():GetName()
+		local b = frame:GetParent():GetName() or _G.UIParent
 		if Name == 'QuestFrame' or Name == 'GossipFrame' then
 			MF.db['GossipFrame'].Points = {a, b, c, d, e}
 			MF.db['QuestFrame'].Points = {a, b, c, d, e}
@@ -180,6 +182,7 @@ function MF:OnDragStop(frame)
 	else
 		frame:SetUserPlaced(false)
 	end
+	frame.isMoving = false
 end
 
 function MF:MakeMovable(Name)
@@ -190,19 +193,19 @@ function MF:MakeMovable(Name)
 
 	local Frame = _G[Name]
 
-	if Name == 'AchievementFrame' then AchievementFrameHeader:EnableMouse(false) end
+	if Name == 'AchievementFrame' then _G.AchievementFrameHeader:EnableMouse(false) end
 
 	Frame:EnableMouse(true)
 	Frame:SetMovable(true)
 	Frame:RegisterForDrag('LeftButton')
 	Frame:SetClampedToScreen(true)
 
-	self:HookScript(Frame, 'OnShow', 'LoadPosition')
+	self:HookScript(Frame, 'OnUpdate', 'LoadPosition')
 	self:HookScript(Frame, 'OnDragStart', 'OnDragStart')
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
 
-	self:SecureHook(Frame, 'SetPoint', function(a, b, c, d, e, locked)
+	self:SecureHook(Frame, 'SetPoint', function(_, _, _, _, _, locked)
 		if not locked then
 			MF:LoadPosition(Frame)
 		end
@@ -271,7 +274,7 @@ function MF:GetOptions()
 			type = 'execute',
 			name = Name,
 			disabled = function(info) return not MF.db[info[#info]]['Permanent'] end,
-			func = function(info) HideUIPanel(_G[info[#info]]) end,
+			func = function(info) _G.HideUIPanel(_G[info[#info]]) end,
 		}
 	end
 
@@ -284,7 +287,7 @@ function MF:BuildProfile()
 	self.AllFrames = {}
 
 	if PA.Tukui then
-		Frames['LossOfControlFrame'] = { "CENTER", "UIParent", "CENTER", 0, 60 }
+		Frames['LossOfControlFrame'] = { "CENTER", _G.UIParent, "CENTER", 0, 60 }
 	end
 
 	for Frame, DefaultPoints in pairs(Frames) do
