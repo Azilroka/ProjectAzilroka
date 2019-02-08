@@ -314,6 +314,7 @@ function RR:Initialize()
 
 	RR:BuildFactionHeaders()
 
+--[[
 	QUEST_TEMPLATE_DETAIL.elements = {
 			QuestInfo_ShowTitle, 10, -10,
 			QuestInfo_ShowDescriptionText, 0, -5,
@@ -356,6 +357,6 @@ function RR:Initialize()
 			QuestInfo_ShowRewards, 8, -42,
 			RR.Show, 0, -15,
 		}
-
---	RR:SecureHook('QuestInfo_Display', 'Show')
+]]
+	RR:SecureHook('QuestInfo_Display', 'Show')
 end
