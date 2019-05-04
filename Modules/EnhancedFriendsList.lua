@@ -250,7 +250,7 @@ function EFL:UpdateFriends(button)
 				if not zoneName or zoneName == '' then
 					infoText = UNKNOWN
 				else
-					if realmName == EFL.MyRealm then
+					if realmName == PA.MyRealm then
 						infoText = zoneName
 					else
 						infoText = gsub(gameText, '&apos;', "'")
