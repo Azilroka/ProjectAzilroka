@@ -184,6 +184,8 @@ StaticPopupDialogs["PROJECTAZILROKA"] = {
 	hideOnEscape = false,
 }
 
+PA.Defaults = { profile = {} }
+
 PA.Options = {
 	type = 'group',
 	name = PA:Color(PA.Title),
@@ -205,8 +207,6 @@ PA.Options = {
 		},
 	},
 }
-
-PA.Defaults = { profile = {} }
 
 function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options

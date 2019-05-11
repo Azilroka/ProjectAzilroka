@@ -272,7 +272,7 @@ function SMB:SkinMinimapButton(Button)
 			local Texture = strlower(tostring(Region:GetTexture()))
 
 			if (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
-				Region:SetTexture(nil)
+				Region:SetTexture()
 				Region:SetAlpha(0)
 			else
 				if Name == 'BagSync_MinimapButton' then
@@ -281,7 +281,7 @@ function SMB:SkinMinimapButton(Button)
 					Region:SetTexture([[Interface\Icons\INV_Helmet_87]])
 				elseif Name == 'OutfitterMinimapButton' then
 					if Texture == [[interface\addons\outfitter\textures\minimapbutton]] then
-						Region:SetTexture(nil)
+						Region:SetTexture()
 					end
 				elseif Name == 'SmartBuff_MiniMapButton' then
 					Region:SetTexture([[Interface\Icons\Spell_Nature_Purge]])
@@ -350,26 +350,31 @@ function SMB:Update()
 
 	local AnchorX, AnchorY = 0, 1
 	local ButtonsPerRow = SMB.db['ButtonsPerRow'] or 12
-	local Spacing, Mult = SMB.db['ButtonSpacing'] or 2, PA.Multiple
+	local Spacing = SMB.db['ButtonSpacing'] or 2
 	local Size = SMB.db['IconSize'] or 27
 	local ActualButtons, Maxed = 0
 
+	local Anchor, DirMult = 'TOPLEFT', 1
+
+	if SMB.db['ReverseDirection'] then
+		Anchor, DirMult = 'TOPRIGHT', -1
+	end
+
 	for _, Button in pairs(SMB.Buttons) do
 		if Button:IsVisible() then
-			AnchorX = AnchorX + 1
-			ActualButtons = ActualButtons + 1
+			AnchorX, ActualButtons = AnchorX + 1, ActualButtons + 1
+
 			if (AnchorX % (ButtonsPerRow + 1)) == 0 then
-				AnchorY = AnchorY + 1
-				AnchorX = 1
-				Maxed = true
+				AnchorY, AnchorX, Maxed = AnchorY + 1, 1, true
 			end
 
 			SMB:UnlockButton(Button)
 
 			PA:SetTemplate(Button)
+
 			Button:SetParent(self.Bar)
 			Button:ClearAllPoints()
-			Button:SetPoint('TOPLEFT', self.Bar, 'TOPLEFT', (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
+			Button:SetPoint(Anchor, self.Bar, Anchor, DirMult * (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
 			Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 			Button:SetScale(1)
 			Button:SetFrameStrata('LOW')
@@ -384,8 +389,9 @@ function SMB:Update()
 		end
 	end
 
-	local BarWidth = (Spacing + ((Size * (ActualButtons * Mult)) + ((Spacing * (ActualButtons - 1)) * Mult) + (Spacing * Mult)))
-	local BarHeight = (Spacing + ((Size * (AnchorY * Mult)) + ((Spacing * (AnchorY - 1)) * Mult) + (Spacing * Mult)))
+	local BarWidth = Spacing + (Size * ActualButtons) + (Spacing * (ActualButtons - 1)) + Spacing
+	local BarHeight = Spacing + (Size * AnchorY) + (Spacing * (AnchorY - 1)) + Spacing
+
 	self.Bar:SetSize(BarWidth, BarHeight)
 
 	if self.db.Backdrop then
@@ -460,9 +466,14 @@ function SMB:GetOptions()
 						min = 1, max = 100, step = 1,
 					},
 					Shadows = {
-						order = 3,
+						order = 7,
 						type = 'toggle',
 						name = PA.ACL['Shadows'],
+					},
+					ReverseDirection = {
+						order = 8,
+						type = "toggle",
+						name = PA.ACL["Reverse Direction"],
 					},
 				},
 			},
@@ -534,6 +545,7 @@ function SMB:BuildProfile()
 		['MoveTracker'] = true,
 		['MoveQueue'] = true,
 		['Shadows'] = true,
+		['ReverseDirection'] = false,
 	}
 
 	PA.Options.args.general.args.SquareMinimapButtons = {

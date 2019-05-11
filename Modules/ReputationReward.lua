@@ -162,17 +162,17 @@ function RR:Show()
 	local lastFrame = rewardsFrame.ItemReceiveText
 
 	if ( QuestInfoFrame.mapView ) then
-		if xp > 0 then
+		if xp and xp > 0 then
 			lastFrame = rewardsFrame.XPFrame
 		end
-		if money > 0 and xp == 0 then
+		if money and money > 0 and xp and xp == 0 then
 			lastFrame = rewardsFrame.MoneyFrame
 		end
-		if money > 0 and xp > 0 then
+		if money and money > 0 and xp and xp > 0 then
 			lastFrame = rewardsFrame.XPFrame
 		end
 	else
-		if xp > 0 then
+		if xp and xp > 0 then
 			lastFrame = rewardsFrame.XPFrame
 		end
 	end
