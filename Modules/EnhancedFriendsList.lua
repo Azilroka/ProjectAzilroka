@@ -295,6 +295,11 @@ function EFL:UpdateFriends(button)
 		button.info:SetTextColor(unpack(Cooperate and {1, .96, .45} or {.49, .52, .54}))
 		button.name:SetFont(PA.LSM:Fetch('font', self.db.NameFont), self.db.NameFontSize, self.db.NameFontFlag)
 		button.info:SetFont(PA.LSM:Fetch('font', self.db.InfoFont), self.db.InfoFontSize, self.db.InfoFontFlag)
+
+		if button.Favorite:IsShown() then
+			button.Favorite:ClearAllPoints()
+			button.Favorite:SetPoint("TOPLEFT", button.name, "TOPLEFT", button.name:GetStringWidth(), 0);
+		end
 	end
 end
 
