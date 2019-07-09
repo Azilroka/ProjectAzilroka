@@ -1,7 +1,7 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-local MAJOR, MINOR = "LibElvUIPlugin-1.0", 22
+local MAJOR, MINOR = "LibElvUIPlugin-1.0", 27
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -188,13 +188,8 @@ function lib:SendPluginVersionCheck(message)
 		ChatType = (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and 'INSTANCE_CHAT' or 'RAID'
 	elseif IsInGroup() then
 		ChatType = (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and 'INSTANCE_CHAT' or 'PARTY'
-	else
-		local ElvUIGVC = GetChannelName('ElvUIGVC')
-		if ElvUIGVC and ElvUIGVC > 0 then
-			ChatType, Channel = 'CHANNEL', ElvUIGVC
-		elseif IsInGuild() then
-			ChatType = 'GUILD'
-		end
+	elseif IsInGuild() then
+		ChatType = 'GUILD'
 	end
 
 	if not ChatType then
@@ -230,24 +225,5 @@ end
 
 lib.VCFrame = CreateFrame('Frame')
 lib.VCFrame:SetScript('OnEvent', lib.VersionCheck)
-lib.VCFrame:SetScript("OnUpdate", function(self, elapsed)
-	self.delayed = (self.delayed or 0) + elapsed
-	if self.delayed > 25 then
-		local numActiveChannels = C_ChatInfo.GetNumActiveChannels()
-		if numActiveChannels and (numActiveChannels >= 1) then
-			if (GetChannelName('ElvUIGVC') == 0) and (numActiveChannels < MAX_WOW_CHAT_CHANNELS) then
-				JoinChannelByName('ElvUIGVC', nil, nil, true)
-
-				if not lib.SendMessageTimer then
-					lib.SendMessageTimer = C_Timer.After(10, SendPluginVersionCheck)
-				end
-
-				self:SetScript("OnUpdate", nil)
-			end
-		end
-	elseif self.delayed > 45 then
-		self:SetScript("OnUpdate", nil)
-	end
-end)
 
 lib:RegisterPlugin(MAJOR, lib.GetPluginOptions)
