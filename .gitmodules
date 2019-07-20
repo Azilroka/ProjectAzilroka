@@ -1,6 +1,6 @@
 [submodule "Libs/Ace3"]
 	path = Libs/Ace3
-	url = ssh://git@tukui.org:47333/Azilroka/Ace3.git
+	url = https://git.tukui.org/Azilroka/Ace3.git
 [submodule "Libs/LibDataBroker-1.1"]
 	path = Libs/LibDataBroker-1.1
 	url = https://repos.wowace.com/wow/libdatabroker-1-1
