@@ -32,6 +32,11 @@ PA.MyRealm = GetRealmName()
 PA.Locale = GetLocale()
 PA.Noop = function() end
 PA.TexCoords = {.08, .92, .08, .92}
+if _G.ElvUI then
+	if not _G.ElvUI[1].db.general.cropIcon then
+		PA.TexCoords = { 0, 1, 0, 1 }
+	end
+end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
