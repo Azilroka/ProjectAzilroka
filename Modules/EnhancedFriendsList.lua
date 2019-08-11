@@ -268,7 +268,7 @@ function EFL:UpdateFriends(button)
 		else
 			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
 			nameColor = FRIENDS_GRAY_COLOR
-			infoText = lastOnline == 0 and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
+			infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR) and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
 		end
 	end
 
