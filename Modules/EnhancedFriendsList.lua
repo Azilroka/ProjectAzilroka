@@ -11,7 +11,11 @@ local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
 local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
 local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\EnhancedFriendsList\]]
-
+local ONE_MINUTE = 60;
+local ONE_HOUR = 60 * ONE_MINUTE;
+local ONE_DAY = 24 * ONE_HOUR;
+local ONE_MONTH = 30 * ONE_DAY;
+local ONE_YEAR = 12 * ONE_MONTH;
 --[[
 /run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
