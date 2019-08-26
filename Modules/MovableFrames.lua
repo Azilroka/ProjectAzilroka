@@ -53,7 +53,6 @@ local Frames = {
 	["TradeFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
 	["VideoOptionsFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	["WorldMapFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
-	["WorldStateScoreFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 }
 
 local AddOnFrames = {
