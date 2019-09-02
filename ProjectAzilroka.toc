@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
 ## Version: 1.50
@@ -12,7 +12,7 @@ Init.lua
 
 Modules\Enhanced_Config.lua
 
-LibElvUIPlugin-1.0.lua
+Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 
 Media\Media.lua
 Modules\Load_Modules.xml

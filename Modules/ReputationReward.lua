@@ -1,4 +1,6 @@
 local PA = _G.ProjectAzilroka
+if PA.isClassic then return end
+
 local RR = PA:NewModule('ReputationReward', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 local AS
 PA.RR = RR

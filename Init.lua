@@ -43,8 +43,11 @@ if _G.ElvUI then
 		end
 	end
 end
+
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
+
+PA.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
@@ -71,6 +74,7 @@ end
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
+
 local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 PA.ClassColor = { Color.r, Color.g, Color.b }
 

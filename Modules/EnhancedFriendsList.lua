@@ -16,6 +16,7 @@ local ONE_HOUR = 60 * ONE_MINUTE;
 local ONE_DAY = 24 * ONE_HOUR;
 local ONE_MONTH = 30 * ONE_DAY;
 local ONE_YEAR = 12 * ONE_MONTH;
+
 --[[
 /run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
@@ -186,6 +187,7 @@ EFL.Icons = {
 
 function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
+	local cooperateColor = GRAY_FONT_COLOR
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = GetFriendInfo(button.id)
 		broadcastText = nil
@@ -204,6 +206,7 @@ function EFL:UpdateFriends(button)
 			end
 			nameColor = FRIENDS_WOW_NAME_COLOR
 			Cooperate = true
+			cooperateColor = LIGHTYELLOW_FONT_COLOR
 		else
 			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
 			nameText = name
@@ -212,7 +215,7 @@ function EFL:UpdateFriends(button)
 		infoText = area
 	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET and BNConnected() then
 		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
-		local realmName, realmID, faction, race, class, zoneName, level, gameText
+		local realmName, realmID, faction, race, class, zoneName, level, gameText, wowProjectID, mobile
 		broadcastText = messageText
 		local characterName = toonName
 		if presenceName then
@@ -225,7 +228,8 @@ function EFL:UpdateFriends(button)
 		end
 
 		if characterName then
-			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(toonID)
+			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText, _, _, _, _, _, _, _, _, wowProjectID, mobile = BNGetGameAccountInfo(toonID)
+
 			if client == BNET_CLIENT_WOW then
 				if (level == nil or tonumber(level) == nil) then level = 0 end
 				local classcolor = PA:ClassColorCode(class)
@@ -239,7 +243,11 @@ function EFL:UpdateFriends(button)
 				else
 					nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
 				end
-				Cooperate = CanCooperateWithGameAccount(toonID)
+
+				if wowProjectID == WOW_PROJECT_MAINLINE and not (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) then
+					Cooperate = CanCooperateWithGameAccount(toonID)
+					cooperateColor = LIGHTYELLOW_FONT_COLOR
+				end
 			else
 				if not EFL.Icons.Game[client] then
 					client = 'App'
@@ -250,6 +258,9 @@ function EFL:UpdateFriends(button)
 
 		if isOnline then
 			button.status:SetTexture(EFL.Icons.Status[(isDND and 'DND' or isAFK and 'AFK' or 'Online')][self.db.StatusIconPack])
+			--BNET_FRIEND_ZONE_WOW_CLASSIC = 'WoW Classic: %s'
+			--BNET_FRIEND_TOOLTIP_WOW_CLASSIC = 'WoW Classic'
+
 			if client == BNET_CLIENT_WOW then
 				gameText = gsub(gameText, '&apos;', "'")
 
@@ -257,6 +268,14 @@ function EFL:UpdateFriends(button)
 					infoText = zoneName
 				else
 					infoText = gameText
+				end
+
+				if wowProjectID == WOW_PROJECT_CLASSIC then
+					if realmName == PA.MyRealm then
+						infoText = zoneName
+					else
+						infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+					end
 				end
 
 				button.gameIcon:SetTexture(EFL.Icons.Game[faction][self.db[faction]])
@@ -269,6 +288,8 @@ function EFL:UpdateFriends(button)
 			end
 			nameColor = FRIENDS_BNET_NAME_COLOR
 			button.gameIcon:SetTexCoord(0, 1, 0, 1)
+			button.gameIcon:SetDrawLayer('OVERLAY')
+			button.gameIcon:SetAlpha(1)
 		else
 			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
 			nameColor = FRIENDS_GRAY_COLOR
@@ -295,11 +316,11 @@ function EFL:UpdateFriends(button)
 		button.name:SetText(nameText)
 		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
 		button.info:SetText(infoText)
-		button.info:SetTextColor(unpack(Cooperate and {1, .96, .45} or {.49, .52, .54}))
+		button.info:SetTextColor(cooperateColor.r, cooperateColor.g, cooperateColor.b)
 		button.name:SetFont(PA.LSM:Fetch('font', self.db.NameFont), self.db.NameFontSize, self.db.NameFontFlag)
 		button.info:SetFont(PA.LSM:Fetch('font', self.db.InfoFont), self.db.InfoFontSize, self.db.InfoFontFlag)
 
-		if button.Favorite:IsShown() then
+		if button.Favorite and button.Favorite:IsShown() then
 			button.Favorite:ClearAllPoints()
 			button.Favorite:SetPoint("TOPLEFT", button.name, "TOPLEFT", button.name:GetStringWidth(), 0);
 		end

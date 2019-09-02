@@ -53,6 +53,7 @@ local Frames = {
 	["TradeFrame"] = { "TOPLEFT", _G.UIParent, "TOPLEFT", 16, -116 },
 	["VideoOptionsFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 	["WorldMapFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
+	["WorldStateScoreFrame"] = { "CENTER", _G.UIParent, "CENTER", 0, 0 },
 }
 
 local AddOnFrames = {
@@ -157,6 +158,9 @@ function MF:LoadPosition(frame)
 		local a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
 		frame:ClearAllPoints()
 		frame:SetPoint(a, b, c, d, e, true)
+	else
+		frame:ClearAllPoints()
+		frame:SetPoint(unpack(PA.Defaults.profile['MovableFrames'][frame:GetName()]['Points']))
 	end
 end
 
@@ -186,7 +190,6 @@ end
 
 function MF:MakeMovable(Name)
 	if not _G[Name] then
-		PA:Print(PA.ACL["Frame doesn't exist: "]..Name)
 		return
 	end
 
