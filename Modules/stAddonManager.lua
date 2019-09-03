@@ -249,6 +249,8 @@ function stAM:BuildFrame()
 
 	local OnScroll = function(self, delta)
 		local numAddons = stAM.searchQuery and #Search.AddOns or #stAM.AddOnInfo
+		if numAddons < stAM.db['NumAddOns'] then return end
+
 		if IsShiftKeyDown() then
 			if delta == 1 then
 				stAM.scrollOffset = max(0, stAM.scrollOffset - stAM.db['NumAddOns'])
@@ -264,6 +266,7 @@ function stAM:BuildFrame()
 				end
 			end
 		end
+
 		Slider:SetMinMaxValues(0, (numAddons - stAM.db['NumAddOns']))
 		Slider:SetValue(stAM.scrollOffset)
 		stAM:UpdateAddonList()

@@ -3,6 +3,7 @@ if PA.ElvUI then return end
 
 if PA.Tukui then
 	Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
+	Tukui[1].Miscellaneous.GameMenu.AddHooks = function() end
 end
 
 local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0')
@@ -48,10 +49,15 @@ EC.Options = {
 
 function EC:PositionGameMenuButton()
 	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
+
+	if Tukui[1].Miscellaneous.GameMenu.Tukui then
+		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
+	end
+
 	local _, relTo, _, _, offY = GameMenuButtonLogout:GetPoint()
 	if relTo ~= GameMenuFrame['EC'] then
 		GameMenuFrame['EC']:ClearAllPoints()
-		GameMenuFrame['EC']:SetPoint("TOPLEFT", relTo, "BOTTOMLEFT", 0, -1)
+		GameMenuFrame['EC']:SetPoint("TOPLEFT", PA.Tukui and Tukui[1].Miscellaneous.GameMenu.Tukui or relTo, "BOTTOMLEFT", 0, -1)
 		GameMenuButtonLogout:ClearAllPoints()
 		GameMenuButtonLogout:SetPoint("TOPLEFT", GameMenuFrame['EC'], "BOTTOMLEFT", 0, offY)
 	end
@@ -72,6 +78,7 @@ function EC:ToggleConfig()
 		Container:SetCallback('OnClose', EC.OnConfigClosed)
 		PA.ACD:Open('Enhanced_Config', Container)
 	end
+
 	GameTooltip:Hide()
 end
 
