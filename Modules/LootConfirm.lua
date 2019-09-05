@@ -1,12 +1,12 @@
 local PA = _G.ProjectAzilroka
-if not PA.isClassic then return end
+if PA.Retail then return end
 
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 PA.LC, _G.LootConfirm = LC, LC
 
 LC.Title = '|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'
 LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
-LC.Authors = 'Azilroka     Whiro'
+LC.Authors = 'Azilroka     NihilisticPandemonium'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
 local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot
@@ -31,12 +31,11 @@ function LC:HandleEvent(event, ...)
 end
 
 -- LOOT_ROLL_TYPE_PASS, LOOT_ROLL_TYPE_NEED
+-- texture, item, quantity, currencyID, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(slot);
 
 function LC:START_LOOT_ROLL(event, id)
-	if not (self.db['Greed'] or self.db['Disenchant']) then return end
-	local _, _, _, _, _, _, _, Disenchant = GetLootRollItemInfo(id)
-
-	RollOnLoot(id, self.db['Disenchant'] and Disenchant and LOOT_ROLL_TYPE_DISENCHANT or LOOT_ROLL_TYPE_GREED)
+	if not self.db['Greed'] then return end
+	RollOnLoot(id, LOOT_ROLL_TYPE_GREED)
 end
 
 function LC:GetOptions()
@@ -70,12 +69,6 @@ function LC:GetOptions()
 						name = PA.ACL['Auto Greed'],
 						desc = PA.ACL['Automatically greed'],
 					},
-					Disenchant = {
-						order = 3,
-						type = 'toggle',
-						name = PA.ACL['Auto Disenchant'],
-						desc = PA.ACL['Automatically disenchant'],
-					},
 				},
 			},
 		},
@@ -85,7 +78,6 @@ function LC:GetOptions()
 end
 
 function LC:BuildProfile()
-
 	PA.Defaults.profile['LootConfirm'] = {
 		['Enable'] = true,
 		['Confirm'] = true,

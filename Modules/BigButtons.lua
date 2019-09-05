@@ -1,5 +1,5 @@
 local PA = _G.ProjectAzilroka
-if PA.isClassic then return end
+if PA.Classic then return end
 
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
 PA.BB, _G.BigButtons = BB, BB

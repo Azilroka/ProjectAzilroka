@@ -19,14 +19,14 @@ function FL:LOOT_READY()
 		return
 	end
 
-	if (GetCVar('autoLootDefault') == '1' and not IsModifiedClick('AUTOLOOTTOGGLE')) or (GetCVar('autoLootDefault') ~= '1' and IsModifiedClick('AUTOLOOTTOGGLE')) then
+	if (GetCVar('autoLootDefault') == '1' and not IsModifiedClick('AUTOLOOTTOGGLE')) or (GetCVar('autoLootDefault') ~= '0' and IsModifiedClick('AUTOLOOTTOGGLE')) then
 		for i = NumLootItems, 1, -1 do
 			LootSlot(i)
 		end
 
 		FL.isLooting = true
 
-		C_Timer.After(.3, function() FL.isLooting = false end)
+		C_Timer.After(.2, function() FL.isLooting = false end)
 	end
 end
 

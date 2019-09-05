@@ -47,7 +47,8 @@ end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
-PA.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+PA.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+PA.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()

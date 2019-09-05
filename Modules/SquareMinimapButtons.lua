@@ -13,7 +13,7 @@ local Minimap = Minimap
 
 SMB.Buttons = {}
 
-local ignoreButtons = {
+SMB.IgnoreButton = {
 	'GameTimeFrame',
 	'HelpOpenWebTicketButton',
 	'MiniMapVoiceChatFrame',
@@ -31,7 +31,7 @@ local ignoreButtons = {
 	'TukuiMinimapCoord',
 }
 
-local GenericIgnores = {
+SMB.GenericIgnore = {
 	'Archy',
 	'GatherMatePin',
 	'GatherNote',
@@ -49,7 +49,14 @@ local GenericIgnores = {
 	'DugisArrowMinimapPoint',
 }
 
-local PartialIgnores = { 'Node', 'Note', 'Pin', 'POI' }
+SMB.PartialIgnore = { 'Node', 'Note', 'Pin', 'POI' }
+
+SMB.OverrideTexture = {
+	BagSync_MinimapButton = [[Interface\AddOns\BagSync\media\icon]],
+	DBMMinimapButton = [[Interface\Icons\INV_Helmet_87]],
+	SmartBuff_MiniMapButton = [[Interface\Icons\Spell_Nature_Purge]],
+	VendomaticButtonFrame = [[Interface\Icons\INV_Misc_Rabbit_2]],
+}
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
 
@@ -116,7 +123,7 @@ function SMB:HandleBlizzardButtons()
 		tinsert(self.Buttons, Frame)
 	end
 
-	if not PA.isClassic then
+	if PA.Retail then
 		if self.db['HideGarrison'] then
 			GarrisonLandingPageMinimapButton:UnregisterAllEvents()
 			GarrisonLandingPageMinimapButton:SetParent(self.Hider)
@@ -258,14 +265,14 @@ function SMB:SkinMinimapButton(Button)
 	local Name = Button:GetName()
 	if not Name then return end
 
-	if tContains(ignoreButtons, Name) then return end
+	if tContains(SMB.IgnoreButton, Name) then return end
 
-	for i = 1, #GenericIgnores do
-		if strsub(Name, 1, strlen(GenericIgnores[i])) == GenericIgnores[i] then return end
+	for i = 1, #SMB.GenericIgnore do
+		if strsub(Name, 1, strlen(SMB.GenericIgnore[i])) == SMB.GenericIgnore[i] then return end
 	end
 
-	for i = 1, #PartialIgnores do
-		if strfind(Name, PartialIgnores[i]) ~= nil then return end
+	for i = 1, #SMB.PartialIgnore do
+		if strfind(Name, SMB.PartialIgnore[i]) ~= nil then return end
 	end
 
 	for i = 1, Button:GetNumRegions() do
@@ -277,24 +284,21 @@ function SMB:SkinMinimapButton(Button)
 				Region:SetTexture()
 				Region:SetAlpha(0)
 			else
-				if Name == 'BagSync_MinimapButton' then
-					Region:SetTexture([[Interface\AddOns\BagSync\media\icon]])
-				elseif Name == 'DBMMinimapButton' then
-					Region:SetTexture([[Interface\Icons\INV_Helmet_87]])
-				elseif Name == 'OutfitterMinimapButton' then
-					if Texture == [[interface\addons\outfitter\textures\minimapbutton]] then
-						Region:SetTexture()
-					end
-				elseif Name == 'SmartBuff_MiniMapButton' then
-					Region:SetTexture([[Interface\Icons\Spell_Nature_Purge]])
-				elseif Name == 'VendomaticButtonFrame' then
-					Region:SetTexture([[Interface\Icons\INV_Misc_Rabbit_2]])
+				if SMB.OverrideTexture[Name] then
+					Region:SetTexture(SMB.OverrideTexture[Name])
+				elseif Name == 'OutfitterMinimapButton' and Texture == [[interface\addons\outfitter\textures\minimapbutton]] then
+					Region:SetTexture()
 				end
+
 				Region:ClearAllPoints()
-				PA:SetInside(Region)
-				Region:SetTexCoord(unpack(self.TexCoords))
-				Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
 				Region:SetDrawLayer('ARTWORK')
+				PA:SetInside(Region)
+
+				if not Button.ignoreCrop then
+					Region:SetTexCoord(unpack(self.TexCoords))
+					Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
+				end
+
 				Region.SetPoint = function() return end
 			end
 		end
@@ -302,14 +306,16 @@ function SMB:SkinMinimapButton(Button)
 
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
-	PA:SetTemplate(Button)
 
-	if SMB.db.Shadows then
-		PA:CreateShadow(Button)
+	if not Button.ignoreTemplate then
+		PA:SetTemplate(Button)
+
+		if SMB.db.Shadows then
+			PA:CreateShadow(Button)
+		end
 	end
 
 	Button:HookScript('OnEnter', function(self)
-		self:SetBackdropBorderColor(unpack(PA.ClassColor))
 		if SMB.Bar:IsShown() then
 			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 		end
@@ -490,13 +496,13 @@ function SMB:GetOptions()
 						type = 'toggle',
 						name = PA.ACL['Hide Garrison'],
 						disabled = function() return SMB.db.MoveGarrison end,
-						hidden = function() return PA.isClassic end,
+						hidden = function() return PA.Classic end,
 					},
 					MoveGarrison  = {
 						type = 'toggle',
 						name = PA.ACL['Move Garrison Icon'],
 						disabled = function() return SMB.db.HideGarrison end,
-						hidden = function() return PA.isClassic end,
+						hidden = function() return PA.Classic end,
 					},
 					MoveMail  = {
 						type = 'toggle',
@@ -505,12 +511,12 @@ function SMB:GetOptions()
 					MoveTracker  = {
 						type = 'toggle',
 						name = PA.ACL['Move Tracker Icon'],
-						hidden = function() return PA.isClassic end,
+						hidden = function() return PA.Classic end,
 					},
 					MoveQueue  = {
 						type = 'toggle',
 						name = PA.ACL['Move Queue Status Icon'],
-						hidden = function() return PA.isClassic end,
+						hidden = function() return PA.Classic end,
 					},
 				},
 			},

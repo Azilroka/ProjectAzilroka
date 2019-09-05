@@ -244,7 +244,7 @@ function EFL:UpdateFriends(button)
 					nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
 				end
 
-				if wowProjectID == WOW_PROJECT_MAINLINE and not (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) then
+				if PA.Retail and wowProjectID == WOW_PROJECT_MAINLINE then
 					Cooperate = CanCooperateWithGameAccount(toonID)
 					cooperateColor = LIGHTYELLOW_FONT_COLOR
 				end
