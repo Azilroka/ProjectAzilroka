@@ -82,7 +82,6 @@ function LC:BuildProfile()
 		['Enable'] = true,
 		['Confirm'] = true,
 		['Greed'] = false,
-		['Disenchant'] = false,
 	}
 
 	PA.Options.args.general.args.LootConfirm = {
@@ -93,7 +92,7 @@ function LC:BuildProfile()
 end
 
 function LC:Initialize()
-	LC.db = PA.db.LootConfirm
+	LC.db = PA.db['LootConfirm']
 
 	if LC.db.Enable ~= true then
 		return
