@@ -8,7 +8,7 @@ EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
 
 local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
-local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
+local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = C_FriendList.GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
 local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\EnhancedFriendsList\]]
 local ONE_MINUTE = 60;
@@ -18,7 +18,10 @@ local ONE_MONTH = 30 * ONE_DAY;
 local ONE_YEAR = 12 * ONE_MONTH;
 
 --[[
-/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
+	-- Pull Server ID & Name
+	/dump select(2, strsplit('-', UnitGUID('player'))) .. ' = ' ..GetRealmName()
+	-- Find in _G
+	/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
 
 EFL.Icons = {
@@ -185,6 +188,91 @@ EFL.Icons = {
 	}
 }
 
+-- /dump "["..select(2, strsplit('-', UnitGUID('player'))) .. "] = '" ..GetRealmName().."'"
+EFL.ClassicServerNameByID = {
+	[4703] = 'Amnennar',
+	[4715] = 'Anathema',
+	[4716] = 'Arcanite Reaper',
+	[4742] = 'Ashbringer',
+	[4387] = 'Ashkandi',
+	[4372] = 'Atiesh',
+	[4669] = 'Arugal',
+	[4441] = 'Auberdine',
+	[4376] = 'Azuresong',
+	[4728] = 'Benediction',
+	[4398] = 'Bigglesworth',
+	[4397] = 'Blaumeux',
+	[4746] = 'Bloodfang',
+	[4648] = 'Bloodsail Buccaneers',
+	[4386] = 'Deviate Delight',
+	[4751] = 'Dragonfang',
+	[4756] = "Dragon's Call",
+	[4755] = 'Dreadmist',
+	[4731] = 'Earthfury',
+	[4749] = 'Earthshaker',
+	[4440] = 'Everlook',
+	[4408] = 'Faerlina',
+	[4396] = 'Fairbanks',
+	[4739] = 'Felstriker',
+	[4744] = 'Finkle',
+	--[] = 'Firemaw',
+	[4706] = 'Flamelash',
+	[4702] = 'Gandling',
+	--[] = 'Gehennas',
+	--[] = 'Golemagg',
+	[4647] = 'Grobbulus',
+	[4732] = 'Heartseeker',
+	[4763] = 'Heartstriker',
+	[4406] = 'Herod',
+	[4678] = 'Hydraxian Waterlords',
+	[4698] = 'Incendius',
+	[4758] = 'Judgement',
+	[4700] = 'Kirtonos',
+	[4699] = 'Kromcrush',
+	[4399] = 'Kurinnaxx',
+	[4442] = 'Lakeshire',
+	[4463] = 'Lucifron',
+	[4384] = 'Mankrik',
+	[4454] = 'Mirage Raceway',
+	--[] = 'Mograine',
+	[4373] = 'Myzrael',
+	[4456] = 'Nethergarde Keep',
+	[4729] = 'Netherwind',
+	[4741] = 'Noggenfogger',
+	[4374] = 'Old Blanchy',
+	[4385] = 'Pagle',
+	[4466] = 'Patchwerk',
+	[4453] = 'Pyrewood Village',
+	[4695] = 'Rattlegore',
+	[4455] = 'Razorfen',
+	[4478] = 'Razorgore',
+	[4667] = 'Remulos',
+	--[] = 'Shazzrah',
+	[4410] = 'Skeram',
+	[4743] = 'Skullflame',
+	[4696] = 'Smolderweb',
+	[4409] = 'Stalagg',
+	[4705] = 'Stonespine',
+	[4726] = 'Sulfuras',
+	[4464] = 'Sulfuron',
+	[4757] = 'Ten Storms',
+	[4407] = 'Thalnos',
+	[4714] = 'Thunderfury',
+	[4745] = 'Transcendence',
+	[4477] = 'Venoxis',
+	[4388] = 'Westfall',
+	[4395] = 'Whitemane',
+	[4727] = 'Windseeker',
+	[4670] = 'Yojamba',
+	[4676] = 'Zandalar Tribe',
+
+	[4452] = 'Хроми',
+	[4704] = 'Змейталак',
+	[4754] = 'Рок-Делар',
+	[4766] = 'Вестник Рока',
+	--[] = 'Пламегор'
+}
+
 function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
 	local cooperateColor = GRAY_FONT_COLOR
@@ -274,7 +362,11 @@ function EFL:UpdateFriends(button)
 					if realmName == PA.MyRealm then
 						infoText = zoneName
 					else
-						infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+						if PA.Retail then
+							infoText = format('%s - %s - %s', zoneName, EFL.ClassicServerNameByID[realmName] or realmID, gameText)
+						else
+							infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+						end
 					end
 				end
 

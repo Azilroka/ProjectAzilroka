@@ -19,7 +19,7 @@ function FL:LOOT_READY()
 		return
 	end
 
-	if (GetCVar('autoLootDefault') == '1' and not IsModifiedClick('AUTOLOOTTOGGLE')) or (GetCVar('autoLootDefault') ~= '0' and IsModifiedClick('AUTOLOOTTOGGLE')) then
+	if (GetCVar('autoLootDefault') == '1' and not IsModifiedClick('AUTOLOOTTOGGLE')) then
 		for i = NumLootItems, 1, -1 do
 			LootSlot(i)
 		end
