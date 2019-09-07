@@ -8,7 +8,7 @@ EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
 
 local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
-local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
+local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = C_FriendList.GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
 local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\EnhancedFriendsList\]]
 local ONE_MINUTE = 60;
@@ -18,7 +18,10 @@ local ONE_MONTH = 30 * ONE_DAY;
 local ONE_YEAR = 12 * ONE_MONTH;
 
 --[[
-/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
+	-- Pull Server ID & Name
+	/dump tostring(select(2, strsplit('-', UnitGUID('player'))) .. ' = ' ..GetRealmName())
+	-- Find in _G
+	/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
 
 EFL.Icons = {
@@ -185,6 +188,9 @@ EFL.Icons = {
 	}
 }
 
+EFL.ClassicServerNameByID = {
+}
+
 function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
 	local cooperateColor = GRAY_FONT_COLOR
@@ -274,7 +280,11 @@ function EFL:UpdateFriends(button)
 					if realmName == PA.MyRealm then
 						infoText = zoneName
 					else
-						infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+						if PA.Retail then
+							infoText = format('%s - %s - %s', zoneName, EFL.ClassicServerNameByID[realmName] or realmID, gameText)
+						else
+							infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+						end
 					end
 				end
 
