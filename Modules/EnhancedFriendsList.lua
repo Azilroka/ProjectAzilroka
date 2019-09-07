@@ -274,7 +274,7 @@ function EFL:UpdateFriends(button)
 					if realmName == PA.MyRealm then
 						infoText = zoneName
 					else
-						infoText = format('%s - %s', zoneName, gameText)
+						infoText = format('%s - %s - %s', zoneName, realmName, gameText)
 					end
 				end
 
