@@ -363,7 +363,7 @@ function EFL:UpdateFriends(button)
 						infoText = zoneName
 					else
 						if PA.Retail then
-							infoText = format('%s - %s - %s', zoneName, EFL.ClassicServerNameByID[realmName] or realmID, gameText)
+							infoText = format('%s - %s - %s', zoneName, EFL.ClassicServerNameByID[realmID] or realmID, gameText)
 						else
 							infoText = format('%s - %s - %s', zoneName, realmName, gameText)
 						end
