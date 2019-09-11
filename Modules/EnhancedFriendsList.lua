@@ -8,7 +8,7 @@ EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
 
 local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
-local GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = C_FriendList.GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
+local C_FriendList_GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = C_FriendList.GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
 local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\EnhancedFriendsList\]]
 local ONE_MINUTE = 60;
@@ -277,7 +277,7 @@ function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
 	local cooperateColor = GRAY_FONT_COLOR
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-		local name, level, class, area, connected, status = GetFriendInfo(button.id)
+		local name, level, class, area, connected, status = C_FriendList_GetFriendInfo(button.id)
 		broadcastText = nil
 		if connected then
 			button.status:SetTexture(EFL.Icons.Status[(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')][self.db.StatusIconPack])
