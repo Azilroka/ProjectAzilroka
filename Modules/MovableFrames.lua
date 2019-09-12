@@ -14,6 +14,7 @@ local Frames = {
 	["AddonList"] = { "CENTER", "UIParent", "CENTER", 0, 24 },
 	["BankFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["CharacterFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
+	["CraftFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["DressUpFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 70, -104 },
 	["FriendsFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["FriendsFriendsFrame"] = { "CENTER", "UIParent", "CENTER", 0, 50 },
@@ -35,6 +36,7 @@ local Frames = {
 	["PetStableFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 },
 	["PVEFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
 	["QuestFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
+	["QuestLogFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["QuestLogPopupDetailFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, 0 },
 	["RaidBrowserFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
 	["RaidInfoFrame"] = { "TOPLEFT", "RaidFrame", "TOPRIGHT", 0, -27 },
@@ -133,7 +135,8 @@ local AddOnFrames = {
 		['QuestChoiceFrame'] = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
 	['Blizzard_TalentUI'] = {
-		["PlayerTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 }
+		["PlayerTalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
+		["TalentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
 	},
 	['Blizzard_ScrappingMachineUI'] = {
 		['ScrappingMachineFrame'] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
