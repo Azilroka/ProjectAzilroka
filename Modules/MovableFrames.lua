@@ -160,7 +160,7 @@ function MF:LoadPosition(frame)
 	if (not _G.UnitAffectingCombat("player")) and (frame:IsUserPlaced()) then
 		local a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
 		frame:ClearAllPoints()
-		frame:SetPoint(a, b, c, d, e, true)
+		frame:SetPoint(a, _G[b], c, d, e, true)
 	else
 		frame:ClearAllPoints()
 		frame:SetPoint(unpack(PA.Defaults.profile['MovableFrames'][frame:GetName()]['Points']))
@@ -189,6 +189,24 @@ function MF:OnDragStop(frame)
 		frame:SetUserPlaced(false)
 	end
 	frame.isMoving = false
+end
+
+function MF:GetUIPanelAttribute(frame, name)
+    local info = UIPanelWindows[frame:GetName()];
+    if ( not info ) then
+		return;
+    end
+
+	return frame:GetAttribute("UIPanelLayout-"..name);
+end
+
+function MF:SetUIPanelAttribute(frame, name, value)
+	local info = UIPanelWindows[frame:GetName()];
+	if ( not info ) then
+		return;
+	end
+
+	SetUIPanelAttribute(frame, name, value)
 end
 
 function MF:MakeMovable(Name)
