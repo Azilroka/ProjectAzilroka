@@ -292,7 +292,7 @@ function SMB:SkinMinimapButton(Button)
 
 			if RemoveTextureID[tonumber(Texture)] then
 				Region:SetTexture()
-			elseif (strfind(Texture, "characterframe") or (strfind(Texture, "minimap") and not strfind(Texture, "tracking")) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
+			elseif (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
 				print(Texture, Texture.GetTextureFileID and Texture:GetTextureFileID())
 				Region:SetTexture()
 				Region:SetAlpha(0)
