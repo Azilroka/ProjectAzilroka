@@ -47,6 +47,7 @@ SMB.GenericIgnore = {
 	'WestPointer',
 	'Cork',
 	'DugisArrowMinimapPoint',
+	'QuestieFrame',
 }
 
 SMB.PartialIgnore = { 'Node', 'Note', 'Pin', 'POI' }
@@ -59,6 +60,12 @@ SMB.OverrideTexture = {
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
+
+local RemoveTextureID = {
+	[136430] = true,
+	[136467] = true,
+	[130924] = true,
+}
 
 function SMB:LockButton(Button)
 	for _, Function in pairs(ButtonFunctions) do
@@ -254,6 +261,9 @@ function SMB:HandleBlizzardButtons()
 
 			tinsert(self.Buttons, Frame)
 		end
+	else
+		-- MiniMapTrackingFrame
+		-- GameTimeFrame
 	end
 
 	self:Update()
@@ -280,7 +290,10 @@ function SMB:SkinMinimapButton(Button)
 		if Region.IsObjectType and Region:IsObjectType('Texture') then
 			local Texture = strlower(tostring(Region:GetTexture()))
 
-			if (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
+			if RemoveTextureID[tonumber(Texture)] then
+				Region:SetTexture()
+			elseif (strfind(Texture, "characterframe") or (strfind(Texture, "minimap") and not strfind(Texture, "tracking")) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
+				print(Texture, Texture.GetTextureFileID and Texture:GetTextureFileID())
 				Region:SetTexture()
 				Region:SetAlpha(0)
 			else
