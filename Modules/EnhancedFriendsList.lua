@@ -370,7 +370,7 @@ function EFL:UpdateFriends(button)
 					end
 				end
 
-				button.gameIcon:SetTexture(EFL.Icons.Game[faction][self.db[faction]])
+				button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][self.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
 			else
 				if not EFL.Icons.Game[client] then
 					client = 'App'
