@@ -14,7 +14,6 @@ local Frames = {
 	["AddonList"] = { "CENTER", "UIParent", "CENTER", 0, 24 },
 	["BankFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["CharacterFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["CraftFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["DressUpFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 70, -104 },
 	["FriendsFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["FriendsFriendsFrame"] = { "CENTER", "UIParent", "CENTER", 0, 50 },
@@ -94,6 +93,9 @@ local AddOnFrames = {
 	},
 	['Blizzard_Communities'] = {
 		["CommunitiesFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
+	},
+	['Blizzard_CraftUI'] = {
+		["CraftFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	},
 	['Blizzard_EncounterJournal'] = {
 		["EncounterJournal"] = { "CENTER", "UIParent", "CENTER", 0, 0 }
