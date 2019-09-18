@@ -159,14 +159,15 @@ local AddOnFrames = {
 
 function MF:LoadPosition(frame)
 	if frame.isMoving then return end
-	if (not _G.UnitAffectingCombat("player")) and (frame:IsUserPlaced()) then
-		local a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
-		frame:ClearAllPoints()
-		frame:SetPoint(a, _G[b], c, d, e, true)
+	local a, b, c, d, e
+	if frame:IsUserPlaced() then
+		a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
 	else
-		frame:ClearAllPoints()
-		frame:SetPoint(unpack(PA.Defaults.profile['MovableFrames'][frame:GetName()]['Points']))
+		a, b, c, d, e = unpack(PA.Defaults.profile['MovableFrames'][frame:GetName()]['Points'])
 	end
+
+	frame:ClearAllPoints()
+	frame:SetPoint(a, _G[b], c, d, e, true)
 end
 
 function MF:OnDragStart(frame)
@@ -219,6 +220,22 @@ function MF:MakeMovable(Name)
 	local Frame = _G[Name]
 
 	if Name == 'AchievementFrame' then _G.AchievementFrameHeader:EnableMouse(false) end
+
+	if Name == 'WorldMapFrame' and PA.Classic then
+		MF:SetUIPanelAttribute(WorldMapFrame, 'maximizePoint', nil)
+
+		function ToggleWorldMap()
+			if WorldMapFrame:IsShown() then
+				HideUIPanel(WorldMapFrame);
+			else
+				ShowUIPanel(WorldMapFrame);
+			end
+		end
+
+		function OpenWorldMap(mapID)
+			ShowUIPanel(WorldMapFrame);
+		end
+	end
 
 	Frame:EnableMouse(true)
 	Frame:SetMovable(true)
