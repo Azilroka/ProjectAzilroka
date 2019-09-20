@@ -628,8 +628,9 @@ function stAM:UpdateAddonList()
 end
 
 function stAM:Update()
+	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5 + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
 	self.Frame.AddOns:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 15)
-	self.Frame:SetSize(self.db['FrameWidth'], self.Frame.Title:GetHeight() + 5 + self.Frame.Search:GetHeight() + 5  + self.Frame.AddOns:GetHeight() + 10 + self.Frame.Profiles:GetHeight() + 20)
+	self.Frame.AddOns.ScrollBar:SetHeight(self.db['NumAddOns'] * (self.db['ButtonHeight'] + 5) + 11)
 
 	local font, fontSize, fontFlag = PA.LSM:Fetch('font', self.db['Font']), self.db['FontSize'], self.db['FontFlag']
 
@@ -836,10 +837,11 @@ function stAM:Initialize()
 		if GetAddOnDependencies(i) ~= nil then
 			Required = { GetAddOnDependencies(i) }
 			for _, addon in pairs(Required) do
-				if select(5, GetAddOnInfo(addon)) == 'MISSING' then
+				local Reason = select(5, GetAddOnInfo(addon))
+				if Reason == 'MISSING' then
 					MissingAddons = MissingAddons or {}
 					tinsert(MissingAddons, addon)
-				elseif select(5, GetAddOnInfo(addon)) == 'DISABLED' then
+				elseif Reason == 'DISABLED' then
 					DisabledAddons = DisabledAddons or {}
 					tinsert(DisabledAddons, addon)
 				end
@@ -876,4 +878,5 @@ function stAM:Initialize()
 
 	stAM:BuildFrame()
 	stAM:InitProfiles()
+	stAM:Update()
 end
