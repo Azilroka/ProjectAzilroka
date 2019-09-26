@@ -231,7 +231,9 @@ EFL.ClassicServerNameByID = {
 	[4699] = 'Kromcrush',
 	[4399] = 'Kurinnaxx',
 	[4442] = 'Lakeshire',
+	[4801] = 'Loatheb',
 	[4463] = 'Lucifron',
+	[4813] = 'Mandokir',
 	[4384] = 'Mankrik',
 	[4454] = 'Mirage Raceway',
 	[4701] = 'Mograine',
@@ -255,6 +257,7 @@ EFL.ClassicServerNameByID = {
 	[4705] = 'Stonespine',
 	[4726] = 'Sulfuras',
 	[4464] = 'Sulfuron',
+	[4737] = "Sul'thraze",
 	[4757] = 'Ten Storms',
 	[4407] = 'Thalnos',
 	[4714] = 'Thunderfury',
@@ -272,6 +275,78 @@ EFL.ClassicServerNameByID = {
 	[4766] = 'Вестник Рока',
 	[4474] = 'Пламегор',
 }
+
+local accountInfo = { gameAccountInfo = {} }
+function EFL:GetBattleNetInfo(friendIndex)
+	if PA.Classic then
+		local bnetIDAccount, accountName, battleTag, isBattleTag, _, bnetIDGameAccount, _, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, _, messageTime, _, isReferAFriend, canSummonFriend, isFavorite = BNGetFriendInfo(friendIndex)
+
+		if not bnetIDGameAccount then return end
+
+		local hasFocus, characterName, client, realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, _, toonID, _, isGameAFK, isGameBusy, guid, wowProjectID, mobile  = BNGetGameAccountInfo(bnetIDGameAccount)
+
+		accountInfo.bnetAccountID = bnetIDAccount
+		accountInfo.accountName = accountName
+		accountInfo.battleTag = battleTag
+		accountInfo.isBattleTagFriend = isBattleTag
+		accountInfo.isDND = isBnetDND
+		accountInfo.isAFK = isBnetAFK
+		accountInfo.isFriend = true
+		accountInfo.isFavorite = isFavorite
+		accountInfo.note = noteText
+		accountInfo.rafLinkType = 0
+		accountInfo.appearOffline = false
+		accountInfo.customMessage = messageText
+		accountInfo.lastOnlineTime = lastOnline
+		accountInfo.customMessageTime = messageTime
+
+		accountInfo.gameAccountInfo.clientProgram = client or "App"
+		accountInfo.gameAccountInfo.richPresence = gameText
+		accountInfo.gameAccountInfo.gameAccountID = bnetIDGameAccount
+		accountInfo.gameAccountInfo.isOnline = isOnline
+		accountInfo.gameAccountInfo.isGameAFK = isGameAFK
+		accountInfo.gameAccountInfo.isGameBusy = isGameBusy
+		accountInfo.gameAccountInfo.isWowMobile = mobile
+		accountInfo.gameAccountInfo.hasFocus = hasFocus
+		accountInfo.gameAccountInfo.canSummon = canSummonFriend
+
+		if client == BNET_CLIENT_WOW then
+			accountInfo.gameAccountInfo.characterName = characterName or ""
+			accountInfo.gameAccountInfo.factionName = faction or "Neutral"
+			accountInfo.gameAccountInfo.playerGuid = guid or 0
+			accountInfo.gameAccountInfo.wowProjectID = wowProjectID or 0
+			accountInfo.gameAccountInfo.realmID = realmID or 0
+			accountInfo.gameAccountInfo.realmDisplayName = realmName or ""
+			accountInfo.gameAccountInfo.realmName = realmName or ""
+			accountInfo.gameAccountInfo.areaName = zoneName or ""
+			accountInfo.gameAccountInfo.className = class or ""
+			accountInfo.gameAccountInfo.characterLevel = level or 0
+			accountInfo.gameAccountInfo.raceName = race or ""
+		else
+			accountInfo.gameAccountInfo.characterName = nil
+			accountInfo.gameAccountInfo.factionName = nil
+			accountInfo.gameAccountInfo.playerGuid = nil
+			accountInfo.gameAccountInfo.wowProjectID = nil
+			accountInfo.gameAccountInfo.realmID = nil
+			accountInfo.gameAccountInfo.realmDisplayName = nil
+			accountInfo.gameAccountInfo.realmName = nil
+			accountInfo.gameAccountInfo.areaName = nil
+			accountInfo.gameAccountInfo.className = nil
+			accountInfo.gameAccountInfo.characterLevel = nil
+			accountInfo.gameAccountInfo.raceName = nil
+		end
+
+		return accountInfo
+	else
+		accountInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
+
+		if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC then
+			accountInfo.gameAccountInfo.realmDisplayName = EFL.ClassicServerNameByID[accountInfo.gameAccountInfo.realmID] or accountInfo.gameAccountInfo.realmID
+		end
+
+		return accountInfo
+	end
+end
 
 function EFL:UpdateFriends(button)
 	local nameText, nameColor, infoText, broadcastText, _, Cooperate
@@ -301,91 +376,63 @@ function EFL:UpdateFriends(button)
 			nameColor = FRIENDS_GRAY_COLOR
 		end
 		infoText = area
-	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET and BNConnected() then
-		local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(button.id)
-		local realmName, realmID, faction, race, class, zoneName, level, gameText, wowProjectID, mobile
-		broadcastText = messageText
-		local characterName = toonName
-		if presenceName then
-			nameText = presenceName
-			if isOnline then
-				characterName = BNet_GetValidatedCharacterName(characterName, battleTag, client)
+	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+		local info = EFL:GetBattleNetInfo(button.id);
+		if info then
+			nameText = info.accountName
+			infoText = accountInfo.gameAccountInfo.richPresence
+
+			if infoText == "" then
+				infoText = PA.ACL["Mobile"]
 			end
-		else
-			nameText = UNKNOWN
-		end
 
-		if characterName then
-			_, _, _, realmName, realmID, faction, race, class, _, zoneName, level, gameText, _, _, _, _, _, _, _, _, wowProjectID, mobile = BNGetGameAccountInfo(toonID)
+			if info.gameAccountInfo.isOnline then
+				local client = info.gameAccountInfo.clientProgram
+				nameColor = FRIENDS_BNET_NAME_COLOR
 
-			if client == BNET_CLIENT_WOW then
-				if (level == nil or tonumber(level) == nil) then level = 0 end
-				local classcolor = PA:ClassColorCode(class)
-				if EFL.db.ShowLevel then
-					if EFL.db.DiffLevel then
-						local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
-						nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
-					else
-						nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
-					end
-				else
-					nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
-				end
-
-				if PA.Retail and wowProjectID == WOW_PROJECT_MAINLINE then
-					Cooperate = CanCooperateWithGameAccount(toonID)
-					cooperateColor = LIGHTYELLOW_FONT_COLOR
-				end
-			else
-				if not EFL.Icons.Game[client] then
-					client = 'App'
-				end
-				nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
-			end
-		end
-
-		if isOnline then
-			button.status:SetTexture(EFL.Icons.Status[(isDND and 'DND' or isAFK and 'AFK' or 'Online')][self.db.StatusIconPack])
-			--BNET_FRIEND_ZONE_WOW_CLASSIC = 'WoW Classic: %s'
-			--BNET_FRIEND_TOOLTIP_WOW_CLASSIC = 'WoW Classic'
-
-			if client == BNET_CLIENT_WOW then
-				gameText = gsub(gameText, '&apos;', "'")
-
-				if realmName == PA.MyRealm then
-					infoText = zoneName
-				else
-					infoText = gameText
-				end
-
-				if wowProjectID == WOW_PROJECT_CLASSIC then
-					if realmName == PA.MyRealm then
-						infoText = zoneName
-					else
-						if PA.Retail then
-							infoText = format('%s - %s - %s', zoneName, EFL.ClassicServerNameByID[realmID] or realmID, gameText)
+				if client == BNET_CLIENT_WOW then
+					local level = info.gameAccountInfo.characterLevel
+					local characterName = info.gameAccountInfo.characterName
+					local classcolor = PA:ClassColorCode(info.gameAccountInfo.className)
+					if EFL.db.ShowLevel then
+						if EFL.db.DiffLevel then
+							local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
+							nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
 						else
-							infoText = format('%s - %s - %s', zoneName, realmName, gameText)
+							nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
 						end
+					else
+						nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
 					end
+
+					if info.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC and info.gameAccountInfo.realmDisplayName ~= PA.MyRealm then
+						infoText = format('%s - %s - %s', info.gameAccountInfo.areaName, info.gameAccountInfo.realmDisplayName, infoText)
+					elseif info.gameAccountInfo.realmDisplayName == PA.MyRealm then
+						infoText = info.gameAccountInfo.areaName
+					end
+
+					if PA.Retail and info.gameAccountInfo.wowProjectID == WOW_PROJECT_MAINLINE then
+						Cooperate = CanCooperateWithGameAccount(info)
+						cooperateColor = LIGHTYELLOW_FONT_COLOR
+					end
+
+					button.gameIcon:SetTexture(EFL.Icons.Game[info.gameAccountInfo.factionName][self.db[info.gameAccountInfo.factionName]] or EFL.Icons.Game.Neutral.Launcher)
+				else
+					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
+					button.gameIcon:SetTexture(EFL.Icons.Game[client][self.db[client]])
 				end
 
-				button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][self.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
+				button.status:SetTexture(EFL.Icons.Status[(info.isDND and 'DND' or info.isAFK and 'AFK' or 'Online')][self.db.StatusIconPack])
+
+				button.gameIcon:SetTexCoord(0, 1, 0, 1)
+				button.gameIcon:SetDrawLayer('OVERLAY')
+				button.gameIcon:SetAlpha(1)
 			else
-				if not EFL.Icons.Game[client] then
-					client = 'App'
-				end
-				infoText = client == 'BSAp' and PA.ACL['Mobile'] or gameText
-				button.gameIcon:SetTexture(EFL.Icons.Game[client][self.db[client]])
+				button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
+				nameColor = FRIENDS_GRAY_COLOR
+				local lastOnline = info.lastOnlineTime
+				infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR) and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
 			end
-			nameColor = FRIENDS_BNET_NAME_COLOR
-			button.gameIcon:SetTexCoord(0, 1, 0, 1)
-			button.gameIcon:SetDrawLayer('OVERLAY')
-			button.gameIcon:SetAlpha(1)
-		else
-			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
-			nameColor = FRIENDS_GRAY_COLOR
-			infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR) and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
 		end
 	end
 
