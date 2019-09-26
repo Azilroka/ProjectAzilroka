@@ -57,6 +57,7 @@ SMB.OverrideTexture = {
 	DBMMinimapButton = [[Interface\Icons\INV_Helmet_87]],
 	SmartBuff_MiniMapButton = [[Interface\Icons\Spell_Nature_Purge]],
 	VendomaticButtonFrame = [[Interface\Icons\INV_Misc_Rabbit_2]],
+	OutfitterMinimapButton = '',
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
@@ -288,36 +289,37 @@ function SMB:SkinMinimapButton(Button)
 	for i = 1, Button:GetNumRegions() do
 		local Region = select(i, Button:GetRegions())
 		if Region.IsObjectType and Region:IsObjectType('Texture') then
-			local Texture = strlower(tostring(Region:GetTexture()))
+			local Texture = Region.GetTextureFileID and Region:GetTextureFileID()
 
-			if RemoveTextureID[tonumber(Texture)] then
+			if RemoveTextureID[Texture] then
 				Region:SetTexture()
-			elseif (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
-				print(Texture, Texture.GetTextureFileID and Texture:GetTextureFileID())
-				Region:SetTexture()
-				Region:SetAlpha(0)
 			else
-				if SMB.OverrideTexture[Name] then
-					Region:SetTexture(SMB.OverrideTexture[Name])
-				elseif Name == 'OutfitterMinimapButton' and Texture == [[interface\addons\outfitter\textures\minimapbutton]] then
+				Texture = strlower(tostring(Region:GetTexture()))
+				if (strfind(Texture, [[interface\characterframe]]) or (strfind(Texture, [[interface\minimap]]) and not strfind(Texture, [[interface\minimap\tracking\]])) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight')) then
 					Region:SetTexture()
+					Region:SetAlpha(0)
+				else
+					if SMB.OverrideTexture[Name] then
+						Region:SetTexture(SMB.OverrideTexture[Name])
+					end
+
+					Region:ClearAllPoints()
+					Region:SetDrawLayer('ARTWORK')
+					PA:SetInside(Region)
+
+					if not Button.ignoreCrop then
+						Region:SetTexCoord(unpack(self.TexCoords))
+						Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
+					end
+
+					Region.SetPoint = function() return end
 				end
-
-				Region:ClearAllPoints()
-				Region:SetDrawLayer('ARTWORK')
-				PA:SetInside(Region)
-
-				if not Button.ignoreCrop then
-					Region:SetTexCoord(unpack(self.TexCoords))
-					Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
-				end
-
-				Region.SetPoint = function() return end
 			end
 		end
 	end
 
-	Button:SetFrameLevel(Minimap:GetFrameLevel() + 5)
+	Button:SetFrameLevel(Minimap:GetFrameLevel() + 10)
+	Button:SetFrameStrata(Minimap:GetFrameStrata())
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 
 	if not Button.ignoreTemplate then
@@ -398,7 +400,7 @@ function SMB:Update()
 			Button:SetPoint(Anchor, self.Bar, Anchor, DirMult * (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
 			Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
 			Button:SetScale(1)
-			Button:SetFrameStrata('LOW')
+			Button:SetFrameStrata('MEDIUM')
 			Button:SetFrameLevel(self.Bar:GetFrameLevel() + 1)
 			Button:SetScript('OnDragStart', nil)
 			Button:SetScript('OnDragStop', nil)
@@ -601,7 +603,8 @@ function SMB:Initialize()
 	SMB.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', UIParent)
 	SMB.Bar:Hide()
 	SMB.Bar:SetPoint('RIGHT', UIParent, 'RIGHT', -45, 0)
-	SMB.Bar:SetFrameStrata('LOW')
+	SMB.Bar:SetFrameStrata('MEDIUM')
+	SMB.Bar:SetFrameLevel(1)
 	SMB.Bar:SetClampedToScreen(true)
 	SMB.Bar:SetMovable(true)
 	SMB.Bar:EnableMouse(true)
