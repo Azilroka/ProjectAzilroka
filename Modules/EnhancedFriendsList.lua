@@ -312,7 +312,7 @@ function EFL:GetBattleNetInfo(friendIndex)
 
 		if client == BNET_CLIENT_WOW then
 			accountInfo.gameAccountInfo.characterName = characterName or ""
-			accountInfo.gameAccountInfo.factionName = faction or "Neutral"
+			accountInfo.gameAccountInfo.factionName = faction ~= '' and faction or nil
 			accountInfo.gameAccountInfo.playerGuid = guid or 0
 			accountInfo.gameAccountInfo.wowProjectID = wowProjectID or 0
 			accountInfo.gameAccountInfo.realmID = realmID or 0
@@ -416,7 +416,8 @@ function EFL:UpdateFriends(button)
 						cooperateColor = LIGHTYELLOW_FONT_COLOR
 					end
 
-					button.gameIcon:SetTexture(EFL.Icons.Game[info.gameAccountInfo.factionName][self.db[info.gameAccountInfo.factionName]] or EFL.Icons.Game.Neutral.Launcher)
+					local faction = info.gameAccountInfo.factionName
+					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][self.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
 				else
 					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
 					button.gameIcon:SetTexture(EFL.Icons.Game[client][self.db[client]])
