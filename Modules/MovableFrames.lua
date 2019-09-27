@@ -158,16 +158,13 @@ local AddOnFrames = {
 }
 
 function MF:LoadPosition(frame)
-	if frame.isMoving then return end
+	if frame.isMoving or InCombatLockdown() then return end
 	local a, b, c, d, e
 	if frame:IsUserPlaced() then
 		a, b, c, d, e = unpack(MF.db[frame:GetName()]['Points'])
-	else
-		a, b, c, d, e = unpack(PA.Defaults.profile['MovableFrames'][frame:GetName()]['Points'])
+		frame:ClearAllPoints()
+		frame:SetPoint(a, _G[b], c, d, e, true)
 	end
-
-	frame:ClearAllPoints()
-	frame:SetPoint(a, _G[b], c, d, e, true)
 end
 
 function MF:OnDragStart(frame)
@@ -188,7 +185,7 @@ function MF:OnDragStop(frame)
 			MF.db[Name].Points = {a, b, c, d, e}
 		end
 		frame:SetUserPlaced(true)
-	else
+	elseif frame:IsUserPlaced() then
 		frame:SetUserPlaced(false)
 	end
 	frame.isMoving = false
@@ -365,6 +362,7 @@ function MF:Initialize()
 	end
 
 	if PA.ElvUI then
+		AddOnFrames['LossOfControlFrame'] = nil
 		AddOnFrames['Blizzard_TalkingHeadUI'] = nil
 	end
 
@@ -382,6 +380,26 @@ function MF:Initialize()
 	end
 
 	MF:RegisterEvent('ADDON_LOADED')
+
+	--function ShowUIPanel(frame, force)
+	--	if ( not frame or frame:IsShown() ) then
+	--		return;
+	--	end
+
+	--	frame:Show();
+
+	--	UpdateUIPanelPositions()
+	--end
+
+	--function HideUIPanel(frame, skipSetPoint)
+	--	if ( not frame or not frame:IsShown() ) then
+	--		return;
+	--	end
+
+	--	frame:Hide();
+
+	--	UpdateUIPanelPositions()
+	--end
 
 	MF:Hook('UIParent_ManageFramePosition', function()
 		for _, Frame in pairs(MF.AllFrames) do
