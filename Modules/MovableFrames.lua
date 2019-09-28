@@ -219,6 +219,8 @@ function MF:MakeMovable(Name)
 	if Name == 'AchievementFrame' then _G.AchievementFrameHeader:EnableMouse(false) end
 
 	if Name == 'WorldMapFrame' and PA.Classic then
+		WorldMapFrame:Show()
+		WorldMapFrame:Hide()
 		MF:SetUIPanelAttribute(WorldMapFrame, 'maximizePoint', nil)
 
 		function ToggleWorldMap()
