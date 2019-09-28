@@ -325,11 +325,6 @@ function SMB:SkinMinimapButton(Button)
 		end
 	end
 
-	if Button:IsObjectType("Button") then
-		if Button:GetNormalTexture() then
-		end
-	end
-
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 	Button:SetFrameStrata(Minimap:GetFrameStrata())
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
