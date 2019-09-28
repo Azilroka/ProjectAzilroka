@@ -29,6 +29,7 @@ SMB.IgnoreButton = {
 	'MinimapZoomOut',
 	'TukuiMinimapZone',
 	'TukuiMinimapCoord',
+	'RecipeRadarMinimapButtonFrame',
 }
 
 SMB.GenericIgnore = {
@@ -58,6 +59,12 @@ SMB.OverrideTexture = {
 	SmartBuff_MiniMapButton = [[Interface\Icons\Spell_Nature_Purge]],
 	VendomaticButtonFrame = [[Interface\Icons\INV_Misc_Rabbit_2]],
 	OutfitterMinimapButton = '',
+	RecipeRadar_MinimapButton = [[Interface\Icons\INV_Scroll_03]]
+}
+
+SMB.UnrulyButtons = {
+	'WIM3MinimapButton',
+	'RecipeRadar_MinimapButton',
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
@@ -273,7 +280,7 @@ end
 function SMB:SkinMinimapButton(Button)
 	if (not Button) or Button.isSkinned then return end
 
-	local Name = Button:GetName()
+	local Name = Button.GetName and Button:GetName()
 	if not Name then return end
 
 	if tContains(SMB.IgnoreButton, Name) then return end
@@ -318,6 +325,11 @@ function SMB:SkinMinimapButton(Button)
 		end
 	end
 
+	if Button:IsObjectType("Button") then
+		if Button:GetNormalTexture() then
+		end
+	end
+
 	Button:SetFrameLevel(Minimap:GetFrameLevel() + 10)
 	Button:SetFrameStrata(Minimap:GetFrameStrata())
 	Button:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
@@ -349,6 +361,12 @@ end
 function SMB:GrabMinimapButtons()
 	if (InCombatLockdown() or C_PetBattles and C_PetBattles.IsInBattle()) then return end
 
+	for _, Button in pairs(SMB.UnrulyButtons) do
+		if _G[Button] then
+			_G[Button]:SetParent(Minimap)
+		end
+	end
+
 	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
 		local NumChildren = Frame:GetNumChildren()
 		if NumChildren < (Frame.SMBNumChildren or 0) then return end
@@ -362,6 +380,7 @@ function SMB:GrabMinimapButtons()
 				end
 			end
 		end
+
 		Frame.SMBNumChildren = NumChildren
 	end
 
