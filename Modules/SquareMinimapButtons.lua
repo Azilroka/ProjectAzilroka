@@ -570,9 +570,9 @@ function SMB:BuildProfile()
 	PA.Defaults.profile['SquareMinimapButtons'] = {
 		['Enable'] = true,
 		['BarMouseOver'] = false,
-		['BarEnabled'] = false,
-		['Backdrop'] = false,
-		['IconSize'] = 27,
+		['BarEnabled'] = true,
+		['Backdrop'] = true,
+		['IconSize'] = 20,
 		['ButtonsPerRow'] = 12,
 		['ButtonSpacing'] = 2,
 		['HideGarrison'] = false,

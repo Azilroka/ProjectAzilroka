@@ -79,7 +79,7 @@ end
 
 function LC:BuildProfile()
 	PA.Defaults.profile['LootConfirm'] = {
-		['Enable'] = true,
+		['Enable'] = false,
 		['Confirm'] = true,
 		['Greed'] = false,
 	}
