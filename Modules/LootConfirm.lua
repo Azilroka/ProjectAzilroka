@@ -5,7 +5,7 @@ local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 PA.LC, _G.LootConfirm = LC, LC
 
 LC.Title = '|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'
-LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
+LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed)'
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 
 local tonumber, strmatch, select = tonumber, strmatch, select
@@ -14,17 +14,12 @@ local RollOnLoot, LootSlot = RollOnLoot, LootSlot
 local IsEquippableItem, GetItemInfo, GetInventoryItemLink = IsEquippableItem, GetItemInfo, GetInventoryItemLink
 local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRollItemLink
 
-function LC:HandleEvent(event, ...)
-	if not self.db['Confirm'] then return end
-	local NumLootItems = GetNumLootItems()
-	if NumLootItems == 0 then
-		CloseLoot()
-	end
+function LC:Confirm(event, ...)
 	if event == 'CONFIRM_LOOT_ROLL' then
 		local arg1, arg2 = ...
 		ConfirmLootRoll(arg1, arg2)
 	elseif event == 'LOOT_OPENED' or event == 'LOOT_BIND_CONFIRM' then
-		for slot = 1, NumLootItems do
+		for slot = 1, GetNumLootItems() do
 			ConfirmLootSlot(slot)
 		end
 	end
@@ -57,12 +52,6 @@ function LC:GetOptions()
 				get = function(info) return LC.db[info[#info]] end,
 				set = function(info, value) LC.db[info[#info]] = value end,
 				args = {
-					Confirm = {
-						order = 1,
-						type = 'toggle',
-						name = PA.ACL['Auto Confirm'],
-						desc = PA.ACL['Automatically click OK on BOP items'],
-					},
 					Greed = {
 						order = 2,
 						type = 'toggle',
@@ -80,7 +69,6 @@ end
 function LC:BuildProfile()
 	PA.Defaults.profile['LootConfirm'] = {
 		['Enable'] = false,
-		['Confirm'] = true,
 		['Greed'] = false,
 	}
 
@@ -103,9 +91,9 @@ function LC:Initialize()
 	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
 	UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')
 
-	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'HandleEvent')
-	LC:RegisterEvent('LOOT_OPENED', 'HandleEvent')
-	LC:RegisterEvent('LOOT_BIND_CONFIRM', 'HandleEvent')
+	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'Confirm')
+	LC:RegisterEvent('LOOT_OPENED', 'Confirm')
+	LC:RegisterEvent('LOOT_BIND_CONFIRM', 'Confirm')
 
 	--LC:RegisterEvent('START_LOOT_ROLL')
 end
