@@ -301,7 +301,7 @@ function EFL:GetBattleNetInfo(friendIndex)
 		accountInfo.customMessageTime = messageTime
 
 		accountInfo.gameAccountInfo.clientProgram = client or "App"
-		accountInfo.gameAccountInfo.richPresence = gameText
+		accountInfo.gameAccountInfo.richPresence = gameText ~= '' and gameText or PA.ACL["Mobile"]
 		accountInfo.gameAccountInfo.gameAccountID = bnetIDGameAccount
 		accountInfo.gameAccountInfo.isOnline = isOnline
 		accountInfo.gameAccountInfo.isGameAFK = isGameAFK
@@ -349,11 +349,10 @@ function EFL:GetBattleNetInfo(friendIndex)
 end
 
 function EFL:UpdateFriends(button)
-	local nameText, nameColor, infoText, broadcastText, _, Cooperate
+	local nameText, nameColor, infoText
 	local cooperateColor = GRAY_FONT_COLOR
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
 		local name, level, class, area, connected, status = C_FriendList_GetFriendInfo(button.id)
-		broadcastText = nil
 		if connected then
 			button.status:SetTexture(EFL.Icons.Status[(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')][self.db.StatusIconPack])
 			local classcolor = PA:ClassColorCode(class)
@@ -368,7 +367,6 @@ function EFL:UpdateFriends(button)
 				nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class)
 			end
 			nameColor = FRIENDS_WOW_NAME_COLOR
-			Cooperate = true
 			cooperateColor = LIGHTYELLOW_FONT_COLOR
 		else
 			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
@@ -382,10 +380,6 @@ function EFL:UpdateFriends(button)
 			nameText = info.accountName
 			infoText = accountInfo.gameAccountInfo.richPresence
 
-			if infoText == "" then
-				infoText = PA.ACL["Mobile"]
-			end
-
 			if info.gameAccountInfo.isOnline then
 				local client = info.gameAccountInfo.clientProgram
 				nameColor = FRIENDS_BNET_NAME_COLOR
@@ -394,15 +388,17 @@ function EFL:UpdateFriends(button)
 					local level = info.gameAccountInfo.characterLevel
 					local characterName = info.gameAccountInfo.characterName
 					local classcolor = PA:ClassColorCode(info.gameAccountInfo.className)
-					if EFL.db.ShowLevel then
-						if EFL.db.DiffLevel then
-							local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
-							nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
+					if characterName then
+						if EFL.db.ShowLevel then
+							if EFL.db.DiffLevel then
+								local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
+								nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
+							else
+								nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+							end
 						else
-							nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+							nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
 						end
-					else
-						nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
 					end
 
 					if info.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC and info.gameAccountInfo.realmDisplayName ~= PA.MyRealm then
@@ -411,8 +407,7 @@ function EFL:UpdateFriends(button)
 						infoText = info.gameAccountInfo.areaName
 					end
 
-					if PA.Retail and info.gameAccountInfo.wowProjectID == WOW_PROJECT_MAINLINE then
-						Cooperate = CanCooperateWithGameAccount(info)
+					if PA.Retail and info.gameAccountInfo.wowProjectID == WOW_PROJECT_MAINLINE and CanCooperateWithGameAccount(info) then
 						cooperateColor = LIGHTYELLOW_FONT_COLOR
 					end
 
