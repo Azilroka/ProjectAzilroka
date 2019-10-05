@@ -110,6 +110,10 @@ function PA:ClassColorCode(class)
 	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
+function PA:GetClassName(class)
+	return PA.Classes[class]
+end
+
 function PA:Color(name)
 	local color = '|cFF16C3F2%s|r'
 	return (color):format(name)

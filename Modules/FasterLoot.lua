@@ -39,7 +39,6 @@ function FL:LootItems()
 end
 
 function FL:QUEST_COMPLETE(event)
-	print(event)
 end
 
 function FL:LOOT_CLOSED()

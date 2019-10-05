@@ -7,10 +7,10 @@ EFL.Description = 'Provides Friends List Customization'
 EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
 
-local pairs, tonumber, unpack, format = pairs, tonumber, unpack, format
-local C_FriendList_GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount = C_FriendList.GetFriendInfo, BNGetFriendInfo, BNGetGameAccountInfo, BNConnected, GetQuestDifficultyColor, CanCooperateWithGameAccount
+local pairs, format = pairs, format
+local BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor, CanCooperateWithGameAccount = BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor, CanCooperateWithGameAccount
 
-local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\EnhancedFriendsList\]]
+local MediaPath = 'Interface/AddOns/ProjectAzilroka/Media/EnhancedFriendsList/'
 local ONE_MINUTE = 60;
 local ONE_HOUR = 60 * ONE_MINUTE;
 local ONE_DAY = 24 * ONE_HOUR;
@@ -163,6 +163,7 @@ EFL.Icons = {
 			Default = FRIENDS_TEXTURE_ONLINE,
 			Square = MediaPath..[[StatusIcons\Square\Online]],
 			D3 = MediaPath..[[StatusIcons\D3\Online]],
+			Color = {.243, .57, 1},
 		},
 		Offline = {
 			Name = FRIENDS_LIST_OFFLINE,
@@ -170,6 +171,7 @@ EFL.Icons = {
 			Default = FRIENDS_TEXTURE_OFFLINE,
 			Square = MediaPath..[[StatusIcons\Square\Offline]],
 			D3 = MediaPath..[[StatusIcons\D3\Offline]],
+			Color = {.486, .518, .541},
 		},
 		DND = {
 			Name = DEFAULT_DND_MESSAGE,
@@ -177,6 +179,7 @@ EFL.Icons = {
 			Default = FRIENDS_TEXTURE_DND,
 			Square = MediaPath..[[StatusIcons\Square\DND]],
 			D3 = MediaPath..[[StatusIcons\D3\DND]],
+			Color = {1, 0, 0},
 		},
 		AFK = {
 			Name = DEFAULT_AFK_MESSAGE,
@@ -184,6 +187,7 @@ EFL.Icons = {
 			Default = FRIENDS_TEXTURE_AFK,
 			Square = MediaPath..[[StatusIcons\Square\AFK]],
 			D3 = MediaPath..[[StatusIcons\D3\AFK]],
+			Color = {1, 1, 0},
 		},
 	}
 }
@@ -348,14 +352,34 @@ function EFL:GetBattleNetInfo(friendIndex)
 	end
 end
 
+function EFL:CreateTexture(button, type, layer)
+	if button.efl and button.efl[type] then return end
+
+	button.efl = button.efl or {}
+	button.efl[type] = {}
+
+	button.efl[type].Left = button:CreateTexture(nil, layer)
+	button.efl[type].Left:SetWidth(button:GetWidth() / 2)
+	button.efl[type].Left:SetHeight(32)
+	button.efl[type].Left:SetPoint("LEFT", button, "CENTER")
+	button.efl[type].Left:SetTexture('Interface/Buttons/WHITE8X8')
+
+	button.efl[type].Right = button:CreateTexture(nil, layer)
+	button.efl[type].Right:SetWidth(button:GetWidth() / 2)
+	button.efl[type].Right:SetHeight(32)
+	button.efl[type].Right:SetPoint("RIGHT", button, "CENTER")
+	button.efl[type].Right:SetTexture('Interface/Buttons/WHITE8X8')
+end
+
 function EFL:UpdateFriends(button)
-	local nameText, nameColor, infoText
-	local cooperateColor = GRAY_FONT_COLOR
+	local nameText, infoText
+	local status = 'Offline'
 	if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-		local name, level, class, area, connected, status = C_FriendList_GetFriendInfo(button.id)
-		if connected then
-			button.status:SetTexture(EFL.Icons.Status[(status == CHAT_FLAG_DND and 'DND' or status == CHAT_FLAG_AFK and 'AFK' or 'Online')][self.db.StatusIconPack])
+		local info = C_FriendList.GetFriendInfoByIndex(button.id)
+		if info.connected then
+			local name, level, class = info.name, info.level, info.className
 			local classcolor = PA:ClassColorCode(class)
+			status = info.dnd and 'DND' or info.afk and 'AFK' or 'Online'
 			if EFL.db.ShowLevel then
 				if EFL.db.DiffLevel then
 					local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
@@ -366,23 +390,24 @@ function EFL:UpdateFriends(button)
 			else
 				nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class)
 			end
-			nameColor = FRIENDS_WOW_NAME_COLOR
-			cooperateColor = LIGHTYELLOW_FONT_COLOR
+			infoText = info.area
+
+
+			button.gameIcon:Show()
+			button.gameIcon:SetTexture('Interface/WorldStateFrame/Icons-Classes')
+			button.gameIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[PA:GetClassName(class)]))
 		else
-			button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
-			nameText = name
-			nameColor = FRIENDS_GRAY_COLOR
+			nameText = info.name
 		end
-		infoText = area
+		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
 	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
 		local info = EFL:GetBattleNetInfo(button.id);
 		if info then
 			nameText = info.accountName
 			infoText = accountInfo.gameAccountInfo.richPresence
-
 			if info.gameAccountInfo.isOnline then
 				local client = info.gameAccountInfo.clientProgram
-				nameColor = FRIENDS_BNET_NAME_COLOR
+				status = info.isDND and 'DND' or info.isAFK and 'AFK' or 'Online'
 
 				if client == BNET_CLIENT_WOW then
 					local level = info.gameAccountInfo.characterLevel
@@ -392,12 +417,12 @@ function EFL:UpdateFriends(button)
 						if EFL.db.ShowLevel then
 							if EFL.db.DiffLevel then
 								local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
-								nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
+								nameText = format('%s (%s - %s %s)', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
 							else
-								nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+								nameText = format('%s (%s - %s %s)', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
 							end
 						else
-							nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', nameText, WrapTextInColorCode(characterName, classcolor))
+							nameText = format('%s (%s)', nameText, WrapTextInColorCode(characterName, classcolor))
 						end
 					end
 
@@ -407,28 +432,21 @@ function EFL:UpdateFriends(button)
 						infoText = info.gameAccountInfo.areaName
 					end
 
-					if PA.Retail and info.gameAccountInfo.wowProjectID == WOW_PROJECT_MAINLINE and CanCooperateWithGameAccount(info) then
-						cooperateColor = LIGHTYELLOW_FONT_COLOR
-					end
-
 					local faction = info.gameAccountInfo.factionName
-					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][self.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
+					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
 				else
 					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
-					button.gameIcon:SetTexture(EFL.Icons.Game[client][self.db[client]])
+					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db[client]])
 				end
-
-				button.status:SetTexture(EFL.Icons.Status[(info.isDND and 'DND' or info.isAFK and 'AFK' or 'Online')][self.db.StatusIconPack])
 
 				button.gameIcon:SetTexCoord(0, 1, 0, 1)
 				button.gameIcon:SetDrawLayer('OVERLAY')
 				button.gameIcon:SetAlpha(1)
 			else
-				button.status:SetTexture(EFL.Icons.Status.Offline[self.db.StatusIconPack])
-				nameColor = FRIENDS_GRAY_COLOR
 				local lastOnline = info.lastOnlineTime
 				infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR) and FRIENDS_LIST_OFFLINE or format(BNET_LAST_ONLINE_TIME, FriendsFrame_GetLastOnline(lastOnline))
 			end
+			button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
 		end
 	end
 
@@ -447,18 +465,34 @@ function EFL:UpdateFriends(button)
 		button.isUpdateHooked = true
 	end
 
-	if nameText then
-		button.name:SetText(nameText)
-		button.name:SetTextColor(nameColor.r, nameColor.g, nameColor.b)
-		button.info:SetText(infoText)
-		button.info:SetTextColor(cooperateColor.r, cooperateColor.g, cooperateColor.b)
-		button.name:SetFont(PA.LSM:Fetch('font', self.db.NameFont), self.db.NameFontSize, self.db.NameFontFlag)
-		button.info:SetFont(PA.LSM:Fetch('font', self.db.InfoFont), self.db.InfoFontSize, self.db.InfoFontFlag)
+	if nameText then button.name:SetText(nameText) end
+	if infoText then button.info:SetText(infoText) end
 
-		if button.Favorite and button.Favorite:IsShown() then
-			button.Favorite:ClearAllPoints()
-			button.Favorite:SetPoint("TOPLEFT", button.name, "TOPLEFT", button.name:GetStringWidth(), 0);
-		end
+	local r, g, b = unpack(EFL.Icons.Status[status].Color)
+	if EFL.db.ShowStatusBackground then
+		EFL:CreateTexture(button, 'background', 'BACKGROUND')
+
+		button.efl.background.Left:SetGradientAlpha("Horizontal", r, g, b, .15, r, g, b, 0)
+		button.efl.background.Right:SetGradientAlpha("Horizontal", r, g, b, .0, r, g, b, .15)
+
+		button.background:Hide()
+	end
+
+	if EFL.db.ShowStatusHighlight then
+		EFL:CreateTexture(button, 'highlight', 'HIGHLIGHT')
+
+		button.efl.highlight.Left:SetGradientAlpha("Horizontal", r, g, b, .25, r, g, b, 0)
+		button.efl.highlight.Right:SetGradientAlpha("Horizontal", r, g, b, .0, r, g, b, .25)
+
+		button.highlight:SetVertexColor(0, 0, 0, 0)
+	end
+
+	button.name:SetFont(PA.LSM:Fetch('font', EFL.db.NameFont), EFL.db.NameFontSize, EFL.db.NameFontFlag)
+	button.info:SetFont(PA.LSM:Fetch('font', EFL.db.InfoFont), EFL.db.InfoFontSize, EFL.db.InfoFontFlag)
+
+	if button.Favorite and button.Favorite:IsShown() then
+		button.Favorite:ClearAllPoints()
+		button.Favorite:SetPoint("TOPLEFT", button.name, "TOPLEFT", button.name:GetStringWidth(), 0);
 	end
 end
 
@@ -575,6 +609,16 @@ function EFL:GetOptions()
 									['D3'] = 'Diablo 3',
 								},
 							},
+							ShowStatusBackground = {
+								type = 'toggle',
+								order = 5,
+								name = PA.ACL['Show Status Background'],
+							},
+							ShowStatusHighlight = {
+								type = 'toggle',
+								order = 6,
+								name = PA.ACL['Show Status Highlight'],
+							}
 						},
 					},
 				},
@@ -677,6 +721,8 @@ function EFL:BuildProfile()
 		['StatusIconPack'] = 'Default',
 		['ShowLevel'] = true,
 		['DiffLevel'] = true,
+		['ShowStatusHighlight'] = true,
+		['ShowStatusBackground'] = false
 	}
 
 	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do

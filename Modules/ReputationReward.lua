@@ -200,8 +200,7 @@ function RR:Show()
 
 			questItem.Name:SetText(Info.Name)
 			SetItemButtonCount(questItem, Info.Base + Info.Bonus)
-			SetItemButtonTexture(questItem, PA.MyFaction and (PA.MyFaction == 'Neutral' and [[Interface\Icons\Achievement_Character_Pandaren_Female]] or ([[Interface\Icons\PVPCurrency-Conquest-%s]]):format(PA.MyFaction)))
-			--questItem.Icon:SetTexture(([[Interface\Icons\Achievement_Reputation_0%d]]):format(Info.Standing or 1))
+			SetItemButtonTexture(questItem, PA.MyFaction and (PA.MyFaction == 'Neutral' and 'Interface/Icons/Achievement_Character_Pandaren_Female' or ('Interface/Icons/PVPCurrency-Conquest-%s'):format(PA.MyFaction)))
 			questItem.IconBorder:Hide()
 
 			if Info.Base < 0 then

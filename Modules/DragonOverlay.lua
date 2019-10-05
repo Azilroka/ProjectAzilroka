@@ -12,7 +12,7 @@ DO.Description = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and Ra
 DO.Authors = 'Azilroka    Whiro'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
 
-local MediaPath = [[Interface\AddOns\ProjectAzilroka\Media\DragonOverlay\]]
+local MediaPath = 'Interface/AddOns/ProjectAzilroka/Media/DragonOverlay/'
 
 DO.Textures = {
 	['Azure'] = MediaPath..'Azure',
@@ -37,7 +37,7 @@ function DO:SetOverlay()
 
 	if UnitIsPlayer('target') and self.db['ClassIcon'] then
 		self.frame:SetSize(DO.db.IconSize, DO.db.IconSize)
-		self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
+		self.frame.Texture:SetTexture('Interface/WorldStateFrame/Icons-Classes')
 		self.frame.Texture:SetTexCoord(unpack(CLASS_ICON_TCOORDS[select(2, UnitClass('target'))]))
 		Points = 'ClassIconPoints'
 	else

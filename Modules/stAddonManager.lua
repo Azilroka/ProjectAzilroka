@@ -110,7 +110,7 @@ function stAM:BuildFrame()
 	Close:SetScript('OnClick', function(self) Frame:Hide() end)
 
 	local Mask = Close:CreateMaskTexture()
-	Mask:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\Close]], 'CLAMPTOBLACKADDITIVE', 'CLAMPTOBLACKADDITIVE')
+	Mask:SetTexture('Interface/AddOns/ProjectAzilroka/Media/Textures/Close', 'CLAMPTOBLACKADDITIVE', 'CLAMPTOBLACKADDITIVE')
 	Mask:SetSize(10, 10)
 	Mask:SetPoint('CENTER')
 
@@ -358,7 +358,7 @@ function stAM:BuildFrame()
 		CheckButton.StatusText = StatusText
 
 		local Icon = CheckButton:CreateTexture(nil, 'OVERLAY')
-		Icon:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang]])
+		Icon:SetTexture('Interface/AddOns/ProjectAzilroka/Media/Textures/QuestBang')
 		Icon:SetPoint('CENTER', CheckButton, 'RIGHT', 10, 0)
 		Icon:SetSize(32, 32)
 
