@@ -272,7 +272,6 @@ EFL.ClassicServerNameByID = {
 	[4727] = 'Windseeker',
 	[4670] = 'Yojamba',
 	[4676] = 'Zandalar Tribe',
-
 	[4452] = 'Хроми',
 	[4704] = 'Змейталак',
 	[4754] = 'Рок-Делар',
@@ -314,18 +313,22 @@ function EFL:GetBattleNetInfo(friendIndex)
 		accountInfo.gameAccountInfo.hasFocus = hasFocus
 		accountInfo.gameAccountInfo.canSummon = canSummonFriend
 
+		if wowProjectID == WOW_PROJECT_MAINLINE then
+			zoneName, realmName = strsplit("-", gameText)
+		end
+
 		if client == BNET_CLIENT_WOW then
-			accountInfo.gameAccountInfo.characterName = characterName or ""
+			accountInfo.gameAccountInfo.characterName = characterName
 			accountInfo.gameAccountInfo.factionName = faction ~= '' and faction or nil
-			accountInfo.gameAccountInfo.playerGuid = guid or 0
-			accountInfo.gameAccountInfo.wowProjectID = wowProjectID or 0
-			accountInfo.gameAccountInfo.realmID = realmID or 0
-			accountInfo.gameAccountInfo.realmDisplayName = realmName or ""
-			accountInfo.gameAccountInfo.realmName = realmName or ""
-			accountInfo.gameAccountInfo.areaName = zoneName or ""
-			accountInfo.gameAccountInfo.className = class or ""
-			accountInfo.gameAccountInfo.characterLevel = level or 0
-			accountInfo.gameAccountInfo.raceName = race or ""
+			accountInfo.gameAccountInfo.playerGuid = guid
+			accountInfo.gameAccountInfo.wowProjectID = wowProjectID
+			accountInfo.gameAccountInfo.realmID = realmID
+			accountInfo.gameAccountInfo.realmDisplayName = realmName
+			accountInfo.gameAccountInfo.realmName = realmName
+			accountInfo.gameAccountInfo.areaName = zoneName
+			accountInfo.gameAccountInfo.className = class
+			accountInfo.gameAccountInfo.characterLevel = level
+			accountInfo.gameAccountInfo.raceName = race
 		else
 			accountInfo.gameAccountInfo.characterName = nil
 			accountInfo.gameAccountInfo.factionName = nil
@@ -350,6 +353,20 @@ function EFL:GetBattleNetInfo(friendIndex)
 
 		return accountInfo
 	end
+end
+
+function EFL:Abbreviate(name)
+	local letters, lastWord = '', strmatch(name, '.+%s(.+)$')
+	if lastWord then
+		for word in gmatch(name, '.-%s') do
+			local firstLetter = string.utf8sub(gsub(word, '^[%s%p]*', ''), 1, 1)
+			if firstLetter ~= string.utf8lower(firstLetter) then
+				letters = format('%s%s. ', letters, firstLetter)
+			end
+		end
+		name = format('%s%s', letters, lastWord)
+	end
+	return name
 end
 
 function EFL:CreateTexture(button, type, layer)

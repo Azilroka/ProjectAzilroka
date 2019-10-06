@@ -219,8 +219,6 @@ function MF:MakeMovable(Name)
 	if Name == 'AchievementFrame' then _G.AchievementFrameHeader:EnableMouse(false) end
 
 	if Name == 'WorldMapFrame' and PA.Classic then
-		WorldMapFrame:Show()
-		WorldMapFrame:Hide()
 		MF:SetUIPanelAttribute(WorldMapFrame, 'maximizePoint', nil)
 
 		function ToggleWorldMap()
@@ -234,6 +232,9 @@ function MF:MakeMovable(Name)
 		function OpenWorldMap(mapID)
 			ShowUIPanel(WorldMapFrame);
 		end
+
+		ToggleWorldMap()
+		ToggleWorldMap()
 	end
 
 	Frame:EnableMouse(true)
@@ -245,6 +246,12 @@ function MF:MakeMovable(Name)
 	self:HookScript(Frame, 'OnDragStart', 'OnDragStart')
 	self:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	self:HookScript(Frame, 'OnHide', 'OnDragStop')
+
+	if MF.db[Name] and MF.db[Name]['Points'] then
+		local a, b, c, d, e = unpack(MF.db[Name]['Points'])
+		Frame:ClearAllPoints()
+		Frame:SetPoint(a, _G[b], c, d, e, true)
+	end
 
 	self:SecureHook(Frame, 'SetPoint', function(_, _, _, _, _, locked)
 		if not locked then
