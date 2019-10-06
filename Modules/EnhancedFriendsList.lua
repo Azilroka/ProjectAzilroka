@@ -8,7 +8,7 @@ EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
 
 local pairs, format = pairs, format
-local BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor, CanCooperateWithGameAccount = BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor, CanCooperateWithGameAccount
+local BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor = BNGetFriendInfo, BNGetGameAccountInfo, GetQuestDifficultyColor
 
 local MediaPath = 'Interface/AddOns/ProjectAzilroka/Media/EnhancedFriendsList/'
 local ONE_MINUTE = 60;
@@ -370,7 +370,11 @@ function EFL:Abbreviate(name)
 end
 
 function EFL:CreateTexture(button, type, layer)
-	if button.efl and button.efl[type] then return end
+	if button.efl and button.efl[type] then
+		button.efl[type].Left:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
+		button.efl[type].Right:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
+		return
+	end
 
 	button.efl = button.efl or {}
 	button.efl[type] = {}
@@ -379,13 +383,13 @@ function EFL:CreateTexture(button, type, layer)
 	button.efl[type].Left:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Left:SetHeight(32)
 	button.efl[type].Left:SetPoint("LEFT", button, "CENTER")
-	button.efl[type].Left:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
+	button.efl[type].Left:SetTexture('Interface/Buttons/WHITE8X8')
 
 	button.efl[type].Right = button:CreateTexture(nil, layer)
 	button.efl[type].Right:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Right:SetHeight(32)
 	button.efl[type].Right:SetPoint("RIGHT", button, "CENTER")
-	button.efl[type].Right:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
+	button.efl[type].Right:SetTexture('Interface/Buttons/WHITE8X8')
 end
 
 function EFL:UpdateFriends(button)
