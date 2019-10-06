@@ -379,13 +379,13 @@ function EFL:CreateTexture(button, type, layer)
 	button.efl[type].Left:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Left:SetHeight(32)
 	button.efl[type].Left:SetPoint("LEFT", button, "CENTER")
-	button.efl[type].Left:SetTexture('Interface/Buttons/WHITE8X8')
+	button.efl[type].Left:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
 
 	button.efl[type].Right = button:CreateTexture(nil, layer)
 	button.efl[type].Right:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Right:SetHeight(32)
 	button.efl[type].Right:SetPoint("RIGHT", button, "CENTER")
-	button.efl[type].Right:SetTexture('Interface/Buttons/WHITE8X8')
+	button.efl[type].Right:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
 end
 
 function EFL:UpdateFriends(button)
@@ -635,7 +635,13 @@ function EFL:GetOptions()
 								type = 'toggle',
 								order = 6,
 								name = PA.ACL['Show Status Highlight'],
-							}
+							},
+							Texture = {
+								order = 7,
+								type = 'select', dialogControl = 'LSM30_Statusbar',
+								name = PA.ACL['Texture'],
+								values = PA.LSM:HashTable('statusbar'),
+							},
 						},
 					},
 				},
@@ -739,7 +745,8 @@ function EFL:BuildProfile()
 		['ShowLevel'] = true,
 		['DiffLevel'] = true,
 		['ShowStatusHighlight'] = true,
-		['ShowStatusBackground'] = false
+		['ShowStatusBackground'] = false,
+		['Texture'] = 'Solid',
 	}
 
 	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do
