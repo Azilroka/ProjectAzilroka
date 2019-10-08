@@ -10,11 +10,12 @@ local strsub, strlen, strfind, ceil = strsub, strlen, strfind, ceil
 local tinsert, pairs, unpack, select, tContains = tinsert, pairs, unpack, select, tContains
 local InCombatLockdown, C_PetBattles = InCombatLockdown, C_PetBattles
 local Minimap = Minimap
+local rad, cos, sin, sqrt, max, min = math.rad, math.cos, math.sin, math.sqrt, math.max, math.min
+local deg, atan2 = math.deg, math.atan2
 
 SMB.Buttons = {}
 
 SMB.IgnoreButton = {
-	'GameTimeFrame',
 	'HelpOpenWebTicketButton',
 	'MiniMapVoiceChatFrame',
 	'TimeManagerClockButton',
@@ -60,6 +61,7 @@ SMB.OverrideTexture = {
 	VendomaticButtonFrame = 'Interface/Icons/INV_Misc_Rabbit_2',
 	OutfitterMinimapButton = '',
 	RecipeRadar_MinimapButton = 'Interface/Icons/INV_Scroll_03',
+	GameTimeFrame = ''
 }
 
 SMB.DoNotCrop = {
@@ -97,6 +99,36 @@ function SMB:UnlockButton(Button)
 	for _, Function in pairs(ButtonFunctions) do
 		Button[Function] = nil
 	end
+end
+
+function SMB:OnUpdate()
+	local mx, my = Minimap:GetCenter()
+	local px, py = GetCursorPosition()
+	local scale = Minimap:GetEffectiveScale()
+
+	px, py = px / scale, py / scale
+
+	local pos = deg(atan2(py - my, px - mx)) % 360
+	local angle = rad(pos or 225)
+	local x, y = cos(angle), sin(angle)
+	local w = (Minimap:GetWidth() + SMB.db['IconSize']) / 2
+	local h = (Minimap:GetHeight() + SMB.db['IconSize']) / 2
+	local diagRadiusW = sqrt(2*(w)^2)-10
+	local diagRadiusH = sqrt(2*(h)^2)-10
+
+	x = max(-w, min(x*diagRadiusW, w))
+	y = max(-h, min(y*diagRadiusH, h))
+
+	self:ClearAllPoints()
+	self:SetPoint("CENTER", Minimap, "CENTER", x, y)
+end
+
+function SMB:OnDragStart()
+	self:SetScript("OnUpdate", SMB.OnUpdate)
+end
+
+function SMB:OnDragStop()
+	self:SetScript("OnUpdate", nil)
 end
 
 function SMB:HandleBlizzardButtons()
@@ -283,7 +315,48 @@ function SMB:HandleBlizzardButtons()
 		end
 	else
 		-- MiniMapTrackingFrame
-		-- GameTimeFrame
+		if self.db["MoveGameTimeFrame"] and not GameTimeFrame.SMB then
+			local STEP = 5.625 -- 256 * 5.625 = 1440M = 24H
+			local PX_PER_STEP = 0.00390625 -- 1 / 256
+			local l, r, offset
+
+			PA:SetTemplate(GameTimeFrame)
+			GameTimeTexture:SetTexture('')
+
+			GameTimeFrame.DayTimeIndicator = GameTimeFrame:CreateTexture(nil, "BACKGROUND", nil, 1)
+			GameTimeFrame.DayTimeIndicator:SetTexture("Interface/Minimap/HumanUITile-TimeIndicator", true)
+			PA:SetInside(GameTimeFrame.DayTimeIndicator)
+
+			GameTimeFrame:SetSize(SMB.db['IconSize'], SMB.db['IconSize'])
+
+			GameTimeFrame.timeOfDay = 0
+			local function OnUpdate(self, elapsed)
+				self.elapsed = (self.elapsed or 1) + elapsed
+				if self.elapsed > 1 then
+					local hour, minute = GetGameTime()
+					local time = hour * 60 + minute
+					if time ~= self.timeOfDay then
+						offset = PX_PER_STEP * floor(time / STEP)
+
+						l = 0.25 + offset -- 64 / 256
+						if l >= 1.25 then l = 0.25 end
+
+						r = 0.75 + offset -- 192 / 256
+						if r >= 1.75 then r = 0.75 end
+
+						self.DayTimeIndicator:SetTexCoord(l, r, 0, 1)
+
+						self.timeOfDay = time
+					end
+
+					self.elapsed = 0
+				end
+			end
+
+			GameTimeFrame:SetScript("OnUpdate", OnUpdate)
+			GameTimeFrame.SMB = true
+			tinsert(self.Buttons, GameTimeFrame)
+		end
 	end
 
 	self:Update()
@@ -349,6 +422,9 @@ function SMB:SkinMinimapButton(Button)
 		end
 	end
 
+	--Button:SetScript('OnDragStart', SMB.OnDragStart)
+	--Button:SetScript('OnDragStop', SMB.OnDragStop)
+
 	Button:HookScript('OnEnter', function(self)
 		if SMB.Bar:IsShown() then
 			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
@@ -374,7 +450,7 @@ function SMB:GrabMinimapButtons()
 		end
 	end
 
-	for _, Frame in pairs({ Minimap, MinimapBackdrop }) do
+	for _, Frame in pairs({ Minimap, MinimapBackdrop, MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
 		if NumChildren < (Frame.SMBNumChildren or 0) then return end
 		for i = 1, NumChildren do
@@ -382,7 +458,7 @@ function SMB:GrabMinimapButtons()
 			if object then
 				local name = object:GetName()
 				local width = object:GetWidth()
-				if name and width > 15 and width < 40 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
+				if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
 					self:SkinMinimapButton(object)
 				end
 			end
@@ -549,6 +625,11 @@ function SMB:GetOptions()
 						type = 'toggle',
 						name = PA.ACL['Move Mail Icon'],
 					},
+					MoveGameTimeFrame = {
+						type = 'toggle',
+						name = PA.ACL['Move Game Time Frame'],
+						hidden = function() return PA.Retail end,
+					},
 					MoveTracker  = {
 						type = 'toggle',
 						name = PA.ACL['Move Tracker Icon'],
@@ -592,6 +673,7 @@ function SMB:BuildProfile()
 		['MoveMail'] = true,
 		['MoveTracker'] = true,
 		['MoveQueue'] = true,
+		['MoveGameTimeFrame'] = true,
 		['Shadows'] = true,
 		['ReverseDirection'] = false,
 	}
