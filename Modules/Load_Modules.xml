@@ -11,6 +11,7 @@
 	<Script file="stAddonManager.lua"/>
 	<Script file="QuestSounds.lua"/>
 	<Script file="ReputationReward.lua"/>
+	<Script file="TargetSounds.lua"/>
 
 	<Script file="Config\Tukui.lua"/>
 </Ui>
