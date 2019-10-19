@@ -30,7 +30,6 @@ local Frames = {
 	["LossOfControlFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
 	["MailFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["MerchantFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
-	["OpenMailFrame"] = { "TOPLEFT", "UIParent", "TOPRIGHT", 0, 0 },
 	["PetitionFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["PetStableFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 },
 	["PVEFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
