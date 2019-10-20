@@ -165,6 +165,7 @@ function SMB:HandleBlizzardButtons()
 
 		MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0)	end)
 		MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
+		MiniMapMailFrame:EnableMouse(false)
 
 		if MiniMapMailFrame:IsShown() then
 			Frame.Icon:SetVertexColor(0, 1, 0)
