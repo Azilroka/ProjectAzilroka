@@ -37,7 +37,6 @@ local Frames = {
 	["QuestLogFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["QuestLogPopupDetailFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 0, 0 },
 	["RaidBrowserFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
-	["RaidInfoFrame"] = { "TOPLEFT", "RaidFrame", "TOPRIGHT", 0, -27 },
 	["RaidParentFrame"] = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
 	["ReadyCheckFrame"] = { "CENTER", "UIParent", "CENTER", 0, -10 },
 	["ScrollOfResurrectionSelectionFrame"] = { "CENTER", "UIParent", "CENTER", 0, 0 },
