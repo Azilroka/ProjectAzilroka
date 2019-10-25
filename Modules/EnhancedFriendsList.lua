@@ -764,7 +764,7 @@ function EFL:BuildProfile()
 		['Texture'] = 'Solid',
 	}
 
-	for _, GameIcon in pairs({'Alliance', 'Horde', 'Neutral', 'D3', 'WTCG', 'S1', 'S2', 'App', 'BSAp', 'Hero', 'Pro', 'DST2', 'VIPR' }) do
+	for GameIcon in pairs(EFL.Icons.Game) do
 		PA.Defaults.profile['EnhancedFriendsList'][GameIcon] = 'Launcher'
 	end
 
