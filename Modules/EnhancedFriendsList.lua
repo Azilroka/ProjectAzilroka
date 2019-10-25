@@ -163,7 +163,7 @@ EFL.Icons = {
 			BlizzardChat = MediaPath..[[GameIcons\Launcher\CODMW]],
 			Flat = MediaPath..[[GameIcons\Launcher\CODMW]],
 			Gloss = MediaPath..[[GameIcons\Launcher\CODMW]],
-			Launcher = MediaPath..[[GameIcons\Launcher\COMW]],
+			Launcher = MediaPath..[[GameIcons\Launcher\CODMW]],
 		},
 	},
 	Status = {
