@@ -155,6 +155,16 @@ EFL.Icons = {
 			Gloss = MediaPath..[[GameIcons\Launcher\COD4]],
 			Launcher = MediaPath..[[GameIcons\Launcher\COD4]],
 		},
+		ODIN = {
+			Name = PA.ACL['Call of Duty Modern Warfare'],
+			Order = 14,
+			Color = 'FFFFFF',
+			Default = MediaPath..[[GameIcons\Launcher\CODMW]],
+			BlizzardChat = MediaPath..[[GameIcons\Launcher\CODMW]],
+			Flat = MediaPath..[[GameIcons\Launcher\CODMW]],
+			Gloss = MediaPath..[[GameIcons\Launcher\CODMW]],
+			Launcher = MediaPath..[[GameIcons\Launcher\COMW]],
+		},
 	},
 	Status = {
 		Online = {
