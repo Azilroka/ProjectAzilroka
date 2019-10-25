@@ -456,6 +456,7 @@ function EFL:UpdateFriends(button)
 					local faction = info.gameAccountInfo.factionName
 					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
 				else
+					if not EFL.Icons.Game[client] then client = 'BSAp' end
 					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
 					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db[client]])
 				end
