@@ -472,7 +472,7 @@ function EFL:UpdateFriends(button)
 				end
 
 				button.gameIcon:SetTexCoord(0, 1, 0, 1)
-				button.gameIcon:SetDrawLayer('OVERLAY')
+				button.gameIcon:SetDrawLayer('ARTWORK')
 				button.gameIcon:SetAlpha(1)
 			else
 				local lastOnline = info.lastOnlineTime
