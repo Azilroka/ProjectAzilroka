@@ -50,7 +50,7 @@ EC.Options = {
 function EC:PositionGameMenuButton()
 	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
 
-	if Tukui[1].Miscellaneous.GameMenu.Tukui then
+	if PA.Tukui and Tukui[1].Miscellaneous.GameMenu.Tukui then
 		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
 	end
 
