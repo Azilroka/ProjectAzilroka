@@ -433,7 +433,7 @@ function EFL:UpdateFriends(button)
 			nameText = info.name
 		end
 		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
-	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET  and isBNConnected then
+	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET and isBNConnected then
 		local info = EFL:GetBattleNetInfo(button.id);
 		if info then
 			nameText = info.accountName
