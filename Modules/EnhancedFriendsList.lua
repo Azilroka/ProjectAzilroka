@@ -24,7 +24,7 @@ local ONE_YEAR = 12 * ONE_MONTH;
 	/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
 
-local BNConnected = BNConnected()
+local isBNConnected = BNConnected()
 
 EFL.Icons = {
 	Game = {
@@ -433,7 +433,7 @@ function EFL:UpdateFriends(button)
 			nameText = info.name
 		end
 		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
-	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET  and BNConnected then
+	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET  and isBNConnected then
 		local info = EFL:GetBattleNetInfo(button.id);
 		if info then
 			nameText = info.accountName
@@ -788,7 +788,7 @@ function EFL:BuildProfile()
 end
 
 function EFL:HandleBN()
-	BNConnected = BNConnected()
+	isBNConnected = BNConnected()
 end
 
 function EFL:Initialize()
