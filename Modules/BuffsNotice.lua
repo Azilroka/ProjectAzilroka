@@ -1,9 +1,29 @@
 local PA = _G.ProjectAzilroka
 if PA.Retail then return end
 
-local AddOnName, NS = ...
-local MyClass = select(2, UnitClass('player'))
-local WarningSound = 'Interface\\AddOns\\'..AddOnName..'\\Warning.mp3'
+local BN = PA:NewModule('BuffsNotice', 'AceEvent-3.0')
+PA.BN = BN
+
+BN.Title = '|cFF16C3F2Buffs|r |cFFFFFFFFNotice|r'
+BN.Description = ''
+BN.Authors = 'Azilroka    Tukz'
+
+local pairs = pairs
+local select = select
+local IsSpellKnown = IsSpellKnown
+local GetSpellInfo = GetSpellInfo
+local GetSpellTexture = GetSpellTexture
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitInVehicle = UnitInVehicle
+local UnitBuff = UnitBuff
+local PlaySoundFile = PlaySoundFile
+local GetSpecialization = GetSpecialization
+local UnitLevel = UnitLevel
+local GetInventorySlotInfo = GetInventorySlotInfo
+local GetWeaponEnchantInfo = GetWeaponEnchantInfo
+local GetInventoryItemID = GetInventoryItemID
+
+local WarningSound = 'Interface/AddOns/ProjectAzilroka/Warning.mp3'
 
 local BuffReminder1 = {
 	['DEATHKNIGHT'] = {
@@ -88,24 +108,7 @@ local BuffReminder2 = {
 	},
 }
 
-local pairs, select = pairs, select
-local IsSpellKnown, GetSpellInfo, GetSpellTexture, UnitAffectingCombat, UnitInVehicle, UnitBuff, PlaySoundFile = IsSpellKnown, GetSpellInfo, GetSpellTexture, UnitAffectingCombat, UnitInVehicle, UnitBuff, PlaySoundFile
-local GetSpecialization, UnitLevel, GetInventorySlotInfo, GetWeaponEnchantInfo, GetInventoryItemID = GetSpecialization, UnitLevel, GetInventorySlotInfo, GetWeaponEnchantInfo, GetInventoryItemID
 local PlaySound = true
-
-local function AddEvents(self)
-	self:RegisterEvent('PLAYER_REGEN_ENABLED')
-	self:RegisterEvent('PLAYER_REGEN_DISABLED')
-	self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
-	self:RegisterEvent('SPELLS_CHANGED')
-	self:RegisterEvent('PLAYER_TALENT_UPDATE')
-	self:RegisterUnitEvent('UNIT_AURA', 'player')
-	self:RegisterUnitEvent('UNIT_INVENTORY_CHANGED', 'player')
-	self:RegisterUnitEvent('UNIT_ENTERING_VEHICLE', 'player')
-	self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-	self:RegisterUnitEvent('UNIT_EXITING_VEHICLE', 'player')
-	self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-end
 
 local function PositionFrames(self, event)
 	BuffsWarning1:ClearAllPoints()
@@ -197,13 +200,8 @@ local function CreateWarningFrame(Name)
 	Frame:SetSize(40, 40)
 	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 	Frame.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	if ElvUI or Tukui or AsphyxiaUI or DuffedUI then
-		Frame:SetTemplate()
-		Frame.Icon:SetInside()
-	else
-		Frame.Icon:SetPoint('TOPLEFT', 2, -2)
-		Frame.Icon:SetPoint('BOTTOMRIGHT', -2, 2)
-	end
+	Frame:SetTemplate()
+	Frame.Icon:SetInside()
 	Frame:RegisterEvent('PLAYER_LOGIN')
 
 	return Frame
@@ -220,17 +218,50 @@ local function SoundThrottle(self, elapsed)
 	end
 end
 
-local BuffsWarning1 = CreateWarningFrame('BuffsWarning1')
-BuffsWarning1.Buffs = BuffReminder1[MyClass]
-BuffsWarning1:SetScript('OnEvent', OnEvent)
+function BN:BuildProfile()
+	PA.Defaults.profile.BuffsNotice = {
+		Enable = false,
+	}
 
-local BuffsWarning2 = CreateWarningFrame('BuffsWarning2')
-BuffsWarning2.Buffs = BuffReminder2[MyClass] or {}
-BuffsWarning2:SetScript('OnEvent', OnEvent)
+	PA.Options.args.general.args.BuffsNotice = {
+		type = 'toggle',
+		name = BN.Title,
+		desc = BN.Description,
+	}
+end
 
-local WeaponBuffs = CreateWarningFrame('WeaponBuffs')
-WeaponBuffs:SetScript('OnEvent', WeaponBuffsOnEvent)
+function BN:Initialize()
+	BN.db = PA.db['QuestSounds']
 
-local BuffsWarningFrame = CreateFrame('Frame', 'BuffsWarningFrame', UIParent)
-BuffsWarningFrame:SetSize(40, 40)
-BuffsWarningFrame:SetScript('OnUpdate', SoundThrottle)
+	if BN.db.Enable ~= true then
+		return
+	end
+
+	local BuffsWarning1 = CreateWarningFrame('BuffsWarning1')
+	BuffsWarning1.Buffs = BuffReminder1[MyClass]
+	BuffsWarning1:SetScript('OnEvent', OnEvent)
+
+	local BuffsWarning2 = CreateWarningFrame('BuffsWarning2')
+	BuffsWarning2.Buffs = BuffReminder2[MyClass] or {}
+	BuffsWarning2:SetScript('OnEvent', OnEvent)
+
+	local WeaponBuffs = CreateWarningFrame('WeaponBuffs')
+	WeaponBuffs:SetScript('OnEvent', WeaponBuffsOnEvent)
+
+	local BuffsWarningFrame = CreateFrame('Frame', 'BuffsWarningFrame', UIParent)
+	BuffsWarningFrame:SetSize(40, 40)
+	BuffsWarningFrame:SetScript('OnUpdate', SoundThrottle)
+	--BN:GetOptions()
+
+	self:RegisterEvent('PLAYER_REGEN_ENABLED')
+	self:RegisterEvent('PLAYER_REGEN_DISABLED')
+	self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
+	self:RegisterEvent('SPELLS_CHANGED')
+	self:RegisterEvent('PLAYER_TALENT_UPDATE')
+	self:RegisterUnitEvent('UNIT_AURA', 'player')
+	self:RegisterUnitEvent('UNIT_INVENTORY_CHANGED', 'player')
+	self:RegisterUnitEvent('UNIT_ENTERING_VEHICLE', 'player')
+	self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+	self:RegisterUnitEvent('UNIT_EXITING_VEHICLE', 'player')
+	self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+end
