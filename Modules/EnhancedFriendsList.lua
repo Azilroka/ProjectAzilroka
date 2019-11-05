@@ -24,6 +24,8 @@ local ONE_YEAR = 12 * ONE_MONTH;
 	/run for i,v in pairs(_G) do if type(i)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
 
+local BNConnected = BNConnected()
+
 EFL.Icons = {
 	Game = {
 		Alliance = {
@@ -431,7 +433,7 @@ function EFL:UpdateFriends(button)
 			nameText = info.name
 		end
 		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
-	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+	elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET  and BNConnected then
 		local info = EFL:GetBattleNetInfo(button.id);
 		if info then
 			nameText = info.accountName
@@ -785,6 +787,10 @@ function EFL:BuildProfile()
 	}
 end
 
+function EFL:HandleBN()
+	BNConnected = BNConnected()
+end
+
 function EFL:Initialize()
 	EFL.db = PA.db['EnhancedFriendsList']
 
@@ -793,6 +799,9 @@ function EFL:Initialize()
 	end
 
 	EFL:GetOptions()
+
+	EFL:RegisterEvent("BN_CONNECTED", 'HandleBN')
+	EFL:RegisterEvent("BN_DISCONNECTED", 'HandleBN')
 
 	--if PA.db.FG then
 	--	EFL:SecureHook(PA.FG, 'FriendGroups_UpdateFriendButton', function(self, button) EFL:UpdateFriends(button) end)
