@@ -359,7 +359,7 @@ function EFL:GetBattleNetInfo(friendIndex)
 	else
 		accountInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
 
-		if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC then
+		if accountInfo and accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC then
 			accountInfo.gameAccountInfo.realmDisplayName = EFL.ClassicServerNameByID[accountInfo.gameAccountInfo.realmID] or accountInfo.gameAccountInfo.realmID
 		end
 
