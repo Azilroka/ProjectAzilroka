@@ -209,7 +209,7 @@ PA.Defaults = { profile = {} }
 PA.Options = {
 	type = 'group',
 	name = PA:Color(PA.Title),
-	order = -4,
+	order = 6,
 	args = {
 		header = {
 			order = 1,
