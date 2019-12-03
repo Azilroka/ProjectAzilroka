@@ -3,23 +3,23 @@ local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'zhCN')
 if not ACL then return end
 
 -- Misc
-ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true
-ACL['Authors:'] = true
-ACL['Blizzard'] = true
-ACL['Controls AddOns in this package'] = true
-ACL["Frame doesn't exist: "] = true
-ACL['General'] = true
+ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你设置的一个选项将只对这个角色生效，改变这个设置需要重载界面"
+ACL['Authors:'] = "作者: "
+ACL['Blizzard'] = "暴雪"
+ACL['Controls AddOns in this package'] = "控制这个插件的功能"
+ACL["Frame doesn't exist: "] = "框体不存在"
+ACL['General'] = "一般"
 
 -- Apps/Games
-ACL['Diablo 3'] = true
-ACL['Hearthstone'] = true
-ACL['Starcraft'] = true
-ACL['Starcraft 2'] = true
+ACL['Diablo 3'] = "暗黑破坏神 3"
+ACL['Hearthstone'] = "炉石传说"
+ACL['Starcraft'] = "星际争霸"
+ACL['Starcraft 2'] = "星际争霸 2"
 ACL['App'] = true
-ACL['Mobile'] = true
-ACL['Hero of the Storm'] = true
-ACL['Overwatch'] = true
-ACL['Destiny 2'] = true
+ACL['Mobile'] = "移动设备"
+ACL['Hero of the Storm'] = "风暴英雄"
+ACL['Overwatch'] = "守望先锋"
+ACL['Destiny 2'] = "命运 2"
 
 -- AddOns
 ACL['AddOns'] = "功能"
@@ -63,115 +63,115 @@ ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = "|cFF16C3F2目标|r|cFFFFFFFF音�
 ACL['Audio for Target Sounds.'] = "选择目标时的音效"
 
 -- BigButtons
-ACL['Drop Farm Tools'] = true
-ACL['Farm Tool Size'] = true
-ACL['Seed Size'] = true
+ACL['Drop Farm Tools'] = "丢弃农场工具"
+ACL['Farm Tool Size'] = "农场工具大小"
+ACL['Seed Size'] = "种子大小"
 
 -- BrokerLDB
-ACL['MouseOver'] = true
-ACL['Panel Height'] = true
-ACL['Panel Width'] = true
-ACL['Show Icon'] = true
-ACL['Show Text'] = true
+ACL['MouseOver'] = "鼠标划过显示"
+ACL['Panel Height'] = "面板高度"
+ACL['Panel Width'] = "面板宽度"
+ACL['Show Icon'] = "显示图标"
+ACL['Show Text'] = "显示文字"
 
 -- Dragon Overlay
-ACL['Anchor Point'] = true
-ACL['Class Icon'] = true
-ACL['Class Icon Points'] = true
-ACL['Dragon Points'] = true
-ACL['Elite'] = true
-ACL['Flip Dragon'] = true
-ACL['Frame Level'] = true
-ACL['Frame Strata'] = true
-ACL['Image Credits:'] = true
-ACL['Rare'] = true
-ACL['Rare Elite'] = true
-ACL['Relative Frame'] = true
-ACL['Relative Point'] = true
-ACL['World Boss'] = true
-ACL['X Offset'] = true
-ACL['Y Offset'] = true
+ACL['Anchor Point'] = "定位点"
+ACL['Class Icon'] = "职业图标"
+ACL['Class Icon Points'] = "职业图标位置"
+ACL['Dragon Points'] = "金龙位置"
+ACL['Elite'] = "精英"
+ACL['Flip Dragon'] = "反转金龙"
+ACL['Frame Level'] = "框体图层"
+ACL['Frame Strata'] = "框体层级"
+ACL['Image Credits:'] = "图像版权: "
+ACL['Rare'] = "稀有"
+ACL['Rare Elite'] = "稀有精英"
+ACL['Relative Frame'] = "依附框体"
+ACL['Relative Point'] = "依附位置"
+ACL['World Boss'] = "世界首领"
+ACL['X Offset'] = "X 偏移"
+ACL['Y Offset'] = "Y 偏移"
 
 -- Enhanced Friends List
-ACL['Name Font'] = true
-ACL['The font that the RealID / Character Name / Level uses.'] = true
-ACL['Name Font Size'] = true
-ACL['The font size that the RealID / Character Name / Level uses.'] = true
-ACL['Name Font Flag'] = true
-ACL['The font flag that the RealID / Character Name / Level uses.'] = true
-ACL['Info Font'] = true
-ACL['The font that the Zone / Server uses.'] = true
-ACL['Info Font Size'] = true
-ACL['The font size that the Zone / Server uses.'] = true
-ACL['Info Font Outline'] = true
-ACL['The font flag that the Zone / Server uses.'] = true
-ACL['Level by Difficulty'] = true
-ACL['Status Icon Pack'] = true
-ACL['Different Status Icons.'] = true
-ACL['Game Icons'] = true
-ACL['Game Icon Preview'] = true
-ACL['Show Level'] = true
-ACL['Status Icon Preview'] = true
-ACL[' Icon'] = true
+ACL['Name Font'] = "姓名字体"
+ACL['The font that the RealID / Character Name / Level uses.'] = "实名 / 战网昵称 / 角色名称 / 等级 使用的字体"
+ACL['Name Font Size'] = "姓名字体大小"
+ACL['The font size that the RealID / Character Name / Level uses.'] = "实名 / 战网昵称 / 角色名称 / 等级 使用的字体大小"
+ACL['Name Font Flag'] = "姓名字体轮廓"
+ACL['The font flag that the RealID / Character Name / Level uses.'] = "实名 / 战网昵称 / 角色名称 / 等级 使用的字体轮廓"
+ACL['Info Font'] = "信息字体"
+ACL['The font that the Zone / Server uses.'] = "区域 / 服务器 使用的字体"
+ACL['Info Font Size'] = "信息字体大小"
+ACL['The font size that the Zone / Server uses.'] = "区域 / 服务器 使用的字体大小"
+ACL['Info Font Outline'] = "信息字体轮廓"
+ACL['The font flag that the Zone / Server uses.'] = "区域 / 服务器 使用的字体轮廓"
+ACL['Level by Difficulty'] = "根据等级染色"
+ACL['Status Icon Pack'] = "状态图标"
+ACL['Different Status Icons.'] = "不同的状态图标"
+ACL['Game Icons'] = "游戏图标"
+ACL['Game Icon Preview'] = "游戏图标预览"
+ACL['Show Level'] = "显示等级"
+ACL['Status Icon Preview'] = "状态图标预览"
+ACL[' Icon'] = " 图标"
 
 -- Enhanced Shadows
-ACL['Color by Class'] = true
-ACL['Shadow Color'] = true
-ACL['Size'] = true
+ACL['Color by Class'] = "根据职业染色"
+ACL['Shadow Color'] = "阴影颜色"
+ACL['Size'] = "大小"
 
 -- Loot Confirm
-ACL['Auto Confirm'] = true
-ACL['Automatically click OK on BOP items'] = true
-ACL['Auto Greed'] = true
-ACL['Automatically greed'] = true
-ACL['Auto Disenchant'] = true
-ACL['Automatically disenchant'] = true
+ACL['Auto Confirm'] = "自动确认"
+ACL['Automatically click OK on BOP items'] = "当拾取【拾取绑定】物品时自动点击确定"
+ACL['Auto Greed'] = "自动贪婪"
+ACL['Automatically greed'] = "自动点击贪婪"
+ACL['Auto Disenchant'] = "自动分解"
+ACL['Automatically disenchant'] = "自动点击分解"
 ACL['Auto-roll based on a given level'] = true
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
 ACL['Level to start auto-rolling from'] = true
 
 -- MovableFrames
-ACL['Permanent Moving'] = true
-ACL['Reset Moving'] = true
+ACL['Permanent Moving'] = "永久移动"
+ACL['Reset Moving'] = "重置位置"
 
 -- SquareMinimapButtons
-ACL['Bar MouseOver'] = true
-ACL['Buttons Per Row'] = true
-ACL['Button Spacing'] = true
-ACL['Enable Bar'] = true
-ACL['Hide Garrison'] = true
-ACL['Icon Size'] = true
-ACL['Minimap Buttons / Bar'] = true
-ACL['Move Garrison Icon'] = true
-ACL['Move Mail Icon'] = true
-ACL['Move Tracker Icon'] = true
-ACL['Move Queue Status Icon'] = true
+ACL['Bar MouseOver'] = "鼠标划过显示"
+ACL['Buttons Per Row'] = "每行按钮数"
+ACL['Button Spacing'] = "按钮间隙"
+ACL['Enable Bar'] = "启用按钮条"
+ACL['Hide Garrison'] = "隐藏要塞"
+ACL['Icon Size'] = "图标大小"
+ACL['Minimap Buttons / Bar'] = "小地图 按钮 / 条"
+ACL['Move Garrison Icon'] = "收纳要塞图标"
+ACL['Move Mail Icon'] = "收纳邮件图标"
+ACL['Move Tracker Icon'] = "收纳追踪图标"
+ACL['Move Queue Status Icon'] = "收纳任务状态图标"
 
 -- stAddOnManager
-ACL['# Shown AddOns'] = true
-ACL['Are you sure you want to delete %s?'] = true
-ACL['Button Height'] = true
-ACL['Button Width'] = true
-ACL['Cancel'] = true
-ACL['Character Select'] = true
-ACL['Class Color Check Texture'] = true
-ACL['Create'] = true
-ACL['Delete'] = true
-ACL['Enable All'] = true
-ACL['Enable Required AddOns'] = true
-ACL['Enter a name for your AddOn Profile:'] = true
-ACL['Enter a name for your new Addon Profile:'] = true
-ACL['Disable All'] = true
-ACL['Font'] = true
-ACL['Font Outline'] = true
-ACL['Frame Width'] = true
-ACL['New Profile'] = true
-ACL['Overwrite'] = true
-ACL['Profiles'] = true
-ACL['Reload'] = true
-ACL['Required'] = true
-ACL['Search'] = true
-ACL['Texture'] = true
-ACL['There is already a profile named %s. Do you want to overwrite it?'] = true
-ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'] = true
-ACL['Update'] = true
+ACL['# Shown AddOns'] = "# 显示插件"
+ACL['Are you sure you want to delete %s?'] = "是否确定删除 %s ?"
+ACL['Button Height'] = "按钮高度"
+ACL['Button Width'] = "按钮宽度"
+ACL['Cancel'] = "取消"
+ACL['Character Select'] = "角色选择"
+ACL['Class Color Check Texture'] = "选择框职业色"
+ACL['Create'] = "创建"
+ACL['Delete'] = "删除"
+ACL['Enable All'] = "启用所有"
+ACL['Enable Required AddOns'] = "启用依赖插件"
+ACL['Enter a name for your AddOn Profile:'] = "输入插件方案名称: "
+ACL['Enter a name for your new Addon Profile:'] = "输入新插件方案名称: "
+ACL['Disable All'] = "禁用所有"
+ACL['Font'] = "字体"
+ACL['Font Outline'] = "字体轮廓"
+ACL['Frame Width'] = "框体宽度"
+ACL['New Profile'] = "新方案"
+ACL['Overwrite'] = "覆盖"
+ACL['Profiles'] = "方案"
+ACL['Reload'] = "重载"
+ACL['Required'] = "依赖"
+ACL['Search'] = "搜索"
+ACL['Texture'] = "材质"
+ACL['There is already a profile named %s. Do you want to overwrite it?'] = "已有名为 %s 的方案, 是否覆盖?"
+ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'] = "这将启用所有所选插件所依赖的插件"
+ACL['Update'] = "更新"
