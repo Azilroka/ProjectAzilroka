@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
-MF.Title = '|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'
-MF.Description = 'Make Blizzard Frames Movable'
+MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
+MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 
 local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort

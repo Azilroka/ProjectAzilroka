@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local FL = PA:NewModule('FasterLoot', 'AceEvent-3.0')
 PA.FL, _G.FasterLoot = FL, FL
 
-FL.Title = '|cFF16C3F2Faster|r |cFFFFFFFFLoot|r'
-FL.Description = 'Increases auto loot speed near instantaneous.'
+FL.Title = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
+FL.Description = PA.ACL['Increases auto loot speed near instantaneous.']
 FL.Authors = 'Azilroka'
 
 local GetNumLootItems, CloseLoot, LootSlot, GetCVarBool, IsModifiedClick = GetNumLootItems, CloseLoot, LootSlot, GetCVarBool, IsModifiedClick

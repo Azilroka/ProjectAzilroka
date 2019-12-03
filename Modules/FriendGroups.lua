@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local FG = PA:NewModule('FriendGroup', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.FriendGroup = FG
 
-FG.Title = '|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'
-FG.Desciption = 'Manage Firends List with Groups'
+FG.Title = PA.ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
+FG.Desciption = PA.ACL['Manage Firends List with Groups']
 FG.Authors = 'Azilroka'
 FG.Credits = 'Mikeprod    frankkkkk'
 

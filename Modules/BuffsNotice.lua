@@ -4,7 +4,7 @@ if PA.Retail then return end
 local BN = PA:NewModule('BuffsNotice', 'AceEvent-3.0')
 PA.BN = BN
 
-BN.Title = '|cFF16C3F2Buffs|r |cFFFFFFFFNotice|r'
+BN.Title = PA.ACL['|cFF16C3F2Buffs|r |cFFFFFFFFNotice|r']
 BN.Description = ''
 BN.Authors = 'Azilroka    Tukz'
 

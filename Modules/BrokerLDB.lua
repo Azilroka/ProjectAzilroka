@@ -6,8 +6,8 @@ local _G = _G
 local pairs, tinsert, tremove, select, unpack = pairs, tinsert, tremove, select, unpack
 local strfind, strsub, strmatch = strfind, strsub, strmatch
 
-BrokerLDB.Title = '|cFF16C3F2Broker|r|cFFFFFFFFLDB|r'
-BrokerLDB.Description = 'Provides a Custom DataBroker Bar'
+BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
+BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BrokerLDB.Authors = 'Azilroka'
 
 function BrokerLDB:TextUpdate(_, Name, _, Data)

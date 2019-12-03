@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local TS = PA:NewModule('TargetSounds', 'AceEvent-3.0')
 PA.TS = TS
 
-TS.Title = '|cFF16C3F2Target|r|cFFFFFFFFSounds|r'
-TS.Description = 'Audio for Target Sounds.'
+TS.Title = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
+TS.Description = PA.ACL['Audio for Target Sounds.']
 TS.Authors = 'Azilroka'
 
 function TS:PLAYER_TARGET_CHANGED()
