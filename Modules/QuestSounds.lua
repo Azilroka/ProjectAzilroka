@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.QS = QS
 
-QS.Title = '|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'
-QS.Description = 'Audio for Quest Progress & Completions.'
+QS.Title = PA.ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
+QS.Description = PA.ACL['Audio for Quest Progress & Completions.']
 QS.Authors = 'Azilroka'
 QS.Credits = 'Yoco'
 

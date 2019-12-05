@@ -4,8 +4,8 @@ if PA.Classic then return end
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
 PA.BB, _G.BigButtons = BB, BB
 
-BB.Title = '|cFF16C3F2Big|r|cFFFFFFFFButtons|r'
-BB.Description = 'A farm tool for Sunsong Ranch.'
+BB.Title = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
+BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
 BB.Authors = 'Azilroka    Whiro'
 
 local GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown = GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown

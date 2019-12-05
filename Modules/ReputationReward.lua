@@ -19,8 +19,8 @@ local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
 local UnitAura = _G.UnitAura
 local REWARDS_SECTION_OFFSET = 5
 
-RR.Title = '|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r'
-RR.Description = 'Adds Reputation into Quest Log & Quest Frame.'
+RR.Title = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
+RR.Description = PA.ACL['Adds Reputation into Quest Log & Quest Frame.']
 RR.Authors = 'Azilroka'
 
 function RR:BuildFactionHeaders()

@@ -4,8 +4,8 @@ if PA.Retail then return end
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 PA.LC, _G.LootConfirm = LC, LC
 
-LC.Title = '|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'
-LC.Description = 'Confirms Loot for Solo/Groups (Need/Greed)'
+LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
+LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 
 local tonumber, strmatch, select = tonumber, strmatch, select

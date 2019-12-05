@@ -7,8 +7,8 @@ local pairs, tinsert, select, unpack = pairs, tinsert, select, unpack
 local strfind, strsub = strfind, strsub
 local UnitIsPlayer, UnitClass, UnitClassification = UnitIsPlayer, UnitClass, UnitClassification
 
-DO.Title = '|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r'
-DO.Description = 'Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite'
+DO.Title = PA.ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r']
+DO.Description = PA.ACL['Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite']
 DO.Authors = 'Azilroka    Whiro'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
 
