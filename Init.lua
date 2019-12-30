@@ -23,6 +23,7 @@ PA.ADB = LibStub('AceDB-3.0')
 PA.LSM = LibStub('LibSharedMedia-3.0')
 PA.LDB = LibStub('LibDataBroker-1.1')
 PA.LAB = LibStub('LibActionButton-1.0')
+PA.Masque = LibStub("Masque", true)
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
@@ -149,12 +150,30 @@ end
 function PA:SetTemplate(frame)
 	if PA.AddOnSkins then
 		AddOnSkins[1]:SetTemplate(frame)
-	elseif frame.SetTemplate then
-		frame:SetTemplate('Transparent', true)
 	else
-		frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+		if frame.SetTemplate then
+			frame:SetTemplate('Transparent', true)
+		else
+			frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+		end
 		frame:SetBackdropColor(.08, .08, .08, .8)
-		frame:SetBackdropBorderColor(0, 0, 0)
+		frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
+	end
+end
+
+function PA:CreateBackdrop(frame)
+	if PA.AddOnSkins then
+		AddOnSkins[1]:CreateBackdrop(frame)
+	else
+		frame.Backdrop = CreateFrame('Frame', nil, frame)
+		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
+		if frame.SetTemplate then
+			frame.Backdrop:SetTemplate('Transparent', true)
+		else
+			frame.Backdrop:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+		end
+		frame.Backdrop:SetBackdropColor(.08, .08, .08, .8)
+		frame.Backdrop:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
 	end
 end
 
@@ -274,10 +293,6 @@ function PA:PLAYER_LOGIN()
 	end
 
 	PA:BuildProfile()
-
-	if PA.Tukui and PA:IsAddOnEnabled('Tukui_Config', PA.MyName) then
-		PA:TukuiOptions()
-	end
 
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)

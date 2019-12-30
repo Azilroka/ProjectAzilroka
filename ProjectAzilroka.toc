@@ -2,7 +2,7 @@
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
 ## Version: 1.57
-## OptionalDeps: AddOnSkins, ElvUI, Tukui
+## OptionalDeps: Masque
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 
 Libs\Load_Libs.xml
@@ -14,5 +14,6 @@ Modules\Enhanced_Config.lua
 
 Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 
+Class\Load_Classes.xml
 Media\Media.lua
 Modules\Load_Modules.xml
