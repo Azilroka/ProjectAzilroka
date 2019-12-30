@@ -1,11 +1,6 @@
 local PA = _G.ProjectAzilroka
 if PA.ElvUI then return end
 
-if PA.Tukui then
-	Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
-	Tukui[1].Miscellaneous.GameMenu.AddHooks = function() end
-end
-
 local EC = PA:NewModule("EnhancedConfig", 'AceConsole-3.0', 'AceEvent-3.0')
 PA.EC, _G.Enhanced_Config = EC, EC
 
@@ -90,6 +85,11 @@ function EC:Initialize()
 		HideUIPanel(GameMenuFrame)
 	end)
 	GameMenuFrame['EC'] = GameMenuButton
+
+	if PA.Tukui then
+		Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
+		Tukui[1].Miscellaneous.GameMenu.AddHooks = function() end
+	end
 
 	if not IsAddOnLoaded("ConsolePortUI_Menu") then
 		GameMenuButton:SetSize(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())

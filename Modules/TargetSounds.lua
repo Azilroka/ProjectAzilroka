@@ -6,15 +6,24 @@ TS.Title = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
 TS.Description = PA.ACL['Audio for Target Sounds.']
 TS.Authors = 'Azilroka'
 
+local UnitExists = UnitExists
+local UnitIsEnemy = UnitIsEnemy
+local UnitIsFriend = UnitIsFriend
+
+local IsReplacingUnit = IsReplacingUnit
+local PlaySound = PlaySound
+
 function TS:PLAYER_TARGET_CHANGED()
 	if (UnitExists('target') and not IsReplacingUnit()) then
 		if ( UnitIsEnemy('target', "player") ) then
-			PlaySound(SOUNDKIT.IG_CREATURE_AGGRO_SELECT);
+			PlaySound(_G.SOUNDKIT.IG_CREATURE_AGGRO_SELECT);
 		elseif ( UnitIsFriend("player", 'target') ) then
-			PlaySound(SOUNDKIT.IG_CHARACTER_NPC_SELECT);
+			PlaySound(_G.SOUNDKIT.IG_CHARACTER_NPC_SELECT);
 		else
-			PlaySound(SOUNDKIT.IG_CREATURE_NEUTRAL_SELECT);
+			PlaySound(_G.SOUNDKIT.IG_CREATURE_NEUTRAL_SELECT);
 		end
+	else
+		PlaySound(_G.SOUNDKIT.INTERFACE_SOUND_LOST_TARGET_UNIT)
 	end
 end
 

@@ -52,7 +52,7 @@ SMB.GenericIgnore = {
 	'QuestieFrame',
 }
 
-SMB.PartialIgnore = { 'Node', 'Note', 'Pin', 'POI' }
+SMB.PartialIgnore = { 'Node', 'Pin', 'POI' }
 
 SMB.OverrideTexture = {
 	BagSync_MinimapButton = 'Interface/AddOns/BagSync/media/icon',
@@ -376,7 +376,7 @@ function SMB:SkinMinimapButton(Button)
 	end
 
 	for i = 1, #SMB.PartialIgnore do
-		if strfind(Name, SMB.PartialIgnore[i]) ~= nil then return end
+		if strmatch(Name, SMB.PartialIgnore[i]) ~= nil then return end
 	end
 
 	for i = 1, Button:GetNumRegions() do
