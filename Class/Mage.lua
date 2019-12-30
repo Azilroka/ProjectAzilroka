@@ -26,6 +26,7 @@ PA.SpellList = {
 	153561,	-- Meteor
 	153595,	-- Comet Storm
 	157980,	-- Supernova
+	157981, -- Blast Wave
 	157997,	-- Ice Nova
 	190319,	-- Combustion
 	194466,	-- Phoenix's Flames
