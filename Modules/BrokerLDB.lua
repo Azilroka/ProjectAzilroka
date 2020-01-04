@@ -3,8 +3,7 @@ local BrokerLDB = PA:NewModule('BrokerLDB', 'AceEvent-3.0')
 PA.BrokerLDB, _G.BrokerLDB = BrokerLDB, BrokerLDB
 
 local _G = _G
-local pairs, tinsert, tremove, select, unpack = pairs, tinsert, tremove, select, unpack
-local strfind, strsub, strmatch = strfind, strsub, strmatch
+local pairs, tinsert, tremove = pairs, tinsert, tremove
 
 BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
 BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
@@ -19,10 +18,15 @@ function BrokerLDB:ValueUpdate(_, Name, _, Data, Object)
 end
 
 function BrokerLDB:GetOptions()
-	local Options = {
+	PA.Options.args.BrokerLDB = {
 		type = 'group',
 		name = BrokerLDB['Title'],
 		args = {
+			Enable = {
+				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
 			header = {
 				order = 1,
 				type = 'header',
@@ -79,13 +83,7 @@ function BrokerLDB:GetOptions()
 						name = PA.ACL['Font Outline'],
 						order = 11,
 						type = 'select',
-						values = {
-							['NONE'] = 'None',
-							['OUTLINE'] = 'OUTLINE',
-							['MONOCHROME'] = 'MONOCHROME',
-							['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
-							['THICKOUTLINE'] = 'THICKOUTLINE',
-						},
+						values = PA.FontFlags,
 					},
 				},
 			},
@@ -102,8 +100,6 @@ function BrokerLDB:GetOptions()
 			},
 		},
 	}
-
-	PA.Options.args.BrokerLDB = Options
 end
 
 function BrokerLDB:AnimateSlide(frame, x, y, duration)
@@ -316,33 +312,25 @@ function BrokerLDB:New(_, Name, Object)
 end
 
 function BrokerLDB:BuildProfile()
-	PA.Defaults.profile['BrokerLDB'] = {
-		['Enable'] = false,
-		['PanelHeight'] = 20,
-		['PanelWidth'] = 140,
-		['MouseOver'] = false,
-		['ShowIcon'] = false,
-		['ShowText'] = true,
-		['Font'] = 'Tukui Pixel',
-		['FontSize'] = 12,
-		['FontFlag'] = 'MONOCHROMEOUTLINE',
-	}
-
-	PA.Options.args.general.args.BrokerLDB = {
-		type = 'toggle',
-		name = BrokerLDB.Title,
-		desc = BrokerLDB.Description,
+	PA.Defaults.profile.BrokerLDB = {
+		Enable = false,
+		PanelHeight = 20,
+		PanelWidth = 140,
+		MouseOver = false,
+		ShowIcon = false,
+		ShowText = true,
+		Font = 'Tukui Pixel',
+		FontSize = 12,
+		FontFlag = 'MONOCHROMEOUTLINE',
 	}
 end
 
 function BrokerLDB:Initialize()
-	BrokerLDB.db = PA.db['BrokerLDB']
+	BrokerLDB.db = PA.db.BrokerLDB
 
 	if BrokerLDB.db.Enable ~= true then
 		return
 	end
-
-	BrokerLDB:GetOptions()
 
 	BrokerLDB.DropDown = CreateFrame('Frame', 'BrokerLDBDropDown', UIParent, 'UIDropDownMenuTemplate')
 	BrokerLDB.Slide = 'In'

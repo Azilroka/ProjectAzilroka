@@ -9,6 +9,7 @@ ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = true
 ACL["Frame doesn't exist: "] = true
 ACL['General'] = true
+ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
 
 -- Apps/Games
 ACL['Diablo 3'] = true

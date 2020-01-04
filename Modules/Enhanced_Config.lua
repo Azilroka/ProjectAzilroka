@@ -43,22 +43,22 @@ EC.Options = {
 }
 
 function EC:PositionGameMenuButton()
-	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
+	_G.GameMenuFrame:SetHeight(_G.GameMenuFrame:GetHeight() + _G.GameMenuButtonLogout:GetHeight() - 4)
 
-	if PA.Tukui and Tukui[1].Miscellaneous.GameMenu.Tukui then
-		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() - 4)
+	if PA.Tukui and _G.Tukui[1].Miscellaneous.GameMenu.Tukui then
+		_G.GameMenuFrame:SetHeight(_G.GameMenuFrame:GetHeight() + _G.GameMenuButtonLogout:GetHeight() - 4)
 	end
 
-	local _, relTo, _, _, offY = GameMenuButtonLogout:GetPoint()
-	if relTo ~= GameMenuFrame['EC'] then
-		GameMenuFrame['EC']:ClearAllPoints()
-		GameMenuFrame['EC']:SetPoint("TOPLEFT", PA.Tukui and Tukui[1].Miscellaneous.GameMenu.Tukui or relTo, "BOTTOMLEFT", 0, -1)
-		GameMenuButtonLogout:ClearAllPoints()
-		GameMenuButtonLogout:SetPoint("TOPLEFT", GameMenuFrame['EC'], "BOTTOMLEFT", 0, offY)
+	local _, relTo, _, _, offY = _G.GameMenuButtonLogout:GetPoint()
+	if relTo ~= _G.GameMenuFrame['EC'] then
+		_G.GameMenuFrame['EC']:ClearAllPoints()
+		_G.GameMenuFrame['EC']:SetPoint("TOPLEFT", PA.Tukui and _G.Tukui[1].Miscellaneous.GameMenu.Tukui or relTo, "BOTTOMLEFT", 0, -1)
+		_G.GameMenuButtonLogout:ClearAllPoints()
+		_G.GameMenuButtonLogout:SetPoint("TOPLEFT", _G.GameMenuFrame['EC'], "BOTTOMLEFT", 0, offY)
 	end
 end
 
-function EC.OnConfigClosed(widget, event)
+function EC.OnConfigClosed(widget)
 	PA.ACD.OpenFrames['Enhanced_Config'] = nil
 	PA.GUI:Release(widget)
 end
@@ -74,27 +74,27 @@ function EC:ToggleConfig()
 		PA.ACD:Open('Enhanced_Config', Container)
 	end
 
-	GameTooltip:Hide()
+	_G.GameTooltip:Hide()
 end
 
 function EC:Initialize()
-	local GameMenuButton = CreateFrame("Button", nil, GameMenuFrame, "GameMenuButtonTemplate")
+	local GameMenuButton = _G.CreateFrame("Button", nil, _G.GameMenuFrame, "GameMenuButtonTemplate")
 	GameMenuButton:SetText(EC.Title)
 	GameMenuButton:SetScript("OnClick", function()
 		EC:ToggleConfig()
-		HideUIPanel(GameMenuFrame)
+		_G.HideUIPanel(_G.GameMenuFrame)
 	end)
-	GameMenuFrame['EC'] = GameMenuButton
+	_G.GameMenuFrame['EC'] = GameMenuButton
 
 	if PA.Tukui then
-		Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
-		Tukui[1].Miscellaneous.GameMenu.AddHooks = function() end
+		_G.Tukui[1].Miscellaneous.GameMenu.EnableTukuiConfig = function() end
+		_G.Tukui[1].Miscellaneous.GameMenu.AddHooks = function() end
 	end
 
-	if not IsAddOnLoaded("ConsolePortUI_Menu") then
-		GameMenuButton:SetSize(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
-		GameMenuButton:SetPoint("TOPLEFT", GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
-		hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', self.PositionGameMenuButton)
+	if not _G.IsAddOnLoaded("ConsolePortUI_Menu") then
+		GameMenuButton:SetSize(_G.GameMenuButtonLogout:GetWidth(), _G.GameMenuButtonLogout:GetHeight())
+		GameMenuButton:SetPoint("TOPLEFT", _G.GameMenuButtonAddons, "BOTTOMLEFT", 0, -1)
+		_G.hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', EC.PositionGameMenuButton)
 	end
 
 	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)

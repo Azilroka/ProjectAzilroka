@@ -8,11 +8,8 @@ LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 
-local tonumber, strmatch, select = tonumber, strmatch, select
-local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot, CloseLoot
-local RollOnLoot, LootSlot = RollOnLoot, LootSlot
-local IsEquippableItem, GetItemInfo, GetInventoryItemLink = IsEquippableItem, GetItemInfo, GetInventoryItemLink
-local GetLootRollItemInfo, GetLootRollItemLink = GetLootRollItemInfo, GetLootRollItemLink
+local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot
+local RollOnLoot = RollOnLoot
 
 function LC:Confirm(event, ...)
 	if event == 'CONFIRM_LOOT_ROLL' then
@@ -28,17 +25,22 @@ end
 -- LOOT_ROLL_TYPE_PASS, LOOT_ROLL_TYPE_NEED
 -- texture, item, quantity, currencyID, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(slot);
 
-function LC:START_LOOT_ROLL(event, id)
-	if not self.db['Greed'] then return end
-	RollOnLoot(id, LOOT_ROLL_TYPE_GREED)
+function LC:START_LOOT_ROLL(_, id)
+	if not LC.db['Greed'] then return end
+	RollOnLoot(id, _G.LOOT_ROLL_TYPE_GREED)
 end
 
 function LC:GetOptions()
-	local Options = {
+	PA.Options.args.LootConfirm = {
 		type = 'group',
 		name = LC.Title,
 		desc = LC.Description,
 		args = {
+			Enable = {
+				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
 			header = {
 				order = 1,
 				type = 'header',
@@ -62,20 +64,12 @@ function LC:GetOptions()
 			},
 		},
 	}
-
-	PA.Options.args.LootConfirm = Options
 end
 
 function LC:BuildProfile()
-	PA.Defaults.profile['LootConfirm'] = {
-		['Enable'] = false,
-		['Greed'] = false,
-	}
-
-	PA.Options.args.general.args.LootConfirm = {
-		type = 'toggle',
-		name = LC.Title,
-		desc = LC.Description,
+	PA.Defaults.profile.LootConfirm = {
+		Enable = false,
+		Greed = false,
 	}
 end
 
@@ -86,10 +80,8 @@ function LC:Initialize()
 		return
 	end
 
-	LC:GetOptions()
-
-	UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
-	UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')
+	_G.UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
+	_G.UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')
 
 	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'Confirm')
 	LC:RegisterEvent('LOOT_OPENED', 'Confirm')

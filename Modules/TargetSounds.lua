@@ -27,26 +27,48 @@ function TS:PLAYER_TARGET_CHANGED()
 	end
 end
 
-function TS:BuildProfile()
-	PA.Defaults.profile['TargetSounds'] = {
-		['Enable'] = false,
+function TS:GetOptions()
+	local Options = {
+		type = 'group',
+		name = TS.Title,
+		args = {
+			Enable = {
+				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
+			header = {
+				order = 1,
+				type = 'header',
+				name = TS.Title,
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = TS.Authors,
+				fontSize = 'large',
+			},
+		},
 	}
 
-	PA.Options.args.general.args.TargetSounds = {
-		type = 'toggle',
-		name = TS.Title,
-		desc = TS.Description,
-	}
+	PA.Options.args.TargetSounds = Options
+end
+
+function TS:BuildProfile()
+	PA.Defaults.profile.TargetSounds = { Enable = false }
 end
 
 function TS:Initialize()
-	TS.db = PA.db['QuestSounds']
+	TS.db = PA.db.TargetSounds
 
 	if TS.db.Enable ~= true then
 		return
 	end
-
-	--TS:GetOptions()
 
 	TS:RegisterEvent('PLAYER_TARGET_CHANGED')
 end

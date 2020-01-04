@@ -26,59 +26,47 @@ local GetInventoryItemID = GetInventoryItemID
 local WarningSound = 'Interface/AddOns/ProjectAzilroka/Warning.mp3'
 
 local BuffReminder1 = {
-	['DEATHKNIGHT'] = {
-		6673, -- Battle Shout
-		57330, -- Horn of Winter
-		93435, -- Roar of Courage (Hunter Pet)
-	},
-	['DRUID'] = {
+	DRUID = {
 		1126, -- Mark of the Wild
 		20217, -- Blessing of Kings
 		90363, -- Embrace of the Shale Spider
 		117666, -- Legacy of the Emperor
 	},
-	['HUNTER'] = {
+	HUNTER = {
 		5118, -- Aspect of the Cheetah
 		13159, -- Aspect of the Pack
 		13165, -- Aspect of the Hawk
 		109260, -- Aspect of the Iron Hawk
 	},
-	['MAGE'] = {
+	MAGE = {
 		6117, -- Mage Armor
 		7302, -- Frost Armor
 		30482, -- Molten Armor
 	},
-	['MONK'] = {
-		1126, -- Mark of the Wild
-		20217, -- Blessing of Kings
-		90363, -- Embrace of the Shale Spider
-		116781, -- Legacy of the White Tiger
-		117666, -- Legacy of the Emperor
-	},
-	['PALADIN'] = {
+	PALADIN = {
 		1126, -- Mark of the Wild
 		19740, -- Blessing of Might
 		20217, -- Blessing of Kings
 		90363, -- Embrace of the Shale Spider
 		117666, -- Legacy of the Emperor
 	},
-	['PRIEST'] = {
+	PRIEST = {
 		588, -- Inner Fire
 		73413, -- Inner Will
 	},
-	['ROGUE'] = {
+	ROGUE = {
 		2823, -- Deadly Poison
 		8679, -- Wound Poison
 	},
-	['SHAMAN'] = {
+	SHAMAN = {
 		324, -- Lightning Shield
 		974, -- Earth Shield
 		52127, -- Water Shield
 	},
-	['WARLOCK'] = {
+	WARLOCK = {
 		109773, -- Dark Intent
 	},
-	['WARRIOR'] = {
+	WARRIOR = {
 		469, -- Commanding Shout
 		6673, -- Battle Shout
 		93435, -- Roar of Courage (Hunter Pet)
@@ -88,19 +76,14 @@ local BuffReminder1 = {
 }
 
 local BuffReminder2 = {
-	['DEATHKNIGHT'] = {
-		48263, -- Blood Presence
-		48265, -- Unholy Presence
-		48266, -- Frost Presence
-	},
-	['MAGE'] = {
+	MAGE = {
 		1459, -- Arcane Brilliance
 		61316, -- Dalaran Brilliance
 	},
-	['PRIEST'] = {
+	PRIEST = {
 		21562, -- PW: Fortitude
 	},
-	['ROGUE'] = {
+	ROGUE = {
 		3408, -- Crippling Poison
 		5761, -- Mind-numbing Poison
 		108211, -- Leeching Poison
@@ -153,7 +136,7 @@ local function OnEvent(self, event)
 end
 
 local function WeaponBuffsOnEvent(self, event)
-	if MyClass ~= 'SHAMAN' then return end
+	if PA.MyClass ~= 'SHAMAN' then return end
 	if event == 'PLAYER_LOGIN' then AddEvents(self) end
 
 	if UnitLevel('player') < 10 then return end
@@ -222,27 +205,51 @@ function BN:BuildProfile()
 	PA.Defaults.profile.BuffsNotice = {
 		Enable = false,
 	}
+end
 
-	PA.Options.args.general.args.BuffsNotice = {
-		type = 'toggle',
+function BN:GetOptions()
+	PA.Options.args.BuffsNotice = {
+		type = 'group',
 		name = BN.Title,
-		desc = BN.Description,
+		args = {
+			Enable = {
+				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
+			header = {
+				order = 1,
+				type = 'header',
+				name = BN.Title,
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = BN.Authors,
+				fontSize = 'large',
+			},
+		},
 	}
 end
 
 function BN:Initialize()
-	BN.db = PA.db['QuestSounds']
+	BN.db = PA.db.QuestSounds
 
 	if BN.db.Enable ~= true then
 		return
 	end
 
 	local BuffsWarning1 = CreateWarningFrame('BuffsWarning1')
-	BuffsWarning1.Buffs = BuffReminder1[MyClass]
+	BuffsWarning1.Buffs = BuffReminder1[PA.MyClass]
 	BuffsWarning1:SetScript('OnEvent', OnEvent)
 
 	local BuffsWarning2 = CreateWarningFrame('BuffsWarning2')
-	BuffsWarning2.Buffs = BuffReminder2[MyClass] or {}
+	BuffsWarning2.Buffs = BuffReminder2[PA.MyClass] or {}
 	BuffsWarning2:SetScript('OnEvent', OnEvent)
 
 	local WeaponBuffs = CreateWarningFrame('WeaponBuffs')
@@ -251,7 +258,6 @@ function BN:Initialize()
 	local BuffsWarningFrame = CreateFrame('Frame', 'BuffsWarningFrame', UIParent)
 	BuffsWarningFrame:SetSize(40, 40)
 	BuffsWarningFrame:SetScript('OnUpdate', SoundThrottle)
-	--BN:GetOptions()
 
 	self:RegisterEvent('PLAYER_REGEN_ENABLED')
 	self:RegisterEvent('PLAYER_REGEN_DISABLED')

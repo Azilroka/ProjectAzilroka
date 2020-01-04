@@ -62,21 +62,26 @@ function ES:UpdateShadow(shadow)
 end
 
 function ES:GetOptions()
-	local Options = {
+	PA.Options.args.EnhancedShadows = {
 		type = "group",
 		name = ES.Title,
 		desc = ES.Description,
 		get = function(info) return ES.db[info[#info]] end,
 		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
 		args = {
-			Header = {
+			Enable = {
 				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
+			Header = {
+				order = 1,
 				type = 'header',
 				name = PA:Color(ES.Title)
 			},
 			Color = {
 				type = "color",
-				order = 1,
+				order = 2,
 				name = PA.ACL['Shadow Color'],
 				hasAlpha = true,
 				get = function(info) return unpack(ES.db[info[#info]]) end,
@@ -84,11 +89,11 @@ function ES:GetOptions()
 			},
 			ColorByClass = {
 				type = 'toggle',
-				order = 2,
+				order = 3,
 				name = PA.ACL['Color by Class'],
 			},
 			Size = {
-				order = 3,
+				order = 4,
 				type = 'range',
 				name = PA.ACL['Size'],
 				min = 3, max = 10, step = 1,
@@ -106,35 +111,25 @@ function ES:GetOptions()
 			},
 		},
 	}
-
-	PA.Options.args.EnhancedShadows = Options
 end
 
 function ES:BuildProfile()
-	PA.Defaults.profile['EnhancedShadows'] = {
-		['Enable'] = true,
-		['Color'] = { 0, 0, 0, 1 },
-		['ColorByClass'] = false,
-		['Size'] = 3,
-	}
-
-	PA.Options.args.general.args.EnhancedShadows = {
-		type = 'toggle',
-		name = ES.Title,
-		desc = ES.Description,
+	PA.Defaults.profile.EnhancedShadows = {
+		Enable = true,
+		Color = { 0, 0, 0, 1 },
+		ColorByClass = false,
+		Size = 3,
 	}
 end
 
 function ES:Initialize()
-	ES.db = PA.db['EnhancedShadows']
+	ES.db = PA.db.EnhancedShadows
 
 	if PA.SLE or PA.CUI or ES.db.Enable ~= true then
 		return
 	end
 
 	PA.ES, _G.EnhancedShadows = ES, ES
-
-	ES:GetOptions()
 
 	ES:ScheduleTimer('UpdateShadows', 1)
 end

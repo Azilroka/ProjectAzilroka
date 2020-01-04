@@ -48,11 +48,35 @@ end
 
 function FL:BuildProfile()
 	PA.Defaults.profile['FasterLoot'] = { ['Enable'] = true }
+end
 
-	PA.Options.args.general.args.FasterLoot = {
-		type = 'toggle',
+function FL:GetOptions()
+	PA.Options.args.FasterLoot = {
+		type = 'group',
 		name = FL.Title,
-		desc = FL.Description,
+		args = {
+			Enable = {
+				order = 0,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
+			header = {
+				order = 1,
+				type = 'header',
+				name = FL.Title,
+			},
+			AuthorHeader = {
+				order = -4,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -3,
+				type = 'description',
+				name = FL.Authors,
+				fontSize = 'large',
+			},
+		},
 	}
 end
 

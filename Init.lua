@@ -79,6 +79,7 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 
 local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 PA.ClassColor = { Color.r, Color.g, Color.b }
+PA.FontFlags = { MONOCHROME = 'MONOCHROME', MONOCHROMEOUTLINE = 'MONOCHROMEOUTLINE', NONE = 'None', OUTLINE = 'OUTLINE', THICKOUTLINE = 'THICKOUTLINE' }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
@@ -122,6 +123,23 @@ end
 
 function PA:Print(...)
 	print(PA:Color(PA.Title..':'), ...)
+end
+
+--RGB to Hex
+function PA:RGBToHex(r, g, b, header, ending)
+	r = r <= 1 and r >= 0 and r or 1
+	g = g <= 1 and g >= 0 and g or 1
+	b = b <= 1 and b >= 0 and b or 1
+	return format('%s%02x%02x%02x%s', header or '|cff', r*255, g*255, b*255, ending or '')
+end
+
+--Hex to RGB
+function PA:HexToRGB(hex)
+	local a, r, g, b = strmatch(hex, '^|?c?(%x%x)(%x%x)(%x%x)(%x?%x?)|?r?$')
+	if not a then return 0, 0, 0, 0 end
+	if b == '' then r, g, b, a = a, r, g, 'ff' end
+
+	return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16), tonumber(a, 16)
 end
 
 function PA:ConflictAddOn(AddOns)
@@ -223,28 +241,48 @@ StaticPopupDialogs["PROJECTAZILROKA"] = {
 	hideOnEscape = false,
 }
 
-PA.Defaults = { profile = {} }
+PA.Defaults = {
+	profile = {
+		cooldown = {
+			enable = true,
+			threshold = 3,
+			hideBlizzard = false,
+			useIndicatorColor = false,
+			expiringColor = { r = 1, g = 0, b = 0 },
+			secondsColor = { r = 1, g = 1, b = 0 },
+			minutesColor = { r = 1, g = 1, b = 1 },
+			hoursColor = { r = 0.4, g = 1, b = 1 },
+			daysColor = { r = 0.4, g = 0.4, b = 1 },
+			expireIndicator = { r = 1, g = 1, b = 1 },
+			secondsIndicator = { r = 1, g = 1, b = 1 },
+			minutesIndicator = { r = 1, g = 1, b = 1 },
+			hoursIndicator = { r = 1, g = 1, b = 1 },
+			daysIndicator = { r = 1, g = 1, b = 1 },
+			hhmmColorIndicator = { r = 1, g = 1, b = 1 },
+			mmssColorIndicator = { r = 1, g = 1, b = 1 },
+
+			checkSeconds = false,
+			hhmmColor = { r = 0.43, g = 0.43, b = 0.43 },
+			mmssColor = { r = 0.56, g = 0.56, b = 0.56 },
+			hhmmThreshold = -1,
+			mmssThreshold = -1,
+
+			fonts = {
+				enable = false,
+				font = 'PT Sans Narrow',
+				fontOutline = 'OUTLINE',
+				fontSize = 18,
+			},
+		}
+	}
+}
 
 PA.Options = {
 	type = 'group',
 	name = PA:Color(PA.Title),
 	order = 6,
-	args = {
-		header = {
-			order = 1,
-			type = 'header',
-			name = PA.ACL['Controls AddOns in this package'],
-		},
-		general = {
-			order = 2,
-			type = 'group',
-			name = PA:Color(PA.ACL['AddOns']),
-			guiInline = true,
-			get = function(info) return (PA.db[info[#info]] and PA.db[info[#info]]['Enable']) end,
-			set = function(info, value) PA.db[info[#info]]['Enable'] = value StaticPopup_Show("PROJECTAZILROKA") end,
-			args = {},
-		},
-	},
+	childGroups = "tab",
+	args = {},
 }
 
 function PA:GetOptions()
@@ -267,9 +305,7 @@ function PA:SetupProfile()
 	PA.db = PA.data.profile
 
 	for _, module in PA:IterateModules() do
-		if module.UpdateSettings then
-			module:UpdateSettings()
-		end
+		if module.UpdateSettings then module:UpdateSettings() end
 	end
 end
 
@@ -287,9 +323,7 @@ function PA:PLAYER_LOGIN()
 	PA.AS = AddOnSkins and unpack(AddOnSkins)
 
 	for _, module in PA:IterateModules() do
-		if module.BuildProfile then
-			module:BuildProfile()
-		end
+		if module.BuildProfile then module:BuildProfile() end
 	end
 
 	PA:BuildProfile()
@@ -298,10 +332,11 @@ function PA:PLAYER_LOGIN()
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	end
 
+	PA:UpdateCooldownSettings('all')
+
 	for _, module in PA:IterateModules() do
-		if module.Initialize then
-			module:Initialize()
-		end
+		if module.GetOptions then module:GetOptions() end
+		if module.Initialize then module:Initialize() end
 	end
 end
 
