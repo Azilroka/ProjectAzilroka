@@ -237,37 +237,51 @@ function BB:GetOptions()
 		name = BB.Title,
 		desc = BB.Description,
 		get = function(info) return BB.db[info[#info]] end,
-		set = function(info, value) BB.db[info[#info]] = value BB:Update() end,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
 				name = PA:Color(BB.Title),
 			},
-			DropTools = {
+			Enable = {
 				order = 1,
 				type = 'toggle',
-				name = PA.ACL['Drop Farm Tools'],
+				name = PA.ACL['Enable'],
+				set = function(info, value) BB.db[info[#info]] = value end,
 			},
-			ToolSize = {
+			General = {
 				order = 2,
-				type = 'range',
-				name = PA.ACL['Farm Tool Size'],
-				min = 16, max = 64, step = 1,
-			},
-			SeedSize = {
-				order = 3,
-				type = 'range',
-				name = PA.ACL['Seed Size'],
-				min = 16, max = 64, step = 1,
+				type = 'group',
+				name = PA.ACL['General'],
+				guiInline = true,
+				set = function(info, value) BB.db[info[#info]] = value BB:Update() end,
+				args = {
+					DropTools = {
+						order = 1,
+						type = 'toggle',
+						name = PA.ACL['Drop Farm Tools'],
+					},
+					ToolSize = {
+						order = 2,
+						type = 'range',
+						name = PA.ACL['Farm Tool Size'],
+						min = 16, max = 64, step = 1,
+					},
+					SeedSize = {
+						order = 3,
+						type = 'range',
+						name = PA.ACL['Seed Size'],
+						min = 16, max = 64, step = 1,
+					},
+				},
 			},
 			AuthorHeader = {
-				order = 11,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = 12,
+				order = -1,
 				type = 'description',
 				name = BB.Authors,
 				fontSize = 'large',
