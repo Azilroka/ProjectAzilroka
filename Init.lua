@@ -79,7 +79,9 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 
 local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 PA.ClassColor = { Color.r, Color.g, Color.b }
+
 PA.FontFlags = { MONOCHROME = 'MONOCHROME', MONOCHROMEOUTLINE = 'MONOCHROMEOUTLINE', NONE = 'None', OUTLINE = 'OUTLINE', THICKOUTLINE = 'THICKOUTLINE' }
+PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
