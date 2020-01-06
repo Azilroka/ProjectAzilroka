@@ -6,7 +6,16 @@ FL.Title = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
 FL.Description = PA.ACL['Increases auto loot speed near instantaneous.']
 FL.Authors = 'Azilroka'
 
-local GetNumLootItems, CloseLoot, LootSlot, GetCVarBool, IsModifiedClick = GetNumLootItems, CloseLoot, LootSlot, GetCVarBool, IsModifiedClick
+local GetNumLootItems = GetNumLootItems
+local LootSlot = LootSlot
+local GetCVarBool = GetCVarBool
+local IsModifiedClick = IsModifiedClick
+local GetBagName = GetBagName
+local GetLootSlotLink = GetLootSlotLink
+local GetItemInfo = GetItemInfo
+local EquipItemByName = EquipItemByName
+
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 
 local HaveEmptyBagSlots = 0
 
@@ -55,15 +64,15 @@ function FL:GetOptions()
 		type = 'group',
 		name = FL.Title,
 		args = {
-			Enable = {
+			Header = {
 				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
-			header = {
-				order = 1,
 				type = 'header',
 				name = FL.Title,
+			},
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
 			},
 			AuthorHeader = {
 				order = -4,
