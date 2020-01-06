@@ -267,28 +267,36 @@ function RR:GetOptions()
 		get = function(info) return RR.db[info[#info]] end,
 		set = function(info, value) RR.db[info[#info]] = value end,
 		args = {
-			Enable = {
-				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
 			Header = {
-				order = 1,
+				order = 0,
 				type = 'header',
 				name = PA:Color(RR.Title),
 			},
-			ShowAll = {
-				order = 2,
+			Enable = {
+				order = 1,
 				type = 'toggle',
-				name = 'Show All Reputation',
+				name = PA.ACL['Enable'],
+			},
+			General = {
+				order = 2,
+				type = 'group',
+				name = PA.ACL['General'],
+				guiInline = true,
+				args = {
+					ShowAll = {
+						order = 1,
+						type = 'toggle',
+						name = 'Show All Reputation',
+					},
+				},
 			},
 			AuthorHeader = {
-				order = 2,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = 3,
+				order = -1,
 				type = 'description',
 				name = RR.Authors,
 				fontSize = 'large',
