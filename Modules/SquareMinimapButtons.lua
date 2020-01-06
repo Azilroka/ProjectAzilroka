@@ -7,14 +7,31 @@ SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
 SMB.Authors = 'Azilroka    Whiro    Sinaris    Omega    Durc'
 
 local _G = _G
-local strsub, strlen, strfind, strmatch, strlower = strsub, strlen, strfind, strmatch, strlower
-local tinsert, pairs, unpack, select, tContains = tinsert, pairs, unpack, select, tContains
+local strsub = strsub
+local strlen = strlen
+local strfind = strfind
+local strmatch = strmatch
+local strlower = strlower
+local tinsert = tinsert
+local pairs = pairs
+local unpack = unpack
+local select = select
+local tContains = tContains
 local tostring = tostring
 local floor = floor
-local InCombatLockdown, C_PetBattles = InCombatLockdown, C_PetBattles
+
+local InCombatLockdown = InCombatLockdown
+local C_PetBattles = C_PetBattles
 local Minimap = Minimap
-local rad, cos, sin, sqrt, max, min = math.rad, math.cos, math.sin, math.sqrt, math.max, math.min
-local deg, atan2 = math.deg, math.atan2
+
+local rad = math.rad
+local cos = math.cos
+local sin = math.sin
+local sqrt = math.sqrt
+local max = math.max
+local min = math.min
+local deg = math.deg
+local atan2 = math.atan2
 
 local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
@@ -553,114 +570,122 @@ function SMB:GetOptions()
 		get = function(info) return SMB.db[info[#info]] end,
 		set = function(info, value) SMB.db[info[#info]] = value SMB:Update() end,
 		args = {
-			Enable = {
-				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
 			Header = {
-				order = 1,
+				order = 0,
 				type = 'header',
 				name = PA:Color(SMB.Title),
 			},
-			mbb = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['Minimap Buttons / Bar'],
-				guiInline = true,
-				args = {
-					BarEnabled = {
-						order = 1,
-						type = 'toggle',
-						name = PA.ACL['Enable Bar'],
-					},
-					BarMouseOver = {
-						order = 2,
-						type = 'toggle',
-						name = PA.ACL['Bar MouseOver'],
-					},
-					Backdrop = {
-						order = 3,
-						type = 'toggle',
-						name = PA.ACL['Bar Backdrop'],
-					},
-					IconSize = {
-						order = 4,
-						type = 'range',
-						name = PA.ACL['Icon Size'],
-						min = 12, max = 48, step = 1,
-					},
-					ButtonSpacing = {
-						order = 5,
-						type = 'range',
-						name = PA.ACL['Button Spacing'],
-						min = 0, max = 10, step = 1,
-					},
-					ButtonsPerRow = {
-						order = 6,
-						type = 'range',
-						name = PA.ACL['Buttons Per Row'],
-						min = 1, max = 100, step = 1,
-					},
-					Shadows = {
-						order = 7,
-						type = 'toggle',
-						name = PA.ACL['Shadows'],
-					},
-					ReverseDirection = {
-						order = 8,
-						type = "toggle",
-						name = PA.ACL["Reverse Direction"],
-					},
-				},
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
 			},
-			blizzard = {
-				type = 'group',
-				name = PA.ACL['Blizzard'],
-				guiInline = true,
-				set = function(info, value) SMB.db[info[#info]] = value SMB:Update() SMB:HandleBlizzardButtons() end,
+			General = {
 				order = 2,
+				type = 'group',
+				name = PA.ACL['General'],
+				guiInline = true,
 				args = {
-					HideGarrison  = {
-						type = 'toggle',
-						name = PA.ACL['Hide Garrison'],
-						disabled = function() return SMB.db.MoveGarrison end,
-						hidden = function() return PA.Classic end,
+					MBB = {
+						order = 1,
+						type = 'group',
+						name = PA.ACL['Minimap Buttons / Bar'],
+						guiInline = true,
+						args = {
+							BarEnabled = {
+								order = 1,
+								type = 'toggle',
+								name = PA.ACL['Enable Bar'],
+							},
+							BarMouseOver = {
+								order = 2,
+								type = 'toggle',
+								name = PA.ACL['Bar MouseOver'],
+							},
+							Backdrop = {
+								order = 3,
+								type = 'toggle',
+								name = PA.ACL['Bar Backdrop'],
+							},
+							IconSize = {
+								order = 4,
+								type = 'range',
+								name = PA.ACL['Icon Size'],
+								min = 12, max = 48, step = 1,
+							},
+							ButtonSpacing = {
+								order = 5,
+								type = 'range',
+								name = PA.ACL['Button Spacing'],
+								min = 0, max = 10, step = 1,
+							},
+							ButtonsPerRow = {
+								order = 6,
+								type = 'range',
+								name = PA.ACL['Buttons Per Row'],
+								min = 1, max = 100, step = 1,
+							},
+							Shadows = {
+								order = 7,
+								type = 'toggle',
+								name = PA.ACL['Shadows'],
+							},
+							ReverseDirection = {
+								order = 8,
+								type = "toggle",
+								name = PA.ACL["Reverse Direction"],
+							},
+						},
 					},
-					MoveGarrison  = {
-						type = 'toggle',
-						name = PA.ACL['Move Garrison Icon'],
-						disabled = function() return SMB.db.HideGarrison end,
-						hidden = function() return PA.Classic end,
-					},
-					MoveMail  = {
-						type = 'toggle',
-						name = PA.ACL['Move Mail Icon'],
-					},
-					MoveGameTimeFrame = {
-						type = 'toggle',
-						name = PA.ACL['Move Game Time Frame'],
-						hidden = function() return PA.Retail end,
-					},
-					MoveTracker  = {
-						type = 'toggle',
-						name = PA.ACL['Move Tracker Icon'],
-						hidden = function() return PA.Classic end,
-					},
-					MoveQueue  = {
-						type = 'toggle',
-						name = PA.ACL['Move Queue Status Icon'],
-						hidden = function() return PA.Classic end,
+					Blizzard = {
+						order = 2,
+						type = 'group',
+						name = PA.ACL['Blizzard'],
+						guiInline = true,
+						set = function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end,
+						args = {
+							HideGarrison  = {
+								type = 'toggle',
+								name = PA.ACL['Hide Garrison'],
+								disabled = function() return SMB.db.MoveGarrison end,
+								hidden = function() return PA.Classic end,
+							},
+							MoveGarrison  = {
+								type = 'toggle',
+								name = PA.ACL['Move Garrison Icon'],
+								disabled = function() return SMB.db.HideGarrison end,
+								hidden = function() return PA.Classic end,
+							},
+							MoveMail  = {
+								type = 'toggle',
+								name = PA.ACL['Move Mail Icon'],
+							},
+							MoveGameTimeFrame = {
+								type = 'toggle',
+								name = PA.ACL['Move Game Time Frame'],
+								hidden = function() return PA.Retail end,
+							},
+							MoveTracker  = {
+								type = 'toggle',
+								name = PA.ACL['Move Tracker Icon'],
+								hidden = function() return PA.Classic end,
+							},
+							MoveQueue  = {
+								type = 'toggle',
+								name = PA.ACL['Move Queue Status Icon'],
+								hidden = function() return PA.Classic end,
+							},
+						},
 					},
 				},
 			},
 			AuthorHeader = {
-				order = 3,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = 4,
+				order = -1,
 				type = 'description',
 				name = SMB.Authors,
 				fontSize = 'large',
