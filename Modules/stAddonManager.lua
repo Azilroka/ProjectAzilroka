@@ -10,15 +10,33 @@ stAM.Description = PA.ACL['A simple and minimalistic addon to disable/enabled ad
 stAM.Authors = 'Azilroka    Safturento'
 
 local _G = _G
-local unpack, tinsert, wipe, pairs, sort, format = unpack, tinsert, wipe, pairs, sort, format
-local strlen, strlower, strfind = strlen, strlower, strfind
-local min, max = min, max
+local unpack = unpack
+local tinsert = tinsert
+local wipe = wipe
+local pairs = pairs
+local sort = sort
+local format = format
+local strlen = strlen
+local strlower = strlower
+local strfind = strfind
+local min = min
+local max = max
 local concat = table.concat
 local select = select
-local CreateFrame, UIParent, GameTooltip = CreateFrame, UIParent, GameTooltip
 
-local GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState = GetNumAddOns, GetAddOnInfo, GetAddOnDependencies, GetAddOnOptionalDependencies, GetAddOnEnableState
-local DisableAddOn, EnableAddOn, GetAddOnMetadata, DisableAllAddOns, EnableAllAddOns = DisableAddOn, EnableAddOn, GetAddOnMetadata, DisableAllAddOns, EnableAllAddOns
+local GetNumAddOns = GetNumAddOns
+local GetAddOnInfo = GetAddOnInfo
+local GetAddOnDependencies = GetAddOnDependencies
+local GetAddOnOptionalDependencies = GetAddOnOptionalDependencies
+local DisableAddOn = DisableAddOn
+local EnableAddOn = EnableAddOn
+local GetAddOnMetadata = GetAddOnMetadata
+local DisableAllAddOns = DisableAllAddOns
+local EnableAllAddOns = EnableAllAddOns
+
+local CreateFrame = CreateFrame
+local UIParent = UIParent
+local GameTooltip = GameTooltip
 
 local IsShiftKeyDown = IsShiftKeyDown
 
@@ -682,24 +700,24 @@ function stAM:GetOptions()
 		type = 'group',
 		name = stAM.Title,
 		desc = stAM.Description,
+		get = function(info) return stAM.db[info[#info]] end,
+		set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
 		args = {
-			Enable = {
-				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
 			Header = {
-				order = 1,
+				order = 0,
 				type = 'header',
 				name = PA:Color(stAM.Title),
+			},
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
 			},
 			General = {
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,
-				get = function(info) return stAM.db[info[#info]] end,
-				set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
 				args = {
 					NumAddOns = {
 						order = 1,
@@ -751,43 +769,41 @@ function stAM:GetOptions()
 						type = 'toggle',
 						name = PA.ACL['Class Color Check Texture'],
 					},
-				},
-			},
-			FontSettings = {
-				order = 3,
-				type = 'group',
-				name = PA.ACL['Font Settings'],
-				guiInline = true,
-				get = function(info) return stAM.db[info[#info]] end,
-				set = function(info, value) stAM.db[info[#info]] = value stAM:Update() end,
-				args = {
-					Font = {
-						type = 'select', dialogControl = 'LSM30_Font',
-						order = 1,
-						name = PA.ACL['Font'],
-						values = PA.LSM:HashTable('font'),
-					},
-					FontSize = {
-						order = 2,
-						name = FONT_SIZE,
-						type = 'range',
-						min = 6, max = 22, step = 1,
-					},
-					FontFlag = {
-						order = 3,
-						name = PA.ACL['Font Outline'],
-						type = 'select',
-						values = PA.FontFlags,
+					FontSettings = {
+						order = -1,
+						type = 'group',
+						name = PA.ACL['Font Settings'],
+						guiInline = true,
+						args = {
+							Font = {
+								type = 'select', dialogControl = 'LSM30_Font',
+								order = 1,
+								name = PA.ACL['Font'],
+								values = PA.LSM:HashTable('font'),
+							},
+							FontSize = {
+								order = 2,
+								name = FONT_SIZE,
+								type = 'range',
+								min = 6, max = 22, step = 1,
+							},
+							FontFlag = {
+								order = 3,
+								name = PA.ACL['Font Outline'],
+								type = 'select',
+								values = PA.FontFlags,
+							},
+						},
 					},
 				},
 			},
 			AuthorHeader = {
-				order = 11,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = 12,
+				order = -1,
 				type = 'description',
 				name = stAM.Authors,
 				fontSize = 'large',
