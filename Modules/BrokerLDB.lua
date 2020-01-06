@@ -245,7 +245,7 @@ function BrokerLDB:GetOptions()
 				name = PA.ACL['Enable'],
 				set = function(info, value) BrokerLDB.db[info[#info]] = value end,
 			},
-			general = {
+			General = {
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
