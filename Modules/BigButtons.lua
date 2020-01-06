@@ -8,10 +8,22 @@ BB.Title = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
 BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
 BB.Authors = 'Azilroka    Whiro'
 
-local GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown = GetItemInfo, GetItemInfoInstant, GetSubZoneText, GetItemCount, InCombatLockdown
-local NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem = NUM_BAG_SLOTS, GetContainerNumSlots, GetContainerItemID, PickupContainerItem, DeleteCursorItem
 local _G = _G
-local select, tinsert, unpack, pairs = select, tinsert, unpack, pairs
+
+local select = select
+local tinsert = tinsert
+local unpack = unpack
+local pairs = pairs
+local GetItemInfo = GetItemInfo
+local GetItemInfoInstant = GetItemInfoInstant
+local GetSubZoneText = GetSubZoneText
+local GetItemCount = GetItemCount
+local InCombatLockdown = InCombatLockdown
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID
+local PickupContainerItem = PickupContainerItem
+local DeleteCursorItem = DeleteCursorItem
 
 local CreateFrame = CreateFrame
 local Locale = PA.Locale
@@ -19,39 +31,25 @@ local Locale = PA.Locale
 if Locale == 'esMX' then Locale = 'esES' end
 if Locale == 'enGB' then Locale = 'enUS' end
 
-BB.Ranch = {
-	enUS = 'Sunsong Ranch',
-	esES = 'Rancho Cantosol',
-	ptBR = 'Fazenda Sol Cantante',
-	frFR = 'Ferme Chant du Soleil',
-	deDE = 'Gehöft Sonnensang',
-	itIT = 'Tenuta Cantasole',
-	koKR = '태양노래 농장',
-	zhCN = '日歌农场',
-	zhTW = '日歌農莊',
-	ruRU = 'Ферма Солнечной Песни',
+local Locales = {
+	enUS = { Ranch = 'Sunsong Ranch', Market = 'The Halfhill Market' },
+	esES = { Ranch = 'Rancho Cantosol', Market = 'El Mercado del Alcor' },
+	ptBR = { Ranch = 'Fazenda Sol Cantante', Market = 'Mercado da Meia Colina' },
+	frFR = { Ranch = 'Ferme Chant du Soleil', Market = 'Marché de Micolline' },
+	deDE = { Ranch = 'Gehöft Sonnensang', Market = 'Der Halbhügelmarkt' },
+	itIT = { Ranch = 'Tenuta Cantasole', Market = 'Mercato di Mezzocolle' },
+	koKR = { Ranch = '태양노래 농장', Market = '언덕골 시장' },
+	zhCN = { Ranch = '日歌农场', Market = '半山市集' },
+	zhTW = { Ranch = '日歌農莊', Market = '半丘市集' },
+	ruRU = { Ranch = 'Ферма Солнечной Песни', Market = 'Рынок Полугорья' },
 }
 
-BB.Ranch = BB.Ranch[Locale]
-
-BB.Market = {
-	enUS = 'The Halfhill Market',
-	esES = 'El Mercado del Alcor',
-	ptBR = 'Mercado da Meia Colina',
-	frFR = 'Marché de Micolline',
-	deDE = 'Der Halbhügelmarkt',
-	itIT = 'Mercato di Mezzocolle',
-	koKR = '언덕골 시장',
-	zhCN = '半山市集',
-	zhTW = '半丘市集',
-	ruRU = 'Рынок Полугорья',
-}
-
-BB.Market = BB.Market[Locale]
+BB.Ranch, BB.Market = Locales[Locale].Ranch, Locales[Locale].Market
 
 BB.Events = {'PLAYER_ENTERING_WORLD', 'ZONE_CHANGED', 'ZONE_CHANGED_NEW_AREA', 'ZONE_CHANGED_INDOORS', 'BAG_UPDATE'}
 
 BB.Tools = { 79104, 80513, 89880, 89815 }
+
 BB.Seeds = {
 	[1] = { Seed = 79102, Bag = 80809 }, -- Green Cabbage
 	[2] = { Seed = 89328, Bag = 89848 }, -- Jade Squash
@@ -76,6 +74,8 @@ BB.Seeds = {
 }
 
 function BB:Update()
+	if not BB.Bar then return end
+
 	local PrevButton, NumShown = nil, 0
 	for _, Button in pairs(BB.Bar.Buttons) do
 		if Button:IsShown() then
@@ -85,7 +85,9 @@ function BB:Update()
 			NumShown = NumShown + 1
 		end
 	end
+
 	if NumShown == 0 then NumShown = 1 end
+
 	BB.Bar:SetSize(NumShown * (50 + (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3)), 50)
 end
 
