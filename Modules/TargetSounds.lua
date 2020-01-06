@@ -32,23 +32,23 @@ function TS:GetOptions()
 		type = 'group',
 		name = TS.Title,
 		args = {
-			Enable = {
+			Header = {
 				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
-			header = {
-				order = 1,
 				type = 'header',
 				name = TS.Title,
 			},
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
 			AuthorHeader = {
-				order = -4,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = -3,
+				order = -1,
 				type = 'description',
 				name = TS.Authors,
 				fontSize = 'large',
