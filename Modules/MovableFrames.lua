@@ -6,7 +6,11 @@ MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
 MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 
-local pairs, unpack, tinsert, sort = pairs, unpack, tinsert, sort
+local pairs = pairs
+local unpack = unpack
+local tinsert = tinsert
+local sort = sort
+
 local _G = _G
 local IsAddOnLoaded = IsAddOnLoaded
 local InCombatLockdown = InCombatLockdown
@@ -274,37 +278,47 @@ function MF:GetOptions()
 		desc = MF.Description,
 		childGroups = 'tab',
 		args = {
-			Enable = {
-				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
 			Header = {
-				order = 1,
+				order = 0,
 				type = 'header',
 				name = PA:Color(MF.Title),
 			},
-			permanent = {
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+				get = function(info) return MF.db[info[#info]] end,
+				set = function(info, value) MF.db[info[#info]] = value end,
+			},
+			General = {
 				order = 2,
 				type = 'group',
+				name = PA.ACL['General'],
 				guiInline = true,
-				name = PA.ACL['Permanent Moving'],
-				args = {},
-			},
-			reset = {
-				order = 3,
-				type = 'group',
-				guiInline = true,
-				name = PA.ACL['Reset Moving'],
-				args = {},
+				args = {
+					Permanent = {
+						order = 1,
+						type = 'group',
+						guiInline = true,
+						name = PA.ACL['Permanent Moving'],
+						args = {},
+					},
+					Reset = {
+						order = 2,
+						type = 'group',
+						guiInline = true,
+						name = PA.ACL['Reset Moving'],
+						args = {},
+					},
+				},
 			},
 			AuthorHeader = {
-				order = 4,
+				order = -2,
 				type = 'header',
 				name = PA.ACL['Authors:'],
 			},
 			Authors = {
-				order = 5,
+				order = -1,
 				type = 'description',
 				name = MF.Authors,
 				fontSize = 'large',
@@ -315,14 +329,14 @@ function MF:GetOptions()
 	sort(MF.AllFrames)
 
 	for _, Name in pairs(MF.AllFrames) do
-		PA.Options.args.MovableFrames.args.permanent.args[Name] = {
+		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Name] = {
 			type = 'toggle',
 			name = Name,
 			get = function(info) return MF.db[info[#info]].Permanent end,
 			set = function(info, value) MF.db[info[#info]].Permanent = value end,
 		}
 
-		PA.Options.args.MovableFrames.args.reset.args[Name] = {
+		PA.Options.args.MovableFrames.args.General.args.Reset.args[Name] = {
 			type = 'execute',
 			name = Name,
 			disabled = function(info) return not MF.db[info[#info]].Permanent end,
