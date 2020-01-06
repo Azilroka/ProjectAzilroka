@@ -203,7 +203,7 @@ function RR:Show()
 
 	local index
 	local i = 1
-	local Height = _G.uestInfoFrame.rewardsFrame:GetHeight()
+	local Height = _G.QuestInfoFrame.rewardsFrame:GetHeight()
 
 	if not _G.QuestInfoFrame.rewardsFrame:IsShown() then
 		_G.QuestInfoFrame.rewardsFrame:Show()
