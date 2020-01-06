@@ -8,7 +8,9 @@ LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 
-local ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot = ConfirmLootRoll, GetNumLootItems, ConfirmLootSlot
+local ConfirmLootRoll = ConfirmLootRoll
+local GetNumLootItems = GetNumLootItems
+local ConfirmLootSlot = ConfirmLootSlot
 local RollOnLoot = RollOnLoot
 
 function LC:Confirm(event, ...)
@@ -36,17 +38,17 @@ function LC:GetOptions()
 		name = LC.Title,
 		desc = LC.Description,
 		args = {
-			Enable = {
+			Header = {
 				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
-			header = {
-				order = 1,
 				type = 'header',
 				name = PA:Color(LC.Title)
 			},
-			general = {
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+			},
+			General = {
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
