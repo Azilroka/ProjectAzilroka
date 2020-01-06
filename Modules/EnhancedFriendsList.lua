@@ -59,49 +59,9 @@ EFL.Icons = {
 			Gloss = MediaPath..'GameIcons/Gloss/WoW',
 			Launcher = MediaPath..'GameIcons/Launcher/WoW',
 		},
-		[_G.BNET_CLIENT_D3 or 'D3'] = {
-			Name = PA.ACL['Diablo 3'],
-			Order = 4,
-			Color = 'C41F3B',
-			Default = 'Interface/FriendsFrame/Battlenet-D3icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-D3',
-			Flat = MediaPath..'GameIcons/Flat/D3',
-			Gloss = MediaPath..'GameIcons/Gloss/D3',
-			Launcher = MediaPath..'GameIcons/Launcher/D3',
-		},
-		[_G.BNET_CLIENT_WTCG or 'WTCG'] = {
-			Name = PA.ACL['Hearthstone'],
-			Order = 5,
-			Color = 'FFB100',
-			Default = 'Interface/FriendsFrame/Battlenet-WTCGicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WTCG',
-			Flat = MediaPath..'GameIcons/Flat/Hearthstone',
-			Gloss = MediaPath..'GameIcons/Gloss/Hearthstone',
-			Launcher = MediaPath..'GameIcons/Launcher/Hearthstone',
-		},
-		[_G.BNET_CLIENT_SC or 'S1'] = {
-			Name = PA.ACL['Starcraft'],
-			Order = 6,
-			Color = 'C495DD',
-			Default = 'Interface/FriendsFrame/Battlenet-Sc2icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC',
-			Flat = MediaPath..'GameIcons/Flat/SC',
-			Gloss = MediaPath..'GameIcons/Gloss/SC',
-			Launcher = MediaPath..'GameIcons/Launcher/SC',
-		},
-		[_G.BNET_CLIENT_SC2 or 'S2'] = {
-			Name = PA.ACL['Starcraft 2'],
-			Order = 7,
-			Color = 'C495DD',
-			Default = "Interface/ChatFrame/UI-ChatIcon-SC2",
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC2',
-			Flat = MediaPath..'GameIcons/Flat/SC2',
-			Gloss = MediaPath..'GameIcons/Gloss/SC2',
-			Launcher = MediaPath..'GameIcons/Launcher/SC2',
-		},
 		App = {
 			Name = PA.ACL['App'],
-			Order = 8,
+			Order = 4,
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Battlenet',
@@ -112,7 +72,7 @@ EFL.Icons = {
 		},
 		BSAp = {
 			Name = PA.ACL['Mobile'],
-			Order = 9,
+			Order = 5,
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Battlenet',
@@ -121,9 +81,44 @@ EFL.Icons = {
 			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
 			Animated = MediaPath..'GameIcons/Bnet',
 		},
+		[_G.BNET_CLIENT_D3 or 'D3'] = {
+			Name = PA.ACL['Diablo 3'],
+			Color = 'C41F3B',
+			Default = 'Interface/FriendsFrame/Battlenet-D3icon',
+			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-D3',
+			Flat = MediaPath..'GameIcons/Flat/D3',
+			Gloss = MediaPath..'GameIcons/Gloss/D3',
+			Launcher = MediaPath..'GameIcons/Launcher/D3',
+		},
+		[_G.BNET_CLIENT_WTCG or 'WTCG'] = {
+			Name = PA.ACL['Hearthstone'],
+			Color = 'FFB100',
+			Default = 'Interface/FriendsFrame/Battlenet-WTCGicon',
+			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WTCG',
+			Flat = MediaPath..'GameIcons/Flat/Hearthstone',
+			Gloss = MediaPath..'GameIcons/Gloss/Hearthstone',
+			Launcher = MediaPath..'GameIcons/Launcher/Hearthstone',
+		},
+		[_G.BNET_CLIENT_SC or 'S1'] = {
+			Name = PA.ACL['Starcraft'],
+			Color = 'C495DD',
+			Default = 'Interface/FriendsFrame/Battlenet-Sc2icon',
+			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC',
+			Flat = MediaPath..'GameIcons/Flat/SC',
+			Gloss = MediaPath..'GameIcons/Gloss/SC',
+			Launcher = MediaPath..'GameIcons/Launcher/SC',
+		},
+		[_G.BNET_CLIENT_SC2 or 'S2'] = {
+			Name = PA.ACL['Starcraft 2'],
+			Color = 'C495DD',
+			Default = "Interface/ChatFrame/UI-ChatIcon-SC2",
+			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC2',
+			Flat = MediaPath..'GameIcons/Flat/SC2',
+			Gloss = MediaPath..'GameIcons/Gloss/SC2',
+			Launcher = MediaPath..'GameIcons/Launcher/SC2',
+		},
 		[_G.BNET_CLIENT_HEROES or 'Hero'] = {
 			Name = PA.ACL['Hero of the Storm'],
-			Order = 10,
 			Color = '00CCFF',
 			Default = 'Interface/FriendsFrame/Battlenet-HotSicon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-HotS',
@@ -133,7 +128,6 @@ EFL.Icons = {
 		},
 		[_G.BNET_CLIENT_OVERWATCH or 'Pro'] = {
 			Name = PA.ACL['Overwatch'],
-			Order = 11,
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-Overwatchicon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Overwatch',
@@ -143,7 +137,6 @@ EFL.Icons = {
 		},
 		[_G.BNET_CLIENT_DESTINY2 or 'DST2'] = {
 			Name = PA.ACL['Destiny 2'],
-			Order = 12,
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-Destiny2icon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Destiny2',
@@ -153,7 +146,6 @@ EFL.Icons = {
 		},
 		[_G.BNET_CLIENT_COD or 'VIPR'] = {
 			Name = PA.ACL['Call of Duty 4'],
-			Order = 13,
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyBlackOps4icon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-CallOfDutyBlackOps4',
@@ -163,7 +155,6 @@ EFL.Icons = {
 		},
 		[_G.BNET_CLIENT_COD_MW or 'ODIN'] = {
 			Name = PA.ACL['Call of Duty Modern Warfare'],
-			Order = 14,
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyMWicon',
 			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-CallOfDutyMWicon',
@@ -173,7 +164,6 @@ EFL.Icons = {
 		},
 		[_G.BNET_CLIENT_WC3 or 'W3'] = {
 			Name = PA.ACL['Warcraft 3 Reforged'],
-			Order = 14,
 			Color = 'FFFFFF',
 			Default = "Interface/FriendsFrame/Battlenet-Warcraft3Reforged",
 			BlizzardChat = 'Interface/FriendsFrame/Battlenet-Warcraft3Reforged',
@@ -534,32 +524,31 @@ function EFL:GetOptions()
 		type = 'group',
 		name = EFL.Title,
 		desc = EFL.Description,
+		get = function(info) return EFL.db[info[#info]] end,
+		set = function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end,
 		args = {
-			Enable = {
+			Header = {
 				order = 0,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-			},
-			header = {
-				order = 1,
 				type = 'header',
 				name = PA:Color(EFL.Title)
 			},
-			general = {
+			Enable = {
+				order = 1,
+				type = 'toggle',
+				name = PA.ACL['Enable'],
+				set = function(info, value) EFL.db[info[#info]] = value end,
+			},
+			General = {
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,
-				get = function(info) return EFL.db[info[#info]] end,
-				set = function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end,
 				args = {
 					NameSettings = {
 						type = 'group',
 						order = 1,
 						name = PA.ACL['Name Settings'],
 						guiInline = true,
-						get = function(info) return EFL.db[info[#info]] end,
-						set = function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end,
 						args = {
 							NameFont = {
 								type = 'select', dialogControl = 'LSM30_Font',
@@ -600,8 +589,6 @@ function EFL:GetOptions()
 						order = 2,
 						name = PA.ACL['Info Settings'],
 						guiInline = true,
-						get = function(info) return EFL.db[info[#info]] end,
-						set = function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end,
 						args = {
 							InfoFont = {
 								type = 'select', dialogControl = 'LSM30_Font',
@@ -660,8 +647,6 @@ function EFL:GetOptions()
 				type = 'group',
 				name = PA.ACL['Game Icons'],
 				guiInline = true,
-				get = function(info) return EFL.db[info[#info]] end,
-				set = function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end,
 				args = {},
 			},
 			GameIconsPreview = {
