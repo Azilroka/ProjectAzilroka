@@ -712,6 +712,7 @@ function stAM:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value) stAM.db[info[#info]] = value end,
 			},
 			General = {
 				order = 2,
