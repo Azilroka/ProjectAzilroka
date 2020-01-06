@@ -28,7 +28,7 @@ function TS:PLAYER_TARGET_CHANGED()
 end
 
 function TS:GetOptions()
-	local Options = {
+	PA.Options.args.TargetSounds = {
 		type = 'group',
 		name = TS.Title,
 		args = {
@@ -55,8 +55,6 @@ function TS:GetOptions()
 			},
 		},
 	}
-
-	PA.Options.args.TargetSounds = Options
 end
 
 function TS:BuildProfile()
