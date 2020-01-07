@@ -652,6 +652,8 @@ function stAM:UpdateAddonList()
 end
 
 function stAM:Update()
+	if not stAM.Frame then return end
+
 	stAM.Frame:SetSize(stAM.db.FrameWidth, stAM.Frame.Title:GetHeight() + 5 + stAM.Frame.Search:GetHeight() + 5 + stAM.Frame.AddOns:GetHeight() + 10 + stAM.Frame.Profiles:GetHeight() + 20)
 	stAM.Frame.AddOns:SetHeight(stAM.db.NumAddOns * (stAM.db.ButtonHeight + 5) + 15)
 	stAM.Frame.AddOns.ScrollBar:SetHeight(stAM.db.NumAddOns * (stAM.db.ButtonHeight + 5) + 11)
