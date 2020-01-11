@@ -1,17 +1,16 @@
 local PA = _G.ProjectAzilroka
-local OzCooldowns = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
-PA.OzCooldowns = OzCooldowns
+local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
+PA.OzCD = OzCD
 
-OzCooldowns.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
-OzCooldowns.Description = 'OzCooldowns'
-OzCooldowns.Authors = 'Azilroka    Nimaear'
+OzCD.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
+OzCD.Description = 'OzCooldowns'
+OzCD.Authors = 'Azilroka    Nimaear'
 
-_G.OzCooldowns = OzCooldowns
+_G.OzCooldowns = OzCD
 
 local pairs = pairs
 local format = format
 local ceil = ceil
-local wipe = wipe
 local sort = sort
 local select = select
 local floor = floor
@@ -35,241 +34,154 @@ local CopyTable = CopyTable
 local CreateFrame = CreateFrame
 local UIParent = UIParent
 
-local Cooldowns = {}
-local CooldownFrames = {}
+local Channel
 
-local function GetColor(Color, Alpha)
-	if type(Color) == "table" then
-		return Color[1] or 1, Color[2] or 1, Color[3] or 1, Alpha or Color[4] or 1
-	else
-		return 1, 1, 1, Alpha or 1
+OzCD.Cooldowns = {}
+OzCD.ActiveCooldowns = {}
+OzCD.DelayCooldowns = {}
+OzCD.IsChargeCooldown = {}
+
+function OzCD:UpdateActiveCooldowns()
+	for i = #OzCD.ActiveCooldowns + 1, #OzCD.Holder do
+		OzCD.Holder[i]:Hide()
 	end
-end
 
-local function GetTexCoords(Coords)
-	if type(Coords) == "table" then
-		return Coords[1] or 0, Coords[2] or 1, Coords[3] or 0, Coords[4] or 1
-	else
-		return 0, 1, 0, 1
-	end
-end
+	local Position = 1
+	for SpellID in pairs(OzCD.ActiveCooldowns) do
+		local Name, _, Icon = GetSpellInfo(SpellID)
 
-function OzCooldowns:FindCooldown(SpellID)
-	for _, Frame in pairs(Cooldowns) do
-		if SpellID == Frame['SpellID'] then
-			if OzCooldowns.db["Mode"] == "HIDE" then
-				OzCooldowns:DelayedEnableCooldown(Frame)
+		if Name then
+			local Frame = OzCD.Holder[Position]
+			if (not Frame) then
+				Frame = OzCD:CreateCooldown(Position)
+			end
+
+			local Start, Duration, CurrentDuration, Charges
+
+			if OzCD.IsChargeCooldown[SpellID] then
+				Charges, _, Start, Duration = GetSpellCharges(SpellID)
+				if Charges then
+					CurrentDuration = (Start + Duration - GetTime())
+					if Start == (((2^32)/1000) - Duration) then
+						CurrentDuration = 0
+					end
+				end
 			else
-				OzCooldowns:EnableCooldown(Frame)
+				Start, Duration = GetSpellCooldown(SpellID)
+				CurrentDuration = (Start + Duration - GetTime())
 			end
-			break
-		end
-	end
-end
 
-function OzCooldowns:DelayedEnableCooldown(Frame)
-	Frame:SetParent(OzCooldowns.Delay)
-
-	Frame:Show()
-	Frame:SetScript("OnUpdate", function(s)
-		local Start, Duration, Enable = GetSpellCooldown(s.SpellID)
-		local Charges, _, ChargeStart, ChargeDuration = GetSpellCharges(s.SpellID)
-		local CurrentDuration = (Start + Duration - GetTime())
-		if Charges then
-			CurrentDuration = (ChargeStart + ChargeDuration - GetTime())
-		end
-		if Enable and (CurrentDuration and floor(CurrentDuration) <= OzCooldowns.db.MinimumDuration and floor(CurrentDuration) > .1) then
-			OzCooldowns:EnableCooldown(s)
-		else
-			OzCooldowns:DisableCooldown(s)
-		end
-	end)
-end
-
-function OzCooldowns:EnableCooldown(Frame)
-	Frame.Enabled = true
-	Frame:SetParent(OzCooldowns.Holder)
-	Frame.Icon:SetDesaturated(false)
-
-	if OzCooldowns.db["StatusBar"] then
-		Frame.Cooldown:SetDrawSwipe(false)
-		Frame.StatusBar:Show()
-	end
-
-	Frame:Show()
-	Frame:SetScript("OnUpdate", function(s)
-		local Start, Duration, Enable = GetSpellCooldown(s.SpellID)
-		local Charges, _, ChargeStart, ChargeDuration = GetSpellCharges(s.SpellID)
-		local CurrentDuration = (Start + Duration - GetTime())
-		if Charges then
-			Start, Duration = ChargeStart, ChargeDuration
-			CurrentDuration = (ChargeStart + ChargeDuration - GetTime())
-			if Start == (((2^32)/1000) - ChargeDuration) then
-				CurrentDuration = 0
+			if OzCD.db.BuffTimer then
+				local _, _, AuraDuration, ExpirationTime = select(3, _G.AuraUtil.FindAuraByName(Name, 'player'))
+				if ExpirationTime then
+					Start, Duration = ExpirationTime - AuraDuration, AuraDuration
+					CurrentDuration = (Duration - (GetTime() - Start))
+					Frame.Cooldown:SetReverse(true)
+					Frame.StatusBar:SetReverseFill(true)
+				else
+					Frame.Cooldown:SetReverse(false)
+					Frame.StatusBar:SetReverseFill(false)
+				end
 			end
-		end
 
-		s.CurrentDuration = CurrentDuration
+			Frame.CurrentDuration = CurrentDuration
+			Frame.Duration = Duration
+			Frame.SpellID = SpellID
+			Frame.SpellName = Name
 
-		if Enable and OzCooldowns.db.BuffTimer then
-			local Stacks, _, AuraDuration, ExpirationTime = select(3, _G.AuraUtil.FindAuraByName(s.SpellName, 'player'))
-			if ExpirationTime then
-				Start, Duration = ExpirationTime - AuraDuration, AuraDuration
-				CurrentDuration = (Duration - (GetTime() - Start))
-				Charges = Stacks
-				s.Cooldown:SetReverse(true)
-				s.StatusBar:SetReverseFill(true)
+			Frame.Icon:SetTexture(Icon)
+
+			if (CurrentDuration and CurrentDuration > 0) then
+				Frame.Cooldown:SetCooldown(Start, Duration)
+				Frame:Show()
 			else
-				s.Cooldown:SetReverse(false)
-				s.StatusBar:SetReverseFill(false)
+				OzCD.ActiveCooldowns[SpellID] = nil
+				Frame.CurrentDuration = 0
+				Frame:Hide()
 			end
+
+			Position = Position + 1
 		end
-
-		if Enable and (s.CurrentDuration and s.CurrentDuration > 0) then
-			local Normalized = CurrentDuration / Duration
-			s.Cooldown:SetCooldown(Start, Duration)
-			s.StatusBar:SetValue(Normalized)
-			s.Stacks:SetText(Charges ~= nil and Charges > 0 and Charges or '')
-			if OzCooldowns.db.FadeMode == "GreenToRed" then
-				s.StatusBar:SetStatusBarColor(1 - Normalized, Normalized, 0)
-			elseif OzCooldowns.db.FadeMode == "RedToGreen" then
-				s.StatusBar:SetStatusBarColor(Normalized, 1 - Normalized, 0)
-			end
-		else
-			OzCooldowns:DisableCooldown(s)
-		end
-	end)
-end
-
-function OzCooldowns:DisableCooldown(Frame)
-	Frame.Enabled = false
-	Frame.CurrentDuration = 0
-	Frame.StatusBar:Hide()
-	Frame.Cooldown:SetDrawSwipe(true)
-
-	if OzCooldowns.db.Mode == "HIDE" then
-		Frame:Hide()
-		Frame:SetParent(OzCooldowns.Hider)
-	else
-		Frame:SetAlpha(.3)
-		Frame:SetParent(OzCooldowns.Holder)
-		Frame.Icon:SetDesaturated(true)
 	end
-	Frame:SetScript("OnUpdate", nil)
-end
 
-function OzCooldowns:Position()
-	local Vertical, Spacing, Size = OzCooldowns.db.Vertical, OzCooldowns.db.Spacing, OzCooldowns.db.Size
+	local Vertical, Spacing, Size = OzCD.db.Vertical, OzCD.db.Spacing, OzCD.db.Size
 	local xSpacing = Vertical and 0 or Spacing
-	local ySpacing = Vertical and -(Spacing + (OzCooldowns.db.StatusBar and 8 or 0)) or 0
-	local AnchorPoint = Vertical and "BOTTOMLEFT" or "TOPRIGHT"
-	local LastFrame = OzCooldowns.Holder
-	local Index = 0
+	local ySpacing = Vertical and -(Spacing + (OzCD.db.StatusBar and 10 or 0)) or 0
 
-	if OzCooldowns.db.SortByDuration and OzCooldowns.db.Mode == "HIDE" then
-		sort(Cooldowns, function (a, b)
-			local aStart, aDuration = GetSpellCooldown(a.SpellID)
-			local bStart, bDuration = GetSpellCooldown(b.SpellID)
-			return (aStart + aDuration) < (bStart + bDuration)
-		end)
+	if OzCD.db.Vertical then
+		OzCD.Holder:SetSize(Size, Size * Position + (Position + 1) * ySpacing)
+	else
+		OzCD.Holder:SetSize(Size * Position + (Position + 1) * xSpacing, Size)
 	end
+end
 
-	for i = 1, #Cooldowns do
-		local Frame = Cooldowns[i]
+function OzCD:UpdateDelayedCooldowns()
+	local Start, Duration, Enable, CurrentDuration, Charges, _
 
-		if OzCooldowns.db.Mode == "DIM" then
-			Frame:ClearAllPoints()
-			Frame:SetPoint("TOPLEFT", LastFrame, Index == 0 and "TOPLEFT" or AnchorPoint, xSpacing, ySpacing)
-			LastFrame = Frame
-			Index = Index + 1
-		end
+	for SpellID in pairs(OzCD.DelayCooldowns) do
+		Start, Duration, Enable = GetSpellCooldown(SpellID)
 
-		if OzCooldowns.db.Mode == "HIDE" then
-			if Frame.Enabled then
-				Frame:ClearAllPoints()
-				Frame:SetPoint("TOPLEFT", LastFrame, Index == 0 and "TOPLEFT" or AnchorPoint, xSpacing, ySpacing)
-				LastFrame = Frame
-				Index = Index + 1
-			else
-				Frame:SetParent(OzCooldowns.Hider)
+		if OzCD.IsChargeCooldown[SpellID] then
+			Charges, _, Start, Duration = GetSpellCharges(SpellID)
+			if Charges then
+				Start, Duration = Start, Duration
 			end
 		end
-	end
 
-	if OzCooldowns.db.Vertical then
-		OzCooldowns.Holder:SetSize(40, Size * Index + (Index + 1) * ySpacing)
-	else
-		OzCooldowns.Holder:SetSize(Size * Index + (Index + 1) * xSpacing, 40)
-	end
-end
+		CurrentDuration = (Start + Duration - GetTime())
 
-function OzCooldowns:UpdateCooldownFrames()
-	local Size = OzCooldowns.db.Size
-	local MouseEnabled = OzCooldowns.db.Tooltips or OzCooldowns.db.Announce
-
-	for _, Frame in pairs(CooldownFrames) do
-		Frame:SetSize(Size, Size)
-		Frame:EnableMouse(MouseEnabled)
-		Frame.Stacks:SetFont(PA.LSM:Fetch("font", OzCooldowns.db.StackFont), OzCooldowns.db.StackFontSize, OzCooldowns.db.StackFontFlag)
-		Frame.StatusBar:SetStatusBarTexture(PA.LSM:Fetch('statusbar', OzCooldowns.db.StatusBarTexture))
-		Frame.StatusBar:SetStatusBarColor(unpack(OzCooldowns.db.StatusBarTextureColor))
-		Frame.StatusBar:SetSize(Size - ((AS and AS.PixelPerfect and 2 or 4) or 2), 4)
-		if PA.Masque and OzCooldowns.db.Masque and Frame.__MSQ_NormalSkin then
-			Frame.StatusBar.Backdrop:SetTexture(Frame.__MSQ_NormalSkin.EmptyTexture or Frame.__MSQ_NormalSkin.Texture)
-			Frame.StatusBar.Backdrop:SetTexCoord(GetTexCoords(Frame.__MSQ_NormalSkin.EmptyCoords or Frame.__MSQ_NormalSkin.TexCoords))
-			Frame.StatusBar.Backdrop:SetVertexColor(GetColor(Frame.__MSQ_NormalSkin.Color))
+		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.SuppressDuration) then
+			OzCD.DelayCooldowns[SpellID] = nil
+			OzCD.ActiveCooldowns[SpellID] = Duration
 		end
 	end
 end
 
-function OzCooldowns:CreateCooldownFrame(SpellID)
-	local SpellName, _, SpellTexture = GetSpellInfo(SpellID)
-	local Size = OzCooldowns.db.Size
-
-	local Frame = CreateFrame("Button", 'OzCD_'..SpellID, OzCooldowns.Holder)
+function OzCD:CreateCooldown(index)
+	local Frame = CreateFrame('Button', 'OzCD_'..index, OzCD.Holder)
 	Frame:RegisterForClicks('AnyUp')
-	Frame:SetSize(Size, Size)
+	Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
+	Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
 
-	local Icon = Frame:CreateTexture(nil, "ARTWORK", nil, 1)
-	Icon:SetPoint('TOPLEFT', 2, -2)
-	Icon:SetPoint('BOTTOMRIGHT', -2, 2)
-	Icon:SetTexCoord(.08, .92, .08, .92)
-	Icon:SetTexture(SpellTexture)
+	Frame.Cooldown = CreateFrame('Cooldown', '$parentCooldown', Frame, 'CooldownFrameTemplate')
+	Frame.Cooldown:SetAllPoints()
+	Frame.Cooldown:SetDrawEdge(false)
+	Frame.Cooldown.CooldownOverride = 'OzCD'
 
-	local Stacks = Frame:CreateFontString(nil, "OVERLAY")
-	Stacks:SetFont(PA.LSM:Fetch('font', OzCooldowns.db.StackFont), OzCooldowns.db.StackFontSize, OzCooldowns.db.StackFontFlag)
-	Stacks:SetTextColor(1, 1, 1)
-	Stacks:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT", 0, 2)
+	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
+	Frame.Icon:SetTexCoord(unpack(PA.TexCoords))
+	Frame.Icon:SetAllPoints()
 
-	local StatusBar = CreateFrame("StatusBar", nil, Frame)
-	StatusBar:SetSize(Size - 2, 4)
-	StatusBar:SetPoint("TOP", Frame, "BOTTOM", 0, -1)
-	StatusBar:SetMinMaxValues(0, 1)
+	Frame.Stacks = Frame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
+	Frame.Stacks:SetFont(PA.LSM:Fetch('font', OzCD.db.StackFont), OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
+	Frame.Stacks:SetTextColor(1, 1, 1)
+	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
-	local Cooldown = CreateFrame("Cooldown", '$parentCooldown', Frame, "CooldownFrameTemplate")
-	Cooldown:SetAllPoints(Icon)
-	Cooldown:SetDrawEdge(false)
-	Cooldown.CooldownOverride = 'OzCooldowns'
-	PA:RegisterCooldown(Cooldown)
+	Frame.StatusBar = CreateFrame('StatusBar', nil, Frame)
+	Frame.StatusBar:SetPoint('TOP', Frame, 'BOTTOM', 0, -1)
+	Frame.StatusBar:SetMinMaxValues(0, 1)
+	Frame.StatusBar:SetStatusBarTexture(PA.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture))
+	Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
+	Frame.StatusBar:SetSize(OzCD.db.Size, 4)
+	Frame.StatusBar:SetScript('OnUpdate', function(s)
+		if (Frame.CurrentDuration and Frame.CurrentDuration > 0) then
+			local Normalized = Frame.CurrentDuration / Frame.Duration
+			s:SetValue(Normalized)
+			if OzCD.db.StatusBarGradient then
+				s:SetStatusBarColor(1 - Normalized, Normalized, 0)
+			end
+		end
+	end)
 
-	if PA.Masque and OzCooldowns.db.Masque then
-		OzCooldowns.MasqueGroup:AddButton(Frame)
+	if not OzCD.db.StatusBar then Frame.StatusBar:Hide() end
 
-		StatusBar.Backdrop = StatusBar:CreateTexture(nil, 'OVERLAY')
-		StatusBar.Backdrop:SetPoint('TOPLEFT', -4, 1)
-		StatusBar.Backdrop:SetPoint('BOTTOMRIGHT', 4, -1)
-
-		StatusBar.Background = StatusBar:CreateTexture(nil, 'BACKGROUND')
-		StatusBar.Background:SetColorTexture(0, 0, 0, .6)
-		StatusBar.Background:SetPoint('TOPLEFT', -1, 1)
-		StatusBar.Background:SetPoint('BOTTOMRIGHT', 1, -1)
+	if PA.Masque and OzCD.db.Masque then
+		OzCD.MasqueGroup:AddButton(Frame)
 	else
-		PA:SetTemplate(Frame)
+		PA:CreateBackdrop(Frame)
 		PA:CreateShadow(Frame)
-		PA:SetInside(Icon)
-		PA:CreateBackdrop(StatusBar, 'Default')
-		PA:CreateShadow(StatusBar.Backdrop)
-		StatusBar:SetPoint("TOP", Frame, "BOTTOM", 0, -3)
+		PA:CreateBackdrop(Frame.StatusBar, 'Default')
+		PA:CreateShadow(Frame.StatusBar.Backdrop)
 	end
 
 	if not (PA.ElvUI or PA.Tukui) then
@@ -279,7 +191,7 @@ function OzCooldowns:CreateCooldownFrame(SpellID)
 	end
 
 	Frame:SetScript('OnEnter', function(s)
-		if not OzCooldowns.db["Tooltips"] then return end
+		if not OzCD.db.Tooltips then return end
 		_G.GameTooltip:SetOwner(s, 'ANCHOR_CURSOR')
 		_G.GameTooltip:ClearLines()
 		_G.GameTooltip:SetSpellByID(s.SpellID)
@@ -287,8 +199,7 @@ function OzCooldowns:CreateCooldownFrame(SpellID)
 	end)
 	Frame:SetScript('OnLeave', _G.GameTooltip_Hide)
 	Frame:SetScript('OnClick', function(s)
-		if not OzCooldowns.db.Announce then return end
-		local Channel = IsInRaid() and "RAID" or IsInGroup() and "PARTY" or "SAY"
+		if not OzCD.db.Announce then return end
 		local CurrentDuration = s.CurrentDuration
 		local TimeRemaining
 		if CurrentDuration > 60 then
@@ -298,64 +209,132 @@ function OzCooldowns:CreateCooldownFrame(SpellID)
 		elseif CurrentDuration <= 10 and CurrentDuration > 0 then
 			TimeRemaining = format("%.1f s", CurrentDuration)
 		end
+
 		SendChatMessage(format("My %s will be off cooldown in %s", s.SpellName, TimeRemaining), Channel)
 	end)
 
-	Frame.Icon = Icon
-	Frame.Stacks = Stacks
-	Frame.StatusBar = StatusBar
-	Frame.Cooldown = Cooldown
-	Frame.SpellID = SpellID
-	Frame.SpellName = SpellName
+	PA:RegisterCooldown(Frame.Cooldown)
 
-	self:DisableCooldown(Frame)
+	tinsert(OzCD.Holder, Frame)
+
+	OzCD:SetPosition()
 
 	return Frame
 end
 
-function OzCooldowns:BuildCooldowns()
-	wipe(Cooldowns)
+function OzCD:SetPosition()
+	local sizex = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and 0 or 2)
+	local sizey = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and OzCD.db.StatusBar and 6 or 0)
+	local anchor = 'BOTTOMLEFT'
+	local growthx = 1
+	local growthy = 1
+	local cols = floor(OzCD.Holder:GetWidth() / sizex + 0.5)
 
-	local i = 1
-	for SpellID in pairs(OzCooldowns.db.SpellCDs) do
-		CooldownFrames[SpellID] = CooldownFrames[SpellID] or self:CreateCooldownFrame(SpellID)
-		CooldownFrames[SpellID]:Hide() -- Just for DIM Mode
-		if OzCooldowns.db.SpellCDs[SpellID] then
-			Cooldowns[i] = CooldownFrames[SpellID]
-			i = i + 1
-		elseif CooldownFrames[SpellID] then
-			self:DisableCooldown(CooldownFrames[SpellID])
+	for i, button in ipairs(OzCD.Holder) do
+		if (not button) then break end
+		local col = (i - 1) % cols
+		local row = floor((i - 1) / cols)
+
+		button:ClearAllPoints()
+		button:SetPoint(anchor, OzCD.Holder, anchor, col * sizex * growthx, row * sizey * growthy)
+	end
+end
+
+function OzCD:UpdateSettings()
+	local StatusBarTexture = PA.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture)
+	local StackFont = PA.LSM:Fetch("font", OzCD.db.StackFont)
+
+	for _, Frame in ipairs(OzCD.Holder) do
+		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
+		Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
+		Frame.Stacks:SetFont(StackFont, OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
+
+		if OzCD.db.StatusBar then
+			Frame.StatusBar:SetStatusBarTexture(StatusBarTexture)
+			Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
+			Frame.StatusBar:SetSize(OzCD.db.Size, 4)
+			Frame.StatusBar:Show()
+		else
+			Frame.StatusBar:Hide()
 		end
 	end
-	OzCooldowns:UpdateCooldownFrames()
 
-	for _, Frame in pairs(Cooldowns) do
-		self:FindCooldown(Frame.SpellID)
-	end
+	OzCD:SetPosition()
 
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	OzCD:CancelAllTimers()
+	OzCD:ScheduleRepeatingTimer('UpdateActiveCooldowns', OzCD.db.UpdateSpeed)
+	OzCD:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
 end
 
-function OzCooldowns:UNIT_SPELLCAST_SUCCEEDED(event, ...)
-	local Unit, _, SpellID  = ...
-	if Unit == 'player' then
-		_G.C_Timer.After(.1, function() self:FindCooldown(SpellID) end)
+function OzCD:PLAYER_ENTERING_WORLD()
+	for SpellID in pairs(OzCD.db.SpellCDs) do
+		local Start, Duration, Enable = GetSpellCooldown(SpellID)
+		local CurrentDuration = (Start + Duration - GetTime()) or 0
+
+		if Enable and (CurrentDuration > .1) and (CurrentDuration < OzCD.db.IgnoreDuration) then
+			if (CurrentDuration >= OzCD.db.SuppressDuration) then
+				OzCD.DelayCooldowns[SpellID] = Duration
+			else
+				OzCD.ActiveCooldowns[SpellID] = Duration
+			end
+		end
+	end
+
+	if OzCD.db.SortByDuration then
+		sort(OzCD.ActiveCooldowns)
 	end
 end
 
-function OzCooldowns:MasqueCallback()
-	for _, Frame in pairs(CooldownFrames) do
-		Frame.StatusBar.Backdrop:SetTexture(Frame.__MSQ_NormalSkin.EmptyTexture or Frame.__MSQ_NormalSkin.Texture)
-		Frame.StatusBar.Backdrop:SetTexCoord(GetTexCoords(Frame.__MSQ_NormalSkin.EmptyCoords or Frame.__MSQ_NormalSkin.TexCoords))
-		Frame.__MSQ_BaseFrame:SetFrameLevel(2)
+function OzCD:GROUP_ROSTER_UPDATE()
+	Channel = IsInRaid() and 'RAID' or IsInGroup() and 'PARTY' or 'SAY'
+end
+
+function OzCD:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
+	if unit == 'player' and (OzCD.db.SpellCDs[SpellID] or SpellID == 13877) then
+		OzCD.Cooldowns[SpellID] = true
 	end
 end
 
-function OzCooldowns:GenerateSpellOptions()
+function OzCD:SPELL_UPDATE_COOLDOWN()
+	local Start, Duration, Enable, Charges, _, ChargeStart, ChargeDuration, CurrentDuration
+
+	for SpellID in pairs(OzCD.Cooldowns) do
+		Start, Duration, Enable = GetSpellCooldown(SpellID)
+
+		if OzCD.IsChargeCooldown[SpellID] ~= false then
+			Charges, _, ChargeStart, ChargeDuration = GetSpellCharges(SpellID)
+
+			if OzCD.IsChargeCooldown[SpellID] == nil then
+				OzCD.IsChargeCooldown[SpellID] = Charges and true or false
+			end
+
+			if Charges then
+				Start, Duration = ChargeStart, ChargeDuration
+			end
+		end
+
+		CurrentDuration = (Start + Duration - GetTime())
+
+		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
+			if (CurrentDuration >= OzCD.db.SuppressDuration) then
+				OzCD.DelayCooldowns[SpellID] = Duration
+			else
+				OzCD.ActiveCooldowns[SpellID] = Duration
+			end
+		end
+
+		OzCD.Cooldowns[SpellID] = nil
+	end
+
+	if OzCD.db.SortByDuration then
+		sort(OzCD.ActiveCooldowns)
+	end
+end
+
+function OzCD:GenerateSpellOptions()
 	local SpellOptions = {}
 
-	local Num = 1
-	for k in pairs(OzCooldowns.db.SpellCDs) do
+	for k in pairs(OzCD.db.SpellCDs) do
 		local Name, _, Icon = GetSpellInfo(k)
 		if Name then
 			SpellOptions[tostring(k)] = {
@@ -365,32 +344,36 @@ function OzCooldowns:GenerateSpellOptions()
 				name = Name,
 				desc = 'Spell ID: '..k,
 			}
-			Num = Num + 1
 		end
 	end
 
 	return SpellOptions
 end
 
-function OzCooldowns:GetOptions()
-	OzCooldowns.db = PA.db.OzCooldowns
+function OzCD:GetOptions()
+	OzCD.db = PA.db.OzCooldowns
 
 	PA.Options.args.OzCooldowns = {
 		type = 'group',
-		name = OzCooldowns.Title,
-		childGroups = 'tab',
-		get = function(info) return OzCooldowns.db[info[#info]] end,
-		set = function(info, value) OzCooldowns.db[info[#info]] = value OzCooldowns:UpdateCooldownFrames() end,
+		name = OzCD.Title,
+		get = function(info) return OzCD.db[info[#info]] end,
+		set = function(info, value) OzCD.db[info[#info]] = value OzCD:UpdateSettings() end,
 		args = {
-			Enable = {
+			Header = {
 				order = 0,
+				type = 'header',
+				name = PA:Color(OzCD.Title),
+			},
+			Enable = {
+				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
 			},
-			main = {
+			General = {
 				order = 1,
 				type = 'group',
-				name = PA.ACL['Main Options'],
+				name = PA.ACL['General'],
+				guiInline = true,
 				args = {
 					Masque = {
 						order = 0,
@@ -401,22 +384,34 @@ function OzCooldowns:GetOptions()
 						order = 1,
 						type = 'toggle',
 						name = PA.ACL['Sort by Current Duration'],
-						disabled = function() return OzCooldowns.db['Mode'] == 'DIM' end,
 					},
-					MinimumDuration = {
+					SuppressDuration = {
 						order = 2,
 						type = 'range',
-						name = PA.ACL['Minimum Duration Visibility'],
+						name = PA.ACL['Suppress Duration Threshold'],
+						desc = PA.ACL['Duration in Seconds'],
+						min = 2, max = 600, step = 1,
+					},
+					IgnoreDuration = {
+						order = 3,
+						type = 'range',
+						name = PA.ACL['Ignore Duration Threshold'],
 						desc = PA.ACL['Duration in Seconds'],
 						min = 2, max = 600, step = 1,
 					},
 					BuffTimer = {
-						order = 3,
+						order = 4,
 						type = 'toggle',
 						name = PA.ACL['Buff Timer'],
 					},
-					Icons = {
+					UpdateSpeed = {
 						order = 5,
+						type = 'range',
+						name = PA.ACL['Update Speed'],
+						min = .1, max = .5, step = .1,
+					},
+					Icons = {
+						order = 6,
 						type = 'group',
 						guiInline = true,
 						name = PA.ACL['Icons'],
@@ -448,15 +443,6 @@ function OzCooldowns:GetOptions()
 								name = PA.ACL['Spacing'],
 								min = 0, max = 20, step = 1,
 							},
-							Mode = {
-								order = 6,
-								type = 'select',
-								name = PA.ACL['Dim or Hide'],
-								values = {
-									['DIM'] = PA.ACL['DIM'],
-									['HIDE'] = PA.ACL['HIDE'],
-								},
-							},
 							StackFont = {
 								type = 'select',
 								dialogControl = 'LSM30_Font',
@@ -479,15 +465,17 @@ function OzCooldowns:GetOptions()
 						},
 					},
 					StatusBars = {
-						order = 4,
+						order = 7,
 						type = 'group',
 						guiInline = true,
 						name = PA.ACL['Status Bar'],
+						disabled = function() return not OzCD.db.StatusBar end,
 						args = {
 							StatusBar = {
 								order = 1,
 								type = 'toggle',
 								name = PA.ACL['Enabled'],
+								disabled = false,
 							},
 							StatusBarTexture = {
 								type = 'select',
@@ -495,53 +483,55 @@ function OzCooldowns:GetOptions()
 								order = 2,
 								name = PA.ACL['Texture'],
 								values = PA.LSM:HashTable('statusbar'),
-								disabled = function() return not OzCooldowns.db['StatusBar'] end,
 							},
-							FadeMode = {
+							StatusBarGradient = {
 								order = 3,
-								type = 'select',
-								name = PA.ACL['Fade Mode'],
-								disabled = function() return not OzCooldowns.db['StatusBar'] end,
-								values = {
-									['None'] = PA.ACL['None'],
-									['RedToGreen'] = PA.ACL['Red to Green'],
-									['GreenToRed'] = PA.ACL['Green to Red'],
-								},
+								type = 'toggle',
+								name = PA.ACL['Gradient'],
 							},
 							StatusBarTextureColor = {
 								type = 'color',
 								order = 4,
 								name = PA.ACL['Texture Color'],
 								hasAlpha = false,
-								get = function(info) return unpack(OzCooldowns.db[info[#info]])	end,
-								set = function(info, r, g, b, a) OzCooldowns.db[info[#info]] = { r, g, b, a} OzCooldowns:UpdateCooldownFrames() end,
-								disabled = function() return not OzCooldowns.db['StatusBar'] or OzCooldowns.db['FadeMode'] == 'GreenToRed' or OzCooldowns.db['FadeMode'] == 'RedToGreen' end,
+								get = function(info) return unpack(OzCD.db[info[#info]]) end,
+								set = function(info, r, g, b, a) OzCD.db[info[#info]] = { r, g, b, a} OzCD:UpdateSettings() end,
+								disabled = function() return not OzCD.db.StatusBar or OzCD.db.StatusBarGradient end,
 							},
 						},
 					},
+					Spells = {
+						order = 8,
+						type = 'group',
+						name = _G.SPELLS,
+						guiInline = true,
+						args = OzCD:GenerateSpellOptions(),
+						get = function(info) return OzCD.db.SpellCDs[tonumber(info[#info])] end,
+						set = function(info, value)	OzCD.db.SpellCDs[tonumber(info[#info])] = value end,
+					},
 				},
 			},
-			spells = {
-				order = 2,
-				type = 'group',
-				name = _G.SPELLS,
-				args = OzCooldowns:GenerateSpellOptions(),
-				get = function(info) return OzCooldowns.db.SpellCDs[tonumber(info[#info])] end,
-				set = function(info, value)
-					OzCooldowns.db.SpellCDs[tonumber(info[#info])] = value
-					OzCooldowns:BuildCooldowns()
-				end,
+			AuthorHeader = {
+				order = -2,
+				type = 'header',
+				name = PA.ACL['Authors:'],
+			},
+			Authors = {
+				order = -1,
+				type = 'description',
+				name = OzCD.Authors,
+				fontSize = 'large',
 			},
 		},
 	}
 end
 
-function OzCooldowns:BuildProfile()
+function OzCD:BuildProfile()
 	local SpellList = {}
 
 	for _, SpellID in pairs(PA.Racials) do
 		if IsSpellKnown(SpellID) then
-			tinsert(SpellList, SpellID)
+			SpellList[SpellID] = true
 		end
 	end
 
@@ -556,63 +546,64 @@ function OzCooldowns:BuildProfile()
 		Announce = true,
 		BuffTimer = true,
 		DurationText = true,
-		FadeMode = 'None',
 		Masque = false,
-		MinimumDuration = 600,
-		Mode = 'HIDE',
+		SuppressDuration = 60,
+		IgnoreDuration = 300,
 		Size = 36,
 		SortByDuration = true,
 		Spacing = 4,
-		SpellCDs = CopyTable(SpellList),
+		SpellCDs = SpellList,
 		StackFont = 'Arial Narrow',
 		StackFontFlag = 'OUTLINE',
 		StackFontSize = 12,
 		StatusBar = true,
 		StatusBarTexture = 'Blizzard Raid Bar',
 		StatusBarTextureColor = { .24, .54, .78 },
+		StatusBarGradient = false,
 		Tooltips = true,
 		Vertical = false,
+		UpdateSpeed = .1,
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
 	}
 end
 
-function OzCooldowns:Initialize()
-	OzCooldowns.db = PA.db.OzCooldowns
+function OzCD:Initialize()
+	OzCD.db = PA.db.OzCooldowns
 
-	if OzCooldowns.db.Enable ~= true then
+	if OzCD.db.Enable ~= true then
 		return
 	end
 
-	if PA.Masque and OzCooldowns.db.Masque then
-		PA.Masque:Register("OzCooldowns", OzCooldowns.MasqueCallback)
-		OzCooldowns.MasqueGroup = PA.Masque:Group("OzCooldowns")
+	if PA.Masque and OzCD.db.Masque then
+		PA.Masque:Register('OzCooldowns', function() end)
+		OzCD.MasqueGroup = PA.Masque:Group('OzCooldowns')
 	end
 
-	local Holder = CreateFrame("Frame", 'OzCooldownsHolder', UIParent)
+	local Holder = CreateFrame('Frame', 'OzCooldownsHolder', UIParent)
 	Holder:SetFrameStrata('LOW')
 	Holder:SetFrameLevel(10)
 	Holder:SetSize(40, 40)
-	Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 360)
+	Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
 
 	if PA.Tukui then
 		_G.Tukui[1].Movers:RegisterFrame(Holder)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(Holder, "OzCooldownsMover", "OzCooldowns Anchor", nil, nil, nil, "ALL,GENERAL")
+		_G.ElvUI[1]:CreateMover(Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL')
 	else
 		Holder:SetMovable(true)
 		Holder:SetScript('OnDragStart', Holder.StartMoving)
 		Holder:SetScript('OnDragStop', Holder.StopMovingOrSizing)
 	end
 
-	OzCooldowns.Holder = Holder
+	OzCD.Holder = Holder
 
-	OzCooldowns.Hider = CreateFrame('Frame', nil, UIParent)
-	OzCooldowns.Hider:Hide()
+	OzCD:GROUP_ROSTER_UPDATE()
 
-	OzCooldowns.Delay = CreateFrame('Frame', nil, UIParent)
-	OzCooldowns.Delay:SetPoint('BOTTOM', UIParent, 'TOP', 0, 0)
+	OzCD:RegisterEvent('PLAYER_ENTERING_WORLD') -- Check for Active Cooldowns Login / Reload.
+	OzCD:RegisterEvent('GROUP_ROSTER_UPDATE') -- Channel Distribution
+	OzCD:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED') -- For Cooldown Queue
+	OzCD:RegisterEvent('SPELL_UPDATE_COOLDOWN')	-- Process Cooldown Queue
 
-	OzCooldowns:RegisterEvent('PLAYER_ENTERING_WORLD', 'BuildCooldowns')
-	OzCooldowns:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	OzCooldowns:ScheduleRepeatingTimer('Position', .1)
+	OzCD:ScheduleRepeatingTimer('UpdateActiveCooldowns', OzCD.db.UpdateSpeed)
+	OzCD:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
 end
