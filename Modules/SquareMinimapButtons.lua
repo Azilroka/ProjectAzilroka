@@ -137,8 +137,8 @@ function SMB:OnUpdate()
 	local pos = deg(atan2(py - my, px - mx)) % 360
 	local angle = rad(pos or 225)
 	local x, y = cos(angle), sin(angle)
-	local w = (Minimap:GetWidth() + SMB.db['IconSize']) / 2
-	local h = (Minimap:GetHeight() + SMB.db['IconSize']) / 2
+	local w = (Minimap:GetWidth() + SMB.db.IconSize) / 2
+	local h = (Minimap:GetHeight() + SMB.db.IconSize) / 2
 	local diagRadiusW = sqrt(2*(w)^2)-10
 	local diagRadiusH = sqrt(2*(h)^2)-10
 
@@ -285,11 +285,11 @@ function SMB:HandleBlizzardButtons()
 				PA:CreateShadow(_G.MiniMapTracking)
 			end
 
-			tinsert(self.Buttons, _G.MiniMapTracking)
+			tinsert(SMB.Buttons, _G.MiniMapTracking)
 		end
 
-		if self.db["MoveQueue"] and not _G.QueueStatusMinimapButton.SMB then
-			local Frame = CreateFrame('Frame', 'SMB_QueueFrame', self.Bar)
+		if SMB.db["MoveQueue"] and not _G.QueueStatusMinimapButton.SMB then
+			local Frame = CreateFrame('Frame', 'SMB_QueueFrame', SMB.Bar)
 			PA:SetTemplate(Frame)
 			Frame:SetSize(Size, Size)
 			Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
@@ -339,7 +339,7 @@ function SMB:HandleBlizzardButtons()
 		end
 	else
 		-- MiniMapTrackingFrame
-		if self.db.MoveGameTimeFrame and not _G.GameTimeFrame.SMB then
+		if SMB.db.MoveGameTimeFrame and not _G.GameTimeFrame.SMB then
 			local STEP = 5.625 -- 256 * 5.625 = 1440M = 24H
 			local PX_PER_STEP = 0.00390625 -- 1 / 256
 			local l, r, offset
@@ -383,7 +383,7 @@ function SMB:HandleBlizzardButtons()
 		end
 	end
 
-	self:Update()
+	SMB:Update()
 end
 
 function SMB:SkinMinimapButton(Button)
@@ -424,8 +424,8 @@ function SMB:SkinMinimapButton(Button)
 					PA:SetInside(Region)
 
 					if not SMB.DoNotCrop[Name] and not Button.ignoreCrop then
-						Region:SetTexCoord(unpack(self.TexCoords))
-						Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(self.TexCoords)) end)
+						Region:SetTexCoord(unpack(PA.TexCoords))
+						Button:HookScript('OnLeave', function() Region:SetTexCoord(unpack(PA.TexCoords)) end)
 					end
 
 					Region.SetPoint = function() return end
@@ -456,7 +456,7 @@ function SMB:SkinMinimapButton(Button)
 	end)
 	Button:HookScript('OnLeave', function(s)
 		PA:SetTemplate(s)
-		if SMB.Bar:IsShown() and SMB.db['BarMouseOver'] then
+		if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
 			UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 		end
 	end)
@@ -474,24 +474,29 @@ function SMB:GrabMinimapButtons()
 		end
 	end
 
+	local UpdateBar
 	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
-		if NumChildren < (Frame.SMBNumChildren or 0) then return end
-		for i = 1, NumChildren do
-			local object = select(i, Frame:GetChildren())
-			if object then
-				local name = object:GetName()
-				local width = object:GetWidth()
-				if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
-					self:SkinMinimapButton(object)
+		if NumChildren > (Frame.SMBNumChildren or 0) then
+			for i = 1, NumChildren do
+				local object = select(i, Frame:GetChildren())
+				if object then
+					local name = object:GetName()
+					local width = object:GetWidth()
+					if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
+						SMB:SkinMinimapButton(object)
+					end
 				end
 			end
-		end
 
-		Frame.SMBNumChildren = NumChildren
+			Frame.SMBNumChildren = NumChildren
+			UpdateBar = true
+		end
 	end
 
-	self:Update()
+	if UpdateBar then
+		SMB:Update()
+	end
 end
 
 function SMB:Update()
@@ -758,8 +763,6 @@ function SMB:Initialize()
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(SMB.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
-
-	SMB.TexCoords = PA.TexCoords
 
 	SMB:ScheduleRepeatingTimer('GrabMinimapButtons', 6)
 	SMB:ScheduleTimer('HandleBlizzardButtons', 7)
