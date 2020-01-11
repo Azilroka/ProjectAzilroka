@@ -110,7 +110,10 @@ function PA:Cooldown_BelowScale(cd)
 end
 
 function PA:Cooldown_OnUpdate(elapsed)
-	if self.nextUpdate > 0 then
+	local forced = elapsed == -1
+	if forced then
+		self.nextUpdate = 0
+	elseif self.nextUpdate > 0 then
 		self.nextUpdate = self.nextUpdate - elapsed
 		return
 	end
@@ -121,31 +124,35 @@ function PA:Cooldown_OnUpdate(elapsed)
 		local now = GetTime()
 		if self.endCooldown and now >= self.endCooldown then
 			PA:Cooldown_StopTimer(self)
-		else
-			if PA:Cooldown_BelowScale(self) then
-				self.text:SetText('')
+		elseif PA:Cooldown_BelowScale(self) then
+			self.text:SetText('')
+			if not forced then
 				self.nextUpdate = 500
-			elseif PA:Cooldown_TextThreshold(self, now) then
-				self.text:SetText('')
+			end
+		elseif PA:Cooldown_TextThreshold(self, now) then
+			self.text:SetText('')
+			if not forced then
 				self.nextUpdate = 1
-			elseif self.endTime then
-				local value, id, nextUpdate, remainder = PA:GetTimeInfo(self.endTime - now, self.threshold, self.hhmmThreshold, self.mmssThreshold)
+			end
+		elseif self.endTime then
+			local value, id, nextUpdate, remainder = PA:GetTimeInfo(self.endTime - now, self.threshold, self.hhmmThreshold, self.mmssThreshold)
+			if not forced then
 				self.nextUpdate = nextUpdate
+			end
 
-				local style = PA.TimeFormats[id]
-				if style then
-					local which = (self.textColors and 2 or 1) + (self.showSeconds and 0 or 2)
-					if self.textColors then
-						self.text:SetFormattedText(style[which], value, self.textColors[id], remainder)
-					else
-						self.text:SetFormattedText(style[which], value, remainder)
-					end
+			local style = PA.TimeFormats[id]
+			if style then
+				local which = (self.textColors and 2 or 1) + (self.showSeconds and 0 or 2)
+				if self.textColors then
+					self.text:SetFormattedText(style[which], value, self.textColors[id], remainder)
+				else
+					self.text:SetFormattedText(style[which], value, remainder)
 				end
+			end
 
-				local color = self.timeColors[id]
-				if color then
-					self.text:SetTextColor(color.r, color.g, color.b)
-				end
+			local color = self.timeColors[id]
+			if color then
+				self.text:SetTextColor(color.r, color.g, color.b)
 			end
 		end
 	end
@@ -170,12 +177,6 @@ function PA:Cooldown_OnSizeChanged(cd, width, force)
 	else -- this should never happen but just incase
 		cd.text:FontTemplate()
 	end
-
-	if PA:Cooldown_BelowScale(cd) then
-		cd:Hide()
-	elseif cd.enabled then
-		PA:Cooldown_ForceUpdate(cd)
-	end
 end
 
 function PA:Cooldown_IsEnabled(cd)
@@ -191,12 +192,11 @@ function PA:Cooldown_IsEnabled(cd)
 end
 
 function PA:Cooldown_ForceUpdate(cd)
-	cd.nextUpdate = -1
+	PA.Cooldown_OnUpdate(cd, -1)
 	cd:Show()
 end
 
 function PA:Cooldown_StopTimer(cd)
-	cd.enabled = nil
 	cd.text:SetText('')
 	cd:Hide()
 end
@@ -288,8 +288,7 @@ function PA:OnSetCooldown(start, duration)
 		timer.duration = duration
 		timer.endTime = start + duration
 		timer.endCooldown = timer.endTime - 0.05
-		timer.nextUpdate = -1
-		timer:Show()
+		PA:Cooldown_ForceUpdate(timer)
 	elseif self.timer then
 		PA:Cooldown_StopTimer(self.timer)
 	end
@@ -359,10 +358,8 @@ function PA:UpdateCooldownOverride(module)
 				PA:Cooldown_OnSizeChanged(cd, parent:GetWidth(), true)
 
 				PA:ToggleBlizzardCooldownText(parent, cd)
-			elseif cd.text then
-				if cd.customFont then
-					cd.text:FontTemplate(cd.customFont, cd.customFontSize, cd.customFontOutline)
-				end
+			elseif cd.text and cd.customFont then
+				cd.text:FontTemplate(cd.customFont, cd.customFontSize, cd.customFontOutline)
 			end
 		end
 	end
