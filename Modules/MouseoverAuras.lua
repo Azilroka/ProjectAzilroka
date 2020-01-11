@@ -15,7 +15,6 @@ local GetMouseFocus = GetMouseFocus
 local GetCursorPosition = GetCursorPosition
 local UnitAura = UnitAura
 local CreateFrame = CreateFrame
-local UnitIsUnit = UnitIsUnit
 local UnitExists = UnitExists
 
 local VISIBLE = 1
@@ -39,7 +38,7 @@ function MA:CreateAuraIcon(index)
 	button.count = button.countFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	button.count:SetPoint('BOTTOMRIGHT', button.countFrame, 'BOTTOMRIGHT', -1, 0)
 
-	PA:SetTemplate(button)
+	PA:CreateBackdrop(button)
 	PA:CreateShadow(button)
 	PA:RegisterCooldown(button.cd)
 
@@ -98,6 +97,8 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 end
 
 function MA:SetPosition()
+	if not MA.Holder then return end
+
 	local sizex = MA.db.Size + MA.db.Spacing
 	local sizey = MA.db.Size + MA.db.Spacing
 	local anchor = 'BOTTOMLEFT'
@@ -149,7 +150,6 @@ function MA:UpdateAuras(unit)
 
 	local visibleBuffs = MA:FilterIcons(unit, 'HELPFUL', math.min(numBuffs, max), nil, 0, true)
 	local visibleDebuffs = MA:FilterIcons(unit, 'HARMFUL', math.min(numDebuffs, max - visibleBuffs), true, visibleBuffs)
-	local visibleAuras = visibleBuffs + visibleDebuffs
 
 	if(MA.Holder.createdIcons > MA.Holder.anchoredIcons) then
 		MA:SetPosition()
@@ -203,6 +203,7 @@ function MA:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value) MA.db[info[#info]] = value end,
 			},
 			General = {
 				order = 2,
