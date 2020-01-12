@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local MA = PA:NewModule('MouseoverAuras', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.MA = MA
 
-MA.Title = '|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'
-MA.Description = 'Auras for your mouseover target'
+MA.Title = PA.ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
+MA.Description = PA.ACL['Auras for your mouseover target']
 MA.Authors = 'Azilroka'
 
 _G.MouseoverAuras = MA
@@ -196,6 +196,7 @@ function MA:GetOptions()
 	PA.Options.args.MouseoverAuras = {
 		type = 'group',
 		name = MA.Title,
+		desc = MA.Description,
 		childGroups = 'tab',
 		get = function(info) return MA.db[info[#info]] end,
 		set = function(info, value) MA.db[info[#info]] = value MA:SetPosition() end,
