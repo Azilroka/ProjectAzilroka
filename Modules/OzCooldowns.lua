@@ -210,7 +210,7 @@ function OzCD:CreateCooldown(index)
 			TimeRemaining = format("%.1f s", CurrentDuration)
 		end
 
-		SendChatMessage(format("My %s will be off cooldown in %s", s.SpellName, TimeRemaining), Channel)
+		SendChatMessage(format(PA.ACL["My %s will be off cooldown in %s"], s.SpellName, TimeRemaining), Channel)
 	end)
 
 	PA:RegisterCooldown(Frame.Cooldown)
