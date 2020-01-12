@@ -89,6 +89,12 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 			button:SetID(index)
 			button:Show()
 
+			if isDebuff then
+				button.Backdrop:SetBackdropBorderColor(1, 0, 0)
+			else
+				button.Backdrop:SetBackdropBorderColor(0, 0, 0)
+			end
+
 			return VISIBLE
 		else
 			return HIDDEN
@@ -103,7 +109,7 @@ function MA:SetPosition()
 	local sizey = MA.db.Size + MA.db.Spacing
 	local anchor = 'BOTTOMLEFT'
 	local growthx = 1
-	local growthy = 1
+	local growthy = -1
 	local cols = floor(MA.Holder:GetWidth() / sizex + 0.5)
 
 	for i, button in ipairs(MA.Holder) do
@@ -151,7 +157,7 @@ function MA:UpdateAuras(unit)
 	local visibleBuffs = MA:FilterIcons(unit, 'HELPFUL', math.min(numBuffs, max), nil, 0, true)
 	local visibleDebuffs = MA:FilterIcons(unit, 'HARMFUL', math.min(numDebuffs, max - visibleBuffs), true, visibleBuffs)
 
-	if(MA.Holder.createdIcons > MA.Holder.anchoredIcons) then
+	if (MA.Holder.createdIcons > MA.Holder.anchoredIcons) then
 		MA:SetPosition()
 		MA.Holder.anchoredIcons = MA.Holder.createdIcons
 	end
@@ -167,7 +173,7 @@ function MA:Update(elapsed)
 	local scale = _G.UIParent:GetEffectiveScale()
 
 	MA.Holder:ClearAllPoints()
-	MA.Holder:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", x / scale, y / scale)
+	MA.Holder:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", (x / scale), (y / scale) - 70)
 
 	MA.Holder.elapsed = MA.Holder.elapsed + elapsed
 
@@ -215,7 +221,7 @@ function MA:GetOptions()
 						order = 1,
 						type = 'range',
 						name = PA.ACL['Size'],
-						min = 24, max = 60, step = 1,
+						min = 16, max = 60, step = 1,
 					},
 					Spacing = {
 						order = 2,
