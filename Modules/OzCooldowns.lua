@@ -40,17 +40,32 @@ OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
 OzCD.IsChargeCooldown = {}
+OzCD.ActiveCount = 0
+
+function OzCD:SetSize(Position)
+	local Position = Position or OzCD.ActiveCount
+	local Vertical, Spacing, Size = OzCD.db.Vertical, OzCD.db.Spacing + 2, OzCD.db.Size
+	local xSpacing = Vertical and 0 or Spacing
+	local ySpacing = Vertical and (Spacing + (OzCD.db.StatusBar and 5 or 0)) or 0
+
+	if OzCD.db.Vertical then
+		OzCD.Holder:SetSize(Size, Size * Position + (Position - 1) * ySpacing)
+	else
+		OzCD.Holder:SetSize(Size * Position + (Position - 1) * xSpacing, Size)
+	end
+end
 
 function OzCD:UpdateActiveCooldowns()
-	for i = #OzCD.ActiveCooldowns + 1, #OzCD.Holder do
+	for i = OzCD.ActiveCount + 1, #OzCD.Holder do
 		OzCD.Holder[i]:Hide()
 	end
 
-	local Position = 1
+	local Position = 0
 	for SpellID in pairs(OzCD.ActiveCooldowns) do
 		local Name, _, Icon = GetSpellInfo(SpellID)
 
 		if Name then
+			Position = Position + 1
 			local Frame = OzCD.Holder[Position]
 			if (not Frame) then
 				Frame = OzCD:CreateCooldown(Position)
@@ -96,23 +111,13 @@ function OzCD:UpdateActiveCooldowns()
 				Frame:Show()
 			else
 				OzCD.ActiveCooldowns[SpellID] = nil
+				OzCD.ActiveCount = OzCD.ActiveCount - 1
 				Frame.CurrentDuration = 0
 				Frame:Hide()
 			end
-
-			Position = Position + 1
 		end
 	end
-
-	local Vertical, Spacing, Size = OzCD.db.Vertical, OzCD.db.Spacing, OzCD.db.Size
-	local xSpacing = Vertical and 0 or Spacing
-	local ySpacing = Vertical and -(Spacing + (OzCD.db.StatusBar and 10 or 0)) or 0
-
-	if OzCD.db.Vertical then
-		OzCD.Holder:SetSize(Size, Size * Position + (Position + 1) * ySpacing)
-	else
-		OzCD.Holder:SetSize(Size * Position + (Position + 1) * xSpacing, Size)
-	end
+	OzCD:SetSize(Position)
 end
 
 function OzCD:UpdateDelayedCooldowns()
@@ -133,6 +138,7 @@ function OzCD:UpdateDelayedCooldowns()
 		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.SuppressDuration) then
 			OzCD.DelayCooldowns[SpellID] = nil
 			OzCD.ActiveCooldowns[SpellID] = Duration
+			OzCD.ActiveCount = OzCD.ActiveCount + 1
 		end
 	end
 end
@@ -217,6 +223,7 @@ function OzCD:CreateCooldown(index)
 
 	tinsert(OzCD.Holder, Frame)
 
+	OzCD:SetSize()
 	OzCD:SetPosition()
 
 	return Frame
@@ -259,6 +266,7 @@ function OzCD:UpdateSettings()
 		end
 	end
 
+	OzCD:SetSize()
 	OzCD:SetPosition()
 
 	OzCD:CancelAllTimers()
@@ -276,6 +284,7 @@ function OzCD:PLAYER_ENTERING_WORLD()
 				OzCD.DelayCooldowns[SpellID] = Duration
 			else
 				OzCD.ActiveCooldowns[SpellID] = Duration
+				OzCD.ActiveCount = OzCD.ActiveCount + 1
 			end
 		end
 	end
@@ -320,6 +329,7 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 				OzCD.DelayCooldowns[SpellID] = Duration
 			else
 				OzCD.ActiveCooldowns[SpellID] = Duration
+				OzCD.ActiveCount = OzCD.ActiveCount + 1
 			end
 		end
 
@@ -370,7 +380,7 @@ function OzCD:GetOptions()
 				name = PA.ACL['Enable'],
 			},
 			General = {
-				order = 1,
+				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,
