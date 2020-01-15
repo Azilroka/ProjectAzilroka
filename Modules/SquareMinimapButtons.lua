@@ -4,7 +4,7 @@ PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
 SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
 SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
-SMB.Authors = 'Azilroka    Whiro    Sinaris    Omega    Durc'
+SMB.Authors = 'Azilroka    NihilisticPandemonium    Sinaris    Omega    Durc'
 SMB.isEnabled = false
 
 local _G = _G

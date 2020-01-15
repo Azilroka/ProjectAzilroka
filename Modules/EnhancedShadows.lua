@@ -3,7 +3,7 @@ local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
 
 ES.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
 ES.Description = PA.ACL['Adds options for registered shadows']
-ES.Authors = 'Azilroka     Whiro'
+ES.Authors = 'Azilroka     NihilisticPandemonium'
 ES.isEnabled = false
 
 local unpack, floor, pairs = unpack, floor, pairs
