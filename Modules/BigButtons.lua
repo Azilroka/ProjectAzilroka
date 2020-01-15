@@ -7,6 +7,7 @@ PA.BB, _G.BigButtons = BB, BB
 BB.Title = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
 BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
 BB.Authors = 'Azilroka    Whiro'
+BB.isEnabled = false
 
 local _G = _G
 
@@ -249,7 +250,14 @@ function BB:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) BB.db[info[#info]] = value end,
+				set = function(info, value)
+					BB.db[info[#info]] = value
+					if not BB.isEnabled then
+						BB:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -307,6 +315,8 @@ function BB:Initialize()
 	if BB.db.Enable ~= true then
 		return
 	end
+
+	BB.isEnabled = true
 
 	local Bar = CreateFrame('Frame', 'BigButtonsBar', _G.UIParent, "SecureHandlerStateTemplate")
 	BB.Bar = Bar

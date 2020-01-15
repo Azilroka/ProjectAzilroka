@@ -4,6 +4,7 @@ local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
 ES.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
 ES.Description = PA.ACL['Adds options for registered shadows']
 ES.Authors = 'Azilroka     Whiro'
+ES.isEnabled = false
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -78,6 +79,14 @@ function ES:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					ES.db[info[#info]] = value
+					if (not ES.isEnabled) then
+						ES:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -138,6 +147,8 @@ function ES:Initialize()
 	end
 
 	PA.ES, _G.EnhancedShadows = ES, ES
+
+	ES.isEnabled = true
 
 	ES:ScheduleTimer('UpdateShadows', 1)
 end

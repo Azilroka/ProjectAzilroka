@@ -5,6 +5,7 @@ PA.OzCD = OzCD
 OzCD.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
 OzCD.Description = 'OzCooldowns'
 OzCD.Authors = 'Azilroka    Nimaear'
+OzCD.isEnabled = false
 
 _G.OzCooldowns = OzCD
 
@@ -378,6 +379,14 @@ function OzCD:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					OzCD.db[info[#info]] = value
+					if (not OzCD.isEnabled) then
+						OzCD:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -583,6 +592,8 @@ function OzCD:Initialize()
 	if OzCD.db.Enable ~= true then
 		return
 	end
+
+	OzCD.isEnabled = false
 
 	if PA.Masque and OzCD.db.Masque then
 		PA.Masque:Register('OzCooldowns', function() end)

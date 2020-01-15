@@ -11,6 +11,7 @@ DO.Title = PA.ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r']
 DO.Description = PA.ACL['Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite']
 DO.Authors = 'Azilroka    Whiro'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
+DO.isEnabled = false
 
 local MediaPath = 'Interface/AddOns/ProjectAzilroka/Media/DragonOverlay/'
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
@@ -73,7 +74,14 @@ function DO:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) DO.db[info[#info]] = value end,
+				set = function(info, value)
+					DO.db[info[#info]] = value
+					if (not DO.isEnabled) then
+						DO:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -321,6 +329,8 @@ function DO:Initialize()
 	if DO.db.Enable ~= true then
 		return
 	end
+
+	DO.isEnabled = true
 
 	local frame = _G.CreateFrame("Frame", 'DragonOverlayFrame', _G.UIParent)
 	frame.Texture = frame:CreateTexture(nil, 'ARTWORK')

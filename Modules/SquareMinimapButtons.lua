@@ -5,6 +5,7 @@ PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
 SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
 SMB.Authors = 'Azilroka    Whiro    Sinaris    Omega    Durc'
+SMB.isEnabled = false
 
 local _G = _G
 local strsub = strsub
@@ -584,6 +585,14 @@ function SMB:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					SMB.db[info[#info]] = value
+					if (not SMB.isEnabled) then
+						SMB:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -720,12 +729,13 @@ function SMB:BuildProfile()
 end
 
 function SMB:Initialize()
-	SMB.db = PA.db['SquareMinimapButtons']
-	SMB:GetOptions()
+	SMB.db = PA.db.SquareMinimapButtons
 
 	if SMB.db.Enable ~= true then
 		return
 	end
+
+	SMB.isEnabled = true
 
 	if PA.ElvUI and PA.SLE then
 		if _G.ElvUI[1].private.sle.minimap.mapicons.enable then

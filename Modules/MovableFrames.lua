@@ -5,6 +5,7 @@ PA.MF, _G.MovableFrames = MF, MF
 MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
 MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
+MF.isEnabled = false
 
 local pairs = pairs
 local unpack = unpack
@@ -277,6 +278,8 @@ function MF:GetOptions()
 		name = MF.Title,
 		desc = MF.Description,
 		childGroups = 'tab',
+		get = function(info) return MF.db[info[#info]] end,
+		set = function(info, value) MF.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
@@ -287,8 +290,14 @@ function MF:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				get = function(info) return MF.db[info[#info]] end,
-				set = function(info, value) MF.db[info[#info]] = value end,
+				set = function(info, value)
+					MF.db[info[#info]] = value
+					if (not MF.isEnabled) then
+						MF:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -373,6 +382,8 @@ function MF:Initialize()
 	if MF.db.Enable ~= true then
 		return
 	end
+
+	MF.isEnabled = true
 
 	--if PA.SLE and _G.ElvUI[1].db.profile.soundQuest then
 	--	_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'

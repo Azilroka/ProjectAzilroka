@@ -5,6 +5,7 @@ PA.TS = TS
 TS.Title = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
 TS.Description = PA.ACL['Audio for Target Sounds.']
 TS.Authors = 'Azilroka'
+TS.isEnabled = false
 
 local UnitExists = UnitExists
 local UnitIsEnemy = UnitIsEnemy
@@ -31,6 +32,8 @@ function TS:GetOptions()
 	PA.Options.args.TargetSounds = {
 		type = 'group',
 		name = TS.Title,
+		get = function(info) return TS.db[info[#info]] end,
+		set = function(info, value) TS.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
@@ -41,6 +44,14 @@ function TS:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					TS.db[info[#info]] = value
+					if (not TS.isEnabled) then
+						TS:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			AuthorHeader = {
 				order = -2,
@@ -67,6 +78,8 @@ function TS:Initialize()
 	if TS.db.Enable ~= true then
 		return
 	end
+
+	TS.isEnabled = true
 
 	TS:RegisterEvent('PLAYER_TARGET_CHANGED')
 end

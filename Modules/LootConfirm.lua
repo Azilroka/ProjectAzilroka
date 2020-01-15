@@ -7,6 +7,7 @@ PA.LC, _G.LootConfirm = LC, LC
 LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
+LC.isEnabled = false
 
 local ConfirmLootRoll = ConfirmLootRoll
 local GetNumLootItems = GetNumLootItems
@@ -37,6 +38,8 @@ function LC:GetOptions()
 		type = 'group',
 		name = LC.Title,
 		desc = LC.Description,
+		get = function(info) return LC.db[info[#info]] end,
+		set = function(info, value) LC.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
@@ -47,14 +50,20 @@ function LC:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					LC.db[info[#info]] = value
+					if (not LC.isEnabled) then
+						LC:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
 				guiInline = true,
-				get = function(info) return LC.db[info[#info]] end,
-				set = function(info, value) LC.db[info[#info]] = value end,
 				args = {
 					Greed = {
 						order = 2,
@@ -81,6 +90,8 @@ function LC:Initialize()
 	if LC.db.Enable ~= true then
 		return
 	end
+
+	LC.isEnabled = true
 
 	_G.UIParent:UnregisterEvent('LOOT_BIND_CONFIRM')
 	_G.UIParent:UnregisterEvent('CONFIRM_LOOT_ROLL')

@@ -5,6 +5,7 @@ PA.MA = MA
 MA.Title = PA.ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
 MA.Description = PA.ACL['Auras for your mouseover target']
 MA.Authors = 'Azilroka'
+MA.isEnabled = false
 
 _G.MouseoverAuras = MA
 
@@ -47,9 +48,13 @@ function MA:CreateAuraIcon(index)
 	return button
 end
 
-function MA:CustomFilter(unit, button, name)
-	if((MA.Holder.onlyShowPlayer and button.isPlayer) or (not MA.Holder.onlyShowPlayer and name)) then
+function MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
+	local isPlayer = (caster == 'player' or caster == 'vehicle')
+
+	if (isPlayer or casterIsPlayer) and (duration ~= 0) then
 		return true
+	else
+		return false
 	end
 end
 
@@ -105,8 +110,8 @@ end
 function MA:SetPosition()
 	if not MA.Holder then return end
 
-	local sizex = MA.db.Size + MA.db.Spacing
-	local sizey = MA.db.Size + MA.db.Spacing
+	local sizex = MA.db.Size + MA.db.Spacing + 2
+	local sizey = MA.db.Size + MA.db.Spacing + 2
 	local anchor = 'BOTTOMLEFT'
 	local growthx = 1
 	local growthy = -1
@@ -210,7 +215,14 @@ function MA:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) MA.db[info[#info]] = value end,
+				set = function(info, value)
+					MA.db[info[#info]] = value
+					if (not MA.isEnabled) then
+						MA:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -262,6 +274,8 @@ function MA:Initialize()
 	if MA.db.Enable ~= true then
 		return
 	end
+
+	MA.isEnabled = true
 
 	MA.Holder = CreateFrame('Frame', 'MouseoverAurasHolder', _G.UIParent)
 	MA.Holder:SetFrameStrata('TOOLTIP')

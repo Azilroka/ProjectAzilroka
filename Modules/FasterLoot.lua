@@ -5,6 +5,7 @@ PA.FL, _G.FasterLoot = FL, FL
 FL.Title = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
 FL.Description = PA.ACL['Increases auto loot speed near instantaneous.']
 FL.Authors = 'Azilroka'
+FL.isEnabled = false
 
 local GetNumLootItems = GetNumLootItems
 local LootSlot = LootSlot
@@ -63,6 +64,8 @@ function FL:GetOptions()
 	PA.Options.args.FasterLoot = {
 		type = 'group',
 		name = FL.Title,
+		get = function(info) return FL.db[info[#info]] end,
+		set = function(info, value) FL.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
@@ -73,6 +76,14 @@ function FL:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					FL.db[info[#info]] = value
+					if (not FL.isEnabled) then
+						FL:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			AuthorHeader = {
 				order = -4,
@@ -90,9 +101,13 @@ function FL:GetOptions()
 end
 
 function FL:Initialize()
+	FL.db = PA.db.FasterLoot
+
 	if PA.db.FasterLoot.Enable ~= true then
 		return
 	end
+
+	FL.isEnabled = true
 
 	LOOTFRAME_AUTOLOOT_DELAY = 0.1;
 	LOOTFRAME_AUTOLOOT_RATE = 0.1;

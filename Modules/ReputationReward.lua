@@ -4,6 +4,11 @@ if PA.Classic then return end
 local RR = PA:NewModule('ReputationReward', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 PA.RR = RR
 
+RR.Title = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
+RR.Description = PA.ACL['Adds Reputation into Quest Log & Quest Frame.']
+RR.Authors = 'Azilroka'
+RR.isEnabled = false
+
 local _G = _G
 local floor = floor
 local pairs = pairs
@@ -38,12 +43,7 @@ local SetItemButtonTexture = _G.SetItemButtonTexture
 local ExpandFactionHeader = _G.ExpandFactionHeader
 local CollapseFactionHeader = _G.CollapseFactionHeader
 
-
 local REWARDS_SECTION_OFFSET = 5
-
-RR.Title = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
-RR.Description = PA.ACL['Adds Reputation into Quest Log & Quest Frame.']
-RR.Authors = 'Azilroka'
 
 function RR:BuildFactionHeaders()
 	RR.FactionHeaders = {}
@@ -276,6 +276,14 @@ function RR:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					RR.db[info[#info]] = value
+					if (not RR.isEnabled) then
+						RR:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -315,6 +323,8 @@ function RR:Initialize()
 	if RR.db.Enable ~= true then
 		return
 	end
+
+	RR.isEnabled = true
 
 	RR.ReputationInfo = {}
 

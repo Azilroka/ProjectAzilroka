@@ -8,6 +8,7 @@ _G.stAddonManagerServerDB = {}
 stAM.Title = PA.ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
 stAM.Description = PA.ACL['A simple and minimalistic addon to disable/enabled addons without logging out.']
 stAM.Authors = 'Azilroka    Safturento'
+stAM.isEnabled = false
 
 local _G = _G
 local unpack = unpack
@@ -714,7 +715,14 @@ function stAM:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) stAM.db[info[#info]] = value end,
+				set = function(info, value)
+					stAM.db[info[#info]] = value
+					if (not stAM.isEnabled) then
+						stAM:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -839,6 +847,8 @@ function stAM:Initialize()
 	if stAM.db.Enable ~= true then
 		return
 	end
+
+	stAM.isEnabled = true
 
 	stAM.AddOnInfo = {}
 	stAM.Profiles = {}

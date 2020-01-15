@@ -6,6 +6,7 @@ EFL.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
 EFL.Description = PA.ACL['Provides Friends List Customization']
 EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
+EFL.isEnabled = false
 
 local pairs = pairs
 local format = format
@@ -536,7 +537,14 @@ function EFL:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) EFL.db[info[#info]] = value end,
+				set = function(info, value)
+					EFL.db[info[#info]] = value
+					if (not EFL.isEnabled) then
+						EFL:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -768,6 +776,8 @@ function EFL:Initialize()
 	if EFL.db.Enable ~= true then
 		return
 	end
+
+	EFL.isEnabled = true
 
 	EFL:RegisterEvent("BN_CONNECTED", 'HandleBN')
 	EFL:RegisterEvent("BN_DISCONNECTED", 'HandleBN')

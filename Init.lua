@@ -243,6 +243,16 @@ StaticPopupDialogs["PROJECTAZILROKA"] = {
 	hideOnEscape = false,
 }
 
+StaticPopupDialogs["PROJECTAZILROKA_RL"] = {
+	text = PA.ACL["This setting requires that you reload your User Interface."],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = ReloadUI,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+}
+
 PA.Defaults = {
 	profile = {
 		cooldown = {

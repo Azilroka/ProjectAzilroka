@@ -10,6 +10,7 @@ local tremove = tremove
 BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
 BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BrokerLDB.Authors = 'Azilroka'
+BrokerLDB.isEnabled = false
 
 function BrokerLDB:TextUpdate(_, Name, _, Data)
 	BrokerLDB.PluginObjects[Name]:SetText(Data)
@@ -243,7 +244,14 @@ function BrokerLDB:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
-				set = function(info, value) BrokerLDB.db[info[#info]] = value end,
+				set = function(info, value)
+					BrokerLDB.db[info[#info]] = value
+					if (not BrokerLDB.isEnabled) then
+						BrokerLDB:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -334,6 +342,8 @@ function BrokerLDB:Initialize()
 	if BrokerLDB.db.Enable ~= true then
 		return
 	end
+
+	BrokerLDB.isEnabled = true
 
 	BrokerLDB.DropDown = CreateFrame('Frame', 'BrokerLDBDropDown', UIParent, 'UIDropDownMenuTemplate')
 	BrokerLDB.Slide = 'In'

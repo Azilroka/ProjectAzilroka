@@ -6,6 +6,7 @@ QS.Title = PA.ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
 QS.Description = PA.ACL['Audio for Quest Progress & Completions.']
 QS.Authors = 'Azilroka'
 QS.Credits = 'Yoco'
+QS.isEnabled = false
 
 local GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile = GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile
 
@@ -154,6 +155,14 @@ function QS:GetOptions()
 				order = 1,
 				type = 'toggle',
 				name = PA.ACL['Enable'],
+				set = function(info, value)
+					QS.db[info[#info]] = value
+					if (not QS.isEnabled) then
+						QS:Initialize()
+					else
+						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
+					end
+				end,
 			},
 			General = {
 				order = 2,
@@ -269,6 +278,8 @@ function QS:Initialize()
 	if QS.db.Enable ~= true then
 		return
 	end
+
+	QS.isEnabled = true
 
 	QS.QuestIndex = 0
 	QS.ObjectivesComplete = 0
