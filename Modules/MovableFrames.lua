@@ -383,23 +383,20 @@ function MF:Initialize()
 		return
 	end
 
-	MF.isEnabled = true
+	if PA.ElvUI and PA.SLE and _G.ElvUI[1].private.sle.module.blizzmove.enable then
+		_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Shadow & Light Blizz Move and Movable Frames will not work together. Which one do you want to disable?'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'Shadow & Light Blizz Move'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Movable Frames'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
+			_G.ElvUI[1].private.sle.module.blizzmove.enable = false
+			_G.ReloadUI()
+		end
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() MF.db.Enable = false end
+		_G.StaticPopup_Show("PROJECTAZILROKA")
+		return
+	end
 
-	--if PA.SLE and _G.ElvUI[1].db.profile.soundQuest then
-	--	_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'
-	--	_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'KT Quest Sound'
-	--	_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Quest Sounds'
-	--	_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
-	--		_G.StaticPopupDialogs.PROJECTAZILROKA.text = PA.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."]
-	--		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = _G.ACCEPT
-	--		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = _G.CANCEL
-	--		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = _G.ReloadUI
-	--		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = nil
-	--	end
-	--	_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() MF.db.Enable = false _G.ReloadUI() end
-	--	_G.StaticPopup_Show("PROJECTAZILROKA")
-	--	return
-	--end
+	MF.isEnabled = true
 
 	if PA:IsAddOnEnabled('WorldQuestTracker') then
 		Frames.WorldMapFrame = nil

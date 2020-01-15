@@ -735,19 +735,17 @@ function SMB:Initialize()
 		return
 	end
 
-	SMB.isEnabled = true
-
-	if PA.ElvUI and PA.SLE then
-		if _G.ElvUI[1].private.sle.minimap.mapicons.enable then
-			_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
-			_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'Square Minimap Buttons'
-			_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'S&L MiniMap Buttons'
-			_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function() _G.ElvUI[1].private.sle.minimap.mapicons.enable = false _G.ReloadUI() end
-			_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() PA.db['SquareMinimapButtons']['Enable'] = false _G.ReloadUI() end
-			_G.StaticPopup_Show("PROJECTAZILROKA")
-			return
-		end
+	if PA.ElvUI and PA.SLE and _G.ElvUI[1].private.sle.minimap.mapicons.enable then
+		_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Square Minimap Buttons and S&L MiniMap Buttons are incompatible. You will have to choose one. This will reload the interface.'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'Square Minimap Buttons'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'S&L MiniMap Buttons'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function() _G.ElvUI[1].private.sle.minimap.mapicons.enable = false _G.ReloadUI() end
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() SMB.db.Enable = false end
+		_G.StaticPopup_Show("PROJECTAZILROKA")
+		return
 	end
+
+	SMB.isEnabled = true
 
 	SMB.Hider = CreateFrame("Frame", nil, _G.UIParent)
 

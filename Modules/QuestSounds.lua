@@ -279,16 +279,6 @@ function QS:Initialize()
 		return
 	end
 
-	QS.isEnabled = true
-
-	QS.QuestIndex = 0
-	QS.ObjectivesComplete = 0
-	QS.ObjectivesTotal = 0
-	QS.IsPlaying = false
-
-	QS:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-	QS:RegisterEvent('QUEST_WATCH_UPDATE')
-
 	local KT = _G.LibStub('AceAddon-3.0'):GetAddon('!KalielsTracker', true)
 
 	if KT and KT.db.profile.soundQuest then
@@ -297,13 +287,9 @@ function QS:Initialize()
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Quest Sounds'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
 			KT.db.profile.soundQuest = false
-			_G.StaticPopupDialogs.PROJECTAZILROKA.text = PA.ACL['A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface.']
-			_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = _G.ACCEPT
-			_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = _G.CANCEL
-			_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = _G.ReloadUI
-			_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = nil
+			_G.ReloadUI()
 		end
-		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() QS.db['Enable'] = false _G.ReloadUI() end
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() QS.db.Enable = false end
 		_G.StaticPopup_Show('PROJECTAZILROKA')
 		return
 	end
@@ -313,7 +299,18 @@ function QS:Initialize()
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'KT Quest Sound'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Quest Sounds'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function() _G.DisableAddOn('QuestGuruSounds') _G.ReloadUI() end
-		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() QS.db['Enable'] = false _G.ReloadUI() end
+		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() QS.db.Enable = false end
 		_G.StaticPopup_Show('PROJECTAZILROKA')
+		return
 	end
+
+	QS.isEnabled = true
+
+	QS.QuestIndex = 0
+	QS.ObjectivesComplete = 0
+	QS.ObjectivesTotal = 0
+	QS.IsPlaying = false
+
+	QS:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+	QS:RegisterEvent('QUEST_WATCH_UPDATE')
 end
