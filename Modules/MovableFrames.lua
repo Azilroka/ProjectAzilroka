@@ -163,12 +163,9 @@ local AddOnFrames = {
 
 function MF:LoadPosition(frame)
 	if frame.isMoving or InCombatLockdown() then return end
-	local a, b, c, d, e
-	if frame:IsUserPlaced() then
-		a, b, c, d, e = unpack(MF.db[frame:GetName()].Points)
-		frame:ClearAllPoints()
-		frame:SetPoint(a, _G[b], c, d, e, true)
-	end
+	local a, b, c, d, e = unpack(MF.db[frame:GetName()].Points)
+	frame:ClearAllPoints()
+	frame:SetPoint(a, _G[b], c, d, e, true)
 end
 
 function MF:OnDragStart(frame)
@@ -444,8 +441,8 @@ function MF:Initialize()
 
 	MF:Hook('UIParent_ManageFramePosition', function()
 		for _, Frame in pairs(MF.AllFrames) do
-			if _G[Frame] and _G[Frame]:IsShown() then
-				MF:LoadPosition(_G[Frame])
+			if _G.Frame and _G.Frame:IsShown() and _G.Frame:IsMovable() and _G.Frame:IsUserPlaced() then
+				MF:LoadPosition(Frame)
 			end
 		end
 	end, true)
