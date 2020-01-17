@@ -9,8 +9,6 @@ MF.isEnabled = false
 
 local pairs = pairs
 local unpack = unpack
-local tinsert = tinsert
-local sort = sort
 
 local _G = _G
 local IsAddOnLoaded = IsAddOnLoaded
@@ -161,15 +159,22 @@ local AddOnFrames = {
 	},
 }
 
-function MF:LoadPosition(frame)
-	if frame.isMoving or InCombatLockdown() then return end
-	local a, b, c, d, e = unpack(MF.db[frame:GetName()].Points)
-	frame:ClearAllPoints()
-	frame:SetPoint(a, _G[b], c, d, e, true)
+function MF:LoadPosition(frame, elapsed)
+	if frame.MFisMoving or InCombatLockdown() then return end
+
+	frame.throttle = (frame.throttle or 0) + (elapsed or .01)
+
+	if frame:IsMovable() and frame:IsUserPlaced() and (frame.throttle > .01) then
+		frame:SetScript('OnMouseDown', nil)
+		local a, b, c, d, e = unpack(MF.db[frame:GetName()].Points)
+		frame:ClearAllPoints()
+		frame:SetPoint(a, _G[b], c, d, e, true)
+		frame.throttle = 0
+	end
 end
 
 function MF:OnDragStart(frame)
-	frame.isMoving = true
+	frame.MFisMoving = true
 	frame:StartMoving()
 end
 
@@ -186,19 +191,12 @@ function MF:OnDragStop(frame)
 			MF.db[Name].Points = {a, b, c, d, e}
 		end
 		frame:SetUserPlaced(true)
+		frame:ClearAllPoints()
+		frame:SetPoint(a, _G[b], c, d, e, true)
 	elseif frame:IsUserPlaced() then
 		frame:SetUserPlaced(false)
 	end
-	frame.isMoving = false
-end
-
-function MF:GetUIPanelAttribute(frame, name)
-    local info = _G.UIPanelWindows[frame:GetName()];
-    if ( not info ) then
-		return;
-    end
-
-	return frame:GetAttribute("UIPanelLayout-"..name);
+	frame.MFisMoving = false
 end
 
 function MF:SetUIPanelAttribute(frame, name, value)
@@ -217,21 +215,25 @@ function MF:MakeMovable(Name)
 
 	local Frame = _G[Name]
 
-	if Name == 'AchievementFrame' then _G.AchievementFrameHeader:EnableMouse(false) end
+	if Name == 'AchievementFrame' then
+		_G.AchievementFrameHeader:EnableMouse(false)
+	end
 
-	if Name == 'WorldMapFrame' and PA.Classic then
-		MF:SetUIPanelAttribute(_G.WorldMapFrame, 'maximizePoint', nil)
+	if Name == 'WorldMapFrame' then
+		if PA.Classic then
+			MF:SetUIPanelAttribute(_G.WorldMapFrame, 'maximizePoint', nil)
 
-		function ToggleWorldMap()
-			if _G.WorldMapFrame:IsShown() then
-				_G.HideUIPanel(_G.WorldMapFrame)
-			else
+			function ToggleWorldMap()
+				if _G.WorldMapFrame:IsShown() then
+					_G.HideUIPanel(_G.WorldMapFrame)
+				else
+					_G.ShowUIPanel(_G.WorldMapFrame)
+				end
+			end
+
+			function OpenWorldMap()
 				_G.ShowUIPanel(_G.WorldMapFrame)
 			end
-		end
-
-		function OpenWorldMap()
-			_G.ShowUIPanel(_G.WorldMapFrame)
 		end
 
 		_G.ToggleWorldMap()
@@ -247,12 +249,6 @@ function MF:MakeMovable(Name)
 	MF:HookScript(Frame, 'OnDragStart', 'OnDragStart')
 	MF:HookScript(Frame, 'OnDragStop', 'OnDragStop')
 	MF:HookScript(Frame, 'OnHide', 'OnDragStop')
-
-	if MF.db[Name] and MF.db[Name]['Points'] then
-		local a, b, c, d, e = unpack(MF.db[Name].Points)
-		Frame:ClearAllPoints()
-		Frame:SetPoint(a, _G[b], c, d, e, true)
-	end
 
 	MF:SecureHook(Frame, 'SetPoint', function(_, _, _, _, _, locked)
 		if not locked then
@@ -307,6 +303,8 @@ function MF:GetOptions()
 						type = 'group',
 						guiInline = true,
 						name = PA.ACL['Permanent Moving'],
+						get = function(info) return MF.db[info[#info]].Permanent end,
+						set = function(info, value) MF.db[info[#info]].Permanent = value end,
 						args = {},
 					},
 					Reset = {
@@ -332,42 +330,50 @@ function MF:GetOptions()
 		},
 	}
 
-	sort(MF.AllFrames)
-
-	for _, Name in pairs(MF.AllFrames) do
-		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Name] = {
+	for Frame in pairs(Frames) do
+		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = {
 			type = 'toggle',
-			name = Name,
-			get = function(info) return MF.db[info[#info]].Permanent end,
-			set = function(info, value) MF.db[info[#info]].Permanent = value end,
+			name = Frame,
 		}
 
-		PA.Options.args.MovableFrames.args.General.args.Reset.args[Name] = {
+		PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = {
 			type = 'execute',
-			name = Name,
+			name = Frame,
 			disabled = function(info) return not MF.db[info[#info]].Permanent end,
 			func = function(info) _G.HideUIPanel(_G[info[#info]]) end,
 		}
+	end
+
+	for _, Table in pairs(AddOnFrames) do
+		for Frame in pairs(Table) do
+			PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = {
+				type = 'toggle',
+				name = Frame,
+			}
+
+			PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = {
+				type = 'execute',
+				name = Frame,
+				disabled = function(info) return not MF.db[info[#info]].Permanent end,
+				func = function(info) _G.HideUIPanel(_G[info[#info]]) end,
+			}
+		end
 	end
 end
 
 function MF:BuildProfile()
 	PA.Defaults.profile.MovableFrames = { Enable = true }
 
-	MF.AllFrames = {}
-
 	if PA.Tukui then
 		Frames.LossOfControlFrame = { "CENTER", "UIParent", "CENTER", 0, 60 }
 	end
 
 	for Frame, DefaultPoints in pairs(Frames) do
-		tinsert(MF.AllFrames, Frame)
 		PA.Defaults.profile.MovableFrames[Frame] = { Permanent = true, Points = DefaultPoints }
 	end
 
 	for _, Table in pairs(AddOnFrames) do
 		for Frame, DefaultPoints in pairs(Table) do
-			tinsert(MF.AllFrames, Frame)
 			PA.Defaults.profile.MovableFrames[Frame] = { Permanent = true, Points = DefaultPoints }
 		end
 	end
@@ -418,32 +424,4 @@ function MF:Initialize()
 	end
 
 	MF:RegisterEvent('ADDON_LOADED')
-
-	--function ShowUIPanel(frame, force)
-	--	if ( not frame or frame:IsShown() ) then
-	--		return;
-	--	end
-
-	--	frame:Show();
-
-	--	UpdateUIPanelPositions()
-	--end
-
-	--function HideUIPanel(frame, skipSetPoint)
-	--	if ( not frame or not frame:IsShown() ) then
-	--		return;
-	--	end
-
-	--	frame:Hide();
-
-	--	UpdateUIPanelPositions()
-	--end
-
-	MF:Hook('UIParent_ManageFramePosition', function()
-		for _, Frame in pairs(MF.AllFrames) do
-			if _G.Frame and _G.Frame:IsShown() and _G.Frame:IsMovable() and _G.Frame:IsUserPlaced() then
-				MF:LoadPosition(Frame)
-			end
-		end
-	end, true)
 end

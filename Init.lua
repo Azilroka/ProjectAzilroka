@@ -127,7 +127,6 @@ function PA:Print(...)
 	print(PA:Color(PA.Title..':'), ...)
 end
 
---RGB to Hex
 function PA:RGBToHex(r, g, b, header, ending)
 	r = r <= 1 and r >= 0 and r or 1
 	g = g <= 1 and g >= 0 and g or 1
@@ -135,7 +134,6 @@ function PA:RGBToHex(r, g, b, header, ending)
 	return format('%s%02x%02x%02x%s', header or '|cff', r*255, g*255, b*255, ending or '')
 end
 
---Hex to RGB
 function PA:HexToRGB(hex)
 	local a, r, g, b = strmatch(hex, '^|?c?(%x%x)(%x%x)(%x%x)(%x?%x?)|?r?$')
 	if not a then return 0, 0, 0, 0 end
@@ -151,6 +149,12 @@ function PA:ConflictAddOn(AddOns)
 		end
 	end
 	return false
+end
+
+function PA:CountTable(T)
+	local n = 0
+	for _ in pairs(T) do n = n + 1 end
+	return n
 end
 
 function PA:PairsByKeys(t, f)

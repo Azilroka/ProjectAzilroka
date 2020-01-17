@@ -42,14 +42,8 @@ OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
 OzCD.IsChargeCooldown = {}
 
-local function countTable(T)
-	local n = 0
-	for _ in pairs(T) do n = n + 1 end
-	return n
-end
-
 function OzCD:SetSize(Position)
-	local Position = Position or countTable(OzCD.ActiveCooldowns)
+	Position = Position or PA:CountTable(OzCD.ActiveCooldowns)
 	local Vertical, Spacing, Size = OzCD.db.Vertical, OzCD.db.Spacing + 2, OzCD.db.Size
 	local xSpacing = Vertical and 0 or Spacing
 	local ySpacing = Vertical and (Spacing + (OzCD.db.StatusBar and 5 or 0)) or 0
@@ -62,7 +56,7 @@ function OzCD:SetSize(Position)
 end
 
 function OzCD:UpdateActiveCooldowns()
-	for i = countTable(OzCD.ActiveCooldowns) + 1, #OzCD.Holder do
+	for i = PA:CountTable(OzCD.ActiveCooldowns) + 1, #OzCD.Holder do
 		OzCD.Holder[i]:Hide()
 	end
 
@@ -122,6 +116,7 @@ function OzCD:UpdateActiveCooldowns()
 			end
 		end
 	end
+
 	OzCD:SetSize(Position)
 end
 
