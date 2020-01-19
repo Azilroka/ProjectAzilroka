@@ -386,17 +386,19 @@ function MF:Initialize()
 		return
 	end
 
-	if PA.ElvUI and PA.SLE and _G.ElvUI[1].private.sle.module.blizzmove.enable then
-		_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Shadow & Light Blizz Move and Movable Frames will not work together. Which one do you want to disable?'
-		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'Shadow & Light Blizz Move'
-		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Movable Frames'
-		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
-			_G.ElvUI[1].private.sle.module.blizzmove.enable = false
-			_G.ReloadUI()
+	if PA.ElvUI and PA.SLE then
+		if (not _G.ElvUI[1].private.sle.module) or (_G.ElvUI[1].private.sle.module.blizzmove and _G.ElvUI[1].private.sle.module.blizzmove.enable) then
+			_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Shadow & Light Blizz Move and Movable Frames will not work together. Which one do you want to disable?'
+			_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'S&L Blizz Move'
+			_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Movable Frames'
+			_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
+				_G.ElvUI[1].private.sle.module.blizzmove.enable = false
+				_G.ReloadUI()
+			end
+			_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() MF.db.Enable = false end
+			_G.StaticPopup_Show("PROJECTAZILROKA")
+			return
 		end
-		_G.StaticPopupDialogs.PROJECTAZILROKA.OnCancel = function() MF.db.Enable = false end
-		_G.StaticPopup_Show("PROJECTAZILROKA")
-		return
 	end
 
 	MF.isEnabled = true
