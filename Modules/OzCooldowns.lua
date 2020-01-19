@@ -582,6 +582,10 @@ function OzCD:BuildProfile()
 	}
 end
 
+function OzCD:UpdateSettings()
+	OzCD.db = PA.db.OzCooldowns
+end
+
 function OzCD:Initialize()
 	OzCD.db = PA.db.OzCooldowns
 
