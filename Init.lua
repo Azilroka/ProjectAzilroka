@@ -6,11 +6,22 @@ local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0', '
 
 _G.ProjectAzilroka = PA
 
+local select = select
+local pairs = pairs
+local sort = sort
+local tinsert = tinsert
+local print = print
+local format = format
+local strsplit = strsplit
+
 local GetAddOnMetadata = GetAddOnMetadata
 local GetAddOnEnableState = GetAddOnEnableState
-local select, pairs, sort, tinsert, print, format = select, pairs, sort, tinsert, print, format
-local UnitName, UnitClass, GetRealmName = UnitName, UnitClass, GetRealmName
+local UnitName = UnitName
+local UnitClass = UnitClass
+local GetRealmName = GetRealmName
 local UIParent = UIParent
+local BNGetFriendInfo = BNGetFriendInfo
+local BNGetGameAccountInfo = BNGetGameAccountInfo
 
 -- Libraries
 PA.AC = LibStub('AceConfig-3.0')
@@ -33,6 +44,7 @@ PA.MyRealm = GetRealmName()
 PA.Locale = GetLocale()
 PA.Noop = function() end
 PA.TexCoords = {.08, .92, .08, .92}
+
 if _G.ElvUI then
 	PA.TexCoords = {0, 1, 0, 1}
 	local modifier = 0.04 * _G.ElvUI[1].db.general.cropIcon
@@ -55,8 +67,6 @@ PA.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 1
 PA.Solid = PA.LSM:Fetch('background', 'Solid')
-
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 -- Project Data
 function PA:IsAddOnEnabled(addon, character)
@@ -173,7 +183,7 @@ end
 
 function PA:SetTemplate(frame)
 	if PA.AddOnSkins then
-		AddOnSkins[1]:SetTemplate(frame)
+		_G.AddOnSkins[1]:SetTemplate(frame)
 	else
 		if frame.SetTemplate then
 			frame:SetTemplate('Transparent', true)
@@ -187,7 +197,7 @@ end
 
 function PA:CreateBackdrop(frame)
 	if PA.AddOnSkins then
-		AddOnSkins[1]:CreateBackdrop(frame)
+		_G.AddOnSkins[1]:CreateBackdrop(frame)
 	else
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
@@ -203,7 +213,7 @@ end
 
 function PA:CreateShadow(frame)
 	if PA.AddOnSkins then
-		AddOnSkins[1]:CreateShadow(frame)
+		_G.AddOnSkins[1]:CreateShadow(frame)
 	elseif frame.CreateShadow then
 		frame:CreateShadow()
 	end
@@ -235,6 +245,169 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 
 	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
+end
+
+-- /dump "["..select(2, strsplit('-', UnitGUID('player'))) .. "] = '" ..GetRealmName().."'"
+PA.ClassicServerNameByID = {
+	[4703] = 'Amnennar',
+	[4715] = 'Anathema',
+	[4716] = 'Arcanite Reaper',
+	[4742] = 'Ashbringer',
+	[4387] = 'Ashkandi',
+	[4372] = 'Atiesh',
+	[4669] = 'Arugal',
+	[4441] = 'Auberdine',
+	[4376] = 'Azuresong',
+	[4728] = 'Benediction',
+	[4398] = 'Bigglesworth',
+	[4397] = 'Blaumeux',
+	[4746] = 'Bloodfang',
+	[4648] = 'Bloodsail Buccaneers',
+	[4386] = 'Deviate Delight',
+	[4751] = 'Dragonfang',
+	[4756] = "Dragon's Call",
+	[4755] = 'Dreadmist',
+	[4731] = 'Earthfury',
+	[4749] = 'Earthshaker',
+	[4440] = 'Everlook',
+	[4408] = 'Faerlina',
+	[4396] = 'Fairbanks',
+	[4739] = 'Felstriker',
+	[4744] = 'Finkle',
+	[4467] = 'Firemaw',
+	[4706] = 'Flamelash',
+	[4702] = 'Gandling',
+	[4476] = 'Gehennas',
+	[4465] = 'Golemagg',
+	[4647] = 'Grobbulus',
+	[4732] = 'Heartseeker',
+	[4763] = 'Heartstriker',
+	[4406] = 'Herod',
+	[4678] = 'Hydraxian Waterlords',
+	[4698] = 'Incendius',
+	[4758] = 'Judgement',
+	[4700] = 'Kirtonos',
+	[4699] = 'Kromcrush',
+	[4399] = 'Kurinnaxx',
+	[4442] = 'Lakeshire',
+	[4801] = 'Loatheb',
+	[4463] = 'Lucifron',
+	[4813] = 'Mandokir',
+	[4384] = 'Mankrik',
+	[4454] = 'Mirage Raceway',
+	[4701] = 'Mograine',
+	[4373] = 'Myzrael',
+	[4456] = 'Nethergarde Keep',
+	[4729] = 'Netherwind',
+	[4741] = 'Noggenfogger',
+	[4374] = 'Old Blanchy',
+	[4385] = 'Pagle',
+	[4466] = 'Patchwerk',
+	[4453] = 'Pyrewood Village',
+	[4695] = 'Rattlegore',
+	[4455] = 'Razorfen',
+	[4478] = 'Razorgore',
+	[4667] = 'Remulos',
+	[4475] = 'Shazzrah',
+	[4410] = 'Skeram',
+	[4743] = 'Skullflame',
+	[4696] = 'Smolderweb',
+	[4409] = 'Stalagg',
+	[4705] = 'Stonespine',
+	[4726] = 'Sulfuras',
+	[4464] = 'Sulfuron',
+	[4737] = "Sul'thraze",
+	[4757] = 'Ten Storms',
+	[4407] = 'Thalnos',
+	[4714] = 'Thunderfury',
+	[4745] = 'Transcendence',
+	[4477] = 'Venoxis',
+	[4388] = 'Westfall',
+	[4395] = 'Whitemane',
+	[4727] = 'Windseeker',
+	[4670] = 'Yojamba',
+	[4676] = 'Zandalar Tribe',
+	[4452] = 'Хроми',
+	[4704] = 'Змейталак',
+	[4754] = 'Рок-Делар',
+	[4766] = 'Вестник Рока',
+	[4474] = 'Пламегор',
+}
+
+local accountInfo = { gameAccountInfo = {} }
+function PA:GetBattleNetInfo(friendIndex)
+	if PA.Classic then
+		local bnetIDAccount, accountName, battleTag, isBattleTag, _, bnetIDGameAccount, _, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, _, messageTime, _, isReferAFriend, canSummonFriend, isFavorite = BNGetFriendInfo(friendIndex)
+
+		if not bnetIDGameAccount then return end
+
+		local hasFocus, characterName, client, realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, _, toonID, _, isGameAFK, isGameBusy, guid, wowProjectID, mobile  = BNGetGameAccountInfo(bnetIDGameAccount)
+
+		accountInfo.bnetAccountID = bnetIDAccount
+		accountInfo.accountName = accountName
+		accountInfo.battleTag = battleTag
+		accountInfo.isBattleTagFriend = isBattleTag
+		accountInfo.isDND = isBnetDND
+		accountInfo.isAFK = isBnetAFK
+		accountInfo.isFriend = true
+		accountInfo.isFavorite = isFavorite
+		accountInfo.note = noteText
+		accountInfo.rafLinkType = 0
+		accountInfo.appearOffline = false
+		accountInfo.customMessage = messageText
+		accountInfo.lastOnlineTime = lastOnline
+		accountInfo.customMessageTime = messageTime
+
+		accountInfo.gameAccountInfo.clientProgram = client or "App"
+		accountInfo.gameAccountInfo.richPresence = gameText ~= '' and gameText or PA.ACL["Mobile"]
+		accountInfo.gameAccountInfo.gameAccountID = bnetIDGameAccount
+		accountInfo.gameAccountInfo.isOnline = isOnline
+		accountInfo.gameAccountInfo.isGameAFK = isGameAFK
+		accountInfo.gameAccountInfo.isGameBusy = isGameBusy
+		accountInfo.gameAccountInfo.isWowMobile = mobile
+		accountInfo.gameAccountInfo.hasFocus = hasFocus
+		accountInfo.gameAccountInfo.canSummon = canSummonFriend
+
+		if wowProjectID == _G.WOW_PROJECT_MAINLINE then
+			zoneName, realmName = strsplit("-", gameText)
+		end
+
+		if client == _G.BNET_CLIENT_WOW then
+			accountInfo.gameAccountInfo.characterName = characterName
+			accountInfo.gameAccountInfo.factionName = faction ~= '' and faction or nil
+			accountInfo.gameAccountInfo.playerGuid = guid
+			accountInfo.gameAccountInfo.wowProjectID = wowProjectID
+			accountInfo.gameAccountInfo.realmID = realmID
+			accountInfo.gameAccountInfo.realmDisplayName = realmName
+			accountInfo.gameAccountInfo.realmName = realmName
+			accountInfo.gameAccountInfo.areaName = zoneName
+			accountInfo.gameAccountInfo.className = class
+			accountInfo.gameAccountInfo.characterLevel = level
+			accountInfo.gameAccountInfo.raceName = race
+		else
+			accountInfo.gameAccountInfo.characterName = nil
+			accountInfo.gameAccountInfo.factionName = nil
+			accountInfo.gameAccountInfo.playerGuid = nil
+			accountInfo.gameAccountInfo.wowProjectID = nil
+			accountInfo.gameAccountInfo.realmID = nil
+			accountInfo.gameAccountInfo.realmDisplayName = nil
+			accountInfo.gameAccountInfo.realmName = nil
+			accountInfo.gameAccountInfo.areaName = nil
+			accountInfo.gameAccountInfo.className = nil
+			accountInfo.gameAccountInfo.characterLevel = nil
+			accountInfo.gameAccountInfo.raceName = nil
+		end
+
+		return accountInfo
+	else
+		accountInfo = _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
+
+		if accountInfo and accountInfo.gameAccountInfo.wowProjectID == _G.WOW_PROJECT_CLASSIC then
+			accountInfo.gameAccountInfo.realmDisplayName = PA.ClassicServerNameByID[accountInfo.gameAccountInfo.realmID] or accountInfo.gameAccountInfo.realmID
+		end
+
+		return accountInfo
+	end
 end
 
 StaticPopupDialogs["PROJECTAZILROKA"] = {
