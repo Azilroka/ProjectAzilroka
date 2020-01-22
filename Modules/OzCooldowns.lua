@@ -364,6 +364,7 @@ function OzCD:GetOptions()
 	PA.Options.args.OzCooldowns = {
 		type = 'group',
 		name = OzCD.Title,
+		desc = OzCD.Description,
 		get = function(info) return OzCD.db[info[#info]] end,
 		set = function(info, value) OzCD.db[info[#info]] = value OzCD:UpdateSettings() end,
 		args = {
