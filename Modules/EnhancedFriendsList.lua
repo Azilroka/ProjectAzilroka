@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 
-EFL.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
+EFL.Title = 'Enhanced Friends List'
+EFL.Header = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
 EFL.Description = PA.ACL['Provides Friends List Customization']
 EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
@@ -365,7 +366,7 @@ function EFL:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(EFL.Title)
+				name = EFL.Header
 			},
 			Enable = {
 				order = 1,

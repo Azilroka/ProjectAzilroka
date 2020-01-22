@@ -4,7 +4,8 @@ if PA.Classic then return end
 local RR = PA:NewModule('ReputationReward', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 PA.RR = RR
 
-RR.Title = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
+RR.Title = 'ReputationRewards'
+RR.Header = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
 RR.Description = PA.ACL['Adds Reputation into Quest Log & Quest Frame.']
 RR.Authors = 'Azilroka'
 RR.isEnabled = false
@@ -270,7 +271,7 @@ function RR:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(RR.Title),
+				name = RR.Header,
 			},
 			Enable = {
 				order = 1,

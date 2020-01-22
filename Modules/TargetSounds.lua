@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local TS = PA:NewModule('TargetSounds', 'AceEvent-3.0')
 PA.TS = TS
 
-TS.Title = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
+TS.Title = 'TargetSounds'
+TS.Header = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
 TS.Description = PA.ACL['Audio for Target Sounds.']
 TS.Authors = 'Azilroka'
 TS.isEnabled = false
@@ -32,13 +33,14 @@ function TS:GetOptions()
 	PA.Options.args.TargetSounds = {
 		type = 'group',
 		name = TS.Title,
+		desc = TS.Description,
 		get = function(info) return TS.db[info[#info]] end,
 		set = function(info, value) TS.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
-				name = TS.Title,
+				name = TS.Header,
 			},
 			Enable = {
 				order = 1,

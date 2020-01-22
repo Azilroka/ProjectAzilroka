@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
-MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
+MF.Title = 'Movable Frames'
+MF.Header = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
 MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 MF.isEnabled = false
@@ -277,7 +278,7 @@ function MF:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(MF.Title),
+				name = MF.Header,
 			},
 			Enable = {
 				order = 1,

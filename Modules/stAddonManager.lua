@@ -5,7 +5,8 @@ PA.stAM, _G.stAddonManager = stAM, stAM
 _G.stAddonManagerProfilesDB = {}
 _G.stAddonManagerServerDB = {}
 
-stAM.Title = PA.ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
+stAM.Title = 'stAddonManager'
+stAM.Header = PA.ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
 stAM.Description = PA.ACL['A simple and minimalistic addon to disable/enabled addons without logging out.']
 stAM.Authors = 'Azilroka    Safturento'
 stAM.isEnabled = false
@@ -709,7 +710,7 @@ function stAM:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(stAM.Title),
+				name = stAM.Header,
 			},
 			Enable = {
 				order = 1,

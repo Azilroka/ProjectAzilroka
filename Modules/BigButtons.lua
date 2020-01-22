@@ -4,7 +4,8 @@ if PA.Classic then return end
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
 PA.BB, _G.BigButtons = BB, BB
 
-BB.Title = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
+BB.Title = 'BigButtons'
+BB.Header = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
 BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
 BB.Authors = 'Azilroka    NihilisticPandemonium'
 BB.isEnabled = false
@@ -244,7 +245,7 @@ function BB:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(BB.Title),
+				name = BB.Header,
 			},
 			Enable = {
 				order = 1,

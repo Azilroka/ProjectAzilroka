@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
-SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
+SMB.Title = 'Square Minimap Buttons'
+SMB.Header = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
 SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
 SMB.Authors = 'Azilroka    NihilisticPandemonium    Sinaris    Omega    Durc'
 SMB.isEnabled = false
@@ -579,7 +580,7 @@ function SMB:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(SMB.Title),
+				name = SMB.Header,
 			},
 			Enable = {
 				order = 1,

@@ -1,7 +1,8 @@
 local PA = _G.ProjectAzilroka
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
 
-ES.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
+ES.Title = 'Enhanced Shadows'
+ES.Header = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
 ES.Description = PA.ACL['Adds options for registered shadows']
 ES.Authors = 'Azilroka     NihilisticPandemonium'
 ES.isEnabled = false
@@ -73,7 +74,7 @@ function ES:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(ES.Title)
+				name = ES.Header
 			},
 			Enable = {
 				order = 1,

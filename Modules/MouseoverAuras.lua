@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local MA = PA:NewModule('MouseoverAuras', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.MA = MA
 
-MA.Title = PA.ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
+MA.Title = 'MouseoverAuras'
+MA.Header = PA.ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
 MA.Description = PA.ACL['Auras for your mouseover target']
 MA.Authors = 'Azilroka'
 MA.isEnabled = false
@@ -188,7 +189,7 @@ function MA:Update(elapsed)
 	end
 end
 
-function MA:UPDATE_MOUSEOVER_UNIT(event)
+function MA:UPDATE_MOUSEOVER_UNIT()
 	if (UnitExists('mouseover')) then
 		MA.Holder:Show()
 		MA:UpdateAuras('mouseover')
@@ -209,7 +210,7 @@ function MA:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(MA.Title),
+				name = MA.Header,
 			},
 			Enable = {
 				order = 1,

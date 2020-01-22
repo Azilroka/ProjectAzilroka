@@ -2,8 +2,9 @@ local PA = _G.ProjectAzilroka
 local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.OzCD = OzCD
 
-OzCD.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
-OzCD.Description = 'OzCooldowns'
+OzCD.Title = 'OzCooldowns'
+OzCD.Header = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
+OzCD.Description = 'Minimalistic Cooldowns'
 OzCD.Authors = 'Azilroka    Nimaear'
 OzCD.isEnabled = false
 
@@ -369,7 +370,7 @@ function OzCD:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(OzCD.Title),
+				name = OzCD.Header,
 			},
 			Enable = {
 				order = 1,

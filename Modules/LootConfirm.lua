@@ -4,7 +4,8 @@ if PA.Retail then return end
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 PA.LC, _G.LootConfirm = LC, LC
 
-LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
+LC.Title = 'Loot Confirm'
+LC.Header = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 LC.isEnabled = false
@@ -44,7 +45,7 @@ function LC:GetOptions()
 			Header = {
 				order = 0,
 				type = 'header',
-				name = PA:Color(LC.Title)
+				name = LC.Header
 			},
 			Enable = {
 				order = 1,

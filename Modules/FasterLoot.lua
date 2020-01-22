@@ -2,7 +2,8 @@ local PA = _G.ProjectAzilroka
 local FL = PA:NewModule('FasterLoot', 'AceEvent-3.0')
 PA.FL, _G.FasterLoot = FL, FL
 
-FL.Title = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
+FL.Title = 'Faster Loot'
+FL.Header = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
 FL.Description = PA.ACL['Increases auto loot speed near instantaneous.']
 FL.Authors = 'Azilroka'
 FL.isEnabled = false
@@ -64,13 +65,14 @@ function FL:GetOptions()
 	PA.Options.args.FasterLoot = {
 		type = 'group',
 		name = FL.Title,
+		desc = FL.Description,
 		get = function(info) return FL.db[info[#info]] end,
 		set = function(info, value) FL.db[info[#info]] = value end,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
-				name = FL.Title,
+				name = FL.Header,
 			},
 			Enable = {
 				order = 1,

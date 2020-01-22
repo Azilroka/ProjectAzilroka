@@ -7,7 +7,8 @@ local pairs = pairs
 local tinsert = tinsert
 local tremove = tremove
 
-BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
+BrokerLDB.Title = 'BrokerLDB'
+BrokerLDB.Header = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
 BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BrokerLDB.Authors = 'Azilroka'
 BrokerLDB.isEnabled = false
@@ -232,13 +233,14 @@ end
 function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB = {
 		type = 'group',
-		name = BrokerLDB['Title'],
+		name = BrokerLDB.Title,
+		desc = BrokerLDB.Description,
 		get = function(info) return BrokerLDB.db[info[#info]] end,
 		args = {
 			Header = {
 				order = 0,
 				type = 'header',
-				name = BrokerLDB['Title'],
+				name = BrokerLDB.Header,
 			},
 			Enable = {
 				order = 1,
