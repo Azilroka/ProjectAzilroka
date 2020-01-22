@@ -49,9 +49,9 @@ function OzCD:SetSize(Position)
 	local ySpacing = Vertical and (Spacing + (OzCD.db.StatusBar and 5 or 0)) or 0
 
 	if OzCD.db.Vertical then
-		OzCD.Holder:SetSize(Size, Size * Position + (Position - 1) * ySpacing)
+		OzCD.Holder:SetSize(Size, (Size * Position) + ((Position - 1) * ySpacing))
 	else
-		OzCD.Holder:SetSize(Size * Position + (Position - 1) * xSpacing, Size)
+		OzCD.Holder:SetSize((Size * Position) + ((Position - 1) * xSpacing), Size)
 	end
 end
 
