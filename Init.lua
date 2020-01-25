@@ -23,7 +23,7 @@ local UIParent = UIParent
 local BNGetFriendInfo = BNGetFriendInfo
 local BNGetGameAccountInfo = BNGetGameAccountInfo
 
--- Libraries
+-- Ace Libraries
 PA.AC = LibStub('AceConfig-3.0')
 PA.GUI = LibStub('AceGUI-3.0')
 PA.ACR = LibStub('AceConfigRegistry-3.0')
@@ -31,9 +31,13 @@ PA.ACD = LibStub('AceConfigDialog-3.0')
 PA.ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false)
 PA.ADB = LibStub('AceDB-3.0')
 
+-- Extra Libraries
 PA.LSM = LibStub('LibSharedMedia-3.0')
 PA.LDB = LibStub('LibDataBroker-1.1')
+PA.LCG = LibStub("LibCustomGlow-1.0")
 PA.LAB = LibStub('LibActionButton-1.0')
+
+-- External Libraries
 PA.Masque = LibStub("Masque", true)
 
 -- WoW Data
@@ -101,6 +105,9 @@ PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
 PA.Classes = {}
+
+PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
 
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
@@ -509,7 +516,7 @@ end
 function PA:PLAYER_LOGIN()
 	PA.Multiple = PA:GetUIScale()
 
-	PA.AS = AddOnSkins and unpack(AddOnSkins)
+	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 
 	for _, module in PA:IterateModules() do
 		if module.BuildProfile then module:BuildProfile() end
