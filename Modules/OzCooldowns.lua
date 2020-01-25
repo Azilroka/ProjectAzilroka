@@ -644,7 +644,7 @@ function OzCD:Initialize()
 		return
 	end
 
-	OzCD.isEnabled = false
+	OzCD.isEnabled = true
 
 	if PA.Masque and OzCD.db.Masque then
 		PA.Masque:Register('OzCooldowns', function() end)
