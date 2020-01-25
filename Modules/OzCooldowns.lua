@@ -94,7 +94,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 					local SpellID, overrideId = GetFlyoutSlotInfo(flyoutId, flyoutIndex)
 					if OzCD:ScanTooltip(index, bookType) then
 						if SpellID ~= overrideId then
-							OzCD.SpellList[SpellID] = true
+							OzCD.SpellList[overrideId] = true
 						else
 							OzCD.SpellList[SpellID] = true
 						end
