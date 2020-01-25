@@ -152,19 +152,6 @@ function OzCD:UpdateActiveCooldowns()
 				CurrentDuration = (Start + Duration - GetTime())
 			end
 
-			if OzCD.db.BuffTimer then
-				local _, _, AuraDuration, ExpirationTime = select(3, _G.AuraUtil.FindAuraByName(Name, 'player'))
-				if ExpirationTime then
-					Start, Duration = ExpirationTime - AuraDuration, AuraDuration
-					CurrentDuration = (Duration - (GetTime() - Start))
-					Frame.Cooldown:SetReverse(true)
-					Frame.StatusBar:SetReverseFill(true)
-				else
-					Frame.Cooldown:SetReverse(false)
-					Frame.StatusBar:SetReverseFill(false)
-				end
-			end
-
 			Frame.CurrentDuration = CurrentDuration
 			Frame.Duration = Duration
 			Frame.SpellID = SpellID
@@ -217,6 +204,7 @@ function OzCD:CreateCooldown(index)
 	Frame.Cooldown = CreateFrame('Cooldown', '$parentCooldown', Frame, 'CooldownFrameTemplate')
 	Frame.Cooldown:SetAllPoints()
 	Frame.Cooldown:SetDrawEdge(false)
+	Frame.Cooldown:SetReverse(false)
 	Frame.Cooldown.CooldownOverride = 'OzCD'
 
 	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
@@ -229,6 +217,7 @@ function OzCD:CreateCooldown(index)
 	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
 	Frame.StatusBar = CreateFrame('StatusBar', nil, Frame)
+	Frame.StatusBar:SetReverseFill(false)
 	Frame.StatusBar:SetPoint('TOP', Frame, 'BOTTOM', 0, -1)
 	Frame.StatusBar:SetMinMaxValues(0, 1)
 	Frame.StatusBar:SetStatusBarTexture(PA.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture))
@@ -481,11 +470,6 @@ function OzCD:GetOptions()
 						desc = PA.ACL['Duration in Seconds'],
 						min = 2, max = 600, step = 1,
 					},
-					BuffTimer = {
-						order = 4,
-						type = 'toggle',
-						name = PA.ACL['Buff Timer'],
-					},
 					UpdateSpeed = {
 						order = 5,
 						type = 'range',
@@ -627,7 +611,6 @@ function OzCD:BuildProfile()
 	PA.Defaults.profile.OzCooldowns = {
 		Enable = true,
 		Announce = true,
-		BuffTimer = true,
 		DurationText = true,
 		Masque = false,
 		SuppressDuration = 60,
