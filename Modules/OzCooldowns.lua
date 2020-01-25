@@ -54,31 +54,28 @@ for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_REC
 end
 
 function OzCD:ScanTooltip(index, bookType)
-	local found = false
-
-	PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
+	PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
 	PA.ScanTooltip:SetSpellBookItem(index, bookType)
 	PA.ScanTooltip:Show()
 
 	for i = 2, 4 do
 		local str = _G['PAScanTooltipTextRight'..i]
 		local text = str and str:GetText()
-		if text and (strmatch(text, t.SPELL_RECAST_TIME_SEC) or strmatch(text, t.SPELL_RECAST_TIME_MIN) or strmatch(text, t.SPELL_RECAST_TIME_CHARGES_SEC) or strmatch(text, t.SPELL_RECAST_TIME_CHARGES_MIN)) then
-			found = true
-			break
+		if text then
+			for _, matchtext in pairs(t) do
+				if strmatch(text, matchtext) then
+					return true
+				end
+			end
 		end
 	end
-
-	PA.ScanTooltip:Hide()
-
-	return found
 end
 
 function OzCD:ScanSpellBook(bookType, numSpells, offset)
 	offset = offset or 0
 	for index = offset + 1, offset + numSpells, 1 do
 		local skillType, special = GetSpellBookItemInfo(index, bookType)
-		if skillType == "SPELL" or skillType == "PETACTION" then
+		if skillType == 'SPELL' or skillType == 'PETACTION' then
 			local SpellID, SpellName, Rank
 			if PA.Retail then
 				SpellID = select(2, GetSpellLink(index, bookType))
@@ -89,7 +86,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 			if OzCD:ScanTooltip(index, bookType) then
 				OzCD.SpellList[SpellID] = SpellName or true
 			end
-		elseif skillType == "FLYOUT" then
+		elseif skillType == 'FLYOUT' then
 			local flyoutId = special
 			local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutId)
 			if numSlots > 0 and isKnown then
@@ -104,7 +101,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 					end
 				end
 			end
-		elseif skillType == "FUTURESPELL" then
+		elseif skillType == 'FUTURESPELL' then
 		elseif not skillType then
 			break
 		end
@@ -277,11 +274,11 @@ function OzCD:CreateCooldown(index)
 		local CurrentDuration = s.CurrentDuration
 		local TimeRemaining
 		if CurrentDuration > 60 then
-			TimeRemaining = format("%d m", ceil(CurrentDuration / 60))
+			TimeRemaining = format('%d m', ceil(CurrentDuration / 60))
 		elseif CurrentDuration <= 60 and CurrentDuration > 10 then
-			TimeRemaining = format("%d s", CurrentDuration)
+			TimeRemaining = format('%d s', CurrentDuration)
 		elseif CurrentDuration <= 10 and CurrentDuration > 0 then
-			TimeRemaining = format("%.1f s", CurrentDuration)
+			TimeRemaining = format('%.1f s', CurrentDuration)
 		end
 
 		SendChatMessage(format(PA.ACL["My %s will be off cooldown in %s"], s.SpellName, TimeRemaining), Channel)
@@ -317,7 +314,7 @@ end
 
 function OzCD:UpdateSettings()
 	local StatusBarTexture = PA.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture)
-	local StackFont = PA.LSM:Fetch("font", OzCD.db.StackFont)
+	local StackFont = PA.LSM:Fetch('font', OzCD.db.StackFont)
 
 	for _, Frame in ipairs(OzCD.Holder) do
 		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
@@ -624,6 +621,8 @@ function OzCD:BuildProfile()
 	if numPetSpells then
 		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 	end
+
+	PA.ScanTooltip:Hide()
 
 	PA.Defaults.profile.OzCooldowns = {
 		Enable = true,
