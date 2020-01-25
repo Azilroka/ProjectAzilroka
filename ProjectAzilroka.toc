@@ -14,6 +14,5 @@ Modules\Enhanced_Config.lua
 
 Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 
-Class\Load_Classes.xml
 Media\Media.lua
 Modules\Load_Modules.xml

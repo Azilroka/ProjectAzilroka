@@ -20,17 +20,20 @@ local unpack = unpack
 local tinsert = tinsert
 local tostring = tostring
 local tonumber = tonumber
+local strmatch = strmatch
 
 local GetTime = GetTime
 local GetSpellInfo = GetSpellInfo
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellCharges = GetSpellCharges
-local IsSpellKnown = IsSpellKnown
-local DoesSpellExist = DoesSpellExist
-
+local GetSpellBookItemInfo = GetSpellBookItemInfo
+local GetSpellLink = GetSpellLink
+local GetSpellBookItemName = GetSpellBookItemName
 local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
 local SendChatMessage = SendChatMessage
+local GetFlyoutInfo = GetFlyoutInfo
+local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 
 local CopyTable = CopyTable
 local CreateFrame = CreateFrame
@@ -42,6 +45,71 @@ OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
 OzCD.IsChargeCooldown = {}
+OzCD.SpellList = {}
+
+-- Simpy Magic
+local t = {}
+for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
+    t[name] = _G[name]:gsub('%%%.%dg','%%d-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
+end
+
+function OzCD:ScanTooltip(index, bookType)
+	local found = false
+
+	PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
+	PA.ScanTooltip:SetSpellBookItem(index, bookType)
+	PA.ScanTooltip:Show()
+
+	for i = 2, 4 do
+		local str = _G['PAScanTooltipTextRight'..i]
+		local text = str and str:GetText()
+		if text and (strmatch(text, t.SPELL_RECAST_TIME_SEC) or strmatch(text, t.SPELL_RECAST_TIME_MIN) or strmatch(text, t.SPELL_RECAST_TIME_CHARGES_SEC) or strmatch(text, t.SPELL_RECAST_TIME_CHARGES_MIN)) then
+			found = true
+			break
+		end
+	end
+
+	PA.ScanTooltip:Hide()
+
+	return found
+end
+
+function OzCD:ScanSpellBook(bookType, numSpells, offset)
+	offset = offset or 0
+	for index = offset + 1, offset + numSpells, 1 do
+		local skillType, special = GetSpellBookItemInfo(index, bookType)
+		if skillType == "SPELL" or skillType == "PETACTION" then
+			local SpellID, SpellName, Rank
+			if PA.Retail then
+				SpellID = select(2, GetSpellLink(index, bookType))
+			else
+				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
+				SpellName = format('%s %s', SpellName, Rank)
+			end
+			if OzCD:ScanTooltip(index, bookType) then
+				OzCD.SpellList[SpellID] = SpellName or true
+			end
+		elseif skillType == "FLYOUT" then
+			local flyoutId = special
+			local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutId)
+			if numSlots > 0 and isKnown then
+				for flyoutIndex = 1, numSlots, 1 do
+					local SpellID, overrideId = GetFlyoutSlotInfo(flyoutId, flyoutIndex)
+					if OzCD:ScanTooltip(index, bookType) then
+						if SpellID ~= overrideId then
+							OzCD.SpellList[SpellID] = true
+						else
+							OzCD.SpellList[SpellID] = true
+						end
+					end
+				end
+			end
+		elseif skillType == "FUTURESPELL" then
+		elseif not skillType then
+			break
+		end
+	end
+end
 
 function OzCD:SetSize(Position)
 	Position = Position or PA:CountTable(OzCD.ActiveCooldowns)
@@ -342,15 +410,15 @@ end
 function OzCD:GenerateSpellOptions()
 	local SpellOptions = {}
 
-	for k in pairs(OzCD.db.SpellCDs) do
-		local Name, _, Icon = GetSpellInfo(k)
+	for SpellID, SpellName in pairs(OzCD.db.SpellCDs) do
+		local Name, _, Icon = GetSpellInfo(SpellID)
 		if Name then
-			SpellOptions[tostring(k)] = {
+			SpellOptions[tostring(SpellID)] = {
 				type = 'toggle',
 				image = Icon,
 				imageCoords = PA.TexCoords,
-				name = Name,
-				desc = 'Spell ID: '..k,
+				name = ' '..(type(SpellName) == 'string' and SpellName or Name),
+				desc = 'Spell ID: '..SpellID,
 			}
 		end
 	end
@@ -512,7 +580,7 @@ function OzCD:GetOptions()
 								name = PA.ACL['Texture Color'],
 								hasAlpha = false,
 								get = function(info) return unpack(OzCD.db[info[#info]]) end,
-								set = function(info, r, g, b, a) OzCD.db[info[#info]] = { r, g, b, a} OzCD:UpdateSettings() end,
+								set = function(info, r, g, b, a) OzCD.db[info[#info]] = { r, g, b, a } OzCD:UpdateSettings() end,
 								disabled = function() return not OzCD.db.StatusBar or OzCD.db.StatusBarGradient end,
 							},
 						},
@@ -544,18 +612,17 @@ function OzCD:GetOptions()
 end
 
 function OzCD:BuildProfile()
-	local SpellList = {}
-
-	for _, SpellID in pairs(PA.Racials) do
-		if IsSpellKnown(SpellID) then
-			SpellList[SpellID] = true
+	-- Scan SpellBook
+	for tab = 1, _G.GetNumSpellTabs(), 1 do
+		local name, _, offset, numSpells = _G.GetSpellTabInfo(tab)
+		if name then
+			OzCD:ScanSpellBook(_G.BOOKTYPE_SPELL, numSpells, offset)
 		end
 	end
 
-	for _, SpellID in pairs(PA.SpellList) do
-		if DoesSpellExist(SpellID) then
-			SpellList[SpellID] = true
-		end
+	local numPetSpells = _G.HasPetSpells()
+	if numPetSpells then
+		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 	end
 
 	PA.Defaults.profile.OzCooldowns = {
@@ -569,7 +636,7 @@ function OzCD:BuildProfile()
 		Size = 36,
 		SortByDuration = true,
 		Spacing = 4,
-		SpellCDs = SpellList,
+		SpellCDs = OzCD.SpellList,
 		StackFont = 'Arial Narrow',
 		StackFontFlag = 'OUTLINE',
 		StackFontSize = 12,
