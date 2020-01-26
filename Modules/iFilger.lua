@@ -80,9 +80,7 @@ function iFilger:DisableUnit(button)
 	button:Disable()
 	button:UnregisterEvent('UNIT_AURA')
 	for _, element in ipairs(button) do
-		if element.IsObjectType and element:IsObjectType('Button') then
-			element:Hide()
-		end
+		element:Hide()
 	end
 end
 
