@@ -390,6 +390,7 @@ function PA:UpdateCooldownSettings(module)
 	-- okay update the other override settings if it was one of the core file calls
 	if module and (module == 'all') then
 		PA:UpdateCooldownSettings('OzCooldowns')
+		PA:UpdateCooldownSettings('iFilger')
 	end
 end
 
@@ -710,3 +711,4 @@ PA.Options.args.cooldown = {
 
 group(5,  'global',     PA.ACL["Global"])
 group(6, 'OzCooldowns',  PA.ACL.OzCooldowns)
+group(7, 'iFilger',  PA.ACL.iFilger)
