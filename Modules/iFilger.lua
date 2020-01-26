@@ -53,7 +53,12 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	object:SetScript('OnEvent', function() iFilger:UpdateAuras(object, unit) end)
 
 	RegisterUnitWatch(object)
+
 	iFilger:CreateMover(object)
+
+	if not db.Enable then
+		iFilger:DisableUnit(object)
+	end
 
 	return object
 end
@@ -61,11 +66,16 @@ end
 function iFilger:DisableUnit(button)
 	button:Disable()
 	button:UnregisterEvent('UNIT_AURA')
+	for _, element in ipairs(button) do
+		if element.IsObjectType and element:IsObjectType('Button') then
+			element:Hide()
+		end
+	end
 end
 
 function iFilger:EnableUnit(button)
 	button:Enable()
-	button:RegisterEvent('UNIT_AURA', 'UpdateAuras')
+	button:RegisterEvent('UNIT_AURA')
 end
 
 iFilger.Cooldowns = {}
@@ -301,23 +311,17 @@ function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, 
 			if not element.db.StatusBar then
 				if (duration and duration > 0) then
 					button.Cooldown:SetCooldown(expiration - duration, duration)
-					button.Cooldown:Show()
-				else
-					button.Cooldown:Hide()
 				end
+				button.Cooldown:SetShown(duration and duration > 0)
 			end
 
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
-			button.StatusBar:SetShown(element.db.StatusBar)
 
 			button.Texture:SetTexture(texture)
 			button.Stacks:SetText(count > 1 and count)
 			button.StatusBar.Name:SetText(name)
 
-			button:SetSize(element.db.Size, element.db.Size)
-
 			button:SetID(index)
-
 			button:Show()
 
 			if isDebuff then
@@ -507,6 +511,10 @@ function iFilger:CreateAuraIcon(element)
 	PA:CreateBackdrop(Frame.StatusBar, 'Default')
 	PA:CreateShadow(Frame.StatusBar.Backdrop)
 
+	Frame.StatusBar:SetShown(element.db.StatusBar)
+	Frame.StatusBar.Name:SetShown(element.db.StatusBarNameEnabled)
+	Frame.StatusBar.Time:SetShown(element.db.StatusBarTimeEnabled)
+
 	tinsert(element, Frame)
 
 	return Frame
@@ -514,6 +522,11 @@ end
 
 function iFilger:UpdateAll()
 	for _, Frame in pairs(iFilger.Panels) do
+		if Frame.db.Enable then
+			iFilger:EnableUnit(Frame)
+		else
+			iFilger:DisableUnit(Frame)
+		end
 		for _, Button in ipairs(Frame) do
 			Button:SetSize(Frame.db.Size, Frame.db.Size)
 			Button.Stacks:SetFont(PA.LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
@@ -524,6 +537,7 @@ function iFilger:UpdateAll()
 			Button.StatusBar.Time:SetFont(PA.LSM:Fetch('font', Frame.db.StatusBarFont), Frame.db.StatusBarFontSize, Frame.db.StatusBarFontFlag)
 			Button.StatusBar.Name:SetPoint('BOTTOMLEFT', Button.StatusBar, Frame.db.StatusBarNameX, Frame.db.StatusBarNameY)
 			Button.StatusBar.Time:SetPoint('BOTTOMRIGHT', Button.StatusBar, Frame.db.StatusBarTimeX, Frame.db.StatusBarTimeY)
+			Button.StatusBar:SetShown(Frame.db.StatusBar)
 			Button.StatusBar.Name:SetShown(Frame.db.StatusBarNameEnabled)
 			Button.StatusBar.Time:SetShown(Frame.db.StatusBarTimeEnabled)
 		end
