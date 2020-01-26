@@ -170,7 +170,7 @@ function MA:UpdateAuras(unit)
 end
 
 function MA:Update(elapsed)
-	if (not UnitExists('mouseover')) or GetMouseFocus() and (GetMouseFocus():IsForbidden() or GetMouseFocus():GetName() ~= "WorldFrame" ) then
+	if (not UnitExists('mouseover')) or GetMouseFocus() and (GetMouseFocus():IsForbidden()) then
 		MA.Holder:Hide()
 		return
 	end
