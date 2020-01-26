@@ -662,9 +662,7 @@ function stAM:Update()
 
 	local font, fontSize, fontFlag = PA.LSM:Fetch('font', stAM.db.Font), stAM.db.FontSize, stAM.db.FontFlag
 
-	for i in pairs(stAM.Frame.AddOns.Buttons) do
-		local CheckButton = stAM.Frame.AddOns.Buttons[i]
-
+	for _, CheckButton in ipairs(stAM.Frame.AddOns.Buttons) do
 		CheckButton:SetSize(stAM.db.ButtonWidth, stAM.db.ButtonHeight)
 		CheckButton.Text:SetFont(font, fontSize, fontFlag)
 		CheckButton.StatusText:SetFont(font, fontSize, fontFlag)
@@ -688,9 +686,7 @@ function stAM:Update()
 	stAM.ProfileMenu.DisableAll.Text:SetFont(font, 12, fontFlag)
 	stAM.ProfileMenu.NewButton.Text:SetFont(font, 12, fontFlag)
 
-	for i in pairs(stAM.ProfileMenu.Buttons) do
-		local Button = stAM.ProfileMenu.Buttons[i]
-
+	for _, Button in ipairs(stAM.ProfileMenu.Buttons) do
 		Button.Load.Text:SetFont(font, 12, fontFlag)
 		Button.Update.Text:SetFont(font, 12, fontFlag)
 		Button.Delete.Text:SetFont(font, 12, fontFlag)
@@ -774,7 +770,7 @@ function stAM:GetOptions()
 						hasAlpha = true,
 						get = function(info) return unpack(stAM.db[info[#info]]) end,
 						set = function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end,
-						disabled = function() return stAM.db['ClassColor'] end,
+						disabled = function() return stAM.db.ClassColor end,
 					},
 					ClassColor = {
 						order = 8,
