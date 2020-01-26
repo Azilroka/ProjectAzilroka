@@ -3,6 +3,7 @@
 	<Script file="BrokerLDB.lua"/>
 	<Script file="DragonOverlay.lua"/>
 	<Script file="EnhancedFriendsList.lua"/>
+	<Script file="EnhancedPetBattleUI.lua"/>
 	<Script file="EnhancedShadows.lua"/>
 	<Script file="FasterLoot.lua"/>
 	<Script file="iFilger.lua"/>
