@@ -36,6 +36,19 @@ local IsSpellKnown = IsSpellKnown
 local VISIBLE = 1
 local HIDDEN = 0
 
+iFilger.Cooldowns = {}
+iFilger.ActiveCooldowns = {}
+iFilger.DelayCooldowns = {}
+iFilger.IsChargeCooldown = {}
+iFilger.SpellList = {}
+iFilger.CompleteSpellBook = {}
+
+-- Simpy Magic
+local t = {}
+for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
+    t[name] = _G[name]:gsub('%%%.%dg','%%d-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
+end
+
 function iFilger:Spawn(unit, name, db, filter, position)
 	local object = CreateFrame('Button', 'iFilger_'..name, UIParent, 'SecureUnitButtonTemplate')
 	object:SetSize(100, 20)
@@ -76,19 +89,6 @@ end
 function iFilger:EnableUnit(button)
 	button:Enable()
 	button:RegisterEvent('UNIT_AURA')
-end
-
-iFilger.Cooldowns = {}
-iFilger.ActiveCooldowns = {}
-iFilger.DelayCooldowns = {}
-iFilger.IsChargeCooldown = {}
-iFilger.SpellList = {}
-iFilger.CompleteSpellBook = {}
-
--- Simpy Magic
-local t = {}
-for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
-    t[name] = _G[name]:gsub('%%%.%dg','%%d-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 end
 
 function iFilger:ScanTooltip(index, bookType)
@@ -163,9 +163,9 @@ function iFilger:UpdateActiveCooldowns()
 
 		if Name then
 			Position = Position + 1
-			local Frame = iFilger.Holder[Position]
+			local Frame = iFilger.Panels.Cooldowns[Position]
 			if (not Frame) then
-				Frame = iFilger:CreateCooldown(Position)
+				Frame = iFilger:CreateAuraIcon(iFilger.Panels.Cooldowns)
 			end
 
 			local Start, Duration, CurrentDuration, Charges
