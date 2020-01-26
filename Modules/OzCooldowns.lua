@@ -651,9 +651,7 @@ function OzCD:Initialize()
 		OzCD.MasqueGroup = PA.Masque:Group('OzCooldowns')
 	end
 
-	local Holder = CreateFrame('Frame', 'OzCooldownsHolder', UIParent)
-	Holder:SetFrameStrata('LOW')
-	Holder:SetFrameLevel(10)
+	local Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
 	Holder:SetSize(40, 40)
 	Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
 

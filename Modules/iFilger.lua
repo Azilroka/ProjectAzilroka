@@ -50,7 +50,7 @@ for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_REC
 end
 
 function iFilger:Spawn(unit, name, db, filter, position)
-	local object = CreateFrame('Button', 'iFilger_'..name, UIParent, 'SecureUnitButtonTemplate')
+	local object = CreateFrame('Button', 'iFilger_'..name, PA.PetBattleFrameHider, 'SecureUnitButtonTemplate')
 	object:SetSize(100, 20)
 	object:SetPoint(unpack(position))
 	object:SetAttribute('unit', unit)

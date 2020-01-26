@@ -109,6 +109,11 @@ PA.Classes = {}
 PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
 
+PA.PetBattleFrameHider = CreateFrame('Frame', 'PA_PetBattleFrameHider', UIParent, 'SecureHandlerStateTemplate')
+PA.PetBattleFrameHider:SetAllPoints()
+PA.PetBattleFrameHider:SetFrameStrata('LOW')
+RegisterStateDriver(PA.PetBattleFrameHider, 'visibility', '[petbattle] hide; show')
+
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
 
