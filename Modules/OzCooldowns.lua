@@ -205,7 +205,7 @@ function OzCD:CreateCooldown(index)
 	Frame.Cooldown:SetAllPoints()
 	Frame.Cooldown:SetDrawEdge(false)
 	Frame.Cooldown:SetReverse(false)
-	Frame.Cooldown.CooldownOverride = 'OzCD'
+	Frame.Cooldown.CooldownOverride = 'OzCooldowns'
 
 	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 	Frame.Icon:SetTexCoord(unpack(PA.TexCoords))
