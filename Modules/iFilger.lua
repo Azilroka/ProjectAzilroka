@@ -479,10 +479,11 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 		s.elapsed = (s.elapsed or 0) + elapsed
 		if (s.elapsed > .1) then
-			local timervalue, formatid = PA:GetTimeInfo(Frame.expiration - GetTime(), iFilger.db.cooldown.threshold)
+			local expiration = Frame.expiration - GetTime()
+			local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.cooldown.threshold)
 			local color = PA.TimeColors[formatid]
 			if timervalue then
-				local Normalized = timervalue / Frame.duration
+				local Normalized = expiration / Frame.duration
 				s:SetValue(Normalized)
 				s.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
 				s.Time:SetTextColor(color.r, color.g, color.b)
