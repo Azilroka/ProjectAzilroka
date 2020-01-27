@@ -169,6 +169,8 @@ function EPB:GetOptions()
 		type = "group",
 		name = EPB.Title,
 		desc = EPB.Description,
+		get = function(info) return EPB.db[info[#info]] end,
+		set = function(info, value) EPB.db[info[#info]] = value EPB:Update() end,
 		args = {
 			Header = {
 				order = 0,
@@ -193,8 +195,6 @@ function EPB:GetOptions()
 				type = "group",
 				name = "General",
 				guiInline = true,
-				get = function(info) return EPB.db[info[#info]] end,
-				set = function(info, value) EPB.db[info[#info]] = value EPB:Update() end,
 				args = {
 					HideBlizzard = {
 						order = 1,
