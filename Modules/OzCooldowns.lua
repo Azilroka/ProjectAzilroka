@@ -81,7 +81,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 				SpellID = select(2, GetSpellLink(index, bookType))
 			else
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
-				SpellName = format('%s %s', SpellName, Rank)
+				SpellName = (Rank and Rank ~= '') and format('%s %s', SpellName, Rank)
 			end
 			if OzCD:ScanTooltip(index, bookType) then
 				OzCD.SpellList[SpellID] = SpellName or true
