@@ -141,15 +141,14 @@ function OzCD:UpdateActiveCooldowns()
 
 			if OzCD.IsChargeCooldown[SpellID] then
 				Charges, _, Start, Duration = GetSpellCharges(SpellID)
-				if Charges then
-					CurrentDuration = (Start + Duration - GetTime())
-					if Start == (((2^32)/1000) - Duration) then
-						CurrentDuration = 0
-					end
-				end
 			else
 				Start, Duration = GetSpellCooldown(SpellID)
-				CurrentDuration = (Start + Duration - GetTime())
+			end
+
+			CurrentDuration = (Start + Duration - GetTime())
+
+			if Charges and Start == (((2^32)/1000) - Duration) then
+				CurrentDuration = 0
 			end
 
 			Frame.CurrentDuration = CurrentDuration

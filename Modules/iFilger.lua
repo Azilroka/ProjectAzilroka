@@ -53,24 +53,24 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	local object = CreateFrame('Button', 'iFilger_'..name, PA.PetBattleFrameHider, 'SecureUnitButtonTemplate')
 	object:SetSize(100, 20)
 	object:SetPoint(unpack(position))
-	object:SetAttribute('unit', unit)
-
-	object.unit = unit
 	object.db = db
-	object.filter = filter
 	object.name = name
 	object.createdIcons = 0
 	object.anchoredIcons = 0
 
-	object:RegisterEvent('UNIT_AURA')
-	object:SetScript('OnEvent', function() iFilger:UpdateAuras(object, unit) end)
-
-	RegisterUnitWatch(object)
-
 	iFilger:CreateMover(object)
 
-	if not db.Enable then
-		iFilger:DisableUnit(object)
+	if name ~= 'Cooldowns' then
+		object:SetAttribute('unit', unit)
+		object.unit = unit
+		object.filter = filter
+		object:RegisterEvent('UNIT_AURA')
+		object:SetScript('OnEvent', function() iFilger:UpdateAuras(object, unit) end)
+		RegisterUnitWatch(object)
+
+		if not db.Enable then
+			iFilger:DisableUnit(object)
+		end
 	end
 
 	return object
@@ -151,8 +151,10 @@ function iFilger:ScanSpellBook(bookType, numSpells, offset)
 end
 
 function iFilger:UpdateActiveCooldowns()
-	for i = PA:CountTable(iFilger.ActiveCooldowns) + 1, #iFilger.Holder do
-		iFilger.Holder[i]:Hide()
+	local Panel = iFilger.Panels.Cooldowns
+
+	for i = PA:CountTable(iFilger.ActiveCooldowns) + 1, #Panel do
+		Panel[i]:Hide()
 	end
 
 	local Position = 0
@@ -161,54 +163,52 @@ function iFilger:UpdateActiveCooldowns()
 
 		if Name then
 			Position = Position + 1
-			local Frame = iFilger.Panels.Cooldowns[Position]
-			if (not Frame) then
-				Frame = iFilger:CreateAuraIcon(iFilger.Panels.Cooldowns)
-			end
+			local button = Panel[Position] or iFilger:CreateAuraIcon(Panel)
 
 			local Start, Duration, CurrentDuration, Charges
 
 			if iFilger.IsChargeCooldown[SpellID] then
 				Charges, _, Start, Duration = GetSpellCharges(SpellID)
-				if Charges then
-					CurrentDuration = (Start + Duration - GetTime())
-					if Start == (((2^32)/1000) - Duration) then
-						CurrentDuration = 0
-					end
-				end
 			else
 				Start, Duration = GetSpellCooldown(SpellID)
-				CurrentDuration = (Start + Duration - GetTime())
 			end
 
-			Frame.CurrentDuration = CurrentDuration
-			Frame.Duration = Duration
-			Frame.SpellID = SpellID
-			Frame.SpellName = Name
+			CurrentDuration = (Start + Duration - GetTime())
 
-			Frame.Icon:SetTexture(Icon)
+			if Charges and Start == (((2^32)/1000) - Duration) then
+				CurrentDuration = 0
+			end
+
+			button.duration = Duration
+			button.spellID = SpellID
+			button.spellName = Name
+
+			button.Texture:SetTexture(Icon)
+			button:SetShown(CurrentDuration and CurrentDuration > 0)
 
 			if (CurrentDuration and CurrentDuration > 0) then
-				if iFilger.db[Frame.Owner]["StatusBar"] then
-					local timervalue, formatid = iFilger:GetTimeInfo(CurrentDuration)
-					self.StatusBar:SetValue(CurrentDuration / Duration)
-					self.StatusBar.Time:SetFormattedText(iFilger.TimeFormats[formatid], timervalue)
-					self.StatusBar.Time:SetTextColor(unpack(iFilger.TimeColors[formatid]))
-					self.StatusBar:SetStatusBarColor(unpack(iFilger.db[Frame.Owner].StatusBarTextureColor))
-					if iFilger.db[Frame.Owner]['FollowCooldownText'] and (formatid == 1 or formatid == 2) then
-						self.StatusBar:SetStatusBarColor(unpack(iFilger.TimeColors[formatid]))
+				if Panel.db.StatusBar then
+					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration)
+					local color = PA.TimeColors[formatid]
+
+					button.StatusBar:SetValue(CurrentDuration / Duration)
+					button.StatusBar.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
+					button.StatusBar.Time:SetTextColor(unpack(iFilger.TimeColors[formatid]))
+					button.StatusBar.Time:SetTextColor(color.r, color.g, color.b)
+					if Panel.db.FollowCooldownText and (formatid == 1 or formatid == 2) then
+						button.StatusBar:SetStatusBarColor(color.r, color.g, color.b)
 					end
 				else
-					Frame.Cooldown:SetCooldown(Start, Duration)
+					button.Cooldown:SetCooldown(Start, Duration)
 				end
-				Frame:Show()
 			else
 				iFilger.ActiveCooldowns[SpellID] = nil
-				Frame.CurrentDuration = 0
-				Frame:Hide()
+				button.CurrentDuration = 0
 			end
 		end
 	end
+
+	iFilger:SetPosition(Panel)
 end
 
 function iFilger:UpdateDelayedCooldowns()
@@ -226,7 +226,7 @@ function iFilger:UpdateDelayedCooldowns()
 
 		CurrentDuration = (Start + Duration - GetTime())
 
-		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.SuppressDuration) then
+		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.SuppressDuration) then
 			iFilger.DelayCooldowns[SpellID] = nil
 			iFilger.ActiveCooldowns[SpellID] = Duration
 		end
@@ -289,12 +289,7 @@ function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, 
 
 	if name then
 		local position = visible + offset + 1
-		local button = element[position]
-
-		if (not button) then
-			button = iFilger:CreateAuraIcon(element, position)
-			element.createdIcons = element.createdIcons + 1
-		end
+		local button = element[position] or iFilger:CreateAuraIcon(element, position)
 
 		button.caster = caster
 		button.filter = filter
@@ -302,6 +297,7 @@ function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, 
 		button.isPlayer = caster == 'player' or caster == 'vehicle'
 		button.expiration = expiration
 		button.duration = duration
+		button.spellID = spellID
 
 		local show = iFilger:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,timeMod, effect1, effect2, effect3)
 
@@ -389,12 +385,12 @@ function iFilger:UpdateAuras(element, unit)
 end
 
 function iFilger:PLAYER_ENTERING_WORLD()
-	for SpellID in pairs(iFilger.db.SpellCDs) do
+	for SpellID in pairs(iFilger.db.Cooldowns.SpellCDs) do
 		local Start, Duration, Enable = GetSpellCooldown(SpellID)
 		local CurrentDuration = (Start + Duration - GetTime()) or 0
 
-		if Enable and (CurrentDuration > .1) and (CurrentDuration < iFilger.db.IgnoreDuration) then
-			if (CurrentDuration >= iFilger.db.SuppressDuration) then
+		if Enable and (CurrentDuration > .1) and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
+			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
 				iFilger.DelayCooldowns[SpellID] = Duration
 			else
 				iFilger.ActiveCooldowns[SpellID] = Duration
@@ -408,7 +404,7 @@ function iFilger:PLAYER_ENTERING_WORLD()
 end
 
 function iFilger:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
-	if unit == 'player' and (iFilger.db.SpellCDs[SpellID] or SpellID == 13877) then
+	if unit == 'player' and (iFilger.db.Cooldowns.SpellCDs[SpellID] or SpellID == 13877) then
 		iFilger.Cooldowns[SpellID] = true
 	end
 end
@@ -433,8 +429,8 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 
 		CurrentDuration = (Start + Duration - GetTime())
 
-		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.IgnoreDuration) then
-			if (CurrentDuration >= iFilger.db.SuppressDuration) then
+		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
+			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
 				iFilger.DelayCooldowns[SpellID] = Duration
 			else
 				iFilger.ActiveCooldowns[SpellID] = Duration
@@ -476,24 +472,27 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetPoint('BOTTOMLEFT', Frame, 'BOTTOMRIGHT', 2, 0)
 	Frame.StatusBar:SetMinMaxValues(0, 1)
 	Frame.StatusBar:SetValue(0)
-	Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
-		s.elapsed = (s.elapsed or 0) + elapsed
-		if (s.elapsed > .1) then
-			local expiration = Frame.expiration - GetTime()
-			local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.cooldown.threshold)
-			local color = PA.TimeColors[formatid]
-			if timervalue then
-				local Normalized = expiration / Frame.duration
-				s:SetValue(Normalized)
-				s.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
-				s.Time:SetTextColor(color.r, color.g, color.b)
-				if element.db.FollowCooldownText then
-					s:SetStatusBarColor(color.r, color.g, color.b)
+
+	if element.name ~= 'Cooldowns' then
+		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
+			s.elapsed = (s.elapsed or 0) + elapsed
+			if (s.elapsed > .1) then
+				local expiration = Frame.expiration - GetTime()
+				local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.cooldown.threshold)
+				local color = PA.TimeColors[formatid]
+				if timervalue then
+					local Normalized = expiration / Frame.duration
+					s:SetValue(Normalized)
+					s.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
+					s.Time:SetTextColor(color.r, color.g, color.b)
+					if element.db.FollowCooldownText and (formatid == 1 or formatid == 2) then
+						s:SetStatusBarColor(color.r, color.g, color.b)
+					end
 				end
+				self.elapsed = 0
 			end
-			self.elapsed = 0
-		end
-	end)
+		end)
+	end
 
 	Frame.StatusBar.Name = Frame.StatusBar:CreateFontString(nil, 'OVERLAY')
 	Frame.StatusBar.Name:SetFont(PA.LSM:Fetch('font', element.db.StatusBarFont), element.db.StatusBarFontSize, element.db.StatusBarFontFlag)
@@ -515,6 +514,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar.Time:SetShown(element.db.StatusBarTimeEnabled)
 
 	tinsert(element, Frame)
+	element.createdIcons = element.createdIcons + 1
 
 	return Frame
 end
@@ -541,9 +541,29 @@ function iFilger:UpdateAll()
 			Button.StatusBar.Time:SetShown(Frame.db.StatusBarTimeEnabled)
 		end
 	end
+
+	iFilger:CancelAllTimers()
+	if iFilger.db.Cooldowns.Enable then
+		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
+		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
 end
 
 function iFilger:BuildProfile()
+	for tab = 1, _G.GetNumSpellTabs(), 1 do
+		local name, _, offset, numSpells = _G.GetSpellTabInfo(tab)
+		if name then
+			iFilger:ScanSpellBook(_G.BOOKTYPE_SPELL, numSpells, offset)
+		end
+	end
+
+	local numPetSpells = _G.HasPetSpells()
+	if numPetSpells then
+		iFilger:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
+	end
+
+	PA.ScanTooltip:Hide()
+
 	PA.Defaults.profile.iFilger = {
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
 	}
@@ -554,6 +574,9 @@ function iFilger:BuildProfile()
 			Enable = true,
 			FollowCooldownText = false,
 			Size = 28,
+			SuppressDuration = 60,
+			IgnoreDuration = 300,
+			UpdateSpeed = .1,
 			Spacing = 4,
 			StackCountFont = PA.ElvUI and 'Homespun' or 'Arial Narrow',
 			StackCountFontFlag = PA.ElvUI and 'MONOCHROMEOUTLINE' or 'OUTLINE',
@@ -573,11 +596,33 @@ function iFilger:BuildProfile()
 			StatusBarTimeX = 0,
 			StatusBarTimeY = 0,
 			StatusBarWidth = 148,
+			SpellCDs = iFilger.SpellList,
 		}
 	end
 end
 
+function iFilger:GenerateSpellOptions()
+	local SpellOptions = {}
+
+	for SpellID, SpellName in pairs(iFilger.db.Cooldowns.SpellCDs) do
+		local Name, _, Icon = GetSpellInfo(SpellID)
+		if Name then
+			SpellOptions[tostring(SpellID)] = {
+				type = 'toggle',
+				image = Icon,
+				imageCoords = PA.TexCoords,
+				name = ' '..(type(SpellName) == 'string' and SpellName or Name),
+				desc = 'Spell ID: '..SpellID,
+			}
+		end
+	end
+
+	return SpellOptions
+end
+
 function iFilger:GetOptions()
+	iFilger.db = PA.db.iFilger
+
 	PA.Options.args.iFilger = {
 		type = 'group',
 		name = iFilger.Title,
@@ -658,7 +703,7 @@ function iFilger:GetOptions()
 					type = 'group',
 					name = 'Stack Count',
 					guiInline = true,
-					order = 4,
+					order = 10,
 					args = {
 						StackCountFont = {
 							type = 'select', dialogControl = 'LSM30_Font',
@@ -683,7 +728,7 @@ function iFilger:GetOptions()
 				StatusBarGroup = {
 					type = 'group',
 					name = 'StatusBar',
-					order = 5,
+					order = 11,
 					guiInline = true,
 					args = {
 						StatusBar = {
@@ -815,6 +860,39 @@ function iFilger:GetOptions()
 			},
 		}
 	end
+
+	PA.Options.args.iFilger.args.Cooldowns.args.UpdateSpeed = {
+		order = 5,
+		type = 'range',
+		name = PA.ACL['Update Speed'],
+		min = .1, max = .5, step = .1,
+	}
+
+	PA.Options.args.iFilger.args.Cooldowns.args.SuppressDuration = {
+		order = 6,
+		type = 'range',
+		name = PA.ACL['Suppress Duration Threshold'],
+		desc = PA.ACL['Duration in Seconds'],
+		min = 2, max = 600, step = 1,
+	}
+
+	PA.Options.args.iFilger.args.Cooldowns.args.IgnoreDuration = {
+		order = 7,
+		type = 'range',
+		name = PA.ACL['Ignore Duration Threshold'],
+		desc = PA.ACL['Duration in Seconds'],
+		min = 2, max = 600, step = 1,
+	}
+
+	PA.Options.args.iFilger.args.Cooldowns.args.Spells = {
+		order = 12,
+		type = 'group',
+		name = _G.SPELLS,
+		guiInline = true,
+		args = iFilger:GenerateSpellOptions(),
+		get = function(info) return iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] end,
+		set = function(info, value)	iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end,
+	}
 end
 
 function iFilger:Initialize()
@@ -831,18 +909,6 @@ function iFilger:Initialize()
 		_G.ElvUI[1].ConfigModeLocalizedStrings["iFilger"] = "iFilger"
 	end
 
-	for tab = 1, _G.GetNumSpellTabs(), 1 do
-		local name, _, offset, numSpells = _G.GetSpellTabInfo(tab)
-		if name then
-			iFilger:ScanSpellBook(_G.BOOKTYPE_SPELL, numSpells, offset)
-		end
-	end
-
-	local numPetSpells = _G.HasPetSpells()
-	if numPetSpells then
-		iFilger:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
-	end
-
 	iFilger.Panels = {
 		Buffs = iFilger:Spawn('player', 'Buffs', iFilger.db.Buffs, 'HELPFUL', { 'TOPLEFT', UIParent, 'CENTER', -351, -203 }),
 		RaidDebuffs = iFilger:Spawn('player', 'RaidDebuffs', iFilger.db.RaidDebuffs, 'HARMFUL', { 'TOPLEFT', UIParent, 'CENTER', -351, -203 }),
@@ -851,14 +917,14 @@ function iFilger:Initialize()
 		TargetDebuffs = iFilger:Spawn('target', 'TargetDebuffs', iFilger.db.TargetDebuffs, 'HARMFUL|PLAYER', { 'TOPLEFT', UIParent, 'CENTER', 283, -207 }),
 		FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
 		FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
+		Cooldowns = iFilger:Spawn('player', 'Cooldowns', iFilger.db.Cooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 	}
---[[
---	self.Panels['Cooldowns'] = { AnchorPoint = 'BOTTOMRIGHT', X = -71, Y = -109, AnchorText = 'Cooldowns', OptionsOrder = 1 }
 
 	iFilger:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED')	-- For Cooldown Queue
 	iFilger:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
 
-	iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.UpdateSpeed)
-	iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
-]]
+	if iFilger.db.Cooldowns.Enable then
+		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
+		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
 end
