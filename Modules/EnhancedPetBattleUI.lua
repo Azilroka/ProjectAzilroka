@@ -7,6 +7,7 @@ EPB.Title = "Enhanced Pet Battle UI"
 EPB.Header = '|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'
 EPB.Description = ''
 EPB.Authors = 'Azilroka    NihilisticPandemonium'
+EPB.isEnabled = false
 
 _G.EPB = EPB
 
