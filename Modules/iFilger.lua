@@ -188,19 +188,24 @@ function iFilger:UpdateActiveCooldowns()
 
 			if (CurrentDuration and CurrentDuration > 0) then
 				if Panel.db.StatusBar then
-					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration)
+					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
 					local color = PA.TimeColors[formatid]
 
 					button.StatusBar:SetValue(CurrentDuration / Duration)
 					button.StatusBar.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
-					button.StatusBar.Time:SetTextColor(unpack(iFilger.TimeColors[formatid]))
+					button.StatusBar.Time:SetTextColor(unpack(PA.TimeColors[formatid]))
 					button.StatusBar.Time:SetTextColor(color.r, color.g, color.b)
 					if Panel.db.FollowCooldownText and (formatid == 1 or formatid == 2) then
 						button.StatusBar:SetStatusBarColor(color.r, color.g, color.b)
 					end
+
+					button.StatusBar.Name:SetText(Name)
 				else
 					button.Cooldown:SetCooldown(Start, Duration)
 				end
+
+				button.Cooldown:SetShown(not Panel.db.StatusBar)
+				button.StatusBar:SetShown(Panel.db.StatusBar)
 			else
 				iFilger.ActiveCooldowns[SpellID] = nil
 				button.CurrentDuration = 0
@@ -589,12 +594,12 @@ function iFilger:BuildProfile()
 			StatusBarHeight = 5,
 			StatusBarNameEnabled = true,
 			StatusBarNameX = 0,
-			StatusBarNameY = 0,
+			StatusBarNameY = 8,
 			StatusBarTexture = PA.ElvUI and 'ElvUI Norm' or 'Blizzard Raid Bar',
 			StatusBarTextureColor = { .24, .54, .78 },
 			StatusBarTimeEnabled = true,
 			StatusBarTimeX = 0,
-			StatusBarTimeY = 0,
+			StatusBarTimeY = 8,
 			StatusBarWidth = 148,
 			SpellCDs = iFilger.SpellList,
 		}
@@ -819,13 +824,13 @@ function iFilger:GetOptions()
 									type = 'range',
 									order = 2,
 									name = 'Name X Offset',
-									min = -12, max = 12, step = 1,
+									min = -256, max = 256, step = 1,
 								},
 								StatusBarNameY = {
 									type = 'range',
 									order = 3,
 									name = 'Name Y Offset',
-									min = -12, max = 12, step = 1,
+									min = -64, max = 64, step = 1,
 								},
 							},
 						},
@@ -845,13 +850,13 @@ function iFilger:GetOptions()
 									type = 'range',
 									order = 12,
 									name = 'Time X Offset',
-									min = -12, max = 12, step = 1,
+									min = -256, max = 256, step = 1,
 								},
 								StatusBarTimeY = {
 									type = 'range',
 									order = 13,
 									name = 'Time Y Offset',
-									min = -12, max = 12, step = 1,
+									min = -64, max = 64, step = 1,
 								},
 							},
 						},
