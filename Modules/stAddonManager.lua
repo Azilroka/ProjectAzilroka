@@ -275,7 +275,7 @@ function stAM:BuildFrame()
 
 	local OnScroll = function(_, delta)
 		local numAddons = stAM.searchQuery and #Search.AddOns or #stAM.AddOnInfo
-		if numAddons < stAM.db['NumAddOns'] then return end
+		if numAddons < stAM.db.NumAddOns then return end
 
 		if IsShiftKeyDown() then
 			if delta == 1 then
@@ -611,45 +611,38 @@ function stAM:UpdateAddonList()
 		end
 	end
 
-	for i = 1, stAM.db.NumAddOns do
+	for i, button in ipairs(stAM.Frame.AddOns.Buttons) do
 		local addonIndex = (not stAM.searchQuery and (stAM.scrollOffset + i)) or stAM.Frame.Search.AddOns[stAM.scrollOffset + i]
-		local button = stAM.Frame.AddOns.Buttons[i]
 		local info = stAM.AddOnInfo[addonIndex]
+
+		button:SetShown(i <= stAM.db.NumAddOns)
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
 			button.name, button.title, button.authors, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Notes, info.Required, info.Optional
 			button.Text:SetText(button.title)
-			if info.Missing then
-				button.Icon:SetVertexColor(.77, .12, .24)
-				button.StatusText:SetVertexColor(.77, .12, .24)
+			button.Icon:SetShown(info.Missing or info.Disabled)
+			button.StatusText:SetShown(info.Missing or info.Disabled)
 
-				button.Icon:Show()
+			if info.Missing or info.Disabled then
+				if info.Missing then
+					button.Icon:SetVertexColor(.77, .12, .24)
+					button.StatusText:SetVertexColor(.77, .12, .24)
+					button.StatusText:SetText(PA.ACL['Missing: ']..concat(info.Missing, ', '))
+				else
+					button.Icon:SetVertexColor(1, .8, .1)
+					button.StatusText:SetVertexColor(1, .8, .1)
+					button.StatusText:SetText(PA.ACL['Disabled: ']..concat(info.Disabled, ', '))
+				end
+
 				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
 				button.Text:SetPoint("RIGHT", stAM.Frame.AddOns, "CENTER", 0, 0)
-				button.StatusText:SetText(PA.ACL['Missing: ']..concat(info.Missing, ', '))
-			elseif info.Disabled then
-				button.Icon:SetVertexColor(1, .8, .1)
-				button.StatusText:SetVertexColor(1, .8, .1)
-
-				button.Icon:Show()
-				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
-				button.Text:SetPoint("RIGHT", stAM.Frame.AddOns, "CENTER", 0, 0)
-				button.StatusText:SetText(PA.ACL['Disabled: ']..concat(info.Disabled, ', '))
 			else
-				button.Icon:Hide()
 				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
 				button.Text:SetPoint("RIGHT", stAM.Frame.AddOns, "RIGHT", -10, 0)
-				button.StatusText:SetText('')
 			end
+
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
 			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
-			button:Show()
-		else
-			button:Hide()
 		end
-	end
-
-	for i = stAM.db.NumAddOns + 1, #stAM.Frame.AddOns.Buttons do
-		stAM.Frame.AddOns.Buttons[i]:Hide()
 	end
 end
 
