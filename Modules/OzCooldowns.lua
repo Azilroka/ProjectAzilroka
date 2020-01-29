@@ -50,7 +50,7 @@ OzCD.SpellList = {}
 -- Simpy Magic
 local t = {}
 for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
-    t[name] = _G[name]:gsub('%%%.%dg','%%d-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
+    t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 end
 
 function OzCD:ScanTooltip(index, bookType)
@@ -78,11 +78,12 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 		if skillType == 'SPELL' or skillType == 'PETACTION' then
 			local SpellID, SpellName, Rank
 			if PA.Retail then
-				SpellID = select(2, GetSpellLink(index, bookType))
+				SpellName, SpellID = GetSpellLink(index, bookType)
 			else
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
 				SpellName = (Rank and Rank ~= '') and format('%s %s', SpellName, Rank)
 			end
+			print(SpellName, SpellID)
 			if OzCD:ScanTooltip(index, bookType) then
 				OzCD.SpellList[SpellID] = SpellName or true
 			end
@@ -351,7 +352,7 @@ function OzCD:GROUP_ROSTER_UPDATE()
 end
 
 function OzCD:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
-	if unit == 'player' and (OzCD.db.SpellCDs[SpellID] or SpellID == 13877) then
+	if (unit == 'player' or unit == 'pet') and OzCD.db.SpellCDs[SpellID] then
 		OzCD.Cooldowns[SpellID] = true
 	end
 end
@@ -389,6 +390,17 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 
 	if OzCD.db.SortByDuration then
 		sort(OzCD.ActiveCooldowns)
+	end
+end
+
+function OzCD:SPELLS_CHANGED()
+	local numPetSpells = _G.HasPetSpells()
+	if numPetSpells then
+		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
+
+		OzCD.db.SpellCDs = CopyTable(OzCD.SpellList)
+
+		PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 	end
 end
 
@@ -672,6 +684,7 @@ function OzCD:Initialize()
 	OzCD:RegisterEvent('GROUP_ROSTER_UPDATE') -- Channel Distribution
 	OzCD:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED') -- For Cooldown Queue
 	OzCD:RegisterEvent('SPELL_UPDATE_COOLDOWN')	-- Process Cooldown Queue
+	OzCD:RegisterEvent('SPELLS_CHANGED') -- Process Pet Changes
 
 	OzCD:ScheduleRepeatingTimer('UpdateActiveCooldowns', OzCD.db.UpdateSpeed)
 	OzCD:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)

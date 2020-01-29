@@ -46,7 +46,7 @@ iFilger.CompleteSpellBook = {}
 -- Simpy Magic
 local t = {}
 for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
-    t[name] = _G[name]:gsub('%%%.%dg','%%d-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
+    t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 end
 
 function iFilger:Spawn(unit, name, db, filter, position)
@@ -119,9 +119,11 @@ function iFilger:ScanSpellBook(bookType, numSpells, offset)
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
 				SpellName = format('%s %s', SpellName, Rank)
 			end
-			iFilger.CompleteSpellBook[SpellID] = true
-			if iFilger:ScanTooltip(index, bookType) then
-				iFilger.SpellList[SpellID] = SpellName or true
+			if SpellID then
+				iFilger.CompleteSpellBook[SpellID] = true
+				if iFilger:ScanTooltip(index, bookType) then
+					iFilger.SpellList[SpellID] = SpellName or true
+				end
 			end
 		elseif skillType == 'FLYOUT' then
 			local flyoutId = special
@@ -409,7 +411,7 @@ function iFilger:PLAYER_ENTERING_WORLD()
 end
 
 function iFilger:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
-	if unit == 'player' and (iFilger.db.Cooldowns.SpellCDs[SpellID] or SpellID == 13877) then
+	if (unit == 'player' or unit == 'pet') and iFilger.db.Cooldowns.SpellCDs[SpellID] then
 		iFilger.Cooldowns[SpellID] = true
 	end
 end
@@ -551,6 +553,17 @@ function iFilger:UpdateAll()
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
 		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
+end
+
+function iFilger:SPELLS_CHANGED()
+	local numPetSpells = _G.HasPetSpells()
+	if numPetSpells then
+		iFilger:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
+
+		iFilger.db.Cooldowns.SpellCDs = iFilger.SpellList
+
+		PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = iFilger:GenerateSpellOptions()
 	end
 end
 
@@ -927,6 +940,7 @@ function iFilger:Initialize()
 
 	iFilger:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED')	-- For Cooldown Queue
 	iFilger:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
+	iFilger:RegisterEvent('SPELLS_CHANGED')
 
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
