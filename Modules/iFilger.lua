@@ -516,6 +516,11 @@ function iFilger:CreateAuraIcon(element)
 	PA:CreateBackdrop(Frame.StatusBar, 'Default')
 	PA:CreateShadow(Frame.StatusBar.Backdrop)
 
+	if _G.EnhancedShadows then
+		_G.EnhancedShadows:RegisterFrameShadows(Frame)
+		_G.EnhancedShadows:RegisterFrameShadows(Frame.StatusBar.Backdrop)
+	end
+
 	Frame.StatusBar:SetShown(element.db.StatusBar)
 	Frame.StatusBar.Name:SetShown(element.db.StatusBarNameEnabled)
 	Frame.StatusBar.Time:SetShown(element.db.StatusBarTimeEnabled)

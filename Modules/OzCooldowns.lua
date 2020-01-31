@@ -241,6 +241,10 @@ function OzCD:CreateCooldown(index)
 		PA:CreateShadow(Frame)
 		PA:CreateBackdrop(Frame.StatusBar, 'Default')
 		PA:CreateShadow(Frame.StatusBar.Backdrop)
+		if _G.EnhancedShadows then
+			_G.EnhancedShadows:RegisterFrameShadows(Frame)
+			_G.EnhancedShadows:RegisterFrameShadows(Frame.StatusBar.Backdrop)
+		end
 	end
 
 	if not (PA.ElvUI or PA.Tukui) then
