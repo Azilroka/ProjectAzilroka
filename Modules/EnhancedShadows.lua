@@ -143,7 +143,7 @@ end
 function ES:Initialize()
 	ES.db = PA.db.EnhancedShadows
 
-	if PA.SLE or PA.CUI or ES.db.Enable ~= true then
+	if PA.SLE or PA.NUI or ES.db.Enable ~= true then
 		return
 	end
 

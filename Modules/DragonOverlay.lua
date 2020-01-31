@@ -315,8 +315,8 @@ function DO:BuildProfile()
 		if PA.ElvUI then
 			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'ElvUF_Target'
 		end
-		if PA.CUI then
-			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'ChaoticUF_Target'
+		if PA.NUI then
+			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'NihilistUF_Target'
 		end
 		if PA.AzilUI then
 			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'oUF_AzilUITarget'
