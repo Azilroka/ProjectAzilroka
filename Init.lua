@@ -228,6 +228,7 @@ function PA:CreateShadow(frame)
 		_G.AddOnSkins[1]:CreateShadow(frame)
 	elseif frame.CreateShadow then
 		frame:CreateShadow()
+		if _G.EnhancedShadows then _G.EnhancedShadows:RegisterFrameShadows(frame) end
 	end
 end
 
