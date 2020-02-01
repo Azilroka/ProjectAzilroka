@@ -14,7 +14,6 @@ local pairs = pairs
 local format = format
 local ceil = ceil
 local sort = sort
-local select = select
 local floor = floor
 local unpack = unpack
 local tinsert = tinsert
@@ -238,7 +237,7 @@ function OzCD:CreateCooldown(index)
 		OzCD.MasqueGroup:AddButton(Frame)
 	else
 		PA:CreateBackdrop(Frame)
-		PA:CreateShadow(Frame)
+		PA:CreateShadow(Frame.Backdrop)
 		PA:CreateBackdrop(Frame.StatusBar, 'Default')
 		PA:CreateShadow(Frame.StatusBar.Backdrop)
 		if _G.EnhancedShadows then
@@ -401,7 +400,7 @@ function OzCD:SPELLS_CHANGED()
 	if numPetSpells then
 		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 
-		OzCD.db.SpellCDs = CopyTable(OzCD.SpellList)
+		OzCD.db.SpellCDs = OzCD.SpellList
 
 		PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 	end

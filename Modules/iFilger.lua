@@ -512,7 +512,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar.Time:SetJustifyH('RIGHT')
 
 	PA:CreateBackdrop(Frame)
-	PA:CreateShadow(Frame)
+	PA:CreateShadow(Frame.Backdrop)
 	PA:CreateBackdrop(Frame.StatusBar, 'Default')
 	PA:CreateShadow(Frame.StatusBar.Backdrop)
 

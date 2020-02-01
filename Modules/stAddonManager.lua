@@ -593,14 +593,14 @@ function stAM:ToggleProfiles()
 end
 
 function stAM:UpdateAddonList()
+	wipe(stAM.Frame.Search.AddOns)
+
 	if stAM.searchQuery then
 		local query = strlower(strtrim(stAM.Frame.Search:GetText()))
 
 		if (strlen(query) == 0) then
 			stAM.searchQuery = false
 		end
-
-		wipe(stAM.Frame.Search.AddOns)
 
 		for i = 1, #stAM.AddOnInfo do
 			local name, title, authors = stAM.AddOnInfo[i].Name, stAM.AddOnInfo[i].Title, stAM.AddOnInfo[i].Authors
@@ -615,7 +615,8 @@ function stAM:UpdateAddonList()
 		local addonIndex = (not stAM.searchQuery and (stAM.scrollOffset + i)) or stAM.Frame.Search.AddOns[stAM.scrollOffset + i]
 		local info = stAM.AddOnInfo[addonIndex]
 
-		button:SetShown(i <= stAM.db.NumAddOns)
+		button:SetShown(i <= min(#stAM.Frame.Search.AddOns > 0 and #stAM.Frame.Search.AddOns or stAM.db.NumAddOns, stAM.db.NumAddOns))
+
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
 			button.name, button.title, button.authors, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Notes, info.Required, info.Optional
 			button.Text:SetText(button.title)
