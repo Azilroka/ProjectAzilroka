@@ -77,7 +77,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 		if skillType == 'SPELL' or skillType == 'PETACTION' then
 			local SpellID, SpellName, Rank
 			if PA.Retail then
-				SpellName, SpellID = GetSpellLink(index, bookType)
+				SpellID = select(2, GetSpellLink(index, bookType))
 			else
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
 				SpellName = (Rank and Rank ~= '') and format('%s %s', SpellName, Rank)
