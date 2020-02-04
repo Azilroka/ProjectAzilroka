@@ -117,7 +117,9 @@ function iFilger:ScanSpellBook(bookType, numSpells, offset)
 				SpellID = select(2, GetSpellLink(index, bookType))
 			else
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
-				SpellName = format('%s %s', SpellName, Rank)
+				if Rank ~= '' and Rank ~= nil then
+					SpellName = format('%s %s', SpellName, Rank)
+				end
 			end
 			if SpellID then
 				iFilger.CompleteSpellBook[SpellID] = true
