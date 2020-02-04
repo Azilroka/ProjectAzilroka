@@ -83,11 +83,11 @@ end
 function AR:UpdateColors(frame, id)
 	local isUsable, notEnoughMana = IsUsableSpell(id)
 	if isUsable then
-		frame.icon:SetVertexColor(1.0, 1.0, 1.0)
+		frame.icon:SetVertexColor(1, 1, 1)
 	elseif notEnoughMana then
-		frame.icon:SetVertexColor(0.5, 0.5, 1.0)
+		frame.icon:SetVertexColor(.5, .5, 1)
 	else
-		frame.icon:SetVertexColor(0.4, 0.4, 0.4)
+		frame.icon:SetVertexColor(.4, .4, .4)
 	end
 end
 
@@ -225,8 +225,11 @@ function AR:Reminder_Update()
 					end
 				end
 
-				if not db.disableSound and Button:IsShown() then
-					AR:PlaySoundFile()
+				if Button:IsShown() then
+					AR:UpdateColors(self, db.cooldownSpellID)
+					if not db.disableSound then
+						AR:PlaySoundFile()
+					end
 				end
 			end
 		end
