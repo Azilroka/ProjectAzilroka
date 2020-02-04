@@ -720,7 +720,7 @@ function AR:GetOptions()
 			type = 'select',
 			name = PA.ACL['Talent Tree'],
 			desc = PA.ACL['You must be using a certain talent tree for the icon to show.'],
-			hidden = function() return -AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
+			hidden = function() return AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
 			get = function(info, value) return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree) end,
 			set = function(info, value)
 				if value == 'ANY' then
