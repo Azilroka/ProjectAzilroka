@@ -14,6 +14,7 @@
 	<Script file="SquareMinimapButtons.lua"/>
 	<Script file="stAddonManager.lua"/>
 	<Script file="QuestSounds.lua"/>
+	<Script file="Reminder.lua"/>
 	<Script file="ReputationReward.lua"/>
 	<Script file="TargetSounds.lua"/>
 </Ui>
