@@ -237,7 +237,7 @@ function stAM:BuildFrame()
 	Profiles:SetPoint('TOPRIGHT', Title, 'BOTTOMRIGHT', -10, -10)
 	PA:SetTemplate(Profiles)
 	Profiles:SetSize(70, 20)
-	Profiles:SetScript('OnEnter', function() CharacterSelect:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
+	Profiles:SetScript('OnEnter', function() Profiles:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
 	Profiles:SetScript('OnLeave', function() PA:SetTemplate(Profiles) end)
 	Profiles:SetScript('OnClick', function() stAM:ToggleProfiles() end)
 
