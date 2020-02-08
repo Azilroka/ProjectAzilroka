@@ -157,24 +157,19 @@ function AR:Reminder_Update()
 
 			AR:SetIconPosition(Button, db)
 
-			local filterCheck = AR:FilterCheck(db)
-			local reverseCheck = AR:FilterCheck(db, true)
+			local filterCheck, reverseCheck = AR:FilterCheck(db), AR:FilterCheck(db, true)
 
-			if db.filterType == 'COOLDOWN' and db.cooldownSpellID then
-				if not filterCheck then return end
-
+			if db.filterType == 'COOLDOWN' and db.cooldownSpellID and filterCheck then
 				local start, duration = GetSpellCooldown(db.cooldownSpellID)
 				if (duration and duration > 0) then
 					Button.cooldown:SetCooldown(start, duration)
-					Button.cooldown:Show()
-				else
-					Button.cooldown:Hide()
 				end
 
+				Button.cooldown:SetShown((duration and duration > 0))
 				Button.icon:SetTexture(select(3, GetSpellInfo(db.cooldownSpellID)))
 				Button:Show()
 
-				AR:UpdateColors(self, db.cooldownSpellID)
+				AR:UpdateColors(Button, db.cooldownSpellID)
 
 				if (duration and duration > 0) and filterCheck and db.onCooldown then
 					Button:SetAlpha(db.cooldownAlpha or 0)
@@ -193,18 +188,13 @@ function AR:Reminder_Update()
 
 								if usable or not db.strictFilter then
 									Button.icon:SetTexture(select(3, GetSpellInfo(buff)))
+									AR:UpdateColors(Button, buff)
 									break
 								end
 							end
 						end
 
-						if filterCheck and ((not hasBuff) and (not hasDebuff)) and not db.reverseCheck then
-							Button:Show()
-						elseif reverseCheck and db.reverseCheck and (hasBuff or hasDebuff) then
-							Button:Show()
-						elseif reverseCheck and db.reverseCheck and ((not hasBuff) and (not hasDebuff)) then
-							Button:Show()
-						end
+						Button:SetShown((filterCheck and ((not hasBuff) and (not hasDebuff)) and not db.reverseCheck) or (reverseCheck and db.reverseCheck and ((hasBuff or hasDebuff) or ((not hasBuff) and (not hasDebuff)))))
 					end
 				end
 
@@ -212,24 +202,18 @@ function AR:Reminder_Update()
 					local hasOffhandWeapon = AR:HasOffHandWeapon(GetInventoryItemID('player', 17))
 					local hasMainHandEnchant, _, _, hasOffHandEnchant, _, _ = GetWeaponEnchantInfo()
 
-					if not hasOffhandWeapon and not hasMainHandEnchant then
-						Button.icon:SetTexture(GetInventoryItemTexture("player", 16))
-						Button:Show()
-					elseif hasOffhandWeapon and (not hasMainHandEnchant or not hasOffHandEnchant) then
-						if not hasMainHandEnchant then
-							Button.icon:SetTexture(GetInventoryItemTexture("player", 16))
-						else
-							Button.icon:SetTexture(GetInventoryItemTexture("player", 17))
-						end
-						Button:Show()
+					if (not hasMainHandEnchant) then
+						Button.icon:SetTexture(GetInventoryItemTexture('player', 16))
+					elseif (hasOffhandWeapon and not hasOffHandEnchant) then
+						Button.icon:SetTexture(GetInventoryItemTexture('player', 17))
 					end
+
+					Button:SetShown(not (hasMainHandEnchant or hasOffHandEnchant))
+					Button.icon:SetVertexColor(1, 1, 1)
 				end
 
-				if Button:IsShown() then
-					AR:UpdateColors(self, db.cooldownSpellID)
-					if not db.disableSound then
-						AR:PlaySoundFile()
-					end
+				if Button:IsShown() and not db.disableSound then
+					AR:PlaySoundFile()
 				end
 			end
 		end
