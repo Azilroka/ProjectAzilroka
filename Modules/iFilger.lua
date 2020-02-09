@@ -281,22 +281,25 @@ function iFilger:IsAuraRemovable(dispelType)
 end
 
 function iFilger:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
-	if element.Blacklist[spellID] then
+	if duration == 0 then
 		return false
-	elseif element.Whitelist[spellID] then
-		return true
-	elseif element.name == 'Procs' then
-		if duration == 0 then
-			return false
-		elseif (caster == 'player' or caster == 'pet') then
-			return not iFilger.CompleteSpellBook[spellID]
-		end
-	else
-		local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
-		if (isPlayer or casterIsPlayer) and (duration ~= 0) then
-			return true
+	end
+	if element.db.FilterByList == 'Blacklist' then
+		return not element.Blacklist[spellID]
+	elseif element.db.FilterByList == 'Whitelist' then
+		return element.Whitelist[spellID]
+	elseif element.db.FilterByList == 'None' then
+		if element.name == 'Procs' then
+			if (caster == 'player' or caster == 'pet') then
+				return not iFilger.CompleteSpellBook[spellID]
+			end
 		else
-			return false
+			local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
+			if (isPlayer or casterIsPlayer) and (duration ~= 0) then
+				return true
+			else
+				return false
+			end
 		end
 	end
 end
@@ -636,6 +639,7 @@ function iFilger:BuildProfile()
 		}
 
 		if Name ~= 'Cooldowns' then
+			PA.Defaults.profile.iFilger[Name].FilterByList = 'None'
 			PA.Defaults.profile.iFilger[Name].Whitelist = {}
 			PA.Defaults.profile.iFilger[Name].Blacklist = {}
 		end
@@ -742,6 +746,13 @@ function iFilger:GetOptions()
 						LEFT = 'Left',
 						RIGHT = 'Right',
 					},
+				},
+				FilterByList = {
+					name = 'Filter by List',
+					order = 5,
+					type = 'select',
+					hidden = Name == 'Cooldowns',
+					values = { None = 'None', Whitelist = 'Whitelist', Blacklist = 'Blacklist' },
 				},
 				IconStack = {
 					type = 'group',
@@ -903,6 +914,7 @@ function iFilger:GetOptions()
 					type = 'group',
 					name = PA.ACL["Filters"],
 					order = 12,
+					hidden = Name == 'Cooldowns',
 					args = {
 						selectFilter = {
 							order = 2,
