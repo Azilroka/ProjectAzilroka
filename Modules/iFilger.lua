@@ -35,6 +35,9 @@ local IsSpellKnown = IsSpellKnown
 
 local VISIBLE = 1
 local HIDDEN = 0
+local selectedSpell = ''
+local selectedFilter = nil
+local spellList = {}
 
 iFilger.Cooldowns = {}
 iFilger.ActiveCooldowns = {}
@@ -57,7 +60,8 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	object.name = name
 	object.createdIcons = 0
 	object.anchoredIcons = 0
-
+	object.Whitelist = db.Whitelist
+	object.Blacklist = db.Blacklist
 	iFilger:CreateMover(object)
 
 	if name ~= 'Cooldowns' then
@@ -244,47 +248,51 @@ end
 
 function iFilger:CreateMover(frame)
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, "ALL,iFilger")
+		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger')
 	elseif PA.Tukui then
-		_G.Tukui[1]["Movers"]:RegisterFrame(frame)
+		_G.Tukui[1]['Movers']:RegisterFrame(frame)
 	end
 end
 
 function iFilger:IsAuraRemovable(dispelType)
 	if not dispelType then return end
 
-	if PA.MyClass == "DEMONHUNTER" then
-		return dispelType == "Magic" and IsSpellKnown(205604)
-	elseif PA.MyClass == "DRUID" then
-		return (dispelType == "Curse" or dispelType == "Poison") and IsSpellKnown(2782) or (dispelType == "Magic" and (IsSpellKnown(88423) or IsSpellKnown(2782)))
-	elseif PA.MyClass == "HUNTER" then
-		return (dispelType == "Disease" or dispelType == "Poison") and IsSpellKnown(212640)
-	elseif PA.MyClass == "MAGE" then
-		return dispelType == "Curse" and IsSpellKnown(475) or dispelType == "Magic" and IsSpellKnown(30449)
-	elseif PA.MyClass == "MONK" then
-		return dispelType == "Magic" and IsSpellKnown(115450) or (dispelType == "Disease" or dispelType == "Poison") and (IsSpellKnown(115450) or IsSpellKnown(218164))
-	elseif PA.MyClass == "PALADIN" then
-		return dispelType == "Magic" and IsSpellKnown(4987) or (dispelType == "Disease" or dispelType == "Poison") and (IsSpellKnown(4987) or IsSpellKnown(213644))
-	elseif PA.MyClass == "PRIEST" then
-		return dispelType == "Magic" and (IsSpellKnown(528) or IsSpellKnown(527)) or dispelType == "Disease" and IsSpellKnown(213634)
-	elseif PA.MyClass == "SHAMAN" then
-		return dispelType == "Magic" and (IsSpellKnown(370) or IsSpellKnown(77130)) or dispelType == "Curse" and (IsSpellKnown(77130) or IsSpellKnown(51886))
-	elseif PA.MyClass == "WARLOCK" then
-		return dispelType == "Magic" and (IsSpellKnown(171021, true) or IsSpellKnown(89808, true) or IsSpellKnown(212623))
+	if PA.MyClass == 'DEMONHUNTER' then
+		return dispelType == 'Magic' and IsSpellKnown(205604)
+	elseif PA.MyClass == 'DRUID' then
+		return (dispelType == 'Curse' or dispelType == 'Poison') and IsSpellKnown(2782) or (dispelType == 'Magic' and (IsSpellKnown(88423) or IsSpellKnown(2782)))
+	elseif PA.MyClass == 'HUNTER' then
+		return (dispelType == 'Disease' or dispelType == 'Poison') and IsSpellKnown(212640)
+	elseif PA.MyClass == 'MAGE' then
+		return dispelType == 'Curse' and IsSpellKnown(475) or dispelType == 'Magic' and IsSpellKnown(30449)
+	elseif PA.MyClass == 'MONK' then
+		return dispelType == 'Magic' and IsSpellKnown(115450) or (dispelType == 'Disease' or dispelType == 'Poison') and (IsSpellKnown(115450) or IsSpellKnown(218164))
+	elseif PA.MyClass == 'PALADIN' then
+		return dispelType == 'Magic' and IsSpellKnown(4987) or (dispelType == 'Disease' or dispelType == 'Poison') and (IsSpellKnown(4987) or IsSpellKnown(213644))
+	elseif PA.MyClass == 'PRIEST' then
+		return dispelType == 'Magic' and (IsSpellKnown(528) or IsSpellKnown(527)) or dispelType == 'Disease' and IsSpellKnown(213634)
+	elseif PA.MyClass == 'SHAMAN' then
+		return dispelType == 'Magic' and (IsSpellKnown(370) or IsSpellKnown(77130)) or dispelType == 'Curse' and (IsSpellKnown(77130) or IsSpellKnown(51886))
+	elseif PA.MyClass == 'WARLOCK' then
+		return dispelType == 'Magic' and (IsSpellKnown(171021, true) or IsSpellKnown(89808, true) or IsSpellKnown(212623))
 	end
 
 	return false
 end
 
 function iFilger:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
-	if element.name == 'Procs' then
+	if element.Blacklist[spellID] then
+		return false
+	elseif element.Whitelist[spellID] then
+		return true
+	elseif element.name == 'Procs' then
 		if duration == 0 then
 			return false
-		elseif caster == 'player' then
+		elseif (caster == 'player' or caster == 'pet') then
 			return not iFilger.CompleteSpellBook[spellID]
 		end
 	else
-		local isPlayer = (caster == 'player' or caster == 'vehicle')
+		local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
 		if (isPlayer or casterIsPlayer) and (duration ~= 0) then
 			return true
 		else
@@ -348,10 +356,11 @@ function iFilger:SetPosition(element)
 	local growthy = ((element.db.StatusBar and element.db.StatusBarDirection == 'DOWN' or element.db.Direction == 'DOWN') and -1) or 1
 	local cols = floor(element:GetWidth() / sizex + 0.5)
 
+	local col, row
 	for i, button in ipairs(element) do
 		if(not button) then break end
-		local col = (i - 1) % cols
-		local row = floor((i - 1) / cols)
+		col = (i - 1) % cols
+		row = floor((i - 1) / cols)
 
 		button:ClearAllPoints()
 		button:SetPoint(anchor, element, anchor, col * sizex * growthx, row * sizey * growthy)
@@ -360,9 +369,8 @@ end
 
 function iFilger:FilterAuraIcons(element, unit, filter, limit, isDebuff, offset, dontHide)
 	if (not offset) then offset = 0 end
-	local index = 1
-	local visible = 0
-	local hidden = 0
+	local index, visible, hidden = 1, 0, 0
+
 	while (visible < limit) do
 		local result = iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visible)
 		if (not result) then
@@ -569,6 +577,15 @@ function iFilger:SPELLS_CHANGED()
 	end
 end
 
+local function GetSelectedSpell()
+	if selectedSpell and selectedSpell ~= '' then
+		local spell = strmatch(selectedSpell, " %((%d+)%)$") or selectedSpell
+		if spell then
+			return tonumber(spell) or spell
+		end
+	end
+end
+
 function iFilger:BuildProfile()
 	for tab = 1, _G.GetNumSpellTabs(), 1 do
 		local name, _, offset, numSpells = _G.GetSpellTabInfo(tab)
@@ -588,7 +605,7 @@ function iFilger:BuildProfile()
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
 	}
 
-	for _, Name in ipairs({'Cooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'}) do
+	for _, Name in ipairs({'Cooldowns', 'Buffs', 'Procs', 'Enhancements', 'RaidDebuffs', 'TargetDebuffs', 'FocusBuffs', 'FocusDebuffs'}) do
 		PA.Defaults.profile.iFilger[Name] = {
 			Direction = 'RIGHT',
 			Enable = true,
@@ -616,9 +633,15 @@ function iFilger:BuildProfile()
 			StatusBarTimeX = 0,
 			StatusBarTimeY = 8,
 			StatusBarWidth = 148,
-			SpellCDs = iFilger.SpellList,
 		}
+
+		if Name ~= 'Cooldowns' then
+			PA.Defaults.profile.iFilger[Name].Whitelist = {}
+			PA.Defaults.profile.iFilger[Name].Blacklist = {}
+		end
 	end
+
+	PA.Defaults.profile.iFilger.Cooldowns.SpellCDs = iFilger.SpellList
 end
 
 function iFilger:GenerateSpellOptions()
@@ -689,6 +712,7 @@ function iFilger:GetOptions()
 			name = Name,
 			get = function(info) return iFilger.db[Name][info[#info]] end,
 			set = function(info, value) iFilger.db[Name][info[#info]] = value iFilger:UpdateAll() end,
+			childGroups = 'tree',
 			args = {
 				Enable = {
 					type = 'toggle',
@@ -722,7 +746,6 @@ function iFilger:GetOptions()
 				IconStack = {
 					type = 'group',
 					name = 'Stack Count',
-					guiInline = true,
 					order = 10,
 					args = {
 						StackCountFont = {
@@ -749,7 +772,6 @@ function iFilger:GetOptions()
 					type = 'group',
 					name = 'StatusBar',
 					order = 11,
-					guiInline = true,
 					args = {
 						StatusBar = {
 							order = 1,
@@ -877,6 +899,136 @@ function iFilger:GetOptions()
 						},
 					},
 				},
+				filterGroup = {
+					type = 'group',
+					name = PA.ACL["Filters"],
+					order = 12,
+					args = {
+						selectFilter = {
+							order = 2,
+							type = 'select',
+							name = PA.ACL["Select Filter"],
+							get = function(info) return selectedFilter end,
+							set = function(info, value)
+								selectedFilter, selectedSpell = nil, nil
+								if value ~= '' then
+									selectedFilter = value
+								end
+							end,
+							values = { Whitelist = 'Whitelist', Blacklist = 'Blacklist'},
+						},
+						filterGroup = {
+							type = 'group',
+							name = function() return selectedFilter end,
+							hidden = function() return not selectedFilter end,
+							guiInline = true,
+							order = 10,
+							args = {
+								addSpell = {
+									order = 1,
+									name = PA.ACL["Add SpellID"],
+									desc = PA.ACL["Add a spell to the filter."],
+									type = 'input',
+									get = function(info) return "" end,
+									set = function(info, value)
+										value = tonumber(value)
+										if not value then return end
+
+										local spellName = GetSpellInfo(value)
+										selectedSpell = (spellName and value) or nil
+										if not selectedSpell then return end
+
+										iFilger.db[Name][selectedFilter][value] = true
+									end,
+								},
+								removeSpell = {
+									order = 2,
+									name = PA.ACL["Remove Spell"],
+									desc = PA.ACL["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."],
+									buttonElvUI = true,
+									type = 'execute',
+									func = function()
+										local value = GetSelectedSpell()
+										if not value then return end
+										selectedSpell = nil
+
+										iFilger.db[Name][selectedFilter][value] = nil;
+									end,
+								},
+								selectSpell = {
+									name = PA.ACL["Select Spell"],
+									type = 'select',
+									order = 10,
+									width = "double",
+									get = function(info)
+										if not iFilger.db[Name][selectedFilter][selectedSpell] then
+											selectedSpell = nil
+										end
+										return selectedSpell or ''
+									end,
+									set = function(info, value)
+										selectedSpell = (value ~= '' and value) or nil
+									end,
+									values = function()
+										local list = iFilger.db[Name][selectedFilter]
+										if not list then return end
+										wipe(spellList)
+
+										for filter in pairs(list) do
+											local spellName = tonumber(filter) and GetSpellInfo(filter)
+											local name = (spellName and format("%s |cFF888888(%s)|r", spellName, filter)) or tostring(filter)
+											spellList[filter] = name
+										end
+
+										if not next(spellList) then
+											spellList[''] = PA.ACL["None"]
+										end
+
+										return spellList
+									end,
+								},
+							},
+						},
+						resetFilter = {
+							order = 2,
+							type = "execute",
+							name = PA.ACL["Reset Filter"],
+							desc = PA.ACL["This will reset the contents of this filter back to default. Any spell you have added to this filter will be removed."],
+							confirm = true,
+							func = function(info) wipe(iFilger.db[Name][selectedFilter]) selectedSpell = nil end,
+						},
+						spellGroup = {
+							type = "group",
+							name = function()
+								local spell = GetSelectedSpell()
+								local spellName = spell and GetSpellInfo(spell)
+								return (spellName and spellName..' |cFF888888('..spell..')|r') or spell or ' '
+							end,
+							hidden = function() return not GetSelectedSpell() end,
+							order = -15,
+							guiInline = true,
+							args = {
+								enabled = {
+									name = PA.ACL["Enable"],
+									order = 0,
+									type = 'toggle',
+									get = function(info)
+										local spell = GetSelectedSpell()
+										if not spell then return end
+
+										return iFilger.db[Name][selectedFilter][spell]
+									end,
+									set = function(info, value)
+										local spell = GetSelectedSpell()
+										if not spell then return end
+
+										iFilger.db[Name][selectedFilter][spell] = value
+									end,
+								},
+							},
+						}
+					},
+				}
 			},
 		}
 	end
@@ -908,7 +1060,6 @@ function iFilger:GetOptions()
 		order = 12,
 		type = 'group',
 		name = _G.SPELLS,
-		guiInline = true,
 		args = iFilger:GenerateSpellOptions(),
 		get = function(info) return iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] end,
 		set = function(info, value)	iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end,
@@ -925,8 +1076,8 @@ function iFilger:Initialize()
 	iFilger.isEnabled = true
 
 	if PA.ElvUI then
-		tinsert(_G.ElvUI[1].ConfigModeLayouts, #(_G.ElvUI[1].ConfigModeLayouts)+1, "iFilger")
-		_G.ElvUI[1].ConfigModeLocalizedStrings["iFilger"] = "iFilger"
+		tinsert(_G.ElvUI[1].ConfigModeLayouts, #(_G.ElvUI[1].ConfigModeLayouts)+1, 'iFilger')
+		_G.ElvUI[1].ConfigModeLocalizedStrings['iFilger'] = 'iFilger'
 	end
 
 	iFilger.Panels = {
