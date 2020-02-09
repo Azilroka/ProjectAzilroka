@@ -25,6 +25,7 @@ local min = min
 local max = max
 local concat = table.concat
 local select = select
+local gsub = gsub
 
 local GetNumAddOns = GetNumAddOns
 local GetAddOnInfo = GetAddOnInfo
@@ -82,18 +83,18 @@ _G.StaticPopupDialogs.STADDONMANAGER_DELETECONFIRMATION = {
 	hideOnEscape = 1,
 }
 
-local function strtrim(string)
-	return string:gsub("^%s*(.-)%s*$", "%1")
+local function strtrim(str)
+	return gsub(str, '^%s*(.-)%s*$', '%1')
 end
 
 function stAM:BuildFrame()
-	local Frame = CreateFrame("Frame", 'stAMFrame', UIParent)
+	local Frame = CreateFrame('Frame', 'stAMFrame', UIParent)
 	local Close = CreateFrame('Button', 'stAMCloseButton', Frame)
 	local Search = CreateFrame('EditBox', 'stAMSearchBox', Frame)
 
 	local Profiles = CreateFrame('Button', 'stAMProfiles', Frame)
-	local AddOns = CreateFrame("Frame", 'stAMAddOns', Frame)
-	local Slider = CreateFrame("Slider", nil, AddOns)
+	local AddOns = CreateFrame('Frame', 'stAMAddOns', Frame)
+	local Slider = CreateFrame('Slider', nil, AddOns)
 
 	local Reload = CreateFrame('Button', 'stAMReload', Frame)
 	local RequiredAddons = CreateFrame('CheckButton', nil, Frame)
@@ -118,8 +119,8 @@ function stAM:BuildFrame()
 	Frame:SetClampedToScreen(true)
 	Frame:SetMovable(true)
 	Frame:EnableMouse(true)
-	Frame:SetScript("OnMouseDown", Frame.StartMoving)
-	Frame:SetScript("OnMouseUp", Frame.StopMovingOrSizing)
+	Frame:SetScript('OnMouseDown', Frame.StartMoving)
+	Frame:SetScript('OnMouseUp', Frame.StopMovingOrSizing)
 
 	Title:SetPoint('TOPLEFT', 0, -5)
 	Title:SetPoint('TOPRIGHT', 0, -5)
@@ -166,14 +167,14 @@ function stAM:BuildFrame()
 	Search:SetShadowOffset(0,0)
 	Search:SetText(PA.ACL['Search'])
 	Search.AddOns = {}
-	Search:HookScript('OnEscapePressed', function() stAM:UpdateAddonList() Search:SetText("Search") Search:ClearFocus()end)
+	Search:HookScript('OnEscapePressed', function() stAM:UpdateAddonList() Search:SetText('Search') Search:ClearFocus()end)
 	Search:HookScript('OnTextChanged', function(_, userInput) stAM.scrollOffset = 0 stAM.searchQuery = userInput stAM:UpdateAddonList() end)
 	Search:HookScript('OnEditFocusGained', function() Search:SetBackdropBorderColor(unpack(stAM.db.CheckColor)) Search:HighlightText() end)
 	Search:HookScript('OnEditFocusLost', function() PA:SetTemplate(Search) Search:HighlightText(0, 0) end)
 	Search:HookScript('OnEnterPressed', function()
 		if strlen(strtrim(Search:GetText())) == 0 then
 			stAM:UpdateAddonList()
-			Search:SetText("Search")
+			Search:SetText('Search')
 			stAM.searchQuery = false
 		end
 		Search:ClearFocus()
@@ -227,7 +228,7 @@ function stAM:BuildFrame()
 	PA:SetTemplate(CharacterSelect)
 	CharacterSelect:SetScript('OnEnter', function() CharacterSelect:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
 	CharacterSelect:SetScript('OnLeave', function() PA:SetTemplate(CharacterSelect) end)
-	CharacterSelect:SetScript('OnClick', function() _G.EasyMenu(stAM.Menu, CharacterSelect.DropDown, CharacterSelect, 0, 38 + (stAM.MenuOffset * 16), "MENU", 5) end)
+	CharacterSelect:SetScript('OnClick', function() _G.EasyMenu(stAM.Menu, CharacterSelect.DropDown, CharacterSelect, 0, 38 + (stAM.MenuOffset * 16), 'MENU', 5) end)
 	CharacterSelect.Text = CharacterSelect:CreateFontString(nil, 'OVERLAY')
 	CharacterSelect.Text:SetFont(font, 12, fontFlag)
 	CharacterSelect.Text:SetText(PA.ACL['Character Select'])
@@ -255,11 +256,11 @@ function stAM:BuildFrame()
 	AddOns:EnableMouse(true)
 	AddOns:EnableMouseWheel(true)
 
-	Slider:SetPoint("RIGHT", -2, 0)
+	Slider:SetPoint('RIGHT', -2, 0)
 	Slider:SetWidth(12)
 	Slider:SetHeight(NumAddOns * (Height + 5) + 11)
 	Slider:SetThumbTexture(PA.LSM:Fetch('background', 'Solid'))
-	Slider:SetOrientation("VERTICAL")
+	Slider:SetOrientation('VERTICAL')
 	Slider:SetValueStep(1)
 	PA:SetTemplate(Slider)
 	Slider:SetMinMaxValues(0, 1)
@@ -309,7 +310,7 @@ function stAM:BuildFrame()
 		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
 		PA:SetTemplate(CheckButton)
 		CheckButton:SetSize(Width, Height)
-		CheckButton:SetPoint(unpack(i == 1 and {"TOPLEFT", AddOns, "TOPLEFT", 10, -10} or {"TOP", AddOns.Buttons[i-1], "BOTTOM", 0, -5}))
+		CheckButton:SetPoint(unpack(i == 1 and {'TOPLEFT', AddOns, 'TOPLEFT', 10, -10} or {'TOP', AddOns.Buttons[i-1], 'BOTTOM', 0, -5}))
 		CheckButton:SetScript('OnClick', function()
 			if CheckButton.name then
 				if PA:IsAddOnEnabled(CheckButton.name, stAM.SelectedCharacter) then
@@ -337,10 +338,10 @@ function stAM:BuildFrame()
 				GameTooltip:AddLine(' ')
 			end
 			if CheckButton.required then
-				GameTooltip:AddDoubleLine('Required Dependencies:', concat(CheckButton.required, ", "), 1, 1, 1, 1, 1, 1)
+				GameTooltip:AddDoubleLine('Required Dependencies:', concat(CheckButton.required, ', '), 1, 1, 1, 1, 1, 1)
 			end
 			if CheckButton.optional then
-				GameTooltip:AddDoubleLine('Optional Dependencies:', concat(CheckButton.optional, ", "), 1, 1, 1, 1, 1, 1)
+				GameTooltip:AddDoubleLine('Optional Dependencies:', concat(CheckButton.optional, ', '), 1, 1, 1, 1, 1, 1)
 			end
 			GameTooltip:Show()
 			CheckButton:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
@@ -362,11 +363,11 @@ function stAM:BuildFrame()
 		Text:SetText('')
 		Text:SetJustifyH('CENTER')
 		Text:ClearAllPoints()
-		Text:SetPoint("LEFT", CheckButton, "RIGHT", 10, 0)
-		Text:SetPoint("TOP", CheckButton, "TOP")
-		Text:SetPoint("BOTTOM", CheckButton, "BOTTOM")
-		Text:SetPoint("RIGHT", AddOns, "CENTER", 0, 0)
-		Text:SetJustifyH("LEFT")
+		Text:SetPoint('LEFT', CheckButton, 'RIGHT', 10, 0)
+		Text:SetPoint('TOP', CheckButton, 'TOP')
+		Text:SetPoint('BOTTOM', CheckButton, 'BOTTOM')
+		Text:SetPoint('RIGHT', AddOns, 'CENTER', 0, 0)
+		Text:SetJustifyH('LEFT')
 
 		CheckButton.Text = Text
 
@@ -375,11 +376,11 @@ function stAM:BuildFrame()
 		StatusText:SetText('')
 		StatusText:SetJustifyH('CENTER')
 		StatusText:ClearAllPoints()
-		StatusText:SetPoint("LEFT", Text, "RIGHT", 0, 0)
-		StatusText:SetPoint("TOP", CheckButton, "TOP")
-		StatusText:SetPoint("BOTTOM", CheckButton, "BOTTOM")
-		StatusText:SetPoint("RIGHT", AddOns, "RIGHT", -10, 0)
-		StatusText:SetJustifyH("LEFT")
+		StatusText:SetPoint('LEFT', Text, 'RIGHT', 0, 0)
+		StatusText:SetPoint('TOP', CheckButton, 'TOP')
+		StatusText:SetPoint('BOTTOM', CheckButton, 'BOTTOM')
+		StatusText:SetPoint('RIGHT', AddOns, 'RIGHT', -10, 0)
+		StatusText:SetJustifyH('LEFT')
 
 		CheckButton.StatusText = StatusText
 
@@ -404,13 +405,13 @@ function stAM:BuildFrame()
 	Frame.AddOns = AddOns
 
 	Frame.AddOns:SetHeight(stAM.db.NumAddOns * (stAM.db.ButtonHeight + 5) + 15)
-	Frame:SetSize(stAM.db.FrameWidth, Frame.Title:GetHeight() + 5 + Frame.Search:GetHeight() + 5  + Frame.AddOns:GetHeight() + 10 + Frame.Profiles:GetHeight() + 20)
+	Frame:SetSize(stAM.db.FrameWidth, Frame.Title:GetHeight() + Frame.Search:GetHeight() + Frame.AddOns:GetHeight() + Frame.Profiles:GetHeight() + 40)
 
 	stAM.Frame = Frame
 
 	tinsert(_G.UISpecialFrames, stAM.Frame:GetName())
 
-	_G.GameMenuButtonAddons:SetScript("OnClick", function() stAM.Frame:Show() _G.HideUIPanel(_G.GameMenuFrame) end)
+	_G.GameMenuButtonAddons:SetScript('OnClick', function() stAM.Frame:Show() _G.HideUIPanel(_G.GameMenuFrame) end)
 end
 
 function stAM:NewAddOnProfile(name, overwrite)
@@ -443,7 +444,7 @@ function stAM:InitProfiles()
 	for _, name in pairs({'EnableAll', 'DisableAll', 'NewButton'}) do
 		local Button = CreateFrame('Button', nil, ProfileMenu)
 		PA:SetTemplate(Button)
-		Button:SetSize(stAM.db['ButtonWidth'], stAM.db.ButtonHeight)
+		Button:SetSize(stAM.db.ButtonWidth, stAM.db.ButtonHeight)
 		Button:SetScript('OnEnter', function() Button:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
 		Button:SetScript('OnLeave', function() PA:SetTemplate(Button) end)
 
@@ -458,18 +459,12 @@ function stAM:InitProfiles()
 	ProfileMenu.EnableAll.Text:SetText(PA.ACL['Enable All'])
 	ProfileMenu.EnableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOPLEFT', 10, -10)
 	ProfileMenu.EnableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOP', -3, -10)
-	ProfileMenu.EnableAll:SetScript('OnClick', function()
-		EnableAllAddOns(stAM.SelectedCharacter)
-		stAM:UpdateAddonList()
-	end)
+	ProfileMenu.EnableAll:SetScript('OnClick', function() EnableAllAddOns(stAM.SelectedCharacter) stAM:UpdateAddonList() end)
 
 	ProfileMenu.DisableAll.Text:SetText(PA.ACL['Disable All'])
 	ProfileMenu.DisableAll:SetPoint('TOPRIGHT', ProfileMenu, 'TOPRIGHT', -10, -10)
 	ProfileMenu.DisableAll:SetPoint('TOPLEFT', ProfileMenu, 'TOP', 2, -10)
-	ProfileMenu.DisableAll:SetScript('OnClick', function()
-		DisableAllAddOns(stAM.SelectedCharacter)
-		stAM:UpdateAddonList()
-	end)
+	ProfileMenu.DisableAll:SetScript('OnClick', function() DisableAllAddOns(stAM.SelectedCharacter) stAM:UpdateAddonList() end)
 
 	ProfileMenu.NewButton.Text:SetText(PA.ACL['New Profile'])
 	ProfileMenu.NewButton:SetPoint('TOPLEFT', ProfileMenu.EnableAll, 'BOTTOMLEFT', 0, -5)
@@ -531,9 +526,7 @@ function stAM:InitProfiles()
 
 		Pullout.Update:SetPoint('LEFT', Pullout.Load, 'RIGHT', 5, 0)
 		Pullout.Update.Text:SetText(PA.ACL['Update'])
-		Pullout.Update:SetScript('OnClick', function()
-			stAM:NewAddOnProfile(Pullout.Name, true)
-		end)
+		Pullout.Update:SetScript('OnClick', function() stAM:NewAddOnProfile(Pullout.Name, true) end)
 
 		Pullout.Delete:SetPoint('LEFT', Pullout.Update, 'RIGHT', 5, 0)
 		Pullout.Delete.Text:SetText(PA.ACL['Delete'])
@@ -541,10 +534,7 @@ function stAM:InitProfiles()
 			local dialog = _G.StaticPopupDialogs['STADDONMANAGER_DELETECONFIRMATION']
 
 			dialog.text = format(PA.ACL['Are you sure you want to delete %s?'], Pullout.Name)
-			dialog.OnAccept = function()
-				_G.stAddonManagerProfilesDB[Pullout.Name] = nil
-				stAM:UpdateProfiles()
-			end
+			dialog.OnAccept = function() _G.stAddonManagerProfilesDB[Pullout.Name] = nil stAM:UpdateProfiles() end
 
 			_G.StaticPopup_Show('STADDONMANAGER_DELETECONFIRMATION')
 		end)
@@ -557,34 +547,31 @@ end
 
 function stAM:UpdateProfiles()
 	local ProfileMenu = stAM.ProfileMenu
-	local Buttons = stAM.ProfileMenu.Buttons
 
 	wipe(stAM.Profiles)
-
-	for name, _ in pairs(_G.stAddonManagerProfilesDB) do
-		tinsert(stAM.Profiles, name)
-	end
-
+	for name, _ in pairs(_G.stAddonManagerProfilesDB) do tinsert(stAM.Profiles, name) end
 	sort(stAM.Profiles)
 
-	for i = 1, #Buttons do
-		Buttons[i]:Hide()
-		Buttons[i].Name = nil
-	end
-
-	for i = 1, #stAM.Profiles do
-		if i == 1 then
-			Buttons[i]:SetPoint("TOPLEFT", ProfileMenu.NewButton, "BOTTOMLEFT", 0, -5)
-		else
-			Buttons[i]:SetPoint("TOP", Buttons[i-1], "BOTTOM", 0, -5)
+	local PreviousButton
+	for i, Button in ipairs(ProfileMenu.Buttons) do
+		local isShown = i <= #stAM.Profiles
+		if isShown then
+			Button.Load.Text:SetText(stAM.Profiles[i])
 		end
 
-		Buttons[i]:Show()
-		Buttons[i].Load.Text:SetText(stAM.Profiles[i])
-		Buttons[i].Name = stAM.Profiles[i]
+		Button.Name = isShown and stAM.Profiles[i] or nil
+		Button:SetShown(isShown)
+
+		if i == 1 then
+			Button:SetPoint('TOPLEFT', ProfileMenu.NewButton, 'BOTTOMLEFT', 0, -5)
+		else
+			Button:SetPoint('TOP', PreviousButton, 'BOTTOM', 0, -5)
+		end
+
+		PreviousButton = Button
 	end
 
-	ProfileMenu:SetHeight((#stAM.Profiles+2)*(stAM.db.ButtonHeight+5) + 15)
+	ProfileMenu:SetHeight((#stAM.Profiles + 2) * (stAM.db.ButtonHeight + 5) + 15)
 end
 
 function stAM:ToggleProfiles()
@@ -602,8 +589,8 @@ function stAM:UpdateAddonList()
 			stAM.searchQuery = false
 		end
 
-		for i = 1, #stAM.AddOnInfo do
-			local name, title, authors = stAM.AddOnInfo[i].Name, stAM.AddOnInfo[i].Title, stAM.AddOnInfo[i].Authors
+		for i, AddOn in ipairs(stAM.AddOnInfo) do
+			local name, title, authors = AddOn.Name, AddOn.Title, AddOn.Authors
 
 			if strfind(strlower(name), query) or strfind(strlower(title), query) or (authors and strfind(strlower(authors), query)) then
 				tinsert(stAM.Frame.Search.AddOns, i)
@@ -635,10 +622,10 @@ function stAM:UpdateAddonList()
 				end
 
 				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
-				button.Text:SetPoint("RIGHT", stAM.Frame.AddOns, "CENTER", 0, 0)
+				button.Text:SetPoint('RIGHT', stAM.Frame.AddOns, 'CENTER', 0, 0)
 			else
 				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
-				button.Text:SetPoint("RIGHT", stAM.Frame.AddOns, "RIGHT", -10, 0)
+				button.Text:SetPoint('RIGHT', stAM.Frame.AddOns, 'RIGHT', -10, 0)
 			end
 
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
@@ -849,8 +836,10 @@ function stAM:Initialize()
 		local Required, Optional = nil, nil
 		local MissingAddons, DisabledAddons
 
-		if GetAddOnDependencies(i) ~= nil then
-			Required = { GetAddOnDependencies(i) }
+		local HasRequired, HasOptional = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
+
+		if HasRequired then
+			Required = { HasRequired }
 			for _, addon in pairs(Required) do
 				local Reason = select(5, GetAddOnInfo(addon))
 				if Reason == 'MISSING' then
@@ -863,11 +852,11 @@ function stAM:Initialize()
 			end
 		end
 
-		if GetAddOnOptionalDependencies(i) then
-			Optional = { GetAddOnOptionalDependencies(i) }
+		if HasOptional then
+			Optional = { HasOptional }
 		end
 
-		local Authors = GetAddOnMetadata(i, "Author")
+		local Authors = GetAddOnMetadata(i, 'Author')
 
 		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = Authors, Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
 	end
