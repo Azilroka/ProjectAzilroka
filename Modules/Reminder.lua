@@ -336,9 +336,11 @@ function AR:GetOptions()
 				end,
 				values = function()
 					wipe(filters)
-					filters[''] = PA.ACL['None']
 					for filter in pairs(AR.db.Filters[PA.MyClass]) do
 						filters[filter] = filter
+					end
+					if not next(filters) then
+						filters[''] = PA.ACL['None']
 					end
 					return filters
 				end,
@@ -418,6 +420,9 @@ function AR:GetOptions()
 							wipe(filters)
 							for filter in pairs(AR.db.Filters[PA.MyClass]) do
 								filters[filter] = filter
+							end
+							if not next(filters) then
+								filters[''] = PA.ACL['None']
 							end
 							return filters
 						end,
