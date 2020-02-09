@@ -523,7 +523,7 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 end
 
 function iFilger:BAG_UPDATE_COOLDOWN()
-	for _, bagID in ipairs({0, 1, 2, 3, 4}) do
+	for bagID = 0, 4 do
 		for slotID = 1, GetContainerNumSlots(bagID) do
 			local itemID = GetContainerItemID(bagID, slotID)
 			if itemID then
