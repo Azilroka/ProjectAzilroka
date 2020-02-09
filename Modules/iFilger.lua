@@ -45,6 +45,7 @@ iFilger.DelayCooldowns = {}
 iFilger.IsChargeCooldown = {}
 iFilger.SpellList = {}
 iFilger.CompleteSpellBook = {}
+iFilger.ItemCooldowns = {}
 
 -- Simpy Magic
 local t = {}
@@ -64,7 +65,7 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	object.Blacklist = db.Blacklist
 	iFilger:CreateMover(object)
 
-	if name ~= 'Cooldowns' then
+	if name ~= 'Cooldowns' and name ~= 'ItemCooldowns' then
 		object:SetAttribute('unit', unit)
 		object.unit = unit
 		object.filter = filter
@@ -216,6 +217,62 @@ function iFilger:UpdateActiveCooldowns()
 				button.StatusBar:SetShown(Panel.db.StatusBar)
 			else
 				iFilger.ActiveCooldowns[SpellID] = nil
+				button.CurrentDuration = 0
+			end
+		end
+	end
+
+	iFilger:SetPosition(Panel)
+end
+
+function iFilger:UpdateItemCooldowns()
+	local Panel = iFilger.Panels.ItemCooldowns
+
+	for i = PA:CountTable(iFilger.ItemCooldowns) + 1, #Panel do
+		Panel[i]:Hide()
+	end
+
+	local Position = 0
+	for itemID in pairs(iFilger.ItemCooldowns) do
+		local Name = GetItemInfo(itemID)
+
+		if Name then
+			Position = Position + 1
+			local button = Panel[Position] or iFilger:CreateAuraIcon(Panel)
+
+			local Start, Duration, CurrentDuration
+			Start, Duration = GetItemCooldown(itemID)
+			CurrentDuration = (Start + Duration - GetTime())
+
+			button.duration = Duration
+			button.itemID = itemID
+			button.itemName = Name
+
+			button.Texture:SetTexture(GetItemIcon(itemID))
+			button:SetShown(CurrentDuration and CurrentDuration > 0)
+
+			if (CurrentDuration and CurrentDuration > 0) then
+				if Panel.db.StatusBar then
+					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
+					local color = PA.TimeColors[formatid]
+
+					button.StatusBar:SetValue(CurrentDuration / Duration)
+					button.StatusBar.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
+					button.StatusBar.Time:SetTextColor(unpack(PA.TimeColors[formatid]))
+					button.StatusBar.Time:SetTextColor(color.r, color.g, color.b)
+					if Panel.db.FollowCooldownText and (formatid == 1 or formatid == 2) then
+						button.StatusBar:SetStatusBarColor(color.r, color.g, color.b)
+					end
+
+					button.StatusBar.Name:SetText(Name)
+				else
+					button.Cooldown:SetCooldown(Start, Duration)
+				end
+
+				button.Cooldown:SetShown(not Panel.db.StatusBar)
+				button.StatusBar:SetShown(Panel.db.StatusBar)
+			else
+				iFilger.ItemCooldowns[itemID] = nil
 				button.CurrentDuration = 0
 			end
 		end
@@ -465,6 +522,20 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 	end
 end
 
+function iFilger:BAG_UPDATE_COOLDOWN()
+	for _, bagID in ipairs({0, 1, 2, 3, 4}) do
+		for slotID = 1, GetContainerNumSlots(bagID) do
+			local itemID = GetContainerItemID(bagID, slotID)
+			if itemID then
+				local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
+				if duration and duration > 0 then
+					iFilger.ItemCooldowns[itemID] = true
+				end
+			end
+		end
+	end
+end
+
 function iFilger:CreateAuraIcon(element)
 	local Frame = CreateFrame('Button', nil, element)
 	Frame:EnableMouse(false)
@@ -608,7 +679,7 @@ function iFilger:BuildProfile()
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
 	}
 
-	for _, Name in ipairs({'Cooldowns', 'Buffs', 'Procs', 'Enhancements', 'RaidDebuffs', 'TargetDebuffs', 'FocusBuffs', 'FocusDebuffs'}) do
+	for _, Name in ipairs({'Cooldowns', 'ItemCooldowns', 'Buffs', 'Procs', 'Enhancements', 'RaidDebuffs', 'TargetDebuffs', 'FocusBuffs', 'FocusDebuffs'}) do
 		PA.Defaults.profile.iFilger[Name] = {
 			Direction = 'RIGHT',
 			Enable = true,
@@ -710,7 +781,7 @@ function iFilger:GetOptions()
 		},
 	}
 
-	for _, Name in ipairs({'Cooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'}) do
+	for _, Name in ipairs({'Cooldowns','ItemCooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'}) do
 		PA.Options.args.iFilger.args[Name] = {
 			type = 'group',
 			name = Name,
@@ -1052,6 +1123,13 @@ function iFilger:GetOptions()
 		min = .1, max = .5, step = .1,
 	}
 
+	PA.Options.args.iFilger.args.ItemCooldowns.args.UpdateSpeed = {
+		order = 5,
+		type = 'range',
+		name = PA.ACL['Update Speed'],
+		min = .1, max = .5, step = .1,
+	}
+
 	PA.Options.args.iFilger.args.Cooldowns.args.SuppressDuration = {
 		order = 6,
 		type = 'range',
@@ -1101,14 +1179,20 @@ function iFilger:Initialize()
 		FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
 		FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
 		Cooldowns = iFilger:Spawn('player', 'Cooldowns', iFilger.db.Cooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
+		ItemCooldowns = iFilger:Spawn('player', 'ItemCooldowns', iFilger.db.ItemCooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 	}
 
 	iFilger:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED')	-- For Cooldown Queue
 	iFilger:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
 	iFilger:RegisterEvent('SPELLS_CHANGED')
+	iFilger:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
 		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
+
+	if iFilger.db.ItemCooldowns.Enable then
+		iFilger:ScheduleRepeatingTimer('UpdateItemCooldowns', iFilger.db.ItemCooldowns.UpdateSpeed)
 	end
 end
