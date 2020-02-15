@@ -157,7 +157,7 @@ function OzCD:UpdateActiveCooldowns()
 
 			Frame.Icon:SetTexture(Icon)
 
-			if (CurrentDuration and CurrentDuration > 0) then
+			if (CurrentDuration and CurrentDuration > 1.5) then
 				Frame.Cooldown:SetCooldown(Start, Duration)
 				Frame:Show()
 			else

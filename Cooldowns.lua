@@ -171,11 +171,9 @@ function PA:Cooldown_OnSizeChanged(cd, width, force)
 	end
 
 	if cd.customFont then -- override font
-		cd.text:FontTemplate(cd.customFont, (scale * cd.customFontSize), cd.customFontOutline)
+		cd.text:SetFont(PA.LSM:Fetch('font', cd.customFont), (scale * cd.customFontSize), cd.customFontOutline)
 	elseif scale then -- default, no override
-		cd.text:FontTemplate(nil, (scale * FONT_SIZE), 'OUTLINE')
-	else -- this should never happen but just incase
-		cd.text:FontTemplate()
+		cd.text:SetFont(PA.LSM:Fetch('font', PA.LSM:GetDefault('font')), (scale * FONT_SIZE), 'OUTLINE')
 	end
 end
 
@@ -359,7 +357,7 @@ function PA:UpdateCooldownOverride(module)
 
 				PA:ToggleBlizzardCooldownText(parent, cd)
 			elseif cd.text and cd.customFont then
-				cd.text:FontTemplate(cd.customFont, cd.customFontSize, cd.customFontOutline)
+				cd.text:SetFont(PA.LSM:Fetch('font', cd.customFont), cd.customFontSize, cd.customFontOutline)
 			end
 		end
 	end

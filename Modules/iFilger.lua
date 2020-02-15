@@ -195,7 +195,7 @@ function iFilger:UpdateActiveCooldowns()
 			button.Texture:SetTexture(Icon)
 			button:SetShown(CurrentDuration and CurrentDuration > 0)
 
-			if (CurrentDuration and CurrentDuration > 0) then
+			if (CurrentDuration and CurrentDuration > 1.5) then
 				if Panel.db.StatusBar then
 					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
 					local color = PA.TimeColors[formatid]
@@ -251,7 +251,7 @@ function iFilger:UpdateItemCooldowns()
 			button.Texture:SetTexture(GetItemIcon(itemID))
 			button:SetShown(CurrentDuration and CurrentDuration > 0)
 
-			if (CurrentDuration and CurrentDuration > 0) then
+			if (CurrentDuration and CurrentDuration > 1.5) then
 				if Panel.db.StatusBar then
 					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
 					local color = PA.TimeColors[formatid]
@@ -380,10 +380,10 @@ function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, 
 
 		if show then
 			if not element.db.StatusBar then
-				if (duration and duration > 0) then
+				if (duration and duration > 1.5) then
 					button.Cooldown:SetCooldown(expiration - duration, duration)
 				end
-				button.Cooldown:SetShown(duration and duration > 0)
+				button.Cooldown:SetShown(duration and duration > 1.5)
 			end
 
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
@@ -528,7 +528,7 @@ function iFilger:BAG_UPDATE_COOLDOWN()
 			local itemID = GetContainerItemID(bagID, slotID)
 			if itemID then
 				local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
-				if duration and duration > 0 then
+				if duration and duration > 1.5 then
 					iFilger.ItemCooldowns[itemID] = true
 				end
 			end
