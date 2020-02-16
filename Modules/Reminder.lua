@@ -147,7 +147,7 @@ function AR:Reminder_Update()
 	local Position = 1
 	for _, filter in pairs({PA.MyClass, 'Global'}) do
 		for _, db in pairs(AR.db.Filters[filter]) do
-			if db.enable and db.level and UnitLevel('player') > db.level then
+			if db.enable and (not db.level or db.level and UnitLevel('player') > db.level) then
 				local Button = AR.CreatedReminders[Position]
 				if (not Button) or (Button:IsVisible()) then
 					Button = AR:CreateReminder(Position)
@@ -171,7 +171,7 @@ function AR:Reminder_Update()
 					AR:UpdateColors(Button, db.cooldownSpellID)
 
 					if (duration and duration > 1.5) and filterCheck and db.onCooldown then
-						Button:SetAlpha(db.cooldownAlpha or 0)
+						Button:SetAlpha(db.cooldownAlpha or .5)
 					end
 				elseif (db.filterType == 'WEAPON' or (db.filterType == 'SPELL' and db.spellGroup and PA:CountTable(db.spellGroup) > 0)) and filterCheck then
 					if db.filterType == 'SPELL' then
@@ -291,6 +291,23 @@ function AR:UpdateFilterGroup(group)
 	end
 end
 
+function AR:CleanDB()
+	-- Cleanup DB
+	for _, filter in pairs({PA.MyClass, 'Global'}) do
+		for _, db in pairs(AR.db.Filters[filter]) do
+			if db.role == 'ANY' then db.role = nil end
+			if db.tree == 'ANY' then db.tree = nil end
+			if db.talentTreeException == 'NONE' then db.talentTreeException = nil end
+			if (db.level and db.level == 0) then db.level = nil end
+			if not db.combat then db.combat = nil end
+			if not db.instance then db.instance = nil end
+			if not db.pvp then db.pvp = nil end
+			if not db.onCooldown then db.onCooldown = nil end
+			if not db.disableSound then db.disableSound = nil end
+		end
+	end
+end
+
 local addGroupTemplate = { name = '', template = ''}
 
 function AR:GetOptions()
@@ -328,7 +345,7 @@ function AR:GetOptions()
 			selectGroup = {
 				order = 3,
 				type = 'select',
-				name = PA.ACL['Select Filter'],
+				name = PA.ACL['Select Group'],
 				get = function(info)
 					if selectedGroup == 'Global' then
 						return selectedGroup
@@ -346,7 +363,7 @@ function AR:GetOptions()
 				values = { Class = 'Class', Global = 'Global'},
 			},
 			selectFilter = {
-				order = 3,
+				order = 4,
 				type = 'select',
 				name = PA.ACL['Select Filter'],
 				get = function(info) return selectedFilter ~= '' and selectedFilter or '' end,
@@ -366,16 +383,16 @@ function AR:GetOptions()
 					return filters
 				end,
 			},
-			groupControl = {
-				order = 4,
+			filterControl = {
+				order = 5,
 				type = 'group',
-				name = PA.ACL['Group Control'],
+				name = PA.ACL['Filter Control'],
 				guiInline = true,
 				args = {
-					addGroup = {
+					addFilter = {
 						order = 1,
 						type = 'input',
-						name = PA.ACL['New Group Name'],
+						name = PA.ACL['New Filter Name'],
 						get = function(info) return addGroupTemplate.name end,
 						set = function(info, value)
 							if AR.db.Filters[selectedGroup][value] then
@@ -384,10 +401,10 @@ function AR:GetOptions()
 							addGroupTemplate.name = value
 						end,
 					},
-					addGroupTemplate = {
+					addFilterTemplate = {
 						order = 2,
 						type = 'select',
-						name = PA.ACL['New Group Filter Type'],
+						name = PA.ACL['New Filter Type'],
 						get = function(info) return addGroupTemplate.template end,
 						set = function(info, value)
 							if AR.db.Filters[selectedGroup][value] then
@@ -405,15 +422,15 @@ function AR:GetOptions()
 							return filterTypeList
 						end,
 					},
-					addGroupButton = {
+					addFilterButton = {
 						type = 'execute',
 						order = 3,
-						name = PA.ACL['Add Group'],
+						name = PA.ACL['Add Filter'],
 						hidden = function(info)
 							return addGroupTemplate.name == '' or addGroupTemplate.template == ''
 						end,
 						func = function(info)
-							AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template, role = 'ANY', tree = 'ANY', level = 0 }
+							AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template }
 							if addGroupTemplate.template == 'COOLDOWN' then
 								AR.db.Filters[selectedGroup][addGroupTemplate.name].cooldownAlpha = .5
 							elseif addGroupTemplate.template == 'WEAPON' then
@@ -431,7 +448,7 @@ function AR:GetOptions()
 					deleteGroup = {
 						order = 5,
 						type = 'select',
-						name = PA.ACL['Remove Group'],
+						name = PA.ACL['Remove Filter'],
 						get = function(info) return '' end,
 						set = function(info, value)
 							selectedFilter = nil
@@ -801,4 +818,7 @@ function AR:Initialize()
 	AR.isEnabled = true
 
 	AR:ScheduleRepeatingTimer('Reminder_Update', .5)
+
+	AR:CleanDB()
+	AR:RegisterEvent("PLAYER_LOGOUT", 'CleanDB')
 end
