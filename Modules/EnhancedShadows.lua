@@ -11,11 +11,12 @@ local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
 
 ES.RegisteredShadows = {}
+ES.Shadows = {}
 
 function ES:UpdateShadows()
 	if UnitAffectingCombat('player') then return end
 
-	for frame, _ in pairs(self.RegisteredShadows) do
+	for frame, _ in pairs(ES.RegisteredShadows) do
 		ES:UpdateShadow(frame)
 	end
 end
@@ -23,12 +24,12 @@ end
 function ES:RegisterFrameShadows(frame)
 	local shadow = frame.shadow or frame.Shadow
 	if shadow and not shadow.isRegistered then
-		ES.shadows[shadow] = true
+		ES.Shadows[shadow] = true
 		shadow.isRegistered = true
 	end
 	local ishadow = frame.invertedshadow or frame.InvertedShadow
 	if ishadow and not ishadow.isRegistered then
-		ES.shadows[ishadow] = true
+		ES.Shadows[ishadow] = true
 		shadow.isRegistered = true
 	end
 end
