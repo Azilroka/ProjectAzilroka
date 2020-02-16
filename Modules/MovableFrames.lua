@@ -404,7 +404,7 @@ function MF:Initialize()
 
 	MF.isEnabled = true
 
-	if PA:IsAddOnEnabled('WorldQuestTracker') then
+	if PA:IsAddOnEnabled('WorldQuestTracker') or PA:IsAddOnEnabled('Leatrix_Maps') then
 		Frames.WorldMapFrame = nil
 	end
 

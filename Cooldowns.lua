@@ -231,7 +231,7 @@ function PA:Cooldown_Options(timer, db, parent)
 	end
 
 	if fonts and fonts.enable then
-		timer.customFont = PA.LSM:Fetch('font', fonts.font)
+		timer.customFont = fonts.font
 		timer.customFontSize = fonts.fontSize
 		timer.customFontOutline = fonts.fontOutline
 	else

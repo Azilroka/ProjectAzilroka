@@ -260,7 +260,6 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
--- /dump "["..select(2, strsplit('-', UnitGUID('player'))) .. "] = '" ..GetRealmName().."'"
 PA.ClassicServerNameByID = {
 	[4703] = 'Amnennar',
 	[4715] = 'Anathema',
