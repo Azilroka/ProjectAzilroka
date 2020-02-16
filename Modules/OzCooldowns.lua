@@ -82,7 +82,7 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
 				SpellName = (Rank and Rank ~= '') and format('%s %s', SpellName, Rank)
 			end
-			if OzCD:ScanTooltip(index, bookType) then
+			if SpellID and OzCD:ScanTooltip(index, bookType) then
 				OzCD.SpellList[SpellID] = SpellName or true
 			end
 		elseif skillType == 'FLYOUT' then
