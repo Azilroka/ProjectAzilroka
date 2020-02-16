@@ -1,7 +1,7 @@
 ## Interface: 11303
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
-## Version: 1.59
+## Version: 1.60
 ## OptionalDeps: Masque
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 
