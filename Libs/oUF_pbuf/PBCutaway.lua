@@ -85,7 +85,7 @@ end
 local function PBHealth_PreUpdate(self, unit)
 	local petInfo = self.__owner.pbouf_petinfo
 	local element = self.__owner.PBCutaway.Health
-	local maxV = (element.GetHealthMax or C_PetBattles.GetHealth)(petInfo.owner, petInfo.index)
+	local maxV = (element.GetHealthMax or C_PetBattles.GetMaxHealth)(petInfo.owner, petInfo.index)
 	if Shared_UpdateCheckReturn(self, element, PRE, maxV) then
 		return
 	end
