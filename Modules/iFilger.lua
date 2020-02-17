@@ -249,7 +249,7 @@ function iFilger:UpdateItemCooldowns()
 			button.itemName = Name
 
 			button.Texture:SetTexture(GetItemIcon(itemID))
-			button:SetShown(CurrentDuration and CurrentDuration > 0)
+			button:SetShown(CurrentDuration and CurrentDuration > 1.5)
 
 			if (CurrentDuration and CurrentDuration > 1.5) then
 				if Panel.db.StatusBar then
@@ -676,6 +676,7 @@ function iFilger:BuildProfile()
 	PA.ScanTooltip:Hide()
 
 	PA.Defaults.profile.iFilger = {
+		Enable = false,
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
 	}
 
