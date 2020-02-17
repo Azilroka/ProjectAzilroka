@@ -46,6 +46,8 @@ OzCD.DelayCooldowns = {}
 OzCD.IsChargeCooldown = {}
 OzCD.SpellList = {}
 
+local GLOBAL_COOLDOWN_TIME = 1.5
+
 -- Simpy Magic
 local t = {}
 for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
@@ -157,7 +159,7 @@ function OzCD:UpdateActiveCooldowns()
 
 			Frame.Icon:SetTexture(Icon)
 
-			if (CurrentDuration and CurrentDuration > 1.5) then
+			if (CurrentDuration and CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				Frame.Cooldown:SetCooldown(Start, Duration)
 				Frame:Show()
 			else
@@ -667,7 +669,7 @@ function OzCD:Initialize()
 	if PA.Tukui then
 		_G.Tukui[1].Movers:RegisterFrame(Holder)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL')
+		_G.ElvUI[1]:CreateMover(Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,OzCooldowns')
 	else
 		Holder:SetMovable(true)
 		Holder:SetScript('OnDragStart', Holder.StartMoving)

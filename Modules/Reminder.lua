@@ -294,16 +294,18 @@ end
 function AR:CleanDB()
 	-- Cleanup DB
 	for _, filter in pairs({PA.MyClass, 'Global'}) do
-		for _, db in pairs(AR.db.Filters[filter]) do
-			if db.role == 'ANY' then db.role = nil end
-			if db.tree == 'ANY' then db.tree = nil end
-			if db.talentTreeException == 'NONE' then db.talentTreeException = nil end
-			if (db.level and db.level == 0) then db.level = nil end
-			if not db.combat then db.combat = nil end
-			if not db.instance then db.instance = nil end
-			if not db.pvp then db.pvp = nil end
-			if not db.onCooldown then db.onCooldown = nil end
-			if not db.disableSound then db.disableSound = nil end
+		if AR.db.Filters[filter] then
+			for _, db in pairs(AR.db.Filters[filter]) do
+				if db.role == 'ANY' then db.role = nil end
+				if db.tree == 'ANY' then db.tree = nil end
+				if db.talentTreeException == 'NONE' then db.talentTreeException = nil end
+				if (db.level and db.level == 0) then db.level = nil end
+				if not db.combat then db.combat = nil end
+				if not db.instance then db.instance = nil end
+				if not db.pvp then db.pvp = nil end
+				if not db.onCooldown then db.onCooldown = nil end
+				if not db.disableSound then db.disableSound = nil end
+			end
 		end
 	end
 end

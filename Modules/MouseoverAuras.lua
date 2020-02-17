@@ -262,7 +262,7 @@ end
 
 function MA:BuildProfile()
 	PA.Defaults.profile.MouseoverAuras = {
-		Enable = false,
+		Enable = true,
 		Size = 16,
 		Spacing = 1,
 		cooldown = CopyTable(PA.Defaults.profile.cooldown),
