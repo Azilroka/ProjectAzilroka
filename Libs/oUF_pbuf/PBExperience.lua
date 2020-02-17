@@ -77,6 +77,7 @@ The following options are listed by priority. The first check that returns true 
 --]]
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
+if not oUF then return end
 
 local function UpdateColor(self, event, unit)
 	if (not unit or self.unit ~= unit) then

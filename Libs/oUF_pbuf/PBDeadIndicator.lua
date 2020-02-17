@@ -1,5 +1,6 @@
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
+if not oUF then return end
 
 local function Update(self, event)
 	local petInfo = self.pbouf_petinfo

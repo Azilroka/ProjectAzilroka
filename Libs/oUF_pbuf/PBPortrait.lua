@@ -34,6 +34,7 @@ the unit.
 
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
+if not oUF then return end
 
 local function Update(self, event, unit)
 	local petInfo = self.pbouf_petinfo

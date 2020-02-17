@@ -1,5 +1,6 @@
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
+if not oUF then return end
 
 local function UpdateTooltip(self)
 	local petInfo = self:GetParent().__owner.pbouf_petinfo
