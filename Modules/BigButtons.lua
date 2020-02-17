@@ -109,7 +109,7 @@ end
 function BB:CreateBigButton(ItemID)
 	local Button = CreateFrame('Button', nil, BB.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	Button:Hide()
-	Button:SetTemplate()
+	PA:SetTemplate(Button)
 	Button:SetSize(50, 50)
 	Button:SetFrameLevel(1)
 	Button:SetAttribute('type', 'item')
@@ -118,7 +118,7 @@ function BB:CreateBigButton(ItemID)
 
 	Button.icon:SetTexture(select(5, GetItemInfoInstant(ItemID)))
 	Button.icon:SetTexCoord(unpack(PA.TexCoords))
-	Button.icon:SetInside()
+	PA:SetInside(Button.icon)
 	Button.icon:SetDrawLayer('ARTWORK')
 
 	Button:SetNormalTexture('')
@@ -303,7 +303,7 @@ end
 
 function BB:BuildProfile()
 	PA.Defaults.profile.BigButtons = {
-		Enable = false,
+		Enable = true,
 		DropTools = false,
 		ToolSize = 50,
 		SeedSize = 30,
@@ -375,8 +375,8 @@ function BB:Initialize()
 		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar)
 		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar.SeedsFrame)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(BB.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL')
-		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBar', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL')
+		_G.ElvUI[1]:CreateMover(BB.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
+		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBar', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
 	end
 
 	PA:CreateShadow(Bar.SeedsFrame)

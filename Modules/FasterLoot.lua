@@ -58,7 +58,7 @@ function FL:LOOT_CLOSED()
 end
 
 function FL:BuildProfile()
-	PA.Defaults.profile['FasterLoot'] = { ['Enable'] = true }
+	PA.Defaults.profile['FasterLoot'] = { Enable = true }
 end
 
 function FL:GetOptions()

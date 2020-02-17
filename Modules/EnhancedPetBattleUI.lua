@@ -399,14 +399,14 @@ function EPB:CreateAuraFrame(parent, auraKey, petOwner, petIndex)
 	local frame = CreateFrame("frame", nil, parent)
 	frame.petOwner = petOwner
 	frame.petIndex = petIndex
-	frame:SetTemplate()
+	PA:SetTemplate(frame)
 	frame:SetBackdropBorderColor(unpack(auraKey == "Buff" and {0, 1, 0} or {1, 0, 0}))
 	frame:Hide()
 	frame:SetSize(28, 28)
 	frame.Text = frame:CreateFontString(nil, "OVERLAY")
 	frame.Text:SetPoint("CENTER")
 	frame.Texture = frame:CreateTexture(nil, "ARTWORK")
-	frame.Texture:SetInside()
+	PA:SetInside(frame.Texture)
 	frame.Texture:SetTexCoord(unpack(self.TexCoords))
 	EPB:SetAuraTooltipScripts(frame)
 	return frame
@@ -446,32 +446,29 @@ function EPB:BuildAuras(frame, petOwner, petIndex)
 end
 
 function EPB:SetAuraTooltipScripts(frame)
-	frame:SetScript(
-		"OnEnter",
-		function(_self)
-			local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(_self.petOwner, _self.petIndex, _self.auraIndex)
-			if not auraID then
-				return
-			end
-			local _, name, icon = C_PetBattles.GetAbilityInfoByID(auraID)
-			GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
-			GameTooltip:ClearLines()
-			GameTooltip:AddTexture(icon)
-			GameTooltip:AddDoubleLine(name, auraID, isBuff and 0 or 1, isBuff and 1 or 0, 0, 1, 1, .7)
-			GameTooltip:AddLine(" ")
-			_G.PetBattleAbilityTooltip_SetAura(_self.petOwner, _self.petIndex, _self.auraIndex)
-			GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
-			GameTooltip:AddLine(" ")
-			if turnsRemaining > 0 then
-				local remaining = function(r)
-					return r > 3 and self.Colors.Green or r > 2 and self.Colors.Yellow or self.Colors.Red
-				end
-				local c1, c2, c3 = unpack(remaining(turnsRemaining))
-				GameTooltip:AddLine(turnsRemaining .. " |cffffffffTurns Remaining|r", c1, c2, c3)
-			end
-			GameTooltip:Show()
+	frame:SetScript("OnEnter", function(_self)
+		local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(_self.petOwner, _self.petIndex, _self.auraIndex)
+		if not auraID then
+			return
 		end
-	)
+		local _, name, icon = C_PetBattles.GetAbilityInfoByID(auraID)
+		GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
+		GameTooltip:ClearLines()
+		GameTooltip:AddTexture(icon)
+		GameTooltip:AddDoubleLine(name, auraID, isBuff and 0 or 1, isBuff and 1 or 0, 0, 1, 1, .7)
+		GameTooltip:AddLine(" ")
+		_G.PetBattleAbilityTooltip_SetAura(_self.petOwner, _self.petIndex, _self.auraIndex)
+		GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
+		GameTooltip:AddLine(" ")
+		if turnsRemaining > 0 then
+			local remaining = function(r)
+				return r > 3 and self.Colors.Green or r > 2 and self.Colors.Yellow or self.Colors.Red
+			end
+			local c1, c2, c3 = unpack(remaining(turnsRemaining))
+			GameTooltip:AddLine(turnsRemaining .. " |cffffffffTurns Remaining|r", c1, c2, c3)
+		end
+		GameTooltip:Show()
+	end)
 	frame:SetScript("OnLeave", _G.GameTooltip_Hide)
 end
 
@@ -582,19 +579,18 @@ function EPB:CreateGenericUIFrame(petOwner, petIndex, parent)
 	frame:Hide()
 	frame:SetSize(260, 60)
 	frame:SetFrameLevel(parent:GetFrameLevel() + 1)
-	frame:SetTemplate("Transparent", true)
+	PA:SetTemplate(frame, "Transparent")
 	frame.BorderColor = {frame:GetBackdropBorderColor()}
-	frame:CreateShadow()
 	frame:EnableMouse(true)
 
 	frame.Icon = CreateFrame("frame", nil, frame)
-	frame.Icon:SetTemplate("Transparent")
+	PA:SetTemplate(frame.Icon, "Transparent")
 	frame.Icon:SetFrameLevel(frame:GetFrameLevel() + 1)
 	frame.Icon:SetSize(40, 40)
 
 	frame.Icon.PetTexture = frame.Icon:CreateTexture(nil, "ARTWORK")
 	frame.Icon.PetTexture:SetTexCoord(unpack(EPB.TexCoords))
-	frame.Icon.PetTexture:SetInside()
+	PA:SetInside(frame.Icon.PetTexture)
 
 	frame.Icon.PetModel = CreateFrame("PlayerModel", nil, frame.Icon)
 	frame.Icon.PetModel:SetFrameLevel(frame.Icon:GetFrameLevel())
@@ -603,7 +599,7 @@ function EPB:CreateGenericUIFrame(petOwner, petIndex, parent)
 	frame.Icon.Dead = frame.Icon:CreateTexture(nil, "OVERLAY")
 	frame.Icon.Dead:Hide()
 	frame.Icon.Dead:SetTexture(self.TexturePath .. "Dead")
-	frame.Icon.Dead:SetOutside(frame.Icon, 8, 8)
+	PA:SetOutside(frame.Icon.Dead, frame.Icon, 8, 8)
 
 	frame.Icon.PetType = frame:CreateTexture(nil, "ARTWORK")
 	frame.Icon.PetType:SetSize(32, 32)
@@ -637,13 +633,13 @@ function EPB:CreateGenericUIFrame(petOwner, petIndex, parent)
 	frame.Health = CreateFrame("StatusBar", nil, frame)
 	frame.Health:SetSize(150, 11)
 	frame.Health:SetFrameLevel(frame:GetFrameLevel() + 2)
-	frame.Health:CreateBackdrop("Transparent", true)
+	PA:CreateBackdrop(frame.Health, "Transparent", true)
 	frame.Health.Text = frame.Health:CreateFontString(nil, "OVERLAY")
 
 	frame.Experience = CreateFrame("StatusBar", nil, frame)
 	frame.Experience:SetSize(150, 11)
 	frame.Experience:SetFrameLevel(frame:GetFrameLevel() + 2)
-	frame.Experience:CreateBackdrop("Transparent", true)
+	PA:CreateBackdrop(frame.Experience, "Transparent")
 	frame.Experience.Text = frame.Experience:CreateFontString(nil, "OVERLAY")
 
 	self:BuildAuras(frame, petOwner, petIndex)
@@ -662,10 +658,7 @@ function EPB:CreateGenericUIFrame(petOwner, petIndex, parent)
 		end
 	end)
 
-	if (_G.EnhancedShadows) then
-		frame:CreateShadow()
-		_G.EnhancedShadows:RegisterShadow(frame.shadow)
-	end
+	PA:CreateShadow(frame)
 
 	return frame
 end
@@ -770,7 +763,6 @@ function EPB:CreateEnemyUIFrame(petOwner, petIndex, parent)
 	frame.Debuff:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT", -3, -1)
 	frame.Icon:EnableMouse(true)
 	frame.Icon:SetScript("OnEnter", EPB.EnemyIconOnEnter)
-
 	frame.Icon:SetScript("OnLeave", _G.GameTooltip_Hide)
 
 	return frame
@@ -818,11 +810,9 @@ function EPB:CreateReviveBar()
 	holder:SetSize(104, 50)
 	holder:SetFrameStrata("BACKGROUND")
 	holder:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	holder:SetTemplate()
-	if (_G.EnhancedShadows) then
-		holder:CreateShadow()
-		_G.EnhancedShadows:RegisterShadow(holder.shadow)
-	end
+	PA:SetTemplate(holder)
+	PA:CreateShadow(holder)
+
 	holder.buttons = {}
 
 	if PA.ElvUI then
@@ -858,17 +848,17 @@ function EPB:CreateExtraActionButton(name)
 
 	local Button = CreateFrame("Button", "EPB" .. name .. "Button", self.holder, "SecureActionButtonTemplate, ActionButtonTemplate")
 	Button:SetSize(50, 50)
-	Button:SetTemplate()
+	PA:SetTemplate(Button)
 	Button.BorderColor = {Button:GetBackdropBorderColor()}
 	Button.icon:SetDrawLayer("ARTWORK")
 	Button.icon:SetTexture("")
-	Button.icon:SetInside()
+	PA:SetInside(Button.icon)
 	Button.icon:SetTexCoord(unpack(EPB.TexCoords))
 	Button:SetNormalTexture("")
 	Button:SetPushedTexture("")
 	Button:SetHighlightTexture("")
 	Button.cooldown = CreateFrame("Cooldown", nil, Button, "CooldownFrameTemplate")
-	Button.cooldown:SetInside()
+	PA:SetInside(Button.cooldown)
 	Button.cooldown:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	Button.cooldown:SetScript("OnEvent", function(_self)
 		if Button.ID then

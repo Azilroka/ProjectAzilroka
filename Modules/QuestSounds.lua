@@ -262,7 +262,7 @@ function QS:BuildProfile()
 	QS:RegisterSounds()
 
 	PA.Defaults.profile.QuestSounds = {
-		Enable = false,
+		Enable = true,
 		QuestComplete = 'Peon Quest Complete',
 		ObjectiveComplete = 'Peon Objective Complete',
 		ObjectiveProgress = 'Peon Objective Progress',
