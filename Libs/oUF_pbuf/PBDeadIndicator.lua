@@ -1,5 +1,5 @@
-local _, ns = ...
-local oUF = ns.oUF
+local PA = _G.ProjectAzilroka
+local oUF = PA.oUF
 
 local function Update(self, event)
 	local petInfo = self.pbouf_petinfo

@@ -104,6 +104,14 @@ PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
+-- Setup oUF for pbuf
+local function GetoUF()
+	local key = PA.ElvUI and "ElvUI" or PA.Tukui and "Tukui"
+	if not key then return end
+	return _G[_G.GetAddOnMetadata(key, 'X-oUF')]
+end
+PA.oUF = GetoUF()
+
 PA.Classes = {}
 
 PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', _G.UIParent, 'GameTooltipTemplate')

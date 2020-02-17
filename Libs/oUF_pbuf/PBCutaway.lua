@@ -1,5 +1,5 @@
-local _, ns = ...
-local oUF = _G.oUF or ns.oUF
+local PA = _G.ProjectAzilroka
+local oUF = PA.oUF
 assert(oUF, "oUF_Cutaway was unable to locate oUF install.")
 
 --[[

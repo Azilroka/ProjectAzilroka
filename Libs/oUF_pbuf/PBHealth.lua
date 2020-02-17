@@ -76,9 +76,8 @@ The following options are listed by priority. The first check that returns true 
     self.PBHealth = Health
 --]]
 
-local _, ns = ...
-local oUF = ns.oUF
-
+local PA = _G.ProjectAzilroka
+local oUF = PA.oUF
 
 local function UpdateColor(self, event, unit)
 	if(not unit or self.unit ~= unit) then return end
