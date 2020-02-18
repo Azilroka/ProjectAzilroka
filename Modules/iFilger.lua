@@ -48,6 +48,8 @@ iFilger.CompleteSpellBook = {}
 iFilger.ItemCooldowns = {}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
+local COOLDOWN_MIN_DURATION = .1
+local AURA_MIN_DURATION = .1
 
 -- Simpy Magic
 local t = {}
@@ -195,9 +197,9 @@ function iFilger:UpdateActiveCooldowns()
 			button.spellName = Name
 
 			button.Texture:SetTexture(Icon)
-			button:SetShown(CurrentDuration and CurrentDuration > 0)
+			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
-			if (CurrentDuration and CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
 				if Panel.db.StatusBar then
 					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
 					local color = PA.TimeColors[formatid]
@@ -251,9 +253,9 @@ function iFilger:UpdateItemCooldowns()
 			button.itemName = Name
 
 			button.Texture:SetTexture(GetItemIcon(itemID))
-			button:SetShown(CurrentDuration and CurrentDuration > GLOBAL_COOLDOWN_TIME)
+			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
-			if (CurrentDuration and CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
 				if Panel.db.StatusBar then
 					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
 					local color = PA.TimeColors[formatid]
@@ -382,10 +384,10 @@ function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, 
 
 		if show then
 			if not element.db.StatusBar then
-				if (duration and duration > GLOBAL_COOLDOWN_TIME) then
+				if (duration and duration >= AURA_MIN_DURATION) then
 					button.Cooldown:SetCooldown(expiration - duration, duration)
 				end
-				button.Cooldown:SetShown(duration and duration > GLOBAL_COOLDOWN_TIME)
+				button.Cooldown:SetShown(duration and duration >= AURA_MIN_DURATION)
 			end
 
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
@@ -471,7 +473,7 @@ function iFilger:PLAYER_ENTERING_WORLD()
 		if Enable and (CurrentDuration > .1) and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
 				iFilger.DelayCooldowns[SpellID] = Duration
-			else
+			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				iFilger.ActiveCooldowns[SpellID] = Duration
 			end
 		end
@@ -480,6 +482,8 @@ function iFilger:PLAYER_ENTERING_WORLD()
 	if iFilger.db.SortByDuration then
 		sort(iFilger.ActiveCooldowns)
 	end
+
+	iFilger:UnregisterEvent('PLAYER_ENTERING_WORLD')
 end
 
 function iFilger:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
@@ -511,7 +515,7 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
 				iFilger.DelayCooldowns[SpellID] = Duration
-			else
+			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				iFilger.ActiveCooldowns[SpellID] = Duration
 			end
 		end
@@ -569,7 +573,7 @@ function iFilger:CreateAuraIcon(element)
 	if element.name ~= 'Cooldowns' then
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
-			if (s.elapsed > .1) then
+			if (s.elapsed > COOLDOWN_MIN_DURATION) then
 				local expiration = Frame.expiration - GetTime()
 				local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.cooldown.threshold)
 				local color = PA.TimeColors[formatid]
