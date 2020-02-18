@@ -571,7 +571,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetMinMaxValues(0, 1)
 	Frame.StatusBar:SetValue(0)
 
-	if element.name ~= 'Cooldowns' then
+	if element.name ~= 'Cooldowns' and element.name ~= 'ItemCooldowns' then
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then
