@@ -2,7 +2,7 @@
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
 ## Version: 1.61
-## OptionalDeps: Masque
+## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 
 Libs\Load_Libs.xml
