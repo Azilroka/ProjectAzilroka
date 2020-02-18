@@ -251,6 +251,7 @@ function iFilger:UpdateItemCooldowns()
 			button.duration = Duration
 			button.itemID = itemID
 			button.itemName = Name
+			button.expiration = Start + Duration
 
 			button.Texture:SetTexture(GetItemIcon(itemID))
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
