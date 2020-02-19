@@ -9,29 +9,49 @@ iFilger.Authors = 'Azilroka    Nils Ruesch    Ildyria'
 
 iFilger.isEnabled = false
 
+local _G = _G
+
 _G.iFilger = iFilger
 
-local RegisterUnitWatch = RegisterUnitWatch
-local UnitAura = UnitAura
-local GetTime = GetTime
-local GetSpellInfo = GetSpellInfo
-local GetSpellCooldown = GetSpellCooldown
-local GetSpellCharges = GetSpellCharges
 local CreateFrame = CreateFrame
 local UIParent = UIParent
 
-local pairs = pairs
-local format = format
-local sort = sort
-local select = select
 local floor = floor
-local unpack = unpack
+local format = format
+local ipairs = ipairs
+local next = next
+local pairs = pairs
+local select = select
+local sort = sort
+local strmatch = strmatch
 local tinsert = tinsert
+local tonumber = tonumber
+local tostring = tostring
+local type = type
+local unpack = unpack
+local wipe = wipe
 
-local GetItemInfo = GetItemInfo
-local GetInventoryItemLink = GetInventoryItemLink
+local CopyTable = CopyTable
+local GetContainerItemCooldown = GetContainerItemCooldown
+local GetContainerItemID = GetContainerItemID
+local GetContainerNumSlots = GetContainerNumSlots
+local GetFlyoutInfo = GetFlyoutInfo
+local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 local GetInventoryItemCooldown = GetInventoryItemCooldown
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemCooldown = GetItemCooldown
+local GetItemIcon = GetItemIcon
+local GetItemInfo = GetItemInfo
+local GetSpellBookItemInfo = GetSpellBookItemInfo
+local GetSpellBookItemName = GetSpellBookItemName
+local GetSpellCharges = GetSpellCharges
+local GetSpellCooldown = GetSpellCooldown
+local GetSpellInfo = GetSpellInfo
+local GetSpellLink = GetSpellLink
+local GetTime = GetTime
 local IsSpellKnown = IsSpellKnown
+local RegisterUnitWatch = RegisterUnitWatch
+local UnitAura = UnitAura
 
 local VISIBLE = 1
 local HIDDEN = 0
@@ -641,9 +661,14 @@ function iFilger:UpdateAll()
 	end
 
 	iFilger:CancelAllTimers()
+
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
 		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
+
+	if iFilger.db.ItemCooldowns.Enable then
+		iFilger:ScheduleRepeatingTimer('UpdateItemCooldowns', iFilger.db.ItemCooldowns.UpdateSpeed)
 	end
 end
 
