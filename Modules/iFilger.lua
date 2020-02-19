@@ -9,29 +9,49 @@ iFilger.Authors = 'Azilroka    Nils Ruesch    Ildyria'
 
 iFilger.isEnabled = false
 
+local _G = _G
+
 _G.iFilger = iFilger
 
-local RegisterUnitWatch = RegisterUnitWatch
-local UnitAura = UnitAura
-local GetTime = GetTime
-local GetSpellInfo = GetSpellInfo
-local GetSpellCooldown = GetSpellCooldown
-local GetSpellCharges = GetSpellCharges
 local CreateFrame = CreateFrame
 local UIParent = UIParent
 
-local pairs = pairs
-local format = format
-local sort = sort
-local select = select
 local floor = floor
-local unpack = unpack
+local format = format
+local ipairs = ipairs
+local next = next
+local pairs = pairs
+local select = select
+local sort = sort
+local strmatch = strmatch
 local tinsert = tinsert
+local tonumber = tonumber
+local tostring = tostring
+local type = type
+local unpack = unpack
+local wipe = wipe
 
-local GetItemInfo = GetItemInfo
-local GetInventoryItemLink = GetInventoryItemLink
+local CopyTable = CopyTable
+local GetContainerItemCooldown = GetContainerItemCooldown
+local GetContainerItemID = GetContainerItemID
+local GetContainerNumSlots = GetContainerNumSlots
+local GetFlyoutInfo = GetFlyoutInfo
+local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 local GetInventoryItemCooldown = GetInventoryItemCooldown
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemCooldown = GetItemCooldown
+local GetItemIcon = GetItemIcon
+local GetItemInfo = GetItemInfo
+local GetSpellBookItemInfo = GetSpellBookItemInfo
+local GetSpellBookItemName = GetSpellBookItemName
+local GetSpellCharges = GetSpellCharges
+local GetSpellCooldown = GetSpellCooldown
+local GetSpellInfo = GetSpellInfo
+local GetSpellLink = GetSpellLink
+local GetTime = GetTime
 local IsSpellKnown = IsSpellKnown
+local RegisterUnitWatch = RegisterUnitWatch
+local UnitAura = UnitAura
 
 local VISIBLE = 1
 local HIDDEN = 0
@@ -251,6 +271,7 @@ function iFilger:UpdateItemCooldowns()
 			button.duration = Duration
 			button.itemID = itemID
 			button.itemName = Name
+			button.expiration = Start + Duration
 
 			button.Texture:SetTexture(GetItemIcon(itemID))
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
@@ -570,7 +591,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetMinMaxValues(0, 1)
 	Frame.StatusBar:SetValue(0)
 
-	if element.name ~= 'Cooldowns' then
+	if element.name ~= 'Cooldowns' and element.name ~= 'ItemCooldowns' then
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then
@@ -640,9 +661,14 @@ function iFilger:UpdateAll()
 	end
 
 	iFilger:CancelAllTimers()
+
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)
 		iFilger:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
+	end
+
+	if iFilger.db.ItemCooldowns.Enable then
+		iFilger:ScheduleRepeatingTimer('UpdateItemCooldowns', iFilger.db.ItemCooldowns.UpdateSpeed)
 	end
 end
 
