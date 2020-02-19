@@ -1,9 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui">
-	<Script file="PBHealth.lua"/>
 	<Script file="PBAuras.lua"/>
+	<Script file="PBCutaway.lua"/>
 	<Script file="PBDeadIndicator.lua"/>
 	<Script file="PBExperience.lua"/>
 	<Script file="PBFamilyIcon.lua"/>
+	<Script file="PBHealth.lua"/>
 	<Script file="PBPortrait.lua"/>
-	<Script file="PBCutaway.lua"/>
+	<Script file="PBSpeed.lua"/>
+	<Script file="PBPower.lua"/>
+	<Script file="PBTags.lua"/>
 </Ui>
