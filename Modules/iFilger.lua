@@ -1208,8 +1208,6 @@ function iFilger:Initialize()
 		Procs = iFilger:Spawn('player', 'Procs', iFilger.db.Procs, 'HELPFUL', { 'BOTTOMLEFT', UIParent, 'CENTER', -57, -52 }),
 		Enhancements = iFilger:Spawn('player', 'Enhancements', iFilger.db.Enhancements, 'HELPFUL', { 'BOTTOMRIGHT', UIParent, 'CENTER', -351, 161 }),
 		TargetDebuffs = iFilger:Spawn('target', 'TargetDebuffs', iFilger.db.TargetDebuffs, 'HARMFUL|PLAYER', { 'TOPLEFT', UIParent, 'CENTER', 283, -207 }),
-		FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
-		FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
 		Cooldowns = iFilger:Spawn('player', 'Cooldowns', iFilger.db.Cooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 		ItemCooldowns = iFilger:Spawn('player', 'ItemCooldowns', iFilger.db.ItemCooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 	}
@@ -1218,6 +1216,13 @@ function iFilger:Initialize()
 	iFilger:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
 	iFilger:RegisterEvent('SPELLS_CHANGED')
 	iFilger:RegisterEvent('BAG_UPDATE_COOLDOWN')
+	iFilger:RegisterEvent('PLAYER_TARGET_CHANGED', function() iFilger:UpdateAuras(iFilger.Panels.TargetDebuffs, 'target') end)
+
+	if PA.Retail then
+		iFilger.Panels.FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 })
+		iFilger.Panels.FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 })
+		iFilger:RegisterEvent('PLAYER_FOCUS_CHANGED', function() iFilger:UpdateAuras(iFilger.Panels.FocusBuffs, 'focus') iFilger:UpdateAuras(iFilger.Panels.FocusDebuffs, 'focus') end)
+	end
 
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)

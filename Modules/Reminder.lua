@@ -294,7 +294,7 @@ end
 function AR:CleanDB()
 	-- Cleanup DB
 	for _, filter in pairs({PA.MyClass, 'Global'}) do
-		if AR.db.Filters[filter] then
+		if AR.db.Filters and AR.db.Filters[filter] then
 			for _, db in pairs(AR.db.Filters[filter]) do
 				if db.role == 'ANY' then db.role = nil end
 				if db.tree == 'ANY' then db.tree = nil end
