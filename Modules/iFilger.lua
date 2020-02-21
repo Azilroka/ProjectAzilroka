@@ -579,7 +579,11 @@ function iFilger:CreateAuraIcon(element)
 	PA:SetInside(Frame.Texture)
 	Frame.Texture:SetTexCoord(unpack(PA.TexCoords))
 
-	Frame.Stacks = Frame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
+	local stackFrame = CreateFrame('Frame', nil, Frame)
+	stackFrame:SetAllPoints(Frame)
+	stackFrame:SetFrameLevel(Frame.Cooldown:GetFrameLevel() + 1)
+
+	Frame.Stacks = stackFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	Frame.Stacks:SetFont(PA.LSM:Fetch('font', element.db.StackCountFont), element.db.StackCountFontSize, element.db.StackCountFontFlag)
 	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
@@ -592,6 +596,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetValue(0)
 
 	if element.name ~= 'Cooldowns' and element.name ~= 'ItemCooldowns' then
+		Frame.Cooldown:SetReverse(true)
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then
