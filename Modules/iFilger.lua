@@ -330,7 +330,7 @@ end
 
 function iFilger:CreateMover(frame)
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger')
+		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
 	elseif PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(frame)
 	end
