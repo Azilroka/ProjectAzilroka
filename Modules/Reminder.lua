@@ -452,6 +452,7 @@ function AR:GetOptions()
 						type = 'select',
 						name = PA.ACL['Remove Filter'],
 						get = function(info) return '' end,
+						confirm = function(info, value) return PA.ACL['Remove Filter']..' - '..value end,
 						set = function(info, value)
 							selectedFilter = nil
 							if DefaultFilters[selectedGroup][value] then
