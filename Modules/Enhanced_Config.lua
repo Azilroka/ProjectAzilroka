@@ -100,4 +100,7 @@ function EC:Initialize()
 	PA.AC:RegisterOptionsTable('Enhanced_Config', EC.Options)
 	PA.ACD:SetDefaultSize('Enhanced_Config', 1200, 800)
 	EC:RegisterChatCommand('ec', 'ToggleConfig')
+
+	EC:RegisterChatCommand('rl', ReloadUI)
+	EC:RegisterChatCommand('reloadui', ReloadUI)
 end
