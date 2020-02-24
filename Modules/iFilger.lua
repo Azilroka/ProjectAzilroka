@@ -330,7 +330,7 @@ end
 
 function iFilger:CreateMover(frame)
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger')
+		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
 	elseif PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(frame)
 	end
@@ -579,7 +579,11 @@ function iFilger:CreateAuraIcon(element)
 	PA:SetInside(Frame.Texture)
 	Frame.Texture:SetTexCoord(unpack(PA.TexCoords))
 
-	Frame.Stacks = Frame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
+	local stackFrame = CreateFrame('Frame', nil, Frame)
+	stackFrame:SetAllPoints(Frame)
+	stackFrame:SetFrameLevel(Frame.Cooldown:GetFrameLevel() + 1)
+
+	Frame.Stacks = stackFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	Frame.Stacks:SetFont(PA.LSM:Fetch('font', element.db.StackCountFont), element.db.StackCountFontSize, element.db.StackCountFontFlag)
 	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
@@ -592,6 +596,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetValue(0)
 
 	if element.name ~= 'Cooldowns' and element.name ~= 'ItemCooldowns' then
+		Frame.Cooldown:SetReverse(true)
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then
@@ -1208,8 +1213,6 @@ function iFilger:Initialize()
 		Procs = iFilger:Spawn('player', 'Procs', iFilger.db.Procs, 'HELPFUL', { 'BOTTOMLEFT', UIParent, 'CENTER', -57, -52 }),
 		Enhancements = iFilger:Spawn('player', 'Enhancements', iFilger.db.Enhancements, 'HELPFUL', { 'BOTTOMRIGHT', UIParent, 'CENTER', -351, 161 }),
 		TargetDebuffs = iFilger:Spawn('target', 'TargetDebuffs', iFilger.db.TargetDebuffs, 'HARMFUL|PLAYER', { 'TOPLEFT', UIParent, 'CENTER', 283, -207 }),
-		FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
-		FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 }),
 		Cooldowns = iFilger:Spawn('player', 'Cooldowns', iFilger.db.Cooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 		ItemCooldowns = iFilger:Spawn('player', 'ItemCooldowns', iFilger.db.ItemCooldowns, nil, { 'BOTTOMRIGHT', UIParent, 'CENTER', -71, -109 }),
 	}
@@ -1218,6 +1221,13 @@ function iFilger:Initialize()
 	iFilger:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
 	iFilger:RegisterEvent('SPELLS_CHANGED')
 	iFilger:RegisterEvent('BAG_UPDATE_COOLDOWN')
+	iFilger:RegisterEvent('PLAYER_TARGET_CHANGED', function() iFilger:UpdateAuras(iFilger.Panels.TargetDebuffs, 'target') end)
+
+	if PA.Retail then
+		iFilger.Panels.FocusBuffs = iFilger:Spawn('focus', 'FocusBuffs', iFilger.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 })
+		iFilger.Panels.FocusDebuffs = iFilger:Spawn('focus', 'FocusDebuffs', iFilger.db.FocusDebuffs, 'HARMFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 })
+		iFilger:RegisterEvent('PLAYER_FOCUS_CHANGED', function() iFilger:UpdateAuras(iFilger.Panels.FocusBuffs, 'focus') iFilger:UpdateAuras(iFilger.Panels.FocusDebuffs, 'focus') end)
+	end
 
 	if iFilger.db.Cooldowns.Enable then
 		iFilger:ScheduleRepeatingTimer('UpdateActiveCooldowns', iFilger.db.Cooldowns.UpdateSpeed)

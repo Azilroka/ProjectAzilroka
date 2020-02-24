@@ -1,5 +1,6 @@
 local PA = _G.ProjectAzilroka
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
+PA.ES = ES
 
 ES.Title = 'Enhanced Shadows'
 ES.Header = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
@@ -147,7 +148,7 @@ function ES:Initialize()
 		return
 	end
 
-	PA.ES, _G.EnhancedShadows = ES, ES
+	_G.EnhancedShadows = ES
 
 	ES.isEnabled = true
 

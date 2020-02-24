@@ -376,7 +376,7 @@ function BB:Initialize()
 		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar.SeedsFrame)
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(BB.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
-		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBar', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
+		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBarMover', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
 	end
 
 	PA:CreateShadow(Bar.SeedsFrame)

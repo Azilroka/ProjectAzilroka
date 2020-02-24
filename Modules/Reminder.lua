@@ -294,7 +294,7 @@ end
 function AR:CleanDB()
 	-- Cleanup DB
 	for _, filter in pairs({PA.MyClass, 'Global'}) do
-		if AR.db.Filters[filter] then
+		if AR.db.Filters and AR.db.Filters[filter] then
 			for _, db in pairs(AR.db.Filters[filter]) do
 				if db.role == 'ANY' then db.role = nil end
 				if db.tree == 'ANY' then db.tree = nil end
@@ -452,6 +452,7 @@ function AR:GetOptions()
 						type = 'select',
 						name = PA.ACL['Remove Filter'],
 						get = function(info) return '' end,
+						confirm = function(info, value) return PA.ACL['Remove Filter']..' - '..value end,
 						set = function(info, value)
 							selectedFilter = nil
 							if DefaultFilters[selectedGroup][value] then
@@ -495,7 +496,7 @@ function AR:GetOptions()
 						values = function()
 							wipe(filterTypeList)
 							filterTypeList.SPELL = PA.ACL['Spell']
-							if selectedGroup == 'Class' then
+							if selectedGroup ~= 'Global' then
 								filterTypeList.WEAPON = PA.ACL['Weapon']
 								filterTypeList.COOLDOWN = PA.ACL['Cooldown']
 							end
@@ -637,7 +638,10 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Spells'],
 						guiInline = true,
-						get = function(info) return '' end,
+						get = function(info)
+							AR:UpdateFilterGroup('spellGroup')
+							return ''
+						end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
@@ -648,6 +652,7 @@ function AR:GetOptions()
 									value = tonumber(value)
 									if not value then return end
 
+									AR.db.Filters[selectedGroup][selectedFilter].spellGroup = AR.db.Filters[selectedGroup][selectedFilter].spellGroup or {}
 									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = true
 									AR:UpdateFilterGroup('spellGroup')
 								end,
@@ -663,9 +668,11 @@ function AR:GetOptions()
 								end,
 								values = function()
 									wipe(spellList)
-									for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].spellGroup) do
-										local name = GetSpellInfo(spellID)
-										spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+									if AR.db.Filters[selectedGroup][selectedFilter].spellGroup then
+										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].spellGroup) do
+											local name = GetSpellInfo(spellID)
+											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+										end
 									end
 									return spellList
 								end,
@@ -682,7 +689,10 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Negate Spells'],
 						guiInline = true,
-						get = function(info) return '' end,
+						get = function(info)
+							AR:UpdateFilterGroup('negateGroup')
+							return ''
+						end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
@@ -693,6 +703,7 @@ function AR:GetOptions()
 									value = tonumber(value)
 									if not value then return end
 
+									AR.db.Filters[selectedGroup][selectedFilter].negateGroup = AR.db.Filters[selectedGroup][selectedFilter].negateGroup or {}
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = true
 									AR:UpdateFilterGroup('negateGroup')
 								end,
@@ -704,13 +715,15 @@ function AR:GetOptions()
 								get = function() return '' end,
 								set = function(info, value)
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = nil;
-									AR:UpdateFilterGroup('spellGroup')
+									AR:UpdateFilterGroup('negateGroup')
 								end,
 								values = function()
 									wipe(spellList)
-									for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].negateGroup) do
-										local name = GetSpellInfo(spellID)
-										spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+									if AR.db.Filters[selectedGroup][selectedFilter].negateGroup then
+										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].negateGroup) do
+											local name = GetSpellInfo(spellID)
+											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+										end
 									end
 									return spellList
 								end,

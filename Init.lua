@@ -236,7 +236,11 @@ function PA:CreateShadow(frame)
 		_G.AddOnSkins[1]:CreateShadow(frame)
 	elseif frame.CreateShadow then
 		frame:CreateShadow()
-		if _G.EnhancedShadows then _G.EnhancedShadows:RegisterFrameShadows(frame) end
+		if not PA.SLE then
+			PA.ES:RegisterFrameShadows(frame)
+		elseif PA.SLE then
+			_G.EnhancedShadows:RegisterShadow(frame.shadow)
+		end
 	end
 end
 
@@ -526,13 +530,19 @@ function PA:ADDON_LOADED(event, addon)
 	end
 end
 
+function PA:CallModuleFunction(module, func)
+	local pass, error = pcall(func)
+	if not pass then
+	end
+end
+
 function PA:PLAYER_LOGIN()
 	PA.Multiple = PA:GetUIScale()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 
 	for _, module in PA:IterateModules() do
-		if module.BuildProfile then module:BuildProfile() end
+		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
 	end
 
 	PA:BuildProfile()
@@ -544,8 +554,12 @@ function PA:PLAYER_LOGIN()
 	PA:UpdateCooldownSettings('all')
 
 	for _, module in PA:IterateModules() do
-		if module.GetOptions then module:GetOptions() end
-		if module.Initialize then module:Initialize() end
+		if module.GetOptions then
+			PA:CallModuleFunction(module, module.GetOptions)
+		end
+		if module.Initialize then
+			PA:CallModuleFunction(module, module.Initialize)
+		end
 	end
 end
 
