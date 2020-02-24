@@ -523,8 +523,9 @@ function PA:ADDON_LOADED(event, addon)
 end
 
 function PA:CallModuleFunction(module, func)
-	local pass, error = pcall(func)
-	if not pass then
+	local pass, err = pcall(func, module)
+	if not pass and PA.Debug then
+		error(err)
 	end
 end
 
