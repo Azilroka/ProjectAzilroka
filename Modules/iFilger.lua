@@ -87,6 +87,7 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	object.anchoredIcons = 0
 	object.Whitelist = db.Whitelist
 	object.Blacklist = db.Blacklist
+	object:EnableMouse(false)
 	iFilger:CreateMover(object)
 
 	if name ~= 'Cooldowns' and name ~= 'ItemCooldowns' then
