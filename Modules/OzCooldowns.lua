@@ -189,9 +189,13 @@ function OzCD:UpdateDelayedCooldowns()
 
 		CurrentDuration = (Start + Duration - GetTime())
 
-		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.SuppressDuration) then
+		if Enable and CurrentDuration then
+			if (CurrentDuration < OzCD.db.SuppressDuration) and (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+				OzCD.DelayCooldowns[SpellID] = nil
+				OzCD.ActiveCooldowns[SpellID] = Duration
+			end
+		else
 			OzCD.DelayCooldowns[SpellID] = nil
-			OzCD.ActiveCooldowns[SpellID] = Duration
 		end
 	end
 end
@@ -383,7 +387,7 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
 			if (CurrentDuration >= OzCD.db.SuppressDuration) then
 				OzCD.DelayCooldowns[SpellID] = Duration
-			elseif (CurrentDuration >= GLOBAL_COOLDOWN_TIME) then
+			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				OzCD.ActiveCooldowns[SpellID] = Duration
 			end
 		end

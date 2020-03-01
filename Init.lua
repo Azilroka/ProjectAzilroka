@@ -39,6 +39,11 @@ PA.LAB = LibStub('LibActionButton-1.0')
 
 -- External Libraries
 PA.Masque = LibStub("Masque", true)
+PA.LCD = LibStub("LibClassicDurations", true)
+
+if PA.LCD then
+	PA.LCD:Register(AddOnName) 	-- Register LibClassicDurations
+end
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
