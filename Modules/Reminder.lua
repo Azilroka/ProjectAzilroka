@@ -356,6 +356,7 @@ function AR:GetOptions()
 					end
 				end,
 				set = function(info, value)
+					selectedFilter = nil
 					if value == 'Class' then
 						selectedGroup = PA.MyClass
 					else
