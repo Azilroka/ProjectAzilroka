@@ -239,17 +239,18 @@ function AR:SetIconPosition(button, db)
 	if not (button or db) then return end
 
 	local xOffset = db.xOffset or 0
-	local yOffset = db.yOffset or 0
+	local yOffset = db.yOffset or 200
 	local size = db.size or 40
 
 	button:ClearAllPoints()
-	button:SetPoint('CENTER', UIParent, 'CENTER', 0 + xOffset, 200 + yOffset);
+	button:SetPoint('CENTER', UIParent, 'CENTER', xOffset, yOffset);
 	button:SetSize(size, size)
 end
 
 function AR:CreateReminder(index)
 	local frame = CreateFrame('Frame', 'AuraReminder'..index, UIParent)
 	frame:Hide()
+	frame:SetClampedToScreen(true)
 	frame.icon = frame:CreateTexture(nil, 'OVERLAY')
 	frame.icon:SetTexCoord(unpack(PA.TexCoords))
 	frame.cooldown = CreateFrame('Cooldown', nil, frame, 'CooldownFrameTemplate')
@@ -356,6 +357,7 @@ function AR:GetOptions()
 					end
 				end,
 				set = function(info, value)
+					selectedFilter = nil
 					if value == 'Class' then
 						selectedGroup = PA.MyClass
 					else
@@ -452,6 +454,7 @@ function AR:GetOptions()
 						type = 'select',
 						name = PA.ACL['Remove Filter'],
 						get = function(info) return '' end,
+						confirm = function(info, value) return PA.ACL['Remove Filter']..' - '..value end,
 						set = function(info, value)
 							selectedFilter = nil
 							if DefaultFilters[selectedGroup][value] then
@@ -495,7 +498,7 @@ function AR:GetOptions()
 						values = function()
 							wipe(filterTypeList)
 							filterTypeList.SPELL = PA.ACL['Spell']
-							if selectedGroup == 'Class' then
+							if selectedGroup ~= 'Global' then
 								filterTypeList.WEAPON = PA.ACL['Weapon']
 								filterTypeList.COOLDOWN = PA.ACL['Cooldown']
 							end
@@ -506,19 +509,19 @@ function AR:GetOptions()
 						order = 3,
 						type = 'range',
 						name = PA.ACL['X Offset'],
-						min = -250, max = 250, step = 1,
+						min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1,
 					},
 					yOffset = {
 						order = 4,
 						type = 'range',
 						name = PA.ACL['Y Offset'],
-						min = -250, max = 250, step = 1,
+						min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1,
 					},
 					size = {
 						order = 5,
 						type = 'range',
 						name = PA.ACL['Size'],
-						min = 0, max = 64, step = 1,
+						min = 0, max = 128, step = 1,
 					},
 					conditions = {
 						order = 10,
@@ -637,7 +640,10 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Spells'],
 						guiInline = true,
-						get = function(info) return '' end,
+						get = function(info)
+							AR:UpdateFilterGroup('spellGroup')
+							return ''
+						end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
@@ -648,6 +654,7 @@ function AR:GetOptions()
 									value = tonumber(value)
 									if not value then return end
 
+									AR.db.Filters[selectedGroup][selectedFilter].spellGroup = AR.db.Filters[selectedGroup][selectedFilter].spellGroup or {}
 									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = true
 									AR:UpdateFilterGroup('spellGroup')
 								end,
@@ -663,9 +670,11 @@ function AR:GetOptions()
 								end,
 								values = function()
 									wipe(spellList)
-									for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].spellGroup) do
-										local name = GetSpellInfo(spellID)
-										spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+									if AR.db.Filters[selectedGroup][selectedFilter].spellGroup then
+										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].spellGroup) do
+											local name = GetSpellInfo(spellID)
+											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+										end
 									end
 									return spellList
 								end,
@@ -682,7 +691,10 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Negate Spells'],
 						guiInline = true,
-						get = function(info) return '' end,
+						get = function(info)
+							AR:UpdateFilterGroup('negateGroup')
+							return ''
+						end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
@@ -693,6 +705,7 @@ function AR:GetOptions()
 									value = tonumber(value)
 									if not value then return end
 
+									AR.db.Filters[selectedGroup][selectedFilter].negateGroup = AR.db.Filters[selectedGroup][selectedFilter].negateGroup or {}
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = true
 									AR:UpdateFilterGroup('negateGroup')
 								end,
@@ -704,13 +717,15 @@ function AR:GetOptions()
 								get = function() return '' end,
 								set = function(info, value)
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = nil;
-									AR:UpdateFilterGroup('spellGroup')
+									AR:UpdateFilterGroup('negateGroup')
 								end,
 								values = function()
 									wipe(spellList)
-									for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].negateGroup) do
-										local name = GetSpellInfo(spellID)
-										spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+									if AR.db.Filters[selectedGroup][selectedFilter].negateGroup then
+										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].negateGroup) do
+											local name = GetSpellInfo(spellID)
+											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
+										end
 									end
 									return spellList
 								end,
@@ -771,7 +786,7 @@ function AR:GetOptions()
 			type = 'select',
 			name = PA.ACL['Talent Tree'],
 			desc = PA.ACL['You must be using a certain talent tree for the icon to show.'],
-			hidden = function() return AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck or selectedGroup == 'Global' end,
+			hidden = function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
 			get = function(info, value) return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree) end,
 			set = function(info, value)
 				if value == 'ANY' then
@@ -790,7 +805,7 @@ function AR:GetOptions()
 			desc = PA.ACL['Set a talent tree to not follow the reverse check.'],
 			get = function(info) return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end,
 			set = function(info, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end,
-			hidden = function() return not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck or selectedGroup == 'Global' end,
+			hidden = function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
 			values = CopyTable(Specializations),
 		}
 

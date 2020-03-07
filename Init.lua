@@ -39,6 +39,11 @@ PA.LAB = LibStub('LibActionButton-1.0')
 
 -- External Libraries
 PA.Masque = LibStub("Masque", true)
+PA.LCD = LibStub("LibClassicDurations", true)
+
+if PA.LCD then
+	PA.LCD:Register(AddOnName) 	-- Register LibClassicDurations
+end
 
 -- WoW Data
 PA.MyClass = select(2, UnitClass('player'))
@@ -522,13 +527,20 @@ function PA:ADDON_LOADED(event, addon)
 	end
 end
 
+function PA:CallModuleFunction(module, func)
+	local pass, err = pcall(func, module)
+	if not pass and PA.Debug then
+		error(err)
+	end
+end
+
 function PA:PLAYER_LOGIN()
 	PA.Multiple = PA:GetUIScale()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 
 	for _, module in PA:IterateModules() do
-		if module.BuildProfile then module:BuildProfile() end
+		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
 	end
 
 	PA:BuildProfile()
@@ -540,8 +552,12 @@ function PA:PLAYER_LOGIN()
 	PA:UpdateCooldownSettings('all')
 
 	for _, module in PA:IterateModules() do
-		if module.GetOptions then module:GetOptions() end
-		if module.Initialize then module:Initialize() end
+		if module.GetOptions then
+			PA:CallModuleFunction(module, module.GetOptions)
+		end
+		if module.Initialize then
+			PA:CallModuleFunction(module, module.Initialize)
+		end
 	end
 end
 

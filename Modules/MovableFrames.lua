@@ -70,6 +70,9 @@ local AddOnFrames = {
 	Blizzard_AuctionUI = {
 		AuctionFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
 	},
+	Blizzard_AuctionHouseUI = {
+		AuctionHouseFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 0, -104 }
+	},
 	Blizzard_BarbershopUI = {
 		BarberShopFrame = { "RIGHT", "UIParent", "RIGHT", -18, -54 }
 	},

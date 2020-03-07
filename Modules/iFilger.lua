@@ -87,6 +87,7 @@ function iFilger:Spawn(unit, name, db, filter, position)
 	object.anchoredIcons = 0
 	object.Whitelist = db.Whitelist
 	object.Blacklist = db.Blacklist
+	object:EnableMouse(false)
 	iFilger:CreateMover(object)
 
 	if name ~= 'Cooldowns' and name ~= 'ItemCooldowns' then
@@ -330,7 +331,7 @@ end
 
 function iFilger:CreateMover(frame)
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger')
+		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
 	elseif PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(frame)
 	end
@@ -387,7 +388,22 @@ function iFilger:CustomFilter(element, unit, button, name, texture, count, debuf
 end
 
 function iFilger:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visible)
-	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = UnitAura(unit, index, filter)
+	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3
+
+	if PA.Classic and PA.LCD and not UnitIsUnit('player', unit) then
+		local durationNew, expirationTimeNew
+		name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA.LCD:UnitAura(unit, index, filter)
+
+		if spellID then
+			durationNew, expirationTimeNew = PA.LCD:GetAuraDurationByUnit(unit, spellID, caster, name)
+		end
+
+		if durationNew and durationNew > 0 then
+			duration, expiration = durationNew, expirationTimeNew
+		end
+	else
+		name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = UnitAura(unit, index, filter)
+	end
 
 	if name then
 		local position = visible + offset + 1
@@ -493,9 +509,9 @@ function iFilger:PLAYER_ENTERING_WORLD()
 
 		if Enable and (CurrentDuration > .1) and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
-				iFilger.DelayCooldowns[SpellID] = Duration
+				iFilger.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				iFilger.ActiveCooldowns[SpellID] = Duration
+				iFilger.ActiveCooldowns[SpellID] = true
 			end
 		end
 	end
@@ -535,9 +551,9 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 
 		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
-				iFilger.DelayCooldowns[SpellID] = Duration
+				iFilger.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				iFilger.ActiveCooldowns[SpellID] = Duration
+				iFilger.ActiveCooldowns[SpellID] = true
 			end
 		end
 
@@ -579,7 +595,11 @@ function iFilger:CreateAuraIcon(element)
 	PA:SetInside(Frame.Texture)
 	Frame.Texture:SetTexCoord(unpack(PA.TexCoords))
 
-	Frame.Stacks = Frame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
+	local stackFrame = CreateFrame('Frame', nil, Frame)
+	stackFrame:SetAllPoints(Frame)
+	stackFrame:SetFrameLevel(Frame.Cooldown:GetFrameLevel() + 1)
+
+	Frame.Stacks = stackFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	Frame.Stacks:SetFont(PA.LSM:Fetch('font', element.db.StackCountFont), element.db.StackCountFontSize, element.db.StackCountFontFlag)
 	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
@@ -592,6 +612,7 @@ function iFilger:CreateAuraIcon(element)
 	Frame.StatusBar:SetValue(0)
 
 	if element.name ~= 'Cooldowns' and element.name ~= 'ItemCooldowns' then
+		Frame.Cooldown:SetReverse(true)
 		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then

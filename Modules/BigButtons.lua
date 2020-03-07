@@ -213,6 +213,7 @@ function BB:CreateSeedButton(ItemID)
 	}
 	local xOffset = 4 + (34*(SeedX-1))
 
+	Button:ClearAllPoints()
 	Button:SetPoint(yTable[SeedY].point, xOffset, yTable[SeedY].offset)
 
 	PA:CreateShadow(Button)
@@ -325,6 +326,7 @@ function BB:Initialize()
 	Bar:SetFrameStrata('MEDIUM')
 	Bar:SetFrameLevel(0)
 	Bar:SetSize(50, 50)
+	Bar:ClearAllPoints()
 	Bar:SetPoint('TOP', _G.UIParent, 'TOP', 0, -250)
 	Bar.Buttons = {}
 
@@ -376,7 +378,7 @@ function BB:Initialize()
 		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar.SeedsFrame)
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(BB.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
-		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBar', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
+		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBarMover', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
 	end
 
 	PA:CreateShadow(Bar.SeedsFrame)
