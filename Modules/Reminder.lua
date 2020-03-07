@@ -250,6 +250,7 @@ end
 function AR:CreateReminder(index)
 	local frame = CreateFrame('Frame', 'AuraReminder'..index, UIParent)
 	frame:Hide()
+	frame:SetClampedToScreen(true)
 	frame.icon = frame:CreateTexture(nil, 'OVERLAY')
 	frame.icon:SetTexCoord(unpack(PA.TexCoords))
 	frame.cooldown = CreateFrame('Cooldown', nil, frame, 'CooldownFrameTemplate')
@@ -508,13 +509,13 @@ function AR:GetOptions()
 						order = 3,
 						type = 'range',
 						name = PA.ACL['X Offset'],
-						min = -PA.ScreenWidth, max = PA.ScreenWidth, step = 1,
+						min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1,
 					},
 					yOffset = {
 						order = 4,
 						type = 'range',
 						name = PA.ACL['Y Offset'],
-						min = -PA.ScreenHeight, max = PA.ScreenHeight, step = 1,
+						min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1,
 					},
 					size = {
 						order = 5,
