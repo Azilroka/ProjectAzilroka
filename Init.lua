@@ -233,9 +233,9 @@ function PA:CreateShadow(frame)
 		_G.AddOnSkins[1]:CreateShadow(frame)
 	elseif frame.CreateShadow then
 		frame:CreateShadow()
-		if not PA.SLE then
+		if not PA.SLE and not PA.NUI then
 			PA.ES:RegisterFrameShadows(frame)
-		elseif PA.SLE then
+		elseif PA.SLE or PA.NUI then
 			_G.EnhancedShadows:RegisterShadow(frame.shadow)
 		end
 	end
