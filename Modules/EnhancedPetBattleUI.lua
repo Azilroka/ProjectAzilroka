@@ -161,9 +161,6 @@ function EPB:CreateFrames()
 	end
 end
 
-function EPB:PET_BATTLE_CLOSE()
-end
-
 function EPB:GetOptions()
 	PA.Options.args.EnhancedPetBattleUI = {
 		type = "group",
@@ -323,8 +320,6 @@ function EPB:Initialize()
 
 	EPB.isEnabled = true
 
-	self.TexCoords = PA.TexCoords
-
 	BattlePetBreedID = IsAddOnLoaded("BattlePetBreedID")
 	BreedInfo = LibStub("LibPetBreedInfo-1.0", true)
 
@@ -350,7 +345,6 @@ function EPB:Initialize()
 	self:UpdateReviveBar()
 	self:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
 	self:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
-	self:RegisterEvent("PET_BATTLE_CLOSE")
 
 	if GetAddOnEnableState(UnitName("player"), "PetTracker_Switcher") ~= 2 then
 		_G.PetBattlePetSelectionFrame_Show = function()
@@ -407,7 +401,7 @@ function EPB:CreateAuraFrame(parent, auraKey, petOwner, petIndex)
 	frame.Text:SetPoint("CENTER")
 	frame.Texture = frame:CreateTexture(nil, "ARTWORK")
 	PA:SetInside(frame.Texture)
-	frame.Texture:SetTexCoord(unpack(self.TexCoords))
+	frame.Texture:SetTexCoord(unpack(PA.TexCoords))
 	EPB:SetAuraTooltipScripts(frame)
 	return frame
 end
@@ -589,7 +583,7 @@ function EPB:CreateGenericUIFrame(petOwner, petIndex, parent)
 	frame.Icon:SetSize(40, 40)
 
 	frame.Icon.PetTexture = frame.Icon:CreateTexture(nil, "ARTWORK")
-	frame.Icon.PetTexture:SetTexCoord(unpack(EPB.TexCoords))
+	frame.Icon.PetTexture:SetTexCoord(unpack(PA.TexCoords))
 	PA:SetInside(frame.Icon.PetTexture)
 
 	frame.Icon.PetModel = CreateFrame("PlayerModel", nil, frame.Icon)
@@ -787,7 +781,7 @@ function EPB:CheckReviveBarVisibility()
 	end
 
 	local health, maxHealth, show, checkPercentage
-	checkPercentage = 0.5
+	checkPercentage = 0.85
 	if (self.lastBattleWasWild) then
 		checkPercentage = 0.6
 	end
@@ -853,7 +847,7 @@ function EPB:CreateExtraActionButton(name)
 	Button.icon:SetDrawLayer("ARTWORK")
 	Button.icon:SetTexture("")
 	PA:SetInside(Button.icon)
-	Button.icon:SetTexCoord(unpack(EPB.TexCoords))
+	Button.icon:SetTexCoord(unpack(PA.TexCoords))
 	Button:SetNormalTexture("")
 	Button:SetPushedTexture("")
 	Button:SetHighlightTexture("")
