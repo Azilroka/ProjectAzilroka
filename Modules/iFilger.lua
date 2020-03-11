@@ -509,9 +509,9 @@ function iFilger:PLAYER_ENTERING_WORLD()
 
 		if Enable and (CurrentDuration > .1) and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
-				iFilger.DelayCooldowns[SpellID] = Duration
+				iFilger.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				iFilger.ActiveCooldowns[SpellID] = Duration
+				iFilger.ActiveCooldowns[SpellID] = true
 			end
 		end
 	end
@@ -551,9 +551,9 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 
 		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
-				iFilger.DelayCooldowns[SpellID] = Duration
+				iFilger.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				iFilger.ActiveCooldowns[SpellID] = Duration
+				iFilger.ActiveCooldowns[SpellID] = true
 			end
 		end
 

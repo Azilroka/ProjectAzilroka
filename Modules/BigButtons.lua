@@ -213,6 +213,7 @@ function BB:CreateSeedButton(ItemID)
 	}
 	local xOffset = 4 + (34*(SeedX-1))
 
+	Button:ClearAllPoints()
 	Button:SetPoint(yTable[SeedY].point, xOffset, yTable[SeedY].offset)
 
 	PA:CreateShadow(Button)
@@ -325,6 +326,7 @@ function BB:Initialize()
 	Bar:SetFrameStrata('MEDIUM')
 	Bar:SetFrameLevel(0)
 	Bar:SetSize(50, 50)
+	Bar:ClearAllPoints()
 	Bar:SetPoint('TOP', _G.UIParent, 'TOP', 0, -250)
 	Bar.Buttons = {}
 

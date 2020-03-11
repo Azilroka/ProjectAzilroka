@@ -239,17 +239,18 @@ function AR:SetIconPosition(button, db)
 	if not (button or db) then return end
 
 	local xOffset = db.xOffset or 0
-	local yOffset = db.yOffset or 0
+	local yOffset = db.yOffset or 200
 	local size = db.size or 40
 
 	button:ClearAllPoints()
-	button:SetPoint('CENTER', UIParent, 'CENTER', 0 + xOffset, 200 + yOffset);
+	button:SetPoint('CENTER', UIParent, 'CENTER', xOffset, yOffset);
 	button:SetSize(size, size)
 end
 
 function AR:CreateReminder(index)
 	local frame = CreateFrame('Frame', 'AuraReminder'..index, UIParent)
 	frame:Hide()
+	frame:SetClampedToScreen(true)
 	frame.icon = frame:CreateTexture(nil, 'OVERLAY')
 	frame.icon:SetTexCoord(unpack(PA.TexCoords))
 	frame.cooldown = CreateFrame('Cooldown', nil, frame, 'CooldownFrameTemplate')
@@ -356,6 +357,7 @@ function AR:GetOptions()
 					end
 				end,
 				set = function(info, value)
+					selectedFilter = nil
 					if value == 'Class' then
 						selectedGroup = PA.MyClass
 					else
@@ -507,19 +509,19 @@ function AR:GetOptions()
 						order = 3,
 						type = 'range',
 						name = PA.ACL['X Offset'],
-						min = -250, max = 250, step = 1,
+						min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1,
 					},
 					yOffset = {
 						order = 4,
 						type = 'range',
 						name = PA.ACL['Y Offset'],
-						min = -250, max = 250, step = 1,
+						min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1,
 					},
 					size = {
 						order = 5,
 						type = 'range',
 						name = PA.ACL['Size'],
-						min = 0, max = 64, step = 1,
+						min = 0, max = 128, step = 1,
 					},
 					conditions = {
 						order = 10,
@@ -784,7 +786,7 @@ function AR:GetOptions()
 			type = 'select',
 			name = PA.ACL['Talent Tree'],
 			desc = PA.ACL['You must be using a certain talent tree for the icon to show.'],
-			hidden = function() return AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck or selectedGroup == 'Global' end,
+			hidden = function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
 			get = function(info, value) return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree) end,
 			set = function(info, value)
 				if value == 'ANY' then
@@ -803,7 +805,7 @@ function AR:GetOptions()
 			desc = PA.ACL['Set a talent tree to not follow the reverse check.'],
 			get = function(info) return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end,
 			set = function(info, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end,
-			hidden = function() return not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck or selectedGroup == 'Global' end,
+			hidden = function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
 			values = CopyTable(Specializations),
 		}
 
