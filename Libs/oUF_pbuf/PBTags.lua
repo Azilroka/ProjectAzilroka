@@ -132,13 +132,15 @@ local healthXpTags = {
 	{"percent", "PERCENT"}
 }
 
-for _, tagPair in ipairs(healthXpTags) then
+for _, tagPair in ipairs(healthXpTags) do
 	local hpTagStr = ("pbuf:hp:%s"):format(tagPair[1])
 	local xpTagStr = ("pbuf:xp:%s"):format(tagPair[1])
 	oUF.Tags.Events[hpTagStr] = healthEvents
 	oUF.Tags.Methods[hpTagStr] = function(unit, _, customArgs)
 		local petOwner, petIndex = getPetInfo(customArgs)
-		if not petOwner or not petIndex then return "" end
+		if not petOwner or not petIndex then
+			return ""
+		end
 
 		local health = C_PetBattles.GetHealth(petOwner, petIndex)
 		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
@@ -149,7 +151,9 @@ for _, tagPair in ipairs(healthXpTags) then
 	oUF.Tags.Events[xpTagStr] = xpEvents
 	oUF.Tags.Events[xpTagStr] = function(unit, _, customArgs)
 		local petOwner, petIndex = getPetInfo(customArgs)
-		if not petOwner or not petIndex then return "" end
+		if not petOwner or not petIndex then
+			return ""
+		end
 
 		if petOwner == LE_BATTLE_PET_ENEMY then
 			return ""
@@ -169,7 +173,9 @@ end
 oUF.Tags.Events["pbuf:power"] = auraEvents
 oUF.Tags.Methods["pbuf:power"] = function(unit, _, customArgs)
 	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then return "" end
+	if not petOwner or not petIndex then
+		return ""
+	end
 
 	local power = C_PetBattles.GetPower(petOwner, petIndex)
 	return power
@@ -178,7 +184,9 @@ end
 oUF.Tags.Events["pbuf:speed"] = auraEvents
 oUF.Tags.Methods["pbuf:speed"] = function(unit, _, customArgs)
 	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then return "" end
+	if not petOwner or not petIndex then
+		return ""
+	end
 
 	local speed = C_PetBattles.GetSpeed(petOwner, petIndex)
 end
@@ -186,20 +194,34 @@ end
 oUF.Tags.Events["pbuf:breed"] = openingEvents
 oUF.Tags.Methods["pbuf:breed"] = function(unit, _, customArgs)
 	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then return "" end
+	if not petOwner or not petIndex then
+		return ""
+	end
 
-	if not IsAddOnLoaded("BattlePetBreedID") then return "" end
+	if not IsAddOnLoaded("BattlePetBreedID") then
+		return ""
+	end
 	return _G.GetBreedID_Battle({petOwner = petOwner, petIndex = petIndex})
 end
 
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
-oUF.Tags.Methods[pbuf:breedicon"] = function(unit, _, customArgs)
+oUF.Tags.Methods["pbuf:breedicon"] = function(unit, _, customArgs)
 	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then return "" end
+	if not petOwner or not petIndex then
+		return ""
+	end
 
-	if not _G.PetTracker then return "" end
+	if not _G.PetTracker then
+		return ""
+	end
 
-	local level, maxHP, speciesID, power, speed, rarity = C_PetBattles.GetLevel(petOwner, petIndex), C_PetBattles.GetMaxHealth(petOwner, petIndex), C_PetBattles.GetPetSpeciesID(petOwner, petIndex), C_PetBattles.GetPower(petOwner, petIndex), C_PetBattles.GetSpeed(petOwner, petIndex), C_PetBattles.GetBreedQuality(petOwner, petIndex)
+	local level, maxHP, speciesID, power, speed, rarity =
+		C_PetBattles.GetLevel(petOwner, petIndex),
+		C_PetBattles.GetMaxHealth(petOwner, petIndex),
+		C_PetBattles.GetPetSpeciesID(petOwner, petIndex),
+		C_PetBattles.GetPower(petOwner, petIndex),
+		C_PetBattles.GetSpeed(petOwner, petIndex),
+		C_PetBattles.GetBreedQuality(petOwner, petIndex)
 	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
 
 	return CreateTextureMarkup(_G.PetTracker:GetBreedIcon(breed, .9), 16, 16, 16, 16, 0, 1, 0, 1, 0, 0)
