@@ -17,7 +17,7 @@ local events = {
 }
 
 for _, event in ipairs(events) do
-	oUF.SharedEvents[event] = true
+	oUF.Tags.SharedEvents[event] = true
 end
 
 local openingEvents = {events[1], events[2]}
@@ -149,7 +149,7 @@ for _, tagPair in ipairs(healthXpTags) do
 	end
 
 	oUF.Tags.Events[xpTagStr] = xpEvents
-	oUF.Tags.Events[xpTagStr] = function(unit, _, customArgs)
+	oUF.Tags.Methods[xpTagStr] = function(unit, _, customArgs)
 		local petOwner, petIndex = getPetInfo(customArgs)
 		if not petOwner or not petIndex then
 			return ""
@@ -189,6 +189,7 @@ oUF.Tags.Methods["pbuf:speed"] = function(unit, _, customArgs)
 	end
 
 	local speed = C_PetBattles.GetSpeed(petOwner, petIndex)
+	return speed
 end
 
 oUF.Tags.Events["pbuf:breed"] = openingEvents
