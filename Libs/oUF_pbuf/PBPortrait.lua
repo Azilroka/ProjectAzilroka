@@ -31,29 +31,34 @@ the unit.
     -- Register it with oUF
     self.PBPortrait = Portrait
 --]]
-
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function Update(self, event, unit)
 	local petInfo = self.pbouf_petinfo
-	if not petInfo then return end
+	if not petInfo then
+		return
+	end
 	--[[ Callback: Portrait:PreUpdate(unit)
 	Called before the element has been updated.
 
 	* self - the Portrait element
 	* unit - the unit for which the update has been triggered (string)
 	--]]
-
 	local element = self.PBPortrait
-	if(element.PreUpdate) then element:PreUpdate(unit) end
+	if (element.PreUpdate) then
+		element:PreUpdate(unit)
+	end
 
-	local displayID = C_PetBattles.GetDisplayID(petInfo.owner, petInfo.index)
-	local isAvailable = select(2, C_PetBattles.GetName(petInfo.owner, petInfo.index)) ~= nil
-	element.stateChanged = event ~= 'OnUpdate' or element.displayID ~= displayID or element.state ~= isAvailable
+	local displayID = C_PetBattles.GetDisplayID(petInfo.petOwner, petInfo.petIndex)
+	local isAvailable = select(2, C_PetBattles.GetName(petInfo.petOwner, petInfo.petIndex)) ~= nil
+
+	element.stateChanged = event ~= "OnUpdate" or element.displayID ~= displayID or element.state ~= isAvailable
 	if element.stateChanged then -- ElvUI changed
-		element.playerModel = element:IsObjectType('PlayerModel')
+		element.playerModel = element:IsObjectType("PlayerModel")
 		element.state = isAvailable
 		element.displayID = displayID
 
@@ -72,7 +77,7 @@ local function Update(self, event, unit)
 				element:SetDisplayInfo(displayID)
 			end
 		elseif not element.customTexture then -- ElvUI changed
-			local icon = C_PetBattles.GetIcon(petInfo.owner, petInfo.index)
+			local icon = C_PetBattles.GetIcon(petInfo.petOwner, petInfo.petIndex)
 			element:SetTexture(icon)
 		end
 	end
@@ -83,7 +88,7 @@ local function Update(self, event, unit)
 	* self - the Portrait element
 	* unit - the unit for which the update has been triggered (string)
 	--]]
-	if(element.PostUpdate) then
+	if (element.PostUpdate) then
 		return element:PostUpdate(unit, event)
 	end
 end
@@ -96,16 +101,16 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
-	return (self.PBPortrait.Override or Update) (self, ...)
+	return (self.PBPortrait.Override or Update)(self, ...)
 end
 
 local function ForceUpdate(element)
-	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return Path(element.__owner, "ForceUpdate", element.__owner.unit)
 end
 
 local function Enable(self, unit)
 	local element = self.PBPortrait
-	if(element) then
+	if (element) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -120,7 +125,7 @@ end
 
 local function Disable(self)
 	local element = self.PBPortrait
-	if(element) then
+	if (element) then
 		element:Hide()
 
 		self:UnregisterEvent("PET_BATTLE_OPENING_START")
@@ -128,4 +133,4 @@ local function Disable(self)
 	end
 end
 
-oUF:AddElement('PBPortrait', Path, Enable, Disable)
+oUF:AddElement("PBPortrait", Path, Enable, Disable)

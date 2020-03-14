@@ -1,6 +1,8 @@
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 --[[
 	Configuration values for both health and power:
@@ -12,7 +14,6 @@ if not oUF then return end
 
 local _G = _G
 local max = math.max
-local assert = assert
 local hooksecurefunc = hooksecurefunc
 
 local E  -- placeholder
@@ -20,7 +21,9 @@ local E  -- placeholder
 local function checkElvUI()
 	if not E then
 		E = _G.ElvUI[1]
-		assert(E, "oUF_Cutaway was not able to locate ElvUI and it is required.")
+		if not E then
+			return
+		end
 	end
 end
 
@@ -85,7 +88,7 @@ end
 local function PBHealth_PreUpdate(self, unit)
 	local petInfo = self.__owner.pbouf_petinfo
 	local element = self.__owner.PBCutaway.Health
-	local maxV = (element.GetHealthMax or C_PetBattles.GetMaxHealth)(petInfo.owner, petInfo.index)
+	local maxV = (element.GetHealthMax or C_PetBattles.GetMaxHealth)(petInfo.petOwner, petInfo.petIndex)
 	if Shared_UpdateCheckReturn(self, element, PRE, maxV) then
 		return
 	end
@@ -117,12 +120,12 @@ end
 
 local function PBHealth_PostUpdateColor(self, _, _, _, _)
 	local r, g, b = self:GetStatusBarColor()
-	self.__owner.Cutaway.Health:SetVertexColor(r * 1.5, g * 1.5, b * 1.5)
+	self.__owner.PBCutaway.Health:SetVertexColor(r * 1.5, g * 1.5, b * 1.5)
 end
 
 local defaults = {
 	health = {
-		enabled = false,
+		enabled = true,
 		lengthBeforeFade = 0.3,
 		fadeOutTime = 0.6
 	}

@@ -77,13 +77,15 @@ The following options are listed by priority. The first check that returns true 
 --]]
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function UpdateColor(self, event, unit)
 	if (not unit or self.unit ~= unit) then
 		return
 	end
-	local element = self.Experience
+	local element = self.PBExperience
 
 	local r, g, b, t
 	if (element.colorSmooth) then
@@ -123,7 +125,7 @@ local function ColorPath(self, ...)
 end
 
 local function Update(self, event, unit)
-	local petInfo = self.pbouf_petInfo
+	local petInfo = self.pbouf_petinfo
 	if not petInfo then
 		return
 	end
@@ -140,7 +142,7 @@ local function Update(self, event, unit)
 		element:PreUpdate(unit)
 	end
 
-	local cur, max = C_PetBattles.GetXP(petInfo.owner, petInfo.index)
+	local cur, max = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
 
 	element:SetMinMaxValues(0, max)
 

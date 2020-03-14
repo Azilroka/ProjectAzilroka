@@ -1,10 +1,12 @@
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function UpdateTooltip(self)
 	local petInfo = self:GetParent().__owner.pbouf_petinfo
-	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(peInfo.owner, petInfo.index, self:GetID())
+	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petInfo.petOwner, petInfo.petIndex, self:GetID())
 	if not auraID then
 		return
 	end
@@ -13,7 +15,7 @@ local function UpdateTooltip(self)
 	GameTooltip:AddTexture(icon)
 	GameTooltip:AddDoubleLine(name, auraID, isBuff and 0 or 1, isBuff and 1 or 0, 0, 1, 1, .7)
 	GameTooltip:AddLine(" ")
-	_G.PetBattleAbilityTooltip_SetAura(petInfo.owner, petInfo.index, self:GetID())
+	_G.PetBattleAbilityTooltip_SetAura(petInfo.petOwner, petInfo.petIndex, self:GetID())
 	GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 	if turnsRemaining > 0 then
@@ -84,7 +86,10 @@ local HIDDEN = 1
 
 local function updateIcon(element, petOwner, petIndex, index, offset, isDebuff, visible)
 	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
-	if not auraID or isBuff == isDebuff then
+	if not auraID then
+		return nil
+	end
+	if isBuff == isDebuff then
 		return HIDDEN
 	end
 	local id, name, icon = C_PetBattles.GetAbilityInfoByID(auraID)
@@ -248,7 +253,7 @@ local function Update(self, event)
 	if not petInfo then
 		return
 	end
-	local petOwner, petIndex = petInfo.owner, petInfo.index
+	local petOwner, petIndex = petInfo.petOwner, petInfo.petIndex
 
 	UpdateAuras(self, event, petOwner, petIndex)
 
@@ -288,7 +293,7 @@ local function Enable(self)
 			buffs:Show()
 		end
 
-		local debuffs = self.numDebuffs
+		local debuffs = self.PBDebuffs
 		if (debuffs) then
 			debuffs.__owner = self
 			debuffs.ForceUpdate = ForceUpdate

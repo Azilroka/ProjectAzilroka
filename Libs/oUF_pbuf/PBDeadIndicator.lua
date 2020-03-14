@@ -1,6 +1,8 @@
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function Update(self, event)
 	local petInfo = self.pbouf_petinfo
@@ -13,7 +15,7 @@ local function Update(self, event)
 		element.PreUpdate()
 	end
 
-	local cur = C_PetBattles.GetHealth(petInfo.owner, petInfo.index)
+	local cur = C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex)
 
 	element:SetShown(cur == 0)
 

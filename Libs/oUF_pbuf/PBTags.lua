@@ -20,21 +20,17 @@ for _, event in ipairs(events) do
 	oUF.Tags.SharedEvents[event] = true
 end
 
-local openingEvents = {events[1], events[2]}
-local levelEvents = {events[3]}
-local healthEvents = {events[4], events[5]}
-local xpEvents = {events[6]}
-local auraEvents = {events[7], events[8], events[9]}
+local openingEvents = string.join(" ", events[1], events[2])
+local levelEvents = string.join(" ", events[1], events[2], events[3])
+local healthEvents = string.join(" ", events[1], events[2], events[4], events[5])
+local xpEvents = string.join(" ", events[1], events[2], events[6])
+local auraEvents = string.join(" ", events[1], events[2], events[7], events[8], events[9])
 
 local styles = {
 	["CURRENT"] = "%s",
 	["CURRENT_MAX"] = "%s - %s",
 	["CURRENT_PERCENT"] = "%s ( %s%% )",
 	["CURRENT_MAX_PERCENT"] = "%s - %s ( %s%% )",
-	["CURRENT_RESTED"] = "%s | R: %s",
-	["CURRENT_MAX_RESTED"] = "%s - %s | R: %s",
-	["CURRENT_PERCENT_RESTED"] = "%s ( %s%% ) | R: %s",
-	["CURRENT_MAX_PERCENT_RESTED"] = "%s - %s ( %s%% ) | R: %s",
 	["TONEXT"] = "%s",
 	["BUBBLES"] = "%s",
 	["PERCENT"] = "%s%%",
@@ -75,18 +71,6 @@ local function GetFormattedText(style, min, max, rested)
 		return string.format(useStyle, min, percentValue)
 	elseif style == "CURRENT_MAX_PERCENT" then
 		return string.format(useStyle, min, max, percentValue)
-	elseif
-		style == "CURRENT_RESTED" or
-			((style == "CURRENT_MAX_RESTED" or style == "CURRENT_MAX_PERCENT_RESTED" or style == "CURRENT_PERCENT_RESTED") and
-				min == max)
-	 then
-		return string.format(styles["CURRENT_RESTED"], min, rested)
-	elseif style == "CURRENT_MAX_RESTED" then
-		return string.format(useStyle, min, max, rested)
-	elseif style == "CURRENT_PERCENT_RESTED" then
-		return string.format(useStyle, min, percentValue, rested)
-	elseif style == "CURRENT_MAX_PERCENT_RESTED" then
-		return string.format(useStyle, min, max, percentValue, rested)
 	elseif style == "BUBBLES" then
 		local bubbles = floor(20 * (max - min) / max)
 		return string.format(useStyle, bubbles)
@@ -101,7 +85,7 @@ local function GetFormattedText(style, min, max, rested)
 end
 
 local function getPetInfo(args)
-	return (args or ""):match("%d:%d")
+	return (args or ""):match("(%d):(%d)")
 end
 
 oUF.Tags.Events["pbuf:name"] = openingEvents
@@ -124,50 +108,6 @@ oUF.Tags.Methods["pbuf:level"] = function(unit, _, customArgs)
 
 	local level = C_PetBattles.GetLevel(petOwner, petIndex)
 	return level
-end
-
-local healthXpTags = {
-	{"cur", "CURRENT"},
-	{"max", "CURRENT"},
-	{"percent", "PERCENT"}
-}
-
-for _, tagPair in ipairs(healthXpTags) do
-	local hpTagStr = ("pbuf:hp:%s"):format(tagPair[1])
-	local xpTagStr = ("pbuf:xp:%s"):format(tagPair[1])
-	oUF.Tags.Events[hpTagStr] = healthEvents
-	oUF.Tags.Methods[hpTagStr] = function(unit, _, customArgs)
-		local petOwner, petIndex = getPetInfo(customArgs)
-		if not petOwner or not petIndex then
-			return ""
-		end
-
-		local health = C_PetBattles.GetHealth(petOwner, petIndex)
-		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
-
-		return GetFormattedText(tagPair[2], tagPair[1] == "max" and maxHealth or health, maxHealth)
-	end
-
-	oUF.Tags.Events[xpTagStr] = xpEvents
-	oUF.Tags.Methods[xpTagStr] = function(unit, _, customArgs)
-		local petOwner, petIndex = getPetInfo(customArgs)
-		if not petOwner or not petIndex then
-			return ""
-		end
-
-		if petOwner == LE_BATTLE_PET_ENEMY then
-			return ""
-		end
-
-		local level = C_PetBattles.GetLevel(petOwner, petIndex)
-		if level == 25 then
-			return ""
-		end
-
-		local xp, maxXP = C_PetBattles.GetXP(petOwner, petIndex)
-
-		return GetFormattedText(tagPair[2], tagPair[1] == "max" and maxXP or xp, xp)
-	end
 end
 
 oUF.Tags.Events["pbuf:power"] = auraEvents
@@ -225,5 +165,41 @@ oUF.Tags.Methods["pbuf:breedicon"] = function(unit, _, customArgs)
 		C_PetBattles.GetBreedQuality(petOwner, petIndex)
 	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
 
-	return CreateTextureMarkup(_G.PetTracker:GetBreedIcon(breed, .9), 16, 16, 16, 16, 0, 1, 0, 1, 0, 0)
+	return _G.PetTracker:GetBreedIcon(breed, .9)
+end
+
+for textFormat in pairs(styles) do
+	local tagTextFormat = strlower(gsub(textFormat, "_", "-"))
+	oUF.Tags.Events[format("pbuf:health:%s", tagTextFormat)] = healthEvents
+	oUF.Tags.Methods[format("pbuf:health:%s", tagTextFormat)] = function(unit, _, customArgs)
+		local petOwner, petIndex = getPetInfo(customArgs)
+		local health = C_PetBattles.GetHealth(petOwner, petIndex)
+		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
+		local status = health == 0 and "Dead"
+		if (status) then
+			return status
+		else
+			return GetFormattedText(textFormat, health, maxHealth)
+		end
+	end
+
+	oUF.Tags.Events[format("pbuf:health:%s-nostatus", tagTextFormat)] = healthEvents
+	oUF.Tags.Methods[format("pbuf:health:%s-nostatus", tagTextFormat)] = function(unit, _, customArgs)
+		local petOwner, petIndex = getPetInfo(customArgs)
+		local health = C_PetBattles.GetHealth(petOwner, petIndex)
+		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
+		return GetFormattedText(textFormat, health, maxHealth)
+	end
+
+	oUF.Tags.Events[format("pbuf:xp:%s", tagTextFormat)] = xpEvents
+	oUF.Tags.Methods[format("pbuf:xp:%s", tagTextFormat)] = function(unit, _, customArgs)
+		local petOwner, petIndex = getPetInfo(customArgs)
+		local xp, maxXP = C_PetBattles.GetXP(petOwner, petIndex)
+		local level = C_PetBattles.GetLevel(petOwner, petIndex)
+		if level == 25 then
+			return "Max"
+		else
+			return GetFormattedText(textFormat, xp, maxXP)
+		end
+	end
 end

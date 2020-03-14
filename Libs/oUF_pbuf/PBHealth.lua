@@ -71,37 +71,37 @@ The following options are listed by priority. The first check that returns true 
     Health.bg = Background
     self.PBHealth = Health
 --]]
-
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function UpdateColor(self, event, unit)
-	if(not unit or self.unit ~= unit) then return end
-	local element = self.Health
+	local element = self.PBHealth
 
 	local r, g, b, t
-	if(element.colorSmooth) then
+	if (element.colorSmooth) then
 		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
-	elseif(element.colorHealth) then
+	elseif (element.colorHealth) then
 		t = self.colors.health
 	end
 
-	if(t) then
+	if (t) then
 		r, g, b = t[1], t[2], t[3]
 	end
 
-	if(b) then
+	if (b) then
 		element:SetStatusBarColor(r, g, b)
 
 		local bg = element.bg
-		if(bg) then
+		if (bg) then
 			local mu = bg.multiplier or 1
 			bg:SetVertexColor(r * mu, g * mu, b * mu)
 		end
 	end
 
-	if(element.PostUpdateColor) then
+	if (element.PostUpdateColor) then
 		element:PostUpdateColor(unit, r, g, b)
 	end
 end
@@ -114,12 +114,14 @@ local function ColorPath(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
-	(self.PBHealth.UpdateColor or UpdateColor) (self, ...)
+	(self.PBHealth.UpdateColor or UpdateColor)(self, ...)
 end
 
 local function Update(self, event, unit)
-	local petInfo = self.pbouf_petInfo
-	if not petInfo then return end
+	local petInfo = self.pbouf_petinfo
+	if not petInfo then
+		return
+	end
 
 	local element = self.PBHealth
 
@@ -129,11 +131,13 @@ local function Update(self, event, unit)
 	* self - the Health element
 	* unit - the unit for which the update has been triggered (string)
 	--]]
-	if(element.PreUpdate) then
+	if (element.PreUpdate) then
 		element:PreUpdate(unit)
 	end
 
-	local cur, max = C_PetBattles.GetHealth(petInfo.owner, petInfo.index), C_PetBattles.GetMaxHealth(petInfo.owner, petInfo.index)
+	local cur, max =
+		C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex)
 
 	element:SetMinMaxValues(0, max)
 
@@ -150,14 +154,12 @@ local function Update(self, event, unit)
 	* cur  - the unit's current health value (number)
 	* max  - the unit's maximum possible health value (number)
 	--]]
-	if(element.PostUpdate) then
+	if (element.PostUpdate) then
 		element:PostUpdate(unit, cur, max)
 	end
 end
 
 local function Path(self, event, ...)
-	if (self.isForced and event ~= 'ElvUI_UpdateAllElements') then return end -- ElvUI changed
-
 	--[[ Override: Health.Override(self, event, unit)
 	Used to completely override the internal update function.
 
@@ -165,25 +167,27 @@ local function Path(self, event, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
-	(self.PBHealth.Override or Update) (self, event, ...);
+	(self.PBHealth.Override or Update)(self, event, ...)
 
 	ColorPath(self, event, ...)
 end
 
 local function ForceUpdate(element)
-	Path(element.__owner, 'ForceUpdate', element.__owner.unit)
+	Path(element.__owner, "ForceUpdate", element.__owner.unit)
 end
 
 local function Enable(self, unit)
 	local element = self.PBHealth
-	if(element) then
+	if (element) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('PET_BATTLE_HEALTH_CHANGED', Path, true)
-		self:RegisterEvent('PET_BATTLE_MAX_HEALTH_CHANGED', Path, true)
+		self:RegisterEvent("PET_BATTLE_OPENING_START", Path, true)
+		self:RegisterEvent("PET_BATTLE_OPENING_DONE", Path, true)
+		self:RegisterEvent("PET_BATTLE_HEALTH_CHANGED", Path, true)
+		self:RegisterEvent("PET_BATTLE_MAX_HEALTH_CHANGED", Path, true)
 
-		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
+		if (element:IsObjectType("StatusBar") and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
@@ -195,13 +199,15 @@ end
 
 local function Disable(self)
 	local element = self.PBHealth
-	if(element) then
+	if (element) then
 		element:Hide()
 
-		element:SetScript('OnUpdate', nil) -- ElvUI changed
-		self:UnregisterEvent('PET_BATTLE_HEALTH_CHANGED', Path)
-		self:UnregisterEvent('PET_BATTLE_MAX_HEALTH_CHANGED', Path)
+		element:SetScript("OnUpdate", nil) -- ElvUI changed
+		self:UnregisterEvent("PET_BATTLE_HEALTH_CHANGED", Path)
+		self:UnregisterEvent("PET_BATTLE_MAX_HEALTH_CHANGED", Path)
+		self:UnregisterEvent("PET_BATTLE_OPENING_DONE", Path)
+		self:UnregisterEvent("PET_BATTLE_OPENING_START", Path)
 	end
 end
 
-oUF:AddElement('PBHealth', Path, Enable, Disable)
+oUF:AddElement("PBHealth", Path, Enable, Disable)

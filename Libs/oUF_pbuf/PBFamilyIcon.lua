@@ -23,7 +23,9 @@ A default texture will be applied if the widget is a Texture and doesn't have a 
 --]]
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
-if not oUF then return end
+if not oUF then
+	return
+end
 
 local function Update(self, event, unit)
 	local petInfo = self.pbouf_petinfo
@@ -42,8 +44,11 @@ local function Update(self, event, unit)
 		element:PreUpdate()
 	end
 
-	local petType = C_PetBattles.GetPetType(petInfo.owner, petInfo.index)
-	element:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\]] .. _G.PET_TYPE_SUFFIX[petType])
+	local petType = C_PetBattles.GetPetType(petInfo.petOwner, petInfo.petIndex)
+	local suffix = _G.PET_TYPE_SUFFIX[petType]
+	if suffix then
+		element:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\]] .. suffix)
+	end
 
 	--[[ Callback: PBFamilyIcon:PostUpdate(incomingResurrect)
 	Called after the element has been updated.
