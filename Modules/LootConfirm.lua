@@ -29,9 +29,16 @@ end
 -- LOOT_ROLL_TYPE_PASS, LOOT_ROLL_TYPE_NEED
 -- texture, item, quantity, currencyID, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(slot);
 
-function LC:START_LOOT_ROLL(_, id)
-	if not LC.db['Greed'] then return end
-	RollOnLoot(id, _G.LOOT_ROLL_TYPE_GREED)
+function LC:START_LOOT_ROLL(_, rollID)
+	if not (LC.db.Disenchant or LC.db.Greed) then return end
+
+	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
+
+	if canDisenchant and LC.db.Disenchant then
+		RollOnLoot(rollID, _G.LOOT_ROLL_TYPE_DISENCHANT)
+	elseif canGreed and LC.db.Greed then
+		RollOnLoot(rollID, _G.LOOT_ROLL_TYPE_GREED)
+	end
 end
 
 function LC:GetOptions()
@@ -66,11 +73,20 @@ function LC:GetOptions()
 				name = PA.ACL['General'],
 				guiInline = true,
 				args = {
+					AutoRoll = {
+						order = 0,
+						type = 'description',
+						name = PA.ACL['If Disenchant and Greed is selected. It will always try to Disenchant first.'],
+					},
+					Disenchant = {
+						order = 1,
+						type = 'toggle',
+						name = PA.ACL['Auto Disenchant'],
+					},
 					Greed = {
 						order = 2,
 						type = 'toggle',
 						name = PA.ACL['Auto Greed'],
-						desc = PA.ACL['Automatically greed'],
 					},
 				},
 			},
@@ -100,6 +116,5 @@ function LC:Initialize()
 	LC:RegisterEvent('CONFIRM_LOOT_ROLL', 'Confirm')
 	LC:RegisterEvent('LOOT_OPENED', 'Confirm')
 	LC:RegisterEvent('LOOT_BIND_CONFIRM', 'Confirm')
-
-	--LC:RegisterEvent('START_LOOT_ROLL')
+	LC:RegisterEvent('START_LOOT_ROLL')
 end
