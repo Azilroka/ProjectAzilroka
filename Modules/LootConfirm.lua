@@ -10,6 +10,11 @@ LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 LC.isEnabled = false
 
+local tonumber = tonumber
+local strmatch = strmatch
+
+local GetLootRollItemInfo = GetLootRollItemInfo
+local GetLootRollItemLink = GetLootRollItemLink
 local ConfirmLootRoll = ConfirmLootRoll
 local GetNumLootItems = GetNumLootItems
 local ConfirmLootSlot = ConfirmLootSlot
@@ -33,6 +38,8 @@ function LC:START_LOOT_ROLL(_, rollID)
 	if not (LC.db.Disenchant or LC.db.Greed) then return end
 
 	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
+	local itemLink = GetLootRollItemLink(rollID)
+	local itemID = tonumber(strmatch(itemLink, 'item:(%d+)'))
 
 	if canDisenchant and LC.db.Disenchant then
 		RollOnLoot(rollID, _G.LOOT_ROLL_TYPE_DISENCHANT)
