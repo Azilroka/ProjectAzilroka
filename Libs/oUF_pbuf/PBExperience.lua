@@ -143,7 +143,11 @@ local function Update(self, event, unit)
 	end
 
 	local cur, max = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
-
+	local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
+	if level == 25 then
+		max = 1
+		cur = 1
+	end
 	element:SetMinMaxValues(0, max)
 
 	element:SetValue(cur)

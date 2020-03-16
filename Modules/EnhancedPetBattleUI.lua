@@ -123,9 +123,6 @@ function EPB:HideBlizzard()
 	end
 	self.BottomFrame.xpBar:Hide()
 	self.BottomFrame.TurnTimer:SetShown(not (C_PetBattles.IsWildBattle() or C_PetBattles.IsPlayerNPC(2)))
-	if (IsAddOnLoaded("tdBattlePetScript")) then
-		EPB:UpdateTDBattlePetScriptAutoButton()
-	end
 end
 
 function EPB:EnemyIconOnEnter()
@@ -240,7 +237,7 @@ if PA.oUF then
 
 			for _, petType in pairs({"Ally", "Enemy"}) do
 				local frame = CreateFrame("frame", petType, UIParent)
-				frame:SetSize(270, 312)
+				frame:SetSize(270, 252)
 				frame:SetFrameStrata("BACKGROUND")
 				frame:SetFrameLevel(0)
 
@@ -250,12 +247,16 @@ if PA.oUF then
 				)
 				frame.Pets = {}
 
-				for i = 0, 3 do
+				for i = 1, 3 do
 					ActivePetOwner = frame.petOwner
 					ActivePetIndex = i
 					frame.Pets[i] = oUF:Spawn("player", ("EPB_PBUF_team%d_pet%d"):format(frame.petOwner, i))
 					frame.Pets[i]:SetParent(frame)
 				end
+				ActivePetOwner = frame.petOwner
+				ActivePetIndex = 0
+				frame.Pets.team = oUF:Spawn("player", ("EPB_PBUF_team%d_teamauras"):format(frame.petOwner))
+				frame.Pets.team:SetParent(frame)
 				for _, event in pairs(self.Events) do
 					frame:RegisterEvent(event)
 				end
@@ -263,7 +264,7 @@ if PA.oUF then
 				for i = 1, 3 do
 					self:UpdatePetFrame(frame.Pets[i])
 				end
-				self:UpdatePetFrameAnchors(frame.Pets[0])
+				self:UpdatePetFrameAnchors(frame.Pets.team)
 				frame:SetScript("OnEvent", EPB.UpdateFrame)
 
 				_G.RegisterStateDriver(frame, "visibility", "[petbattle] show; hide")
@@ -283,13 +284,15 @@ if PA.oUF then
 			local petOwner = ActivePetOwner
 			local petIndex = ActivePetIndex
 			frame.pbouf_petinfo = {petOwner = petOwner, petIndex = petIndex}
-			frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
-			frame.RaisedElementParent:SetFrameLevel(10000)
+			frame.PBAuras = {}
 			frame.PBBuffs = self:ConstructBuffs(frame, petOwner, petIndex)
 			frame.PBDebuffs = self:ConstructDebuffs(frame, petOwner, petIndex)
 			if petIndex == 0 then
+				_G.RegisterStateDriver(frame, "visibility", "[petbattle] show; hide")
 				return
 			end
+			frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
+			frame.RaisedElementParent:SetFrameLevel(10000)
 			frame.Name = self:ConstructTagString(frame)
 			frame.PBHealth = self:ConstructHealth(frame, petOwner, petIndex)
 			frame.PBExperience = self:ConstructExperience(frame, petOwner, petIndex)
@@ -301,31 +304,32 @@ if PA.oUF then
 			frame.PBSpeed = self:ConstructSpeed(frame, petOwner, petIndex)
 			frame.BreedID = self:ConstructTagString(frame)
 
-			if _G.Rematch then
-				frame:SetScript(
-					"OnEnter",
-					function()
-						_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
+			frame:HookScript(
+				"OnEnter",
+				function()
+					if _G.Rematch then
+						local petInfo = frame.pbouf_petinfo
+						_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
 					end
-				)
-				frame:SetScript(
-					"OnLeave",
-					function()
+				end
+			)
+			frame:HookScript(
+				"OnLeave",
+				function()
+					if _G.Rematch then
 						_G.Rematch:HidePetCard(true)
 					end
-				)
-			else
-				frame:SetScript("OnEnter", nil)
-				frame:SetScript("OnLeave", nil)
-			end
+				end
+			)
 
-			frame:SetScript(
-				"OnMouseDown",
+			frame:HookScript(
+				"OnClick",
 				function()
+					local petInfo = frame.pbouf_petinfo
 					if _G.Rematch and not self.InSwitchMode then
-						_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
-					elseif self.InSwitchMode and frame.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(frame.petIndex) then
-						C_PetBattles.ChangePet(frame.petIndex)
+						_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
+					elseif self.InSwitchMode and petInfo.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(petInfo.petIndex) then
+						C_PetBattles.ChangePet(petInfo.petIndex)
 						EPB:ChangePetBattlePetSelectionFrameState(false)
 					end
 				end
@@ -336,8 +340,6 @@ if PA.oUF then
 			frame.BorderColor = {frame:GetBackdropBorderColor()}
 
 			PA:CreateShadow(frame)
-
-			frame:Show()
 		end
 
 		function EPB:ConstructHealth(frame, petOwner, petIndex)
@@ -490,7 +492,7 @@ if PA.oUF then
 		function EPB:ConstructBuffs(frame, petOwner, petIndex)
 			local buffs = CreateFrame("Frame", nil, frame)
 			buffs.size = 26
-			buffs.num = 10
+			buffs.num = 12
 			buffs.numRow = 9
 			buffs.spacing = 2
 			buffs.initialAnchor = petOwner == LE_BATTLE_PET_ALLY and "TOPLEFT" or "TOPRIGHT"
@@ -503,11 +505,11 @@ if PA.oUF then
 		function EPB:ConstructDebuffs(frame, petOwner, petIndex)
 			local debuffs = CreateFrame("Frame", nil, frame)
 			debuffs.size = 26
-			debuffs.num = 10
+			debuffs.num = 12
 			debuffs.spacing = 2
 			debuffs.initialAnchor = petOwner == LE_BATTLE_PET_ALLY and "TOPRIGHT" or "TOPLEFT"
 			debuffs["growth-y"] = "DOWN"
-			debuffs["growth-x"] = petOwner == LE_BATTLE_PET_ALLY and "RIGHT" or "LEFT"
+			debuffs["growth-x"] = petOwner == LE_BATTLE_PET_ALLY and "LEFT" or "RIGHT"
 			debuffs.isDebuff = true
 			debuffs.PostCreateIcon = self.PostCreateAura
 			return debuffs
@@ -549,33 +551,15 @@ if PA.oUF then
 					BuffPoint, DebuffPoint = "TOPRIGHT", "TOPLEFT"
 				end
 
+				frame:SetSize(270, 40)
+				frame.PBBuffs:SetSize(150, 26)
 				frame.PBBuffs:SetPoint(BuffPoint, frame)
+				frame.PBDebuffs:SetSize(150, 26)
 				frame.PBDebuffs:SetPoint(DebuffPoint, frame)
-				frame:Size(270, 40)
-				local numPets = self.db["TeamAurasOnBottom"] and C_PetBattles.GetNumPets(petInfo.petOwner) or 1
-				local point, relativePoint, xcoord, ycoord
-				if EPB.db["GrowUp"] then
-					if EPB.db["TeamAurasOnBottom"] then
-						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
-					else
-						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
-					end
-				else
-					if EPB.db["TeamAurasOnBottom"] then
-						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
-					else
-						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
-					end
-				end
-
-				frame:ClearAllPoints()
-				if numPets > 0 then
-					frame:SetPoint(point, frame:GetParent().Pets[numPets], relativePoint, xcoord, ycoord)
-				end
 				return
 			end
-			frame:Size(270, 104)
-			frame.PBHealth:Size(270, 82)
+			frame:Size(270, 84)
+			frame.PBHealth:Size(270, 62)
 			if petInfo.petOwner == LE_BATTLE_PET_ALLY then
 				frame.PBHealth:SetPoint("TOPLEFT", frame)
 			else
@@ -679,6 +663,8 @@ if PA.oUF then
 
 		function EPB:UpdatePetFrame(frame)
 			local petInfo = frame.pbouf_petinfo
+			_G.UnregisterUnitWatch(frame)
+			frame:SetAttribute("unit", nil)
 			if petInfo.petIndex == 0 then
 				self:UpdatePetFrameAnchors(frame)
 				return
@@ -762,8 +748,33 @@ if PA.oUF then
 					PA.LCG.PixelGlow_Stop(pet)
 				end
 
-				pet:Show()
+				_G.RegisterStateDriver(pet, "visibility", "[petbattle] show; hide")
 			end
+
+			if numPets < 3 then
+				for i = numPets + 1, 3 do
+					_G.RegisterStateDriver(self.Pets[i], "visibility", "hide")
+				end
+			end
+
+			local point, relativePoint, xcoord, ycoord
+			numPets = EPB.db["TeamAurasOnBottom"] and numPets or 1
+			if EPB.db["GrowUp"] then
+				if EPB.db["TeamAurasOnBottom"] then
+					point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
+				else
+					point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
+				end
+			else
+				if EPB.db["TeamAurasOnBottom"] then
+					point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
+				else
+					point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
+				end
+			end
+			self.Pets.team:ClearAllPoints()
+			self.Pets.team:SetPoint(point, self.Pets[numPets], relativePoint, xcoord, ycoord)
+			_G.RegisterStateDriver(self.Pets.team, "visibility", "[petbattle] show; hide")
 		end
 	end
 else
@@ -1563,6 +1574,10 @@ function EPB:Initialize()
 			self:ChangePetBattlePetSelectionFrameState(false)
 		end
 	end
+	pcall(_G.LoadAddOn, "tdBattlePetScript")
+	if (IsAddOnLoaded("tdBattlePetScript")) then
+		EPB:UpdateTDBattlePetScriptAutoButton()
+	end
 end
 
 EPB.BattlePetChallengeDebuffID = 143999
@@ -1790,11 +1805,9 @@ function EPB:Update()
 
 			self:UpdatePetFrame(frame.Pets[i])
 		end
-	end
-
-	if PA.oUF then
-		self:UpdatePetFrameAnchors(self.Ally.Pets[0])
-		self:UpdatePetFrameAnchors(self.Enemy.Pets[0])
+		if PA.oUF then
+			self:UpdatePetFrameAnchors(frame.Pets.team)
+		end
 	end
 end
 
@@ -1883,13 +1896,29 @@ end
 function EPB:UpdateTDBattlePetScriptAutoButton()
 	_G.tdBattlePetScriptAutoButton:SetParent(self.Ally)
 	_G.tdBattlePetScriptAutoButton:ClearAllPoints()
-	_G.tdBattlePetScriptAutoButton:SetPoint("TOP", self.Ally, "BOTTOM", 0, -40)
+	if PA.ElvUI then
+		_G.tdBattlePetScriptAutoButton:SetPoint("CENTER", _G.ElvUI[1].UIParent, "CENTER", 0, 0)
+	else
+		_G.tdBattlePetScriptAutoButton:SetPoint("TOP", self.Ally, "BOTTOM", 0, -40)
+	end
 	_G.tdBattlePetScriptAutoButton:Hide()
 	_G.tdBattlePetScriptAutoButton:Show()
 
 	if (PA.AS and not _G.tdBattlePetScriptAutoButton.skinned) then
 		PA.AS:SkinButton(_G.tdBattlePetScriptAutoButton)
 		_G.tdBattlePetScriptAutoButton.skinned = true
+	end
+
+	if PA.ElvUI then
+		_G.ElvUI[1]:CreateMover(
+			_G.tdBattlePetScriptAutoButton,
+			"tdBattleScriptAutoButtonMover",
+			"tdBattleScript Auto Button",
+			nil,
+			nil,
+			nil,
+			"ALL,SOLO"
+		)
 	end
 end
 

@@ -42,7 +42,7 @@ local function onLeave()
 end
 
 local function createAuraIcon(element, index)
-	local button = CreateFrame("Button", element:GetDebugName() .. "Button" .. index, element)
+	local button = CreateFrame("Button", nil, element)
 	button:RegisterForClicks("RightButtonUp")
 
 	local icon = button:CreateTexture(nil, "BORDER")
@@ -87,8 +87,10 @@ local HIDDEN = 1
 local function updateIcon(element, petOwner, petIndex, index, offset, isDebuff, visible)
 	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
 	if not auraID then
-		return nil
+		return HIDDEN
 	end
+	isBuff = not (not isBuff)
+	isDebuff = not (not isDebuff)
 	if isBuff == isDebuff then
 		return HIDDEN
 	end
@@ -161,6 +163,7 @@ local function SetPosition(element, from, to)
 	end
 end
 
+local ABSOLUTE_MAX = 12
 local function filterIcons(element, petOwner, petIndex, limit, isDebuff, offset, dontHide)
 	if (not offset) then
 		offset = 0
@@ -169,7 +172,7 @@ local function filterIcons(element, petOwner, petIndex, limit, isDebuff, offset,
 	local visible = 0
 	local hidden = 0
 
-	while (visible < limit) do
+	while (visible < limit and index <= ABSOLUTE_MAX) do
 		local result = updateIcon(element, petOwner, petIndex, index, offset, isDebuff, visible)
 		if (not result) then
 			break
@@ -191,7 +194,6 @@ local function filterIcons(element, petOwner, petIndex, limit, isDebuff, offset,
 	return visible, hidden
 end
 
-local ABSOLUTE_MAX = 12
 local function UpdateAuras(self, _, petOwner, petIndex)
 	local buffs = self.PBBuffs
 	if (buffs) then
@@ -254,7 +256,6 @@ local function Update(self, event)
 		return
 	end
 	local petOwner, petIndex = petInfo.petOwner, petInfo.petIndex
-
 	UpdateAuras(self, event, petOwner, petIndex)
 
 	-- Assume no event means someone wants to re-anchor things. This is usually
@@ -278,9 +279,9 @@ end
 
 local function Enable(self)
 	if (self.PBBuffs or self.PBDebuffs) then
-		self:RegisterEvent("PET_BATTLE_AURA_APPLIED", UpdateAuras, true)
-		self:RegisterEvent("PET_BATTLE_AURA_CANCELED", UpdateAuras, true)
-		self:RegisterEvent("PET_BATTLE_AURA_CHANGED", UpdateAuras, true)
+		self:RegisterEvent("PET_BATTLE_AURA_APPLIED", Update, true)
+		self:RegisterEvent("PET_BATTLE_AURA_CANCELED", Update, true)
+		self:RegisterEvent("PET_BATTLE_AURA_CHANGED", Update, true)
 
 		local buffs = self.PBBuffs
 		if (buffs) then
@@ -310,9 +311,9 @@ end
 
 local function Disable(self)
 	if (self.PBBuffs or self.PBDebuffs) then
-		self:UnregisterEvent("PET_BATTLE_AURA_APPLIED", UpdateAuras)
-		self:UnregisterEvent("PET_BATTLE_AURA_CANCELED", UpdateAuras)
-		self:UnregisterEvent("PET_BATTLE_AURA_CHANGED", UpdateAuras)
+		self:UnregisterEvent("PET_BATTLE_AURA_APPLIED", Update)
+		self:UnregisterEvent("PET_BATTLE_AURA_CANCELED", Update)
+		self:UnregisterEvent("PET_BATTLE_AURA_CHANGED", Update)
 
 		if (self.PBBuffs) then
 			self.PBBuffs:Hide()
