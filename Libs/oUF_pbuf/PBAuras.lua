@@ -55,12 +55,6 @@ local function createAuraIcon(element, index)
 	local turnsRemaining = turnsRemainingFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
 	turnsRemaining:SetPoint("BOTTOMRIGHT", turnsRemainingFrame, "BOTTOMRIGHT", -1, 0)
 
-	local overlay = button:CreateTexture(nil, "OVERLAY")
-	overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
-	overlay:SetAllPoints()
-	overlay:SetTexCoord(.296875, .5703125, 0, .515625)
-	button.overlay = overlay
-
 	button.UpdateTooltip = UpdateTooltip
 	button:SetScript("OnEnter", onEnter)
 	button:SetScript("OnLeave", onLeave)
