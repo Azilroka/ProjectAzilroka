@@ -294,6 +294,7 @@ function EPB:InitPetFrameAPI()
 				end
 				frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
 				frame.RaisedElementParent:SetFrameLevel(10000)
+				PA:SetInside(frame.RaisedElementParent)
 				frame.Name = self:ConstructTagString(frame)
 				frame.PBHealth = self:ConstructHealth(frame, petOwner, petIndex)
 				frame.PBExperience = self:ConstructExperience(frame, petOwner, petIndex)
@@ -742,12 +743,12 @@ function EPB:InitPetFrameAPI()
 						pet:SetBackdropBorderColor(unpack(EPB.Colors.Black))
 					end
 
-					if EPB.InSwitchMode and (pet.petOwner == LE_BATTLE_PET_ALLY) and hp > 0 then
+					if EPB.InSwitchMode and (self.petOwner == LE_BATTLE_PET_ALLY) and hp > 0 then
 						local _, class = _G.UnitClass("player")
 						local c = _G.RAID_CLASS_COLORS[class]
-						PA.LCG.PixelGlow_Start(pet, {c.r, c.g, c.b, 1}, 8, -0.25, nil, 1)
+						PA.LCG.PixelGlow_Start(pet.RaisedElementParent, {c.r, c.g, c.b, 1}, 8, -0.25, nil, 1)
 					else
-						PA.LCG.PixelGlow_Stop(pet)
+						PA.LCG.PixelGlow_Stop(pet.RaisedElementParent)
 					end
 
 					_G.RegisterStateDriver(pet, "visibility", "[petbattle] show; hide")
