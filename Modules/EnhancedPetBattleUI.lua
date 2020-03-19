@@ -238,7 +238,7 @@ function EPB:InitPetFrameAPI()
 
 				for _, petType in pairs({"Ally", "Enemy"}) do
 					local frame = CreateFrame("frame", petType, UIParent)
-					frame:SetSize(270, 414)
+					frame:SetSize(270, 384)
 					frame:SetFrameStrata("BACKGROUND")
 					frame:SetFrameLevel(0)
 
@@ -560,8 +560,8 @@ function EPB:InitPetFrameAPI()
 					frame.PBDebuffs:SetPoint(DebuffPoint, frame)
 					return
 				end
-				frame:Size(278, 90)
-				frame.PBHealth:Size(270, 62)
+				frame:Size(278, 80)
+				frame.PBHealth:Size(270, 52)
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
 					frame.PBHealth:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4)
 				else
