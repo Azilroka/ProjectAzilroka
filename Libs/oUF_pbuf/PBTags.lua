@@ -84,71 +84,67 @@ local function GetFormattedText(style, min, max, rested)
 	end
 end
 
-local function getPetInfo(args)
-	return (args or ""):match("(%d):(%d)")
-end
-
 oUF.Tags.Events["pbuf:name"] = openingEvents
-oUF.Tags.Methods["pbuf:name"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:name"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
-	local customName, realName = C_PetBattles.GetName(petOwner, petIndex)
+	local customName, realName = C_PetBattles.GetName(petInfo.petOwner, petInfo.petIndex)
 	return customName or realName
 end
 
 oUF.Tags.Events["pbuf:level"] = levelEvents
-oUF.Tags.Methods["pbuf:level"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:level"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
-	local level = C_PetBattles.GetLevel(petOwner, petIndex)
+	local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
 	return level
 end
 
 oUF.Tags.Events["pbuf:power"] = auraEvents
-oUF.Tags.Methods["pbuf:power"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:power"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
-	local power = C_PetBattles.GetPower(petOwner, petIndex)
+	local power = C_PetBattles.GetPower(petInfo.petOwner, petInfo.petIndex)
 	return power
 end
 
 oUF.Tags.Events["pbuf:speed"] = auraEvents
-oUF.Tags.Methods["pbuf:speed"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:speed"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
-	local speed = C_PetBattles.GetSpeed(petOwner, petIndex)
+	local speed = C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex)
 	return speed
 end
 
 oUF.Tags.Events["pbuf:breed"] = openingEvents
-oUF.Tags.Methods["pbuf:breed"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:breed"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
 	if not IsAddOnLoaded("BattlePetBreedID") then
 		return ""
 	end
-	return _G.GetBreedID_Battle({petOwner = petOwner, petIndex = petIndex})
+	return _G.GetBreedID_Battle({petOwner = petInfo.petOwner, petIndex = petInfo.petIndex})
 end
 
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
-oUF.Tags.Methods["pbuf:breedicon"] = function(unit, _, customArgs)
-	local petOwner, petIndex = getPetInfo(customArgs)
-	if not petOwner or not petIndex then
+oUF.Tags.Methods["pbuf:breedicon"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
 		return ""
 	end
 
@@ -157,12 +153,12 @@ oUF.Tags.Methods["pbuf:breedicon"] = function(unit, _, customArgs)
 	end
 
 	local level, maxHP, speciesID, power, speed, rarity =
-		C_PetBattles.GetLevel(petOwner, petIndex),
-		C_PetBattles.GetMaxHealth(petOwner, petIndex),
-		C_PetBattles.GetPetSpeciesID(petOwner, petIndex),
-		C_PetBattles.GetPower(petOwner, petIndex),
-		C_PetBattles.GetSpeed(petOwner, petIndex),
-		C_PetBattles.GetBreedQuality(petOwner, petIndex)
+		C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetPower(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetBreedQuality(petInfo.petOwner, petInfo.petIndex)
 	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
 
 	return _G.PetTracker:GetBreedIcon(breed, .9)
@@ -171,10 +167,13 @@ end
 for textFormat in pairs(styles) do
 	local tagTextFormat = strlower(gsub(textFormat, "_", "-"))
 	oUF.Tags.Events[format("pbuf:health:%s", tagTextFormat)] = healthEvents
-	oUF.Tags.Methods[format("pbuf:health:%s", tagTextFormat)] = function(unit, _, customArgs)
-		local petOwner, petIndex = getPetInfo(customArgs)
-		local health = C_PetBattles.GetHealth(petOwner, petIndex)
-		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
+	oUF.Tags.Methods[format("pbuf:health:%s", tagTextFormat)] = function()
+		local petInfo = _FRAME.pbouf_petinfo
+		if not petInfo then
+			return ""
+		end
+		local health = C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex)
+		local maxHealth = C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex)
 		local status = health == 0 and "Dead"
 		if (status) then
 			return status
@@ -184,18 +183,24 @@ for textFormat in pairs(styles) do
 	end
 
 	oUF.Tags.Events[format("pbuf:health:%s-nostatus", tagTextFormat)] = healthEvents
-	oUF.Tags.Methods[format("pbuf:health:%s-nostatus", tagTextFormat)] = function(unit, _, customArgs)
-		local petOwner, petIndex = getPetInfo(customArgs)
-		local health = C_PetBattles.GetHealth(petOwner, petIndex)
-		local maxHealth = C_PetBattles.GetMaxHealth(petOwner, petIndex)
+	oUF.Tags.Methods[format("pbuf:health:%s-nostatus", tagTextFormat)] = function()
+		local petInfo = _FRAME.pbouf_petinfo
+		if not petInfo then
+			return ""
+		end
+		local health = C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex)
+		local maxHealth = C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex)
 		return GetFormattedText(textFormat, health, maxHealth)
 	end
 
 	oUF.Tags.Events[format("pbuf:xp:%s", tagTextFormat)] = xpEvents
-	oUF.Tags.Methods[format("pbuf:xp:%s", tagTextFormat)] = function(unit, _, customArgs)
-		local petOwner, petIndex = getPetInfo(customArgs)
-		local xp, maxXP = C_PetBattles.GetXP(petOwner, petIndex)
-		local level = C_PetBattles.GetLevel(petOwner, petIndex)
+	oUF.Tags.Methods[format("pbuf:xp:%s", tagTextFormat)] = function()
+		local petInfo = _FRAME.pbouf_petinfo
+		if not petInfo then
+			return ""
+		end
+		local xp, maxXP = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
+		local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
 		if level == 25 then
 			return "Max"
 		else

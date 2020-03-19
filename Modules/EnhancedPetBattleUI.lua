@@ -649,19 +649,14 @@ function EPB:InitPetFrameAPI()
 				frame.PBSpeed:SetPoint("TOP", frame.PBPower, "BOTTOM", 0, -3)
 				frame.PBSpeed.value:SetPoint(stp, frame.PBSpeed, strp, stox, 0)
 				frame.PBSpeed.value:SetJustifyH(stjh)
-
-				local tagArgs = ("{%d:%d}"):format(petInfo.petOwner, petInfo.petIndex)
-				local function createTag(tag)
-					return ("[%s%s]"):format(tag, tagArgs)
-				end
-				frame:Tag(frame.Name, createTag("pbuf:level") .. " " .. createTag("pbuf:name"))
-				frame:Tag(frame.PBHealth.value, createTag("pbuf:health:current-percent"))
+				frame:Tag(frame.Name, "[pbuf:level] [pbuf:name]")
+				frame:Tag(frame.PBHealth.value, "[pbuf:health:current-percent]")
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
-					frame:Tag(frame.PBExperience.value, createTag("pbuf:xp:current-max-percent"))
+					frame:Tag(frame.PBExperience.value, "[pbuf:xp:current-max-percent]")
 				end
-				frame:Tag(frame.PBPower.value, createTag("pbuf:power"))
-				frame:Tag(frame.PBSpeed.value, createTag("pbuf:speed"))
-				frame:Tag(frame.BreedID, createTag("pbuf:breedicon"))
+				frame:Tag(frame.PBPower.value, "[pbuf:power]")
+				frame:Tag(frame.PBSpeed.value, "[pbuf:speed]")
+				frame:Tag(frame.BreedID, "[pbuf:breedicon]")
 			end
 
 			function EPB:UpdatePetFrame(frame)
