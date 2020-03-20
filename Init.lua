@@ -527,14 +527,6 @@ function PA:SetupProfile()
 	end
 end
 
-function PA:ADDON_LOADED(event, addon)
-	if addon == AddOnName then
-		PA.EP = LibStub('LibElvUIPlugin-1.0', true)
-		PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
-		PA:UnregisterEvent(event)
-	end
-end
-
 function PA:CallModuleFunction(module, func)
 	local pass, err = pcall(func, module)
 	if not pass and PA.Debug then
@@ -546,6 +538,8 @@ function PA:PLAYER_LOGIN()
 	PA.Multiple = PA:GetUIScale()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
+	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
+	PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
 
 	for _, module in PA:IterateModules() do
 		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
@@ -569,5 +563,4 @@ function PA:PLAYER_LOGIN()
 	end
 end
 
-PA:RegisterEvent('ADDON_LOADED')
 PA:RegisterEvent('PLAYER_LOGIN')
