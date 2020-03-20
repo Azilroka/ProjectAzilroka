@@ -455,7 +455,7 @@ function iFilger:SetPosition(element)
 	local anchor = element.initialAnchor or 'BOTTOMLEFT'
 	local growthx = not element.db.StatusBar and (element.db.Direction == 'LEFT' and -1) or 1
 	local growthy = ((element.db.StatusBar and element.db.StatusBarDirection == 'DOWN' or element.db.Direction == 'DOWN') and -1) or 1
-	local cols = floor(element:GetWidth() / sizex + 0.5)
+	local cols = element.db.StatusBar and 1 or element.db.NumPerRow
 
 	local col, row
 	for i, button in ipairs(element) do
@@ -665,6 +665,7 @@ function iFilger:UpdateAll()
 		else
 			iFilger:DisableUnit(Frame)
 		end
+		Frame:SetWidth((Frame.db.StatusBar and 1 or Frame.db.NumPerRow) * (Frame.db.StatusBar and Frame.db.StatusBarWidth or Frame.db.Size))
 		for _, Button in ipairs(Frame) do
 			Button:SetSize(Frame.db.Size, Frame.db.Size)
 			Button.Stacks:SetFont(PA.LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
@@ -739,6 +740,7 @@ function iFilger:BuildProfile()
 			Enable = true,
 			FollowCooldownText = false,
 			Size = 28,
+			NumPerRow = 12,
 			SuppressDuration = 60,
 			IgnoreDuration = 300,
 			UpdateSpeed = .1,
@@ -845,32 +847,34 @@ function iFilger:GetOptions()
 			args = {
 				Enable = {
 					type = 'toggle',
-					order = 1,
+					order = 0,
 					name = 'Enabled',
 				},
 				Size = {
 					type = 'range',
-					order = 2,
+					order = 1,
 					name = 'Icon Size',
 					min = 16, max = 64, step = 1,
 				},
 				Spacing = {
 					type = 'range',
-					order = 3,
+					order = 2,
 					name = 'Spacing',
 					min = 1, max = 18, step = 1,
+				},
+				NumPerRow = {
+					type = 'range',
+					order = 3,
+					name = 'Number Per Row',
+					min = 1, max = 24, step = 1,
+					hidden = function() return iFilger.db[Name].StatusBar end,
 				},
 				Direction = {
 					name = 'Growth Direction',
 					order = 4,
 					type = 'select',
-					disabled = function() return iFilger.db[Name].StatusBar end,
-					values = {
-						UP = 'Up',
-						DOWN = 'Down',
-						LEFT = 'Left',
-						RIGHT = 'Right',
-					},
+					hidden = function() return iFilger.db[Name].StatusBar end,
+					values = {LEFT = 'Left', RIGHT = 'Right'},
 				},
 				FilterByList = {
 					name = 'Filter by List',
