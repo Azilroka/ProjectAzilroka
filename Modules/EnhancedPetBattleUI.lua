@@ -58,20 +58,7 @@ EPB["TexturePath"] = [[Interface\AddOns\ProjectAzilroka\Media\Textures\]]
 EPB["TooltipHealthIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:16:32:16:32|t"
 EPB["TooltipPowerIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:0:16:0:16|t"
 EPB["TooltipSpeedIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:0:16:16:32|t"
-EPB.Events = {
-	"PLAYER_ENTERING_WORLD",
-	"PET_BATTLE_MAX_HEALTH_CHANGED",
-	"PET_BATTLE_HEALTH_CHANGED",
-	"PET_BATTLE_AURA_APPLIED",
-	"PET_BATTLE_AURA_CANCELED",
-	"PET_BATTLE_AURA_CHANGED",
-	"PET_BATTLE_XP_CHANGED",
-	"PET_BATTLE_OPENING_START",
-	"PET_BATTLE_OPENING_DONE",
-	"PET_BATTLE_CLOSE",
-	"BATTLE_PET_CURSOR_CLEAR",
-	"PET_JOURNAL_LIST_UPDATE"
-}
+EPB.Events = { "PLAYER_ENTERING_WORLD", "PET_BATTLE_MAX_HEALTH_CHANGED", "PET_BATTLE_HEALTH_CHANGED", "PET_BATTLE_AURA_APPLIED", "PET_BATTLE_AURA_CANCELED", "PET_BATTLE_AURA_CHANGED", "PET_BATTLE_XP_CHANGED", "PET_BATTLE_OPENING_START", "PET_BATTLE_OPENING_DONE", "PET_BATTLE_CLOSE", "BATTLE_PET_CURSOR_CLEAR", "PET_JOURNAL_LIST_UPDATE" }
 
 function EPB:ChangePetBattlePetSelectionFrameState(state)
 	if state and self.lastState then
@@ -145,34 +132,16 @@ function EPB:EnemyIconOnEnter()
 				local breed, breedIndex, h25, p25, s25 = ""
 				if _G.PetTracker then
 					breedIndex = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHealth, power, speed)
-					breed =
-						EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breedIndex, 1) or _G.PetTracker:GetBreedName(breedIndex)
+					breed = EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breedIndex, 1) or _G.PetTracker:GetBreedName(breedIndex)
 					h25, p25, s25 = _G.PetTracker.Predict:Stats(speciesID, 25, rarity, breedIndex)
 				elseif BattlePetBreedID then
 					_G.BPBID_Options.format = 1 -- Forcing it, No Choice, I need this info
 					breedIndex = _G.GetBreedID_Battle(parent)
 					_G.BPBID_Options.format = 3 -- Forcing it, No Choice, I need this info
 					breed = _G.GetBreedID_Battle(parent)
-					h25 =
-						ceil(
-						(_G.BPBID_Arrays.BasePetStats[speciesID][1] + _G.BPBID_Arrays.BreedStats[breedIndex][1]) * 25 *
-							((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) *
-							5 +
-							100 -
-							0.5
-					)
-					p25 =
-						ceil(
-						(_G.BPBID_Arrays.BasePetStats[speciesID][2] + _G.BPBID_Arrays.BreedStats[breedIndex][2]) * 25 *
-							((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) -
-							0.5
-					)
-					s25 =
-						ceil(
-						(_G.BPBID_Arrays.BasePetStats[speciesID][3] + _G.BPBID_Arrays.BreedStats[breedIndex][3]) * 25 *
-							((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) -
-							0.5
-					)
+					h25 = ceil((_G.BPBID_Arrays.BasePetStats[speciesID][1] + _G.BPBID_Arrays.BreedStats[breedIndex][1]) * 25 * ((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) * 5 + 100 - 0.5)
+					p25 = ceil((_G.BPBID_Arrays.BasePetStats[speciesID][2] + _G.BPBID_Arrays.BreedStats[breedIndex][2]) * 25 * ((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) - 0.5)
+					s25 = ceil((_G.BPBID_Arrays.BasePetStats[speciesID][3] + _G.BPBID_Arrays.BreedStats[breedIndex][3]) * 25 * ((_G.BPBID_Arrays.RealRarityValues[rarity] - 0.5) * 2 + 1) - 0.5)
 				end
 				GameTooltip:AddDoubleLine(petLink, breed, 1, 1, 1, 1, 1, 1)
 				GameTooltip:AddDoubleLine("Species ID", speciesID, 1, 1, 1, 1, 0, 0)
@@ -186,31 +155,13 @@ function EPB:EnemyIconOnEnter()
 						local baseStats = EPB:GetLevelBreakdown(petID)
 						if baseStats then
 							local hpds, pbds, sbds = unpack(baseStats)
-							local spl =
-								format(
-								"%s%s %s%s %s%s",
-								EPB.TooltipHealthIcon,
-								round(hpds, 2),
-								EPB.TooltipPowerIcon,
-								round(pbds, 2),
-								EPB.TooltipSpeedIcon,
-								round(sbds, 2)
-							)
+							local spl = format("%s%s %s%s %s%s", EPB.TooltipHealthIcon, round(hpds, 2), EPB.TooltipPowerIcon, round(pbds, 2), EPB.TooltipSpeedIcon, round(sbds, 2))
 							GameTooltip:AddLine(" ")
 							GameTooltip:AddDoubleLine("Stats Per Level", spl, 1, 1, 1, 1, 1, 1)
 						end
 					end
 				else
-					local rightString =
-						format(
-						"%s%s %s%s %s%s",
-						EPB.TooltipHealthIcon,
-						maxHealth,
-						EPB.TooltipPowerIcon,
-						power,
-						EPB.TooltipSpeedIcon,
-						speed
-					)
+					local rightString = format("%s%s %s%s %s%s", EPB.TooltipHealthIcon, maxHealth, EPB.TooltipPowerIcon, power, EPB.TooltipSpeedIcon, speed)
 					GameTooltip:AddDoubleLine(format("%s %d", _G.LEVEL, level), rightString, 1, 1, 1, 1, 1, 1)
 				end
 			end
@@ -226,13 +177,7 @@ function EPB:InitPetFrameAPI()
 			local ActivePetOwner, ActivePetIndex
 
 			function EPB:CreateFrames()
-				oUF:RegisterStyle(
-					"EPB_PBUF",
-					function(frame, unit)
-						frame:SetFrameLevel(5)
-						EPB:ConstructPetFrame(frame, unit)
-					end
-				)
+				oUF:RegisterStyle("EPB_PBUF", function(frame, unit) frame:SetFrameLevel(5) EPB:ConstructPetFrame(frame, unit) end)
 
 				oUF:SetActiveStyle("EPB_PBUF")
 
@@ -243,9 +188,7 @@ function EPB:InitPetFrameAPI()
 					frame:SetFrameLevel(0)
 
 					frame.petOwner = petType == "Ally" and LE_BATTLE_PET_ALLY or LE_BATTLE_PET_ENEMY
-					frame:SetPoint(
-						unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 200} or {"LEFT", UIParent, "BOTTOM", 200, 200})
-					)
+					frame:SetPoint(unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 200} or {"LEFT", UIParent, "BOTTOM", 200, 200}))
 					frame.Pets = {}
 
 					for i = 1, 3 do
@@ -306,38 +249,29 @@ function EPB:InitPetFrameAPI()
 				frame.PBSpeed = self:ConstructSpeed(frame, petOwner, petIndex)
 				frame.BreedID = self:ConstructTagString(frame)
 
-				frame:HookScript(
-					"OnEnter",
-					function()
-						if _G.Rematch then
-							local petInfo = frame.pbouf_petinfo
-							_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
-						end
-					end
-				)
-				frame:HookScript(
-					"OnLeave",
-					function()
-						if _G.Rematch then
-							_G.Rematch:HidePetCard(true)
-						end
-					end
-				)
-
-				frame:HookScript(
-					"OnClick",
-					function()
+				frame:HookScript("OnEnter", function()
+					if _G.Rematch then
 						local petInfo = frame.pbouf_petinfo
-						if _G.Rematch and not self.InSwitchMode then
-							_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
-						elseif
-							self.InSwitchMode and petInfo.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(petInfo.petIndex)
-						 then
-							C_PetBattles.ChangePet(petInfo.petIndex)
-							EPB:ChangePetBattlePetSelectionFrameState(false)
-						end
+						_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
 					end
-				)
+				end)
+				frame:HookScript("OnLeave", function()
+					if _G.Rematch then
+						_G.Rematch:HidePetCard(true)
+					end
+				end)
+
+				frame:HookScript("OnClick", function()
+					local petInfo = frame.pbouf_petinfo
+					if _G.Rematch and not self.InSwitchMode then
+						_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex))
+					elseif
+						self.InSwitchMode and petInfo.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(petInfo.petIndex)
+					then
+						C_PetBattles.ChangePet(petInfo.petIndex)
+						EPB:ChangePetBattlePetSelectionFrameState(false)
+					end
+				end)
 
 				PA:SetTemplate(frame, "Transparent")
 
@@ -386,34 +320,26 @@ function EPB:InitPetFrameAPI()
 			function EPB:ConstructCutaway(frame, petOwner, petIndex)
 				local chealth = frame.PBHealth:CreateTexture(nil, "ARTWORK")
 
-				return {
-					Health = chealth
-				}
+				return { Health = chealth }
 			end
 
 			function EPB:ConstructFamilyIcon(frame, petOwner, petIndex)
 				local familyIcon = frame.RaisedElementParent:CreateTexture(nil, "ARTWORK")
 				familyIcon.Tooltip = CreateFrame("frame", nil, frame)
 				familyIcon.Tooltip:SetAllPoints(familyIcon)
-				familyIcon.Tooltip:SetScript(
-					"OnEnter",
-					function(_self)
-						local _parent = _self:GetParent()
-						local petInfo = _parent.pbouf_petinfo
-						local petType = C_PetBattles.GetPetType(petInfo.petOwner, petInfo.petIndex)
-						local auraID = _G.PET_BATTLE_PET_TYPE_PASSIVES[petType]
-						_G.PetBattleAbilityTooltip_SetAuraID(petInfo.petOwner, petInfo.petIndex, auraID)
-						_G.PetBattlePrimaryAbilityTooltip:ClearAllPoints()
-						_G.PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", _parent, "TOPRIGHT", 0, 2)
-						_G.PetBattlePrimaryAbilityTooltip:Show()
-					end
-				)
-				familyIcon.Tooltip:SetScript(
-					"OnLeave",
-					function()
-						_G.PetBattlePrimaryAbilityTooltip:Hide()
-					end
-				)
+				familyIcon.Tooltip:SetScript("OnEnter", function(_self)
+					local _parent = _self:GetParent()
+					local petInfo = _parent.pbouf_petinfo
+					local petType = C_PetBattles.GetPetType(petInfo.petOwner, petInfo.petIndex)
+					local auraID = _G.PET_BATTLE_PET_TYPE_PASSIVES[petType]
+					_G.PetBattleAbilityTooltip_SetAuraID(petInfo.petOwner, petInfo.petIndex, auraID)
+					_G.PetBattlePrimaryAbilityTooltip:ClearAllPoints()
+					_G.PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", _parent, "TOPRIGHT", 0, 2)
+					_G.PetBattlePrimaryAbilityTooltip:Show()
+				end)
+				familyIcon.Tooltip:SetScript("OnLeave", function()
+					_G.PetBattlePrimaryAbilityTooltip:Hide()
+				end)
 				return familyIcon
 			end
 
@@ -685,17 +611,8 @@ function EPB:InitPetFrameAPI()
 					local pet = self.Pets[i]
 					local customName, petName = C_PetBattles.GetName(self.petOwner, i)
 					local xp, maxXP = C_PetBattles.GetXP(self.petOwner, i)
-					local level, hp, maxHP, icon =
-						C_PetBattles.GetLevel(self.petOwner, i),
-						C_PetBattles.GetHealth(self.petOwner, i),
-						C_PetBattles.GetMaxHealth(self.petOwner, i),
-						C_PetBattles.GetIcon(self.petOwner, i)
-					local speciesID, petType, power, speed, rarity =
-						C_PetBattles.GetPetSpeciesID(self.petOwner, i),
-						C_PetBattles.GetPetType(self.petOwner, i),
-						C_PetBattles.GetPower(self.petOwner, i),
-						C_PetBattles.GetSpeed(self.petOwner, i),
-						C_PetBattles.GetBreedQuality(self.petOwner, i)
+					local level, hp, maxHP, icon = C_PetBattles.GetLevel(self.petOwner, i), C_PetBattles.GetHealth(self.petOwner, i), C_PetBattles.GetMaxHealth(self.petOwner, i), C_PetBattles.GetIcon(self.petOwner, i)
+					local speciesID, petType, power, speed, rarity = C_PetBattles.GetPetSpeciesID(self.petOwner, i), C_PetBattles.GetPetType(self.petOwner, i), C_PetBattles.GetPower(self.petOwner, i), C_PetBattles.GetSpeed(self.petOwner, i), C_PetBattles.GetBreedQuality(self.petOwner, i)
 
 					local r, g, b = GetItemQualityColor(rarity - 1)
 					pet.Name:SetTextColor(r, g, b)
@@ -786,9 +703,7 @@ function EPB:InitPetFrameAPI()
 					frame:SetFrameLevel(0)
 
 					frame.petOwner = petType == "Ally" and LE_BATTLE_PET_ALLY or LE_BATTLE_PET_ENEMY
-					frame:SetPoint(
-						unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 200} or {"LEFT", UIParent, "BOTTOM", 200, 200})
-					)
+					frame:SetPoint(unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 200} or {"LEFT", UIParent, "BOTTOM", 200, 200}))
 					frame.Pets = {}
 
 					for i = 1, 3 do
@@ -846,35 +761,29 @@ function EPB:InitPetFrameAPI()
 			end
 
 			function EPB:SetAuraTooltipScripts(frame)
-				frame:SetScript(
-					"OnEnter",
-					function(_self)
-						local petOwner, petIndex, auraIndex = _self.petOwner, _self.petIndex, _self.auraIndex
+				frame:SetScript("OnEnter", function(_self)
+					local petOwner, petIndex, auraIndex = _self.petOwner, _self.petIndex, _self.auraIndex
+					local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, auraIndex)
 
-						local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, auraIndex)
-
-						if not auraID then
-							return
+					if not auraID then return end
+					local _, name, icon = C_PetBattles.GetAbilityInfoByID(auraID)
+					GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
+					GameTooltip:ClearLines()
+					GameTooltip:AddTexture(icon)
+					GameTooltip:AddDoubleLine(name, auraID, isBuff and 0 or 1, isBuff and 1 or 0, 0, 1, 1, .7)
+					GameTooltip:AddLine(" ")
+					_G.PetBattleAbilityTooltip_SetAura(petOwner, petIndex, auraIndex)
+					GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
+					GameTooltip:AddLine(" ")
+					if turnsRemaining > 0 then
+						local remaining = function(r)
+							return r > 3 and self.Colors.Green or r > 2 and self.Colors.Yellow or self.Colors.Red
 						end
-						local _, name, icon = C_PetBattles.GetAbilityInfoByID(auraID)
-						GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
-						GameTooltip:ClearLines()
-						GameTooltip:AddTexture(icon)
-						GameTooltip:AddDoubleLine(name, auraID, isBuff and 0 or 1, isBuff and 1 or 0, 0, 1, 1, .7)
-						GameTooltip:AddLine(" ")
-						_G.PetBattleAbilityTooltip_SetAura(petOwner, petIndex, auraIndex)
-						GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
-						GameTooltip:AddLine(" ")
-						if turnsRemaining > 0 then
-							local remaining = function(r)
-								return r > 3 and self.Colors.Green or r > 2 and self.Colors.Yellow or self.Colors.Red
-							end
-							local c1, c2, c3 = unpack(remaining(turnsRemaining))
-							GameTooltip:AddLine(turnsRemaining .. " |cffffffffTurns Remaining|r", c1, c2, c3)
-						end
-						GameTooltip:Show()
+						local c1, c2, c3 = unpack(remaining(turnsRemaining))
+						GameTooltip:AddLine(turnsRemaining .. " |cffffffffTurns Remaining|r", c1, c2, c3)
 					end
-				)
+					GameTooltip:Show()
+				end)
 				frame:SetScript("OnLeave", _G.GameTooltip_Hide)
 			end
 
@@ -936,38 +845,35 @@ function EPB:InitPetFrameAPI()
 				frame:RegisterEvent("PET_BATTLE_AURA_CANCELED")
 				frame:RegisterEvent("PET_BATTLE_AURA_CHANGED")
 				frame:RegisterEvent("PET_BATTLE_OPENING_START")
-				frame:SetScript(
-					"OnEvent",
-					function(_self, event)
-						if (event == "PET_BATTLE_OPENING_START") then
-							local numPets
-							local point, relativePoint, xcoord, ycoord
-							if _self.petOwner == LE_BATTLE_PET_ALLY then
-								numPets = self.db["TeamAurasOnBottom"] and C_PetBattles.GetNumPets(1) or 1
+				frame:SetScript("OnEvent", function(_self, event)
+					if (event == "PET_BATTLE_OPENING_START") then
+						local numPets
+						local point, relativePoint, xcoord, ycoord
+						if _self.petOwner == LE_BATTLE_PET_ALLY then
+							numPets = self.db["TeamAurasOnBottom"] and C_PetBattles.GetNumPets(1) or 1
+						else
+							numPets = self.db["TeamAurasOnBottom"] and C_PetBattles.GetNumPets(2) or 1
+						end
+						if EPB.db["GrowUp"] then
+							if EPB.db["TeamAurasOnBottom"] then
+								point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
 							else
-								numPets = self.db["TeamAurasOnBottom"] and C_PetBattles.GetNumPets(2) or 1
+								point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
 							end
-							if EPB.db["GrowUp"] then
-								if EPB.db["TeamAurasOnBottom"] then
-									point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
-								else
-									point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
-								end
+						else
+							if EPB.db["TeamAurasOnBottom"] then
+								point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
 							else
-								if EPB.db["TeamAurasOnBottom"] then
-									point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
-								else
-									point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
-								end
+								point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
 							end
-
-							_self:ClearAllPoints()
-							_self:SetPoint(point, parent.Pets[numPets], relativePoint, xcoord, ycoord)
 						end
 
-						EPB:SetupAuras(_self, _self.petOwner, _self.petIndex)
+						_self:ClearAllPoints()
+						_self:SetPoint(point, parent.Pets[numPets], relativePoint, xcoord, ycoord)
 					end
-				)
+
+					EPB:SetupAuras(_self, _self.petOwner, _self.petIndex)
+				end)
 				frame:SetSize(260, 30)
 				frame:EnableMouse(false)
 
@@ -1047,24 +953,18 @@ function EPB:InitPetFrameAPI()
 				frame.Icon.PetType:SetSize(32, 32)
 				frame.Icon.PetType.Tooltip = CreateFrame("frame", nil, frame)
 				frame.Icon.PetType.Tooltip:SetSize(32, 32)
-				frame.Icon.PetType.Tooltip:SetScript(
-					"OnEnter",
-					function(_self)
-						local _parent = _self:GetParent()
-						local petType = C_PetBattles.GetPetType(_parent.petOwner, _parent.petIndex)
-						local auraID = _G.PET_BATTLE_PET_TYPE_PASSIVES[petType]
-						_G.PetBattleAbilityTooltip_SetAuraID(_parent.petOwner, _parent.petIndex, auraID)
-						_G.PetBattlePrimaryAbilityTooltip:ClearAllPoints()
-						_G.PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", _parent, "TOPRIGHT", 0, 2)
-						_G.PetBattlePrimaryAbilityTooltip:Show()
-					end
-				)
-				frame.Icon.PetType.Tooltip:SetScript(
-					"OnLeave",
-					function()
-						_G.PetBattlePrimaryAbilityTooltip:Hide()
-					end
-				)
+				frame.Icon.PetType.Tooltip:SetScript("OnEnter", function(_self)
+					local _parent = _self:GetParent()
+					local petType = C_PetBattles.GetPetType(_parent.petOwner, _parent.petIndex)
+					local auraID = _G.PET_BATTLE_PET_TYPE_PASSIVES[petType]
+					_G.PetBattleAbilityTooltip_SetAuraID(_parent.petOwner, _parent.petIndex, auraID)
+					_G.PetBattlePrimaryAbilityTooltip:ClearAllPoints()
+					_G.PetBattlePrimaryAbilityTooltip:SetPoint("BOTTOMRIGHT", _parent, "TOPRIGHT", 0, 2)
+					_G.PetBattlePrimaryAbilityTooltip:Show()
+				end)
+				frame.Icon.PetType.Tooltip:SetScript("OnLeave", function()
+					_G.PetBattlePrimaryAbilityTooltip:Hide()
+				end)
 
 				frame.Icon.Power = frame:CreateTexture(nil, "OVERLAY")
 				frame.Icon.Power:SetTexture([[Interface\PetBattles\PetBattle-StatIcons]])
@@ -1095,31 +995,22 @@ function EPB:InitPetFrameAPI()
 				self:BuildAuras(frame, petOwner, petIndex)
 
 				if _G.Rematch then
-					frame:SetScript(
-						"OnEnter",
-						function()
-							_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
-						end
-					)
-					frame:SetScript(
-						"OnLeave",
-						function()
-							_G.Rematch:HidePetCard(true)
-						end
-					)
+					frame:SetScript("OnEnter", function()
+						_G.Rematch:ShowPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
+					end)
+					frame:SetScript("OnLeave", function()
+						_G.Rematch:HidePetCard(true)
+					end)
 				end
 
-				frame:SetScript(
-					"OnMouseDown",
-					function()
-						if _G.Rematch and not self.InSwitchMode then
-							_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
-						elseif self.InSwitchMode and frame.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(frame.petIndex) then
-							C_PetBattles.ChangePet(frame.petIndex)
-							EPB:ChangePetBattlePetSelectionFrameState(false)
-						end
+				frame:SetScript("OnMouseDown", function()
+					if _G.Rematch and not self.InSwitchMode then
+						_G.Rematch:LockPetCard(frame, C_PetBattles.GetPetSpeciesID(frame.petOwner, frame.petIndex))
+					elseif self.InSwitchMode and frame.petOwner == LE_BATTLE_PET_ALLY and C_PetBattles.CanPetSwapIn(frame.petIndex) then
+						C_PetBattles.ChangePet(frame.petIndex)
+						EPB:ChangePetBattlePetSelectionFrameState(false)
 					end
-				)
+				end)
 
 				PA:CreateShadow(frame)
 
@@ -1211,17 +1102,8 @@ function EPB:InitPetFrameAPI()
 					local pet = self.Pets[i]
 					local customName, petName = C_PetBattles.GetName(self.petOwner, i)
 					local xp, maxXP = C_PetBattles.GetXP(self.petOwner, i)
-					local level, hp, maxHP, icon =
-						C_PetBattles.GetLevel(self.petOwner, i),
-						C_PetBattles.GetHealth(self.petOwner, i),
-						C_PetBattles.GetMaxHealth(self.petOwner, i),
-						C_PetBattles.GetIcon(self.petOwner, i)
-					local speciesID, petType, power, speed, rarity =
-						C_PetBattles.GetPetSpeciesID(self.petOwner, i),
-						C_PetBattles.GetPetType(self.petOwner, i),
-						C_PetBattles.GetPower(self.petOwner, i),
-						C_PetBattles.GetSpeed(self.petOwner, i),
-						C_PetBattles.GetBreedQuality(self.petOwner, i)
+					local level, hp, maxHP, icon = C_PetBattles.GetLevel(self.petOwner, i), C_PetBattles.GetHealth(self.petOwner, i), C_PetBattles.GetMaxHealth(self.petOwner, i), C_PetBattles.GetIcon(self.petOwner, i)
+					local speciesID, petType, power, speed, rarity = C_PetBattles.GetPetSpeciesID(self.petOwner, i), C_PetBattles.GetPetType(self.petOwner, i), C_PetBattles.GetPower(self.petOwner, i), C_PetBattles.GetSpeed(self.petOwner, i), C_PetBattles.GetBreedQuality(self.petOwner, i)
 
 					if pet.OldPower == 0 then
 						pet.OldPower = power
@@ -1267,18 +1149,12 @@ function EPB:InitPetFrameAPI()
 					pet.Health:SetMinMaxValues(0, maxHP)
 					pet.Health:SetValue(hp)
 					pet.Health.Text:SetFormattedText("%s / %s", hp, maxHP)
-					pet.Power:SetTextColor(
-						unpack(power > pet.OldPower and EPB.Colors.Green or power < pet.OldPower and EPB.Colors.Red or EPB.Colors.White)
-					)
-					pet.Speed:SetTextColor(
-						unpack(speed > pet.OldSpeed and EPB.Colors.Green or speed < pet.OldSpeed and EPB.Colors.Red or EPB.Colors.White)
-					)
+					pet.Power:SetTextColor(unpack(power > pet.OldPower and EPB.Colors.Green or power < pet.OldPower and EPB.Colors.Red or EPB.Colors.White))
+					pet.Speed:SetTextColor(unpack(speed > pet.OldSpeed and EPB.Colors.Green or speed < pet.OldSpeed and EPB.Colors.Red or EPB.Colors.White))
 
 					if _G.PetTracker then
 						local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
-						pet.BreedID:SetText(
-							EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breed, .9) or _G.PetTracker:GetBreedName(breed)
-						)
+						pet.BreedID:SetText(EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breed, .9) or _G.PetTracker:GetBreedName(breed))
 					elseif BattlePetBreedID then
 						pet.BreedID:SetText(_G.GetBreedID_Battle(pet))
 					end
@@ -1335,12 +1211,8 @@ function EPB:InitPetFrameAPI()
 				local allySpeed = C_PetBattles.GetSpeed(LE_BATTLE_PET_ALLY, activeAlly)
 				local enemySpeed = C_PetBattles.GetSpeed(LE_BATTLE_PET_ENEMY, activeEnemy)
 
-				EPB.Ally.Pets[activeAlly].Icon.Speed:SetVertexColor(
-					unpack(allySpeed > enemySpeed and EPB.Colors.Green or EPB.Colors.Red)
-				)
-				EPB.Enemy.Pets[activeEnemy].Icon.Speed:SetVertexColor(
-					unpack(allySpeed < enemySpeed and EPB.Colors.Green or EPB.Colors.Red)
-				)
+				EPB.Ally.Pets[activeAlly].Icon.Speed:SetVertexColor(unpack(allySpeed > enemySpeed and EPB.Colors.Green or EPB.Colors.Red))
+				EPB.Enemy.Pets[activeEnemy].Icon.Speed:SetVertexColor(unpack(allySpeed < enemySpeed and EPB.Colors.Green or EPB.Colors.Red))
 			end
 		end
 	end
@@ -1645,15 +1517,7 @@ function EPB:CreateReviveBar()
 	holder.buttons = {}
 
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(
-			holder,
-			"PetBattleUIExtraActionButtonAnchor",
-			"PetBattleUI ExtraAction",
-			nil,
-			nil,
-			nil,
-			"ALL,SOLO"
-		)
+		_G.ElvUI[1]:CreateMover(holder, "PetBattleUIExtraActionButtonAnchor", "PetBattleUI ExtraAction", nil, nil, nil, "ALL,SOLO")
 	end
 
 	return holder
@@ -1677,18 +1541,13 @@ function EPB:UpdateReviveBar()
 		return
 	end
 
-	_G.RegisterStateDriver(
-		self.holder,
-		"visibility",
-		self:CheckReviveBarVisibility() and "[petbattle][combat] hide; show" or "hide"
-	)
+	_G.RegisterStateDriver(self.holder, "visibility", self:CheckReviveBarVisibility() and "[petbattle][combat] hide; show" or "hide")
 end
 
 function EPB:CreateExtraActionButton(name)
 	local Color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass("player"))]
 
-	local Button =
-		CreateFrame("Button", "EPB" .. name .. "Button", self.holder, "SecureActionButtonTemplate, ActionButtonTemplate")
+	local Button = CreateFrame("Button", "EPB" .. name .. "Button", self.holder, "SecureActionButtonTemplate, ActionButtonTemplate")
 	Button:SetSize(50, 50)
 	PA:SetTemplate(Button)
 	Button.BorderColor = {Button:GetBackdropBorderColor()}
@@ -1702,53 +1561,41 @@ function EPB:CreateExtraActionButton(name)
 	Button.cooldown = CreateFrame("Cooldown", nil, Button, "CooldownFrameTemplate")
 	PA:SetInside(Button.cooldown)
 	Button.cooldown:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-	Button.cooldown:SetScript(
-		"OnEvent",
-		function(_self)
-			if Button.ID then
-				local Start, Duration = GetSpellCooldown(Button.ID)
-				if Duration and Duration > 1.5 then
-					_self:SetCooldown(Start, Duration)
-				end
+	Button.cooldown:SetScript("OnEvent", function(_self)
+		if Button.ID then
+			local Start, Duration = GetSpellCooldown(Button.ID)
+			if Duration and Duration > 1.5 then
+				_self:SetCooldown(Start, Duration)
 			end
 		end
-	)
+	end)
 
 	PA:RegisterCooldown(Button.cooldown)
 
-	Button:SetScript(
-		"OnEnter",
-		function(_self)
-			_self:SetBackdropBorderColor(Color.r, Color.g, Color.b)
-			GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
-			GameTooltip:ClearLines()
-			if (_self.HyperLink) then
-				GameTooltip:SetHyperlink(_self.HyperLink)
-			end
-			GameTooltip:Show()
+	Button:SetScript("OnEnter", function(_self)
+		_self:SetBackdropBorderColor(Color.r, Color.g, Color.b)
+		GameTooltip:SetOwner(_self, "ANCHOR_TOPRIGHT", 2, 4)
+		GameTooltip:ClearLines()
+		if (_self.HyperLink) then
+			GameTooltip:SetHyperlink(_self.HyperLink)
 		end
-	)
-	Button:SetScript(
-		"OnLeave",
-		function(_self)
-			_self:SetBackdropBorderColor(unpack(_self.BorderColor))
-			GameTooltip:Hide()
-		end
-	)
+		GameTooltip:Show()
+	end)
+	Button:SetScript("OnLeave", function(_self)
+		_self:SetBackdropBorderColor(unpack(_self.BorderColor))
+		GameTooltip:Hide()
+	end)
 	Button:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Button:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 	Button:RegisterEvent("BAG_UPDATE")
-	Button:SetScript(
-		"OnEvent",
-		function(_self)
-			if InCombatLockdown() then
-				_self:RegisterEvent("PLAYER_REGEN_ENABLED")
-				return
-			end
-			_self:SetShown(self:CheckReviveBarVisibility())
-			_self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	Button:SetScript("OnEvent", function(_self)
+		if InCombatLockdown() then
+			_self:RegisterEvent("PLAYER_REGEN_ENABLED")
+			return
 		end
-	)
+		_self:SetShown(self:CheckReviveBarVisibility())
+		_self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	end)
 
 	return Button
 end
@@ -1759,17 +1606,14 @@ function EPB:CreateReviveButton()
 	Revive:SetAttribute("type", "spell")
 	Revive:SetAttribute("spell", GetSpellInfo(125439))
 	Revive.ID = 125439
-	Revive:SetScript(
-		"OnShow",
-		function(_self)
-			local SpellName, _, Texture = GetSpellInfo(_self.ID)
-			if _self:GetAttribute("spell") ~= SpellName then
-				_self:SetAttribute("spell", SpellName)
-			end
-			_self.HyperLink = GetSpellLink(_self.ID)
-			_self.icon:SetTexture(Texture)
+	Revive:SetScript("OnShow", function(_self)
+		local SpellName, _, Texture = GetSpellInfo(_self.ID)
+		if _self:GetAttribute("spell") ~= SpellName then
+			_self:SetAttribute("spell", SpellName)
 		end
-	)
+		_self.HyperLink = GetSpellLink(_self.ID)
+		_self.icon:SetTexture(Texture)
+	end)
 
 	return Revive
 end
@@ -1781,20 +1625,17 @@ function EPB:CreateBandageButton()
 	Bandage:SetAttribute("item", GetItemInfo(86143))
 	Bandage.ID = 86143
 	Bandage.icon:SetTexture(select(5, GetItemInfoInstant(86143)))
-	Bandage:SetScript(
-		"OnShow",
-		function(_self)
-			local ItemName, ItemLink = GetItemInfo(86143)
-			if _self:GetAttribute("item") ~= ItemName then
-				_self:SetAttribute("item", ItemName)
-			end
-			local Count = GetItemCount(_self.ID)
-			_self:EnableMouse(Count > 0 and true or false)
-			_self.Count:SetText(Count > 0 and Count or "")
-			_self.icon:SetDesaturated(Count == 0 and true or false)
-			_self.HyperLink = ItemLink
+	Bandage:SetScript("OnShow", function(_self)
+		local ItemName, ItemLink = GetItemInfo(86143)
+		if _self:GetAttribute("item") ~= ItemName then
+			_self:SetAttribute("item", ItemName)
 		end
-	)
+		local Count = GetItemCount(_self.ID)
+		_self:EnableMouse(Count > 0 and true or false)
+		_self.Count:SetText(Count > 0 and Count or "")
+		_self.icon:SetDesaturated(Count == 0 and true or false)
+		_self.HyperLink = ItemLink
+	end)
 
 	return Bandage
 end
@@ -1930,30 +1771,14 @@ function EPB:UpdateTDBattlePetScriptAutoButton()
 	end
 
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(
-			_G.tdBattlePetScriptAutoButton,
-			"tdBattleScriptAutoButtonMover",
-			"tdBattleScript Auto Button",
-			nil,
-			nil,
-			nil,
-			"ALL,SOLO"
-		)
+		_G.ElvUI[1]:CreateMover(_G.tdBattlePetScriptAutoButton, "tdBattleScriptAutoButtonMover", "tdBattleScript Auto Button", nil, nil, nil, "ALL,SOLO")
 	end
 end
 
 function EPB:EnableMover(frame, petOwner)
 	if PA.ElvUI then
 		local isFriend = petOwner == LE_BATTLE_PET_ALLY
-		_G.ElvUI[1]:CreateMover(
-			frame,
-			isFriend and "BattlePetMover" or "EnemyBattlePetMover",
-			isFriend and "Battle Pet Frames" or "Enemy Battle Pet Frames",
-			nil,
-			nil,
-			nil,
-			"ALL,SOLO"
-		)
+		_G.ElvUI[1]:CreateMover(frame, isFriend and "BattlePetMover" or "EnemyBattlePetMover", isFriend and "Battle Pet Frames" or "Enemy Battle Pet Frames", nil, nil, nil, "ALL,SOLO")
 	elseif PA.Tukui then
 		_G.Tukui[1]["Movers"]:RegisterFrame(frame)
 	end
