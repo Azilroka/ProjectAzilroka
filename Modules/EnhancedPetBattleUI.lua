@@ -300,7 +300,7 @@ function EPB:InitPetFrameAPI()
 			function EPB:ConstructExperience(frame, petOwner, petIndex)
 				local xp = CreateFrame("StatusBar", nil, frame)
 
-				PA:CreateBackdrop(xp, "Transparent")
+				PA:CreateBackdrop(xp)
 
 				xp.value = frame.RaisedElementParent:CreateFontString(nil, "ARTWORK")
 				return xp
@@ -366,19 +366,8 @@ function EPB:InitPetFrameAPI()
 				local petInfo = self.__owner.pbouf_petinfo
 				local power = C_PetBattles.GetPower(petInfo.petOwner, petInfo.petIndex)
 				if (not self.oldPower) then
-					self.value:SetTextColor(unpack(EPB.Colors.White))
 					self.oldPower = power
-					return
 				end
-
-				local oldPower = self.oldPower
-				local color = EPB.Colors.White
-				if (power > oldPower) then
-					color = EPB.Colors.Green
-				elseif (power < oldPower) then
-					color = EPB.Colors.Red
-				end
-				self.value:SetTextColor(unpack(color))
 			end
 
 			function EPB:PostUpdateSpeed(event)
@@ -403,18 +392,8 @@ function EPB:InitPetFrameAPI()
 				end
 				local speed = C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex)
 				if (not self.oldSpeed) then
-					self.value:SetTextColor(unpack(EPB.Colors.White))
 					self.oldSpeed = speed
-					return
 				end
-				local oldSpeed = self.oldSpeed
-				local color = EPB.Colors.White
-				if (speed > oldSpeed) then
-					color = EPB.Colors.Green
-				elseif (speed < oldSpeed) then
-					color = EPB.Colors.Red
-				end
-				self.value:SetTextColor(unpack(color))
 			end
 
 			function EPB:ConstructBuffs(frame, petOwner, petIndex)
@@ -575,13 +554,13 @@ function EPB:InitPetFrameAPI()
 				frame.PBSpeed:SetPoint("TOP", frame.PBPower, "BOTTOM", 0, -3)
 				frame.PBSpeed.value:SetPoint(stp, frame.PBSpeed, strp, stox, 0)
 				frame.PBSpeed.value:SetJustifyH(stjh)
-				frame:Tag(frame.Name, "[pbuf:level] [pbuf:name]")
+				frame:Tag(frame.Name, "[pbuf:qualitycolor][pbuf:level] [pbuf:name]")
 				frame:Tag(frame.PBHealth.value, "[pbuf:health:current-percent]")
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
 					frame:Tag(frame.PBExperience.value, "[pbuf:xp:current-max-percent]")
 				end
-				frame:Tag(frame.PBPower.value, "[pbuf:power]")
-				frame:Tag(frame.PBSpeed.value, "[pbuf:speed]")
+				frame:Tag(frame.PBPower.value, "[pbuf:power:comparecolor][pbuf:power]")
+				frame:Tag(frame.PBSpeed.value, "[pbuf:speed:comparecolor][pbuf:speed]")
 				frame:Tag(frame.BreedID, "[pbuf:breedicon]")
 			end
 
@@ -613,9 +592,6 @@ function EPB:InitPetFrameAPI()
 					local xp, maxXP = C_PetBattles.GetXP(self.petOwner, i)
 					local level, hp, maxHP, icon = C_PetBattles.GetLevel(self.petOwner, i), C_PetBattles.GetHealth(self.petOwner, i), C_PetBattles.GetMaxHealth(self.petOwner, i), C_PetBattles.GetIcon(self.petOwner, i)
 					local speciesID, petType, power, speed, rarity = C_PetBattles.GetPetSpeciesID(self.petOwner, i), C_PetBattles.GetPetType(self.petOwner, i), C_PetBattles.GetPower(self.petOwner, i), C_PetBattles.GetSpeed(self.petOwner, i), C_PetBattles.GetBreedQuality(self.petOwner, i)
-
-					local r, g, b = GetItemQualityColor(rarity - 1)
-					pet.Name:SetTextColor(r, g, b)
 
 					pet.PBFamilyIcon:SetDesaturated(hp == 0)
 
