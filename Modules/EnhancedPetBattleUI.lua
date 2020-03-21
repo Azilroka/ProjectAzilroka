@@ -287,7 +287,11 @@ function EPB:InitPetFrameAPI()
 				health.bg:SetTexture(ElvUI[1].media.blankTex)
 				health.bg.multiplier = 0.35
 
-				PA:CreateBackdrop(health, "Transparent", true)
+				if EPB.CustomCreateBackdrop then
+					EPB.CustomCreateBackdrop(health)
+				else
+					PA:CreateBackdrop(health)
+				end
 
 				health.colorSmooth = true
 
@@ -300,7 +304,11 @@ function EPB:InitPetFrameAPI()
 			function EPB:ConstructExperience(frame, petOwner, petIndex)
 				local xp = CreateFrame("StatusBar", nil, frame)
 
-				PA:CreateBackdrop(xp)
+				if EPB.CustomCreateBackdrop then
+					EPB.CustomCreateBackdrop(xp)
+				else
+					PA:CreateBackdrop(xp)
+				end
 
 				xp.value = frame.RaisedElementParent:CreateFontString(nil, "ARTWORK")
 				return xp
