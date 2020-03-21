@@ -83,6 +83,18 @@ local function GetFormattedText(style, min, max, rested)
 		return string.format(useStyle, percentValue)
 	end
 end
+-- luacheck: globals _FRAME Hex _TAGS _VARS
+
+oUF.Tags.Events["pbuf:qualitycolor"] = openingEvents
+oUF.Tags.Methods["pbuf:qualitycolor"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
+		return ""
+	end
+
+	local rarity = C_PetBattles.GetBreedQuality(petInfo.petOwner, petInfo.petIndex)
+	return Hex(GetItemQualityColor(rarity - 1))
+end
 
 oUF.Tags.Events["pbuf:name"] = openingEvents
 oUF.Tags.Methods["pbuf:name"] = function()
@@ -117,6 +129,29 @@ oUF.Tags.Methods["pbuf:power"] = function()
 	return power
 end
 
+oUF.Tags.Events["pbuf:power:comparecolor"] = auraEvents
+oUF.Tags.Methods["pbuf:power:comparecolor"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
+		return ""
+	end
+	if not _FRAME.PBPower then
+		return ""
+	end
+	if not _FRAME.PBPower.oldPower then
+		return Hex(1, 1, 1)
+	end
+	local power = C_PetBattles.GetPower(petInfo.petOwner, petInfo.petIndex)
+	local oldPower = _FRAME.PBPower.oldPower
+	if power < oldPower then
+		return Hex(1, 0, 0)
+	elseif power > oldPower then
+		return Hex(0, 1, 0)
+	else
+		return Hex(1, 1, 1)
+	end
+end
+
 oUF.Tags.Events["pbuf:speed"] = auraEvents
 oUF.Tags.Methods["pbuf:speed"] = function()
 	local petInfo = _FRAME.pbouf_petinfo
@@ -126,6 +161,29 @@ oUF.Tags.Methods["pbuf:speed"] = function()
 
 	local speed = C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex)
 	return speed
+end
+
+oUF.Tags.Events["pbuf:speed:comparecolor"] = auraEvents
+oUF.Tags.Methods["pbuf:speed:comparecolor"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
+		return ""
+	end
+	if not _FRAME.PBSpeed then
+		return ""
+	end
+	if not _FRAME.PBSpeed.oldSpeed then
+		return Hex(1, 1, 1)
+	end
+	local speed = C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex)
+	local oldSpeed = _FRAME.PBSpeed.oldSpeed
+	if speed < oldSpeed then
+		return Hex(1, 0, 0)
+	elseif speed > oldSpeed then
+		return Hex(0, 1, 0)
+	else
+		return Hex(1, 1, 1)
+	end
 end
 
 oUF.Tags.Events["pbuf:breed"] = openingEvents
@@ -196,13 +254,28 @@ for textFormat in pairs(styles) do
 	oUF.Tags.Events[format("pbuf:xp:%s", tagTextFormat)] = xpEvents
 	oUF.Tags.Methods[format("pbuf:xp:%s", tagTextFormat)] = function()
 		local petInfo = _FRAME.pbouf_petinfo
-		if not petInfo then
+		if not petInfo or petInfo.petOwner == LE_BATTLE_PET_ENEMY then
 			return ""
 		end
 		local xp, maxXP = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
 		local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
 		if level == 25 then
 			return "Max"
+		else
+			return GetFormattedText(textFormat, xp, maxXP)
+		end
+	end
+
+	oUF.Tags.Events[format("pbuf:xp:%s-nostatus", tagTextFormat)] = xpEvents
+	oUF.Tags.Methods[format("pbuf:xp:%s-nostatus", tagTextFormat)] = function()
+		local petInfo = _FRAME.pbouf_petinfo
+		if not petInfo or petInfo.petOwner == LE_BATTLE_PET_ENEMY then
+			return ""
+		end
+		local xp, maxXP = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
+		local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
+		if level == 25 then
+			return ""
 		else
 			return GetFormattedText(textFormat, xp, maxXP)
 		end
