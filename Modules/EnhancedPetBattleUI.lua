@@ -183,12 +183,12 @@ function EPB:InitPetFrameAPI()
 
 				for _, petType in pairs({"Ally", "Enemy"}) do
 					local frame = CreateFrame("frame", petType, UIParent)
-					frame:SetSize(270, 384)
+					frame:SetSize(270, 380)
 					frame:SetFrameStrata("BACKGROUND")
 					frame:SetFrameLevel(0)
 
 					frame.petOwner = petType == "Ally" and LE_BATTLE_PET_ALLY or LE_BATTLE_PET_ENEMY
-					frame:SetPoint(unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 200} or {"LEFT", UIParent, "BOTTOM", 200, 200}))
+					frame:SetPoint(unpack(petType == "Ally" and {"RIGHT", UIParent, "BOTTOM", -200, 400} or {"LEFT", UIParent, "BOTTOM", 200, 400}))
 					frame.Pets = {}
 
 					for i = 1, 3 do
@@ -286,7 +286,6 @@ function EPB:InitPetFrameAPI()
 				health.bg:SetAllPoints()
 				health.bg:SetTexture(ElvUI[1].media.blankTex)
 				health.bg.multiplier = 0.35
-
 				if EPB.CustomCreateBackdrop then
 					EPB.CustomCreateBackdrop(health)
 				else
@@ -467,7 +466,7 @@ function EPB:InitPetFrameAPI()
 						BuffPoint, DebuffPoint = "TOPRIGHT", "TOPLEFT"
 					end
 
-					frame:SetSize(270, 40)
+					frame:SetSize(270, 26)
 					frame.PBBuffs:SetSize(150, 26)
 					frame.PBBuffs:SetPoint(BuffPoint, frame)
 					frame.PBDebuffs:SetSize(150, 26)
@@ -660,15 +659,15 @@ function EPB:InitPetFrameAPI()
 				numPets = EPB.db["TeamAurasOnBottom"] and numPets or 1
 				if EPB.db["GrowUp"] then
 					if EPB.db["TeamAurasOnBottom"] then
-						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
+						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 34
 					else
-						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
+						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -14
 					end
 				else
 					if EPB.db["TeamAurasOnBottom"] then
-						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -4
+						point, relativePoint, xcoord, ycoord = "TOP", "BOTTOM", 0, -14
 					else
-						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 4
+						point, relativePoint, xcoord, ycoord = "BOTTOM", "TOP", 0, 34
 					end
 				end
 				self.Pets.team:ClearAllPoints()
