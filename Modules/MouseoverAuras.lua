@@ -50,9 +50,9 @@ function MA:CreateAuraIcon(index)
 end
 
 function MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
-	local isPlayer = (caster == 'player' or caster == 'vehicle')
+	local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
 
-	if (isPlayer or casterIsPlayer) and (duration ~= 0) then
+	if (isPlayer) and (duration ~= 0) then
 		return true
 	else
 		return false

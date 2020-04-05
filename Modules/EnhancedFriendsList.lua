@@ -29,6 +29,10 @@ local ONE_YEAR = 12 * ONE_MONTH;
 local isBNConnected = _G.BNConnected()
 local LEVEL = LEVEL
 
+--[[
+/run for i,v in pairs(_G) do if type(v)=="string" and v:match("Honorable") then print(i,"=",v) end end
+]]
+
 EFL.Icons = {
 	Game = {
 		Alliance = {
