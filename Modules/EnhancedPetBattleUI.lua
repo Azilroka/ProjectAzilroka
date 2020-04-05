@@ -693,6 +693,7 @@ function EPB:InitPetFrameAPI()
 						frame.Pets[i] = self["Create" .. petType .. "UIFrame"](self, frame.petOwner, i, frame)
 						frame.Pets[i].OldPower = 0
 						frame.Pets[i].OldSpeed = 0
+						self:UpdatePetFrame(frame.Pets[i])
 					end
 
 					for _, event in pairs(self.Events) do
@@ -1627,7 +1628,7 @@ function EPB:Update()
 	local point, relativePoint, xcoord, ycoord
 
 	local spacing = 4
-	if EPB.db.UseoUF then
+	if EPB.db.UseoUF and PA.oUF then
 		spacing = 56
 	end
 
@@ -1649,7 +1650,7 @@ function EPB:Update()
 
 			self:UpdatePetFrame(frame.Pets[i])
 		end
-		if PA.oUF then
+		if EPB.db.UseoUF and PA.oUF then
 			self:UpdatePetFrameAnchors(frame.Pets.team)
 		end
 	end
