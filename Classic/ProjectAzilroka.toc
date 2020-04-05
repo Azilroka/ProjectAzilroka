@@ -1,7 +1,7 @@
 ## Interface: 11303
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
-## Version: 1.66
+## Version: 1.67
 ## OptionalDeps: Masque, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 
