@@ -512,55 +512,58 @@ function EPB:InitPetFrameAPI()
 				frame.Name:SetPoint("TOP", frame.PBHealth, "TOP", 0, -Offset)
 				frame.Name:SetJustifyH("CENTER")
 				frame.Name:SetJustifyH("TOP")
-				local fip, bp, brp, box, boy, dp, drp, dox, doy, brip, stp, strp, stox, stjh
-				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
-					fip = "TOPLEFT"
-					bp = "BOTTOMLEFT"
-					brp = "TOPLEFT"
-					box = 7
-					boy = 28
-					dp = "BOTTOMRIGHT"
-					drp = "TOPRIGHT"
-					dox = -7
-					doy = 1
-					brip = "TOPRIGHT"
-					stp = "RIGHT"
-					strp = "LEFT"
-					stox = -2
-					stjh = "RIGHT"
-				else
-					fip = "TOPRIGHT"
-					bp = "BOTTOMRIGHT"
-					brp = "TOPRIGHT"
-					box = -7
-					boy = 28
-					dp = "BOTTOMLEFT"
-					drp = "TOPLEFT"
-					dox = 7
-					doy = 1
-					brip = "TOPLEFT"
-					stp = "LEFT"
-					strp = "RIGHT"
-					stox = 2
-					stjh = "LEFT"
-				end
+				local PositioningSettings = {
+					[LE_BATTLE_PET_ALLY] = {
+						familyIconPoint = "TOPLEFT",
+						buffsInitialPoint = "BOTTOMLEFT",
+						buffsRelativePoint = "TOPLEFT",
+						buffsOffsetX = 7,
+						buffsOffsetY = 28,
+						debuffsInitialPoint = "BOTTOMRIGHT",
+						debuffsRelativePoint = "TOPRIGHT",
+						debuffsOffsetX = -7,
+						debuffsOffsetY = 1,
+						breedIDPoint = "TOPRIGHT",
+						statInitialPoint = "RIGHT",
+						statRelativePoint = "LEFT",
+						statOffsetX = -2,
+						statJustifyH = "RIGHT",
+					},
+					[LE_BATTLE_PET_ENEMY] = {
+						familyIconPoint = "TOPRIGHT",
+						buffsInitialPoint = "BOTTOMRIGHT",
+						buffsRelativePoint = "TOPRIGHT",
+						buffsOffsetX = -7,
+						buffsOffsetY = 28,
+						debuffsInitialPoint = "BOTTOMLEFT",
+						debuffsRelativePoint = "TOPLEFT",
+						debuffsOffsetX = 7,
+						debuffsOffsetY = 1,
+						breedIDPoint = "TOPLEFT",
+						statInitialPoint = "LEFT",
+						statRelativePoint = "RIGHT",
+						statOffsetX = 2,
+						statJustifyH = "LEFT",
+					}
+				}
+				local ps = PositioningSettings[petInfo.petOwner]
 				frame.PBFamilyIcon:SetSize(20, 20)
-				frame.PBFamilyIcon:SetPoint(fip, frame, fip, box, -4)
+				frame.PBFamilyIcon:SetPoint(ps.familyIconPoint, frame, ps.familyIconPoint, ps.buffsOffsetX, -4)
 				frame.PBBuffs:SetSize(150, 26)
-				frame.PBBuffs:SetPoint(bp, frame, brp, box, boy)
+				frame.PBBuffs:SetPoint(ps.buffsInitialPoint, frame, ps.buffsRelativePoint, ps.buffsOffsetX, ps.buffsOffsetY)
 				frame.PBDebuffs:SetSize(150, 26)
-				frame.PBDebuffs:SetPoint(dp, frame, drp, dox, doy)
+				frame.PBDebuffs:SetPoint(ps.debuffsInitialPoint, frame, ps.debuffsRelativePoint, ps.debuffsOffsetX, ps.debuffsOffsetY)
 				frame.BreedID:SetJustifyV("TOP")
-				frame.BreedID:SetJustifyH(stp)
-				frame.BreedID:SetPoint(brip, frame, brip, -box, -4)
+				frame.BreedID:SetJustifyH(ps.statJustifyH)
+				frame.BreedID:SetPoint(ps.breedIDPoint, frame, ps.breedIDPoint, -ps.buffsOffsetX, -4)
 				frame.PBPower:SetSize(16, 16)
 				frame.PBPower:SetPoint("TOP", frame.BreedID, "BOTTOM", 0, -3)
-				frame.PBPower.value:SetPoint(stp, frame.PBPower, strp, stox, 0)
-				frame.PBPower.value:SetJustifyH(stjh)
+				frame.PBPower.value:SetPoint(ps.statInitialPoint, frame.PBPower, ps.statRelativePoint, ps.statOffsetX, 0)
+				frame.PBPower.value:SetJustifyH(ps.statJustifyH)
 				frame.PBSpeed:SetSize(16, 16)
 				frame.PBSpeed:SetPoint("TOP", frame.PBPower, "BOTTOM", 0, -3)
-				frame.PBSpeed.value:SetPoint(stp, frame.PBSpeed, strp, stox, 0)
-				frame.PBSpeed.value:SetJustifyH(stjh)
+				frame.PBSpeed.value:SetPoint(ps.statInitialPoint, frame.PBSpeed, ps.statRelativePoint, ps.statOffsetX, 0)
+				frame.PBSpeed.value:SetJustifyH(ps.statJustifyH)
 				frame:Tag(frame.Name, "[pbuf:qualitycolor][pbuf:level] [pbuf:name]")
 				frame:Tag(frame.PBHealth.value, "[pbuf:health:current-percent]")
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
