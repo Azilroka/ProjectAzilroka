@@ -138,15 +138,6 @@ EFL.Icons = {
 			Gloss = MediaPath..'GameIcons/Gloss/Overwatch',
 			Launcher = MediaPath..'GameIcons/Launcher/Overwatch',
 		},
-		[_G.BNET_CLIENT_DESTINY2 or 'DST2'] = {
-			Name = PA.ACL['Destiny 2'],
-			Color = 'FFFFFF',
-			Default = 'Interface/FriendsFrame/Battlenet-Destiny2icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Destiny2',
-			Flat = MediaPath..'GameIcons/Launcher/Destiny2',
-			Gloss = MediaPath..'GameIcons/Launcher/Destiny2',
-			Launcher = MediaPath..'GameIcons/Launcher/Destiny2',
-		},
 		[_G.BNET_CLIENT_COD or 'VIPR'] = {
 			Name = PA.ACL['Call of Duty 4'],
 			Color = 'FFFFFF',
