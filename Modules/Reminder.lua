@@ -146,74 +146,76 @@ function AR:Reminder_Update()
 
 	local Position = 1
 	for _, filter in pairs({PA.MyClass, 'Global'}) do
-		for _, db in pairs(AR.db.Filters[filter]) do
-			if db.enable and (not db.level or db.level and UnitLevel('player') > db.level) then
-				local Button = AR.CreatedReminders[Position]
-				if (not Button) or (Button:IsVisible()) then
-					Button = AR:CreateReminder(Position)
-					Position = Position + 1
-				end
-
-				AR:SetIconPosition(Button, db)
-
-				local filterCheck, reverseCheck = AR:FilterCheck(db), AR:FilterCheck(db, true)
-
-				if db.filterType == 'COOLDOWN' and db.cooldownSpellID and filterCheck then
-					local start, duration = GetSpellCooldown(db.cooldownSpellID)
-					if (duration and duration > 1.5) then
-						Button.cooldown:SetCooldown(start, duration)
+		if AR.db.Filters then
+			for _, db in pairs(AR.db.Filters[filter]) do
+				if db.enable and (not db.level or db.level and UnitLevel('player') > db.level) then
+					local Button = AR.CreatedReminders[Position]
+					if (not Button) or (Button:IsVisible()) then
+						Button = AR:CreateReminder(Position)
+						Position = Position + 1
 					end
 
-					Button.cooldown:SetShown((duration and duration > 0))
-					Button.icon:SetTexture(select(3, GetSpellInfo(db.cooldownSpellID)))
-					Button:SetShown((duration and duration == 0) or db.onCooldown)
+					AR:SetIconPosition(Button, db)
 
-					AR:UpdateColors(Button, db.cooldownSpellID)
+					local filterCheck, reverseCheck = AR:FilterCheck(db), AR:FilterCheck(db, true)
 
-					if (duration and duration > 1.5) and filterCheck and db.onCooldown then
-						Button:SetAlpha(db.cooldownAlpha or .5)
-					end
-				elseif (db.filterType == 'WEAPON' or (db.filterType == 'SPELL' and db.spellGroup and PA:CountTable(db.spellGroup) > 0)) and filterCheck then
-					if db.filterType == 'SPELL' then
-						local hasBuff, hasDebuff = AR:FindPlayerAura(db.spellGroup, db.personal), AR:FindPlayerAura(db.spellGroup, nil, 'HARMFUL')
-						local negate = AR:FindPlayerAura(db.negateGroup, db.personal)
+					if db.filterType == 'COOLDOWN' and db.cooldownSpellID and filterCheck then
+						local start, duration = GetSpellCooldown(db.cooldownSpellID)
+						if (duration and duration > 1.5) then
+							Button.cooldown:SetCooldown(start, duration)
+						end
 
-						if not (negate or hasBuff or hasDebuff) then
-							for buff, value in pairs(db.spellGroup) do
-								if value then
-									local usable = IsUsableSpell(buff);
-									if usable and AR:IsSpellOnCooldown(buff) then
-										break
-									end
+						Button.cooldown:SetShown((duration and duration > 0))
+						Button.icon:SetTexture(select(3, GetSpellInfo(db.cooldownSpellID)))
+						Button:SetShown((duration and duration == 0) or db.onCooldown)
 
-									if usable or not db.strictFilter then
-										Button.icon:SetTexture(select(3, GetSpellInfo(buff)))
-										AR:UpdateColors(Button, buff)
-										break
+						AR:UpdateColors(Button, db.cooldownSpellID)
+
+						if (duration and duration > 1.5) and filterCheck and db.onCooldown then
+							Button:SetAlpha(db.cooldownAlpha or .5)
+						end
+					elseif (db.filterType == 'WEAPON' or (db.filterType == 'SPELL' and db.spellGroup and PA:CountTable(db.spellGroup) > 0)) and filterCheck then
+						if db.filterType == 'SPELL' then
+							local hasBuff, hasDebuff = AR:FindPlayerAura(db.spellGroup, db.personal), AR:FindPlayerAura(db.spellGroup, nil, 'HARMFUL')
+							local negate = AR:FindPlayerAura(db.negateGroup, db.personal)
+
+							if not (negate or hasBuff or hasDebuff) then
+								for buff, value in pairs(db.spellGroup) do
+									if value then
+										local usable = IsUsableSpell(buff);
+										if usable and AR:IsSpellOnCooldown(buff) then
+											break
+										end
+
+										if usable or not db.strictFilter then
+											Button.icon:SetTexture(select(3, GetSpellInfo(buff)))
+											AR:UpdateColors(Button, buff)
+											break
+										end
 									end
 								end
+
+								Button:SetShown((((not hasBuff) and (not hasDebuff)) and not db.reverseCheck) or (reverseCheck and db.reverseCheck and ((hasBuff or hasDebuff) or ((not hasBuff) and (not hasDebuff)))))
+							end
+						end
+
+						if db.filterType == 'WEAPON' then
+							local hasOffhandWeapon = AR:HasOffHandWeapon(GetInventoryItemID('player', 17))
+							local hasMainHandEnchant, _, _, hasOffHandEnchant = GetWeaponEnchantInfo()
+
+							if (not hasMainHandEnchant) then
+								Button.icon:SetTexture(GetInventoryItemTexture('player', 16))
+							elseif (hasOffhandWeapon and not hasOffHandEnchant) then
+								Button.icon:SetTexture(GetInventoryItemTexture('player', 17))
 							end
 
-							Button:SetShown((((not hasBuff) and (not hasDebuff)) and not db.reverseCheck) or (reverseCheck and db.reverseCheck and ((hasBuff or hasDebuff) or ((not hasBuff) and (not hasDebuff)))))
-						end
-					end
-
-					if db.filterType == 'WEAPON' then
-						local hasOffhandWeapon = AR:HasOffHandWeapon(GetInventoryItemID('player', 17))
-						local hasMainHandEnchant, _, _, hasOffHandEnchant = GetWeaponEnchantInfo()
-
-						if (not hasMainHandEnchant) then
-							Button.icon:SetTexture(GetInventoryItemTexture('player', 16))
-						elseif (hasOffhandWeapon and not hasOffHandEnchant) then
-							Button.icon:SetTexture(GetInventoryItemTexture('player', 17))
+							Button:SetShown(not (hasMainHandEnchant or hasOffHandEnchant))
+							Button.icon:SetVertexColor(1, 1, 1)
 						end
 
-						Button:SetShown(not (hasMainHandEnchant or hasOffHandEnchant))
-						Button.icon:SetVertexColor(1, 1, 1)
-					end
-
-					if Button:IsShown() and not db.disableSound then
-						AR:PlaySoundFile()
+						if Button:IsShown() and not db.disableSound then
+							AR:PlaySoundFile()
+						end
 					end
 				end
 			end
