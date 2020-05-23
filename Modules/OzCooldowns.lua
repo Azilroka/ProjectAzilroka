@@ -203,7 +203,6 @@ end
 function OzCD:CreateCooldown(index)
 	local Frame = CreateFrame('Button', 'OzCD_'..index, OzCD.Holder)
 	Frame:RegisterForClicks('AnyUp')
-	Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
 	Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
 
 	Frame.Cooldown = CreateFrame('Cooldown', '$parentCooldown', Frame, 'CooldownFrameTemplate')
@@ -277,6 +276,8 @@ function OzCD:CreateCooldown(index)
 
 		SendChatMessage(format(PA.ACL["My %s will be off cooldown in %s"], s.SpellName, TimeRemaining), Channel)
 	end)
+
+	Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
 
 	PA:RegisterCooldown(Frame.Cooldown)
 

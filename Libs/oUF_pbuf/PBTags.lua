@@ -281,3 +281,24 @@ for textFormat in pairs(styles) do
 		end
 	end
 end
+
+if ElvUI then
+	local E = ElvUI[1]
+	E:AddTagInfo("pbuf:qualitycolor", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:name", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:level", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:power", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:power:comparecolor", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:speed", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:speed:comparecolor", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:breed", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:breedicon", 'ProjectAzilroka', nil, nil)
+
+	for textFormat in pairs(styles) do
+		local tagTextFormat = strlower(gsub(textFormat, "_", "-"))
+		E:AddTagInfo(format("pbuf:health:%s", tagTextFormat), 'ProjectAzilroka', nil, nil)
+		E:AddTagInfo(format("pbuf:health:%s-nostatus", tagTextFormat), 'ProjectAzilroka', nil, nil)
+		E:AddTagInfo(format("pbuf:xp:%s", tagTextFormat), 'ProjectAzilroka', nil, nil)
+		E:AddTagInfo(format("pbuf:xp:%s-nostatus", tagTextFormat), 'ProjectAzilroka', nil, nil)
+	end
+end
