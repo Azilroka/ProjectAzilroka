@@ -44,6 +44,10 @@ OzCD.Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
 OzCD.Holder:SetSize(40, 40)
 OzCD.Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
 
+if not PA.Tukui or PA.ElvUI then
+	OzCD.Holder:SetMovable(true)
+end
+
 OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
@@ -679,7 +683,6 @@ function OzCD:Initialize()
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(OzCD.Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,OzCooldowns')
 	else
-		OzCD.Holder:SetMovable(true)
 		OzCD.Holder:SetScript('OnDragStart', OzCD.Holder.StartMoving)
 		OzCD.Holder:SetScript('OnDragStop', OzCD.Holder.StopMovingOrSizing)
 	end
