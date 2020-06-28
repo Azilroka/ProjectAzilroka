@@ -699,7 +699,7 @@ function iFilger:SPELLS_CHANGED()
 	if numPetSpells then
 		iFilger:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 
-		iFilger.db.Cooldowns.SpellCDs = iFilger.SpellList
+		PA:AddKeysToTable(iFilger.db.Cooldowns.SpellCDs, iFilger.SpellList)
 
 		PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = iFilger:GenerateSpellOptions()
 	end

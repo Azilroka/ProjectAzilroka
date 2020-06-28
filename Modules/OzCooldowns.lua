@@ -40,6 +40,10 @@ local UIParent = UIParent
 
 local Channel
 
+OzCD.Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
+OzCD.Holder:SetSize(40, 40)
+OzCD.Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
+
 OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
@@ -406,7 +410,7 @@ function OzCD:SPELLS_CHANGED()
 	if numPetSpells then
 		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 
-		OzCD.db.SpellCDs = OzCD.SpellList
+		PA:AddKeysToTable(OzCD.db.SpellCDs, OzCD.SpellList)
 
 		PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 	end
@@ -670,21 +674,15 @@ function OzCD:Initialize()
 		OzCD.MasqueGroup = PA.Masque:Group('OzCooldowns')
 	end
 
-	local Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
-	Holder:SetSize(40, 40)
-	Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
-
 	if PA.Tukui then
-		_G.Tukui[1].Movers:RegisterFrame(Holder)
+		_G.Tukui[1].Movers:RegisterFrame(OzCD.Holder)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,OzCooldowns')
+		_G.ElvUI[1]:CreateMover(OzCD.Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,OzCooldowns')
 	else
-		Holder:SetMovable(true)
-		Holder:SetScript('OnDragStart', Holder.StartMoving)
-		Holder:SetScript('OnDragStop', Holder.StopMovingOrSizing)
+		OzCD.Holder:SetMovable(true)
+		OzCD.Holder:SetScript('OnDragStart', OzCD.Holder.StartMoving)
+		OzCD.Holder:SetScript('OnDragStop', OzCD.Holder.StopMovingOrSizing)
 	end
-
-	OzCD.Holder = Holder
 
 	OzCD:GROUP_ROSTER_UPDATE()
 

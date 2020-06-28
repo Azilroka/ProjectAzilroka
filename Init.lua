@@ -206,6 +206,16 @@ function PA:PairsByKeys(t, f)
 	return iter
 end
 
+function PA:AddKeysToTable(current, tbl)
+	if type(current) ~= 'table' then return end
+
+	for key, value in pairs(tbl) do
+		if current[key] == nil then
+			current[key] = value
+		end
+	end
+end
+
 function PA:SetTemplate(frame)
 	if PA.AddOnSkins then
 		_G.AddOnSkins[1]:SetTemplate(frame)
