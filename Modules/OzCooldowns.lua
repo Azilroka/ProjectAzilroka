@@ -44,7 +44,7 @@ OzCD.Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
 OzCD.Holder:SetSize(40, 40)
 OzCD.Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
 
-if not PA.Tukui or PA.ElvUI then
+if not (PA.Tukui or PA.ElvUI) then
 	OzCD.Holder:SetMovable(true)
 end
 
