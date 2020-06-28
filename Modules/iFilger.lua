@@ -66,6 +66,9 @@ iFilger.IsChargeCooldown = {}
 iFilger.SpellList = {}
 iFilger.CompleteSpellBook = {}
 iFilger.ItemCooldowns = {}
+iFilger.HasCDDelay = {
+	[5384] = true
+}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
 local COOLDOWN_MIN_DURATION = .1
@@ -550,7 +553,7 @@ function iFilger:SPELL_UPDATE_COOLDOWN()
 		CurrentDuration = (Start + Duration - GetTime())
 
 		if Enable and CurrentDuration and (CurrentDuration < iFilger.db.Cooldowns.IgnoreDuration) then
-			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) then
+			if (CurrentDuration >= iFilger.db.Cooldowns.SuppressDuration) or iFilger.HasCDDelay[SpellID] then
 				iFilger.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				iFilger.ActiveCooldowns[SpellID] = true

@@ -63,6 +63,10 @@ for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_REC
     t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 end
 
+OzCD.HasCDDelay = {
+	[5384] = true
+}
+
 function OzCD:ScanTooltip(index, bookType)
 	PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
 	PA.ScanTooltip:SetSpellBookItem(index, bookType)
@@ -394,7 +398,7 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 		CurrentDuration = (Start + Duration - GetTime())
 
 		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
-			if (CurrentDuration >= OzCD.db.SuppressDuration) then
+			if (CurrentDuration >= OzCD.db.SuppressDuration) or OzCD.HasCDDelay[SpellID] then
 				OzCD.DelayCooldowns[SpellID] = Duration
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
 				OzCD.ActiveCooldowns[SpellID] = Duration
