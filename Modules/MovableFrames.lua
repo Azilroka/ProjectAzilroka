@@ -335,17 +335,8 @@ function MF:GetOptions()
 	}
 
 	for Frame in pairs(Frames) do
-		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = {
-			type = 'toggle',
-			name = Frame,
-		}
-
-		PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = {
-			type = 'execute',
-			name = Frame,
-			disabled = function(info) return not MF.db[info[#info]].Permanent end,
-			func = function(info) _G.HideUIPanel(_G[info[#info]]) end,
-		}
+		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = PA.ACH:Toggle(Frame)
+		PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = PA.ACH:Execute(Frame, nil, nil, function(info) _G.HideUIPanel(_G[info[#info]]) end, nil, nil, nil, nil, nil, function(info) return not MF.db[info[#info]].Permanent end)
 	end
 
 	for _, Table in pairs(AddOnFrames) do

@@ -36,6 +36,7 @@ PA.LSM = LibStub('LibSharedMedia-3.0')
 PA.LDB = LibStub('LibDataBroker-1.1')
 PA.LCG = LibStub("LibCustomGlow-1.0")
 PA.LAB = LibStub('LibActionButton-1.0')
+PA.ACH = LibStub('LibAceConfigHelper')
 
 -- External Libraries
 PA.Masque = LibStub("Masque", true)

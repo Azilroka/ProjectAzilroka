@@ -237,78 +237,22 @@ function BB:DropTools()
 end
 
 function BB:GetOptions()
-	PA.Options.args.BigButtons = {
-		type = 'group',
-		name = BB.Title,
-		desc = BB.Description,
-		get = function(info) return BB.db[info[#info]] end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = BB.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					BB.db[info[#info]] = value
-					if not BB.isEnabled then
-						BB:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				set = function(info, value) BB.db[info[#info]] = value BB:Update() end,
-				args = {
-					DropTools = {
-						order = 1,
-						type = 'toggle',
-						name = PA.ACL['Drop Farm Tools'],
-					},
-					ToolSize = {
-						order = 2,
-						type = 'range',
-						name = PA.ACL['Farm Tool Size'],
-						min = 16, max = 64, step = 1,
-					},
-					SeedSize = {
-						order = 3,
-						type = 'range',
-						name = PA.ACL['Seed Size'],
-						min = 16, max = 64, step = 1,
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -1,
-				type = 'description',
-				name = BB.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.BigButtons = PA.ACH:Group(BB.Title, BB.Description, nil, nil, function(info) return BB.db[info[#info]] end)
+	PA.Options.args.BigButtons.args.Header = PA.ACH:Header(BB.Header, 0)
+	PA.Options.args.BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
+	PA.Options.args.BigButtons.args.General.guiInline = true
+	PA.Options.args.BigButtons.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
+	PA.Options.args.BigButtons.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
+	PA.Options.args.BigButtons.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
+
+	PA.Options.args.BigButtons.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.BigButtons.args.Authors = PA.ACH:Description(BB.Authors, -1, 'large')
 end
 
 function BB:BuildProfile()
-	PA.Defaults.profile.BigButtons = {
-		Enable = true,
-		DropTools = false,
-		ToolSize = 50,
-		SeedSize = 30,
-	}
+	PA.Defaults.profile.BigButtons = { Enable = true, DropTools = false, ToolSize = 50, SeedSize = 30 }
 end
 
 function BB:Initialize()

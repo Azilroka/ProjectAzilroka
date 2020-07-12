@@ -800,45 +800,11 @@ end
 function iFilger:GetOptions()
 	iFilger.db = PA.db.iFilger
 
-	PA.Options.args.iFilger = {
-		type = 'group',
-		name = iFilger.Title,
-		desc = iFilger.Description,
-		childGroups = 'tab',
-		get = function(info) return iFilger.db[info[#info]] end,
-		set = function(info, value) iFilger.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = iFilger.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					iFilger.db[info[#info]] = value
-					if (not iFilger.isEnabled) then
-						iFilger:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			AuthorHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -1,
-				type = 'description',
-				name = iFilger.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, nil, function(info) return iFilger.db[info[#info]] end, function(info, value) iFilger.db[info[#info]] = value end)
+	PA.Options.args.iFilger.args.Header = PA.ACH:Header(iFilger.Header, 0)
+	PA.Options.args.iFilger.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) iFilger.db[info[#info]] = value if (not iFilger.isEnabled) then iFilger:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.iFilger.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.iFilger.args.Authors = PA.ACH:Description(iFilger.Authors, -1, 'large')
 
 	for _, Name in ipairs({'Cooldowns','ItemCooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'}) do
 		PA.Options.args.iFilger.args[Name] = {
@@ -1176,44 +1142,14 @@ function iFilger:GetOptions()
 		}
 	end
 
-	PA.Options.args.iFilger.args.Cooldowns.args.UpdateSpeed = {
-		order = 5,
-		type = 'range',
-		name = PA.ACL['Update Speed'],
-		min = .1, max = .5, step = .1,
-	}
+	PA.Options.args.iFilger.args.Cooldowns.args.UpdateSpeed = PA.ACH:Range(PA.ACL['Update Speed'], nil, 5, { min = .1, max = .5, step = .1 })
+	PA.Options.args.iFilger.args.ItemCooldowns.args.UpdateSpeed = PA.ACH:Range(PA.ACL['Update Speed'], nil, 5, { min = .1, max = .5, step = .1 })
 
-	PA.Options.args.iFilger.args.ItemCooldowns.args.UpdateSpeed = {
-		order = 5,
-		type = 'range',
-		name = PA.ACL['Update Speed'],
-		min = .1, max = .5, step = .1,
-	}
+	PA.Options.args.iFilger.args.Cooldowns.args.SuppressDuration = PA.ACH:Range(PA.ACL['Suppress Duration Threshold'], PA.ACL['Duration in Seconds'], 6, { min = 2, max = 600, step = 1 })
+	PA.Options.args.iFilger.args.Cooldowns.args.IgnoreDuration = PA.ACH:Range(PA.ACL['Ignore Duration Threshold'], PA.ACL['Duration in Seconds'], 7, { min = 2, max = 600, step = 1 })
 
-	PA.Options.args.iFilger.args.Cooldowns.args.SuppressDuration = {
-		order = 6,
-		type = 'range',
-		name = PA.ACL['Suppress Duration Threshold'],
-		desc = PA.ACL['Duration in Seconds'],
-		min = 2, max = 600, step = 1,
-	}
-
-	PA.Options.args.iFilger.args.Cooldowns.args.IgnoreDuration = {
-		order = 7,
-		type = 'range',
-		name = PA.ACL['Ignore Duration Threshold'],
-		desc = PA.ACL['Duration in Seconds'],
-		min = 2, max = 600, step = 1,
-	}
-
-	PA.Options.args.iFilger.args.Cooldowns.args.Spells = {
-		order = 12,
-		type = 'group',
-		name = _G.SPELLS,
-		args = iFilger:GenerateSpellOptions(),
-		get = function(info) return iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] end,
-		set = function(info, value)	iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end,
-	}
+	PA.Options.args.iFilger.args.Cooldowns.args.Spells = PA.ACH:Group(_G.SPELLS, nil, 12, nil, function(info) return iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] end, function(info, value) iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end)
+	PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = iFilger:GenerateSpellOptions()
 end
 
 function iFilger:Initialize()

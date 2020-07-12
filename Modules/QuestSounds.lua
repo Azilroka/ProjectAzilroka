@@ -140,122 +140,28 @@ function QS:RegisterSounds()
 end
 
 function QS:GetOptions()
-	PA.Options.args.QuestSounds = {
-		type = 'group',
-		name = QS.Title,
-		desc = QS.Description,
-		get = function(info) return QS.db[info[#info]] end,
-		set = function(info, value) QS.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = QS.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					QS.db[info[#info]] = value
-					if (not QS.isEnabled) then
-						QS:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				args = {
-					LSM = {
-						order = 1,
-						type = 'group',
-						name = 'Sound by LSM',
-						disabled = function() return QS.db.UseSoundID end,
-						args = {
-							QuestComplete = {
-								type = 'select', dialogControl = 'LSM30_Sound',
-								order = 1,
-								name = 'Quest Complete',
-								values = PA.LSM:HashTable('sound'),
-							},
-							ObjectiveComplete = {
-								type = 'select', dialogControl = 'LSM30_Sound',
-								order = 2,
-								name = 'Objective Complete',
-								values = PA.LSM:HashTable('sound'),
-							},
-							ObjectiveProgress = {
-								type = 'select', dialogControl = 'LSM30_Sound',
-								order = 3,
-								name = 'Objective Progress',
-								values = PA.LSM:HashTable('sound'),
-							},
-						},
-					},
-					ID = {
-						order = 2,
-						type = 'group',
-						name = 'Sound by SoundID',
-						get = function(info) return tostring(QS.db[info[#info]]) end,
-						set = function(info, value) QS.db[info[#info]] = tonumber(value) end,
-						disabled = function() return (not QS.db.UseSoundID) end,
-						args = {
-							UseSoundID = {
-								order = 1,
-								type = 'toggle',
-								get = function(info) return QS.db[info[#info]] end,
-								set = function(info, value) QS.db[info[#info]] = value end,
-								disabled = false,
-								name = PA.ACL['Use Sound ID'],
-							},
-							QuestCompleteID = {
-								order = 2,
-								type = 'input',
-								name = 'Quest Complete Sound ID',
-							},
-							ObjectiveCompleteID = {
-								order = 3,
-								type = 'input',
-								name = 'Objective Complete Sound ID',
-							},
-							ObjectiveProgressID = {
-								order = 4,
-								type = 'input',
-								name = 'Objective Progress Sound ID',
-							},
-						},
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -4,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -3,
-				type = 'description',
-				name = QS.Authors,
-				fontSize = 'large',
-			},
-			CreditsHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Credits:'],
-			},
-			Credits = {
-				order = -1,
-				type = 'description',
-				name = QS.Credits,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.QuestSounds = PA.ACH:Group(QS.Title, QS.Description, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end)
+	PA.Options.args.QuestSounds.args.Header = PA.ACH:Header(QS.Header, 0)
+	PA.Options.args.QuestSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) QS.db[info[#info]] = value if (not QS.isEnabled) then QS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.QuestSounds.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	PA.Options.args.QuestSounds.args.General.guiInline = true
+
+	PA.Options.args.QuestSounds.args.General.args.LSM = PA.ACH:Group(PA.ACL['Sound by LSM'], nil, 1, nil, nil, nil, function() return QS.db.UseSoundID end)
+	PA.Options.args.QuestSounds.args.General.args.LSM.args.QuestComplete = PA.ACH:SharedMediaSound('Quest Complete', nil, 1)
+	PA.Options.args.QuestSounds.args.General.args.LSM.args.ObjectiveComplete = PA.ACH:SharedMediaSound('Objective Complete', nil, 2)
+	PA.Options.args.QuestSounds.args.General.args.LSM.args.ObjectiveProgress = PA.ACH:SharedMediaSound('Objective Progress', nil, 3)
+
+	PA.Options.args.QuestSounds.args.General.args.ID = PA.ACH:Group(PA.ACL['Sound by SoundID'], nil, 2, nil, function(info) return tostring(QS.db[info[#info]]) end, function(info, value) QS.db[info[#info]] = tonumber(value) end, function() return (not QS.db.UseSoundID) end)
+	PA.Options.args.QuestSounds.args.General.args.ID.args.UseSoundID = PA.ACH:Toggle(PA.ACL['Use Sound ID'], nil, 1, nil, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end, false)
+	PA.Options.args.QuestSounds.args.General.args.ID.args.QuestCompleteID = PA.ACH:Input('Quest Complete Sound ID', nil, 1)
+	PA.Options.args.QuestSounds.args.General.args.ID.args.ObjectiveCompleteID = PA.ACH:Input('Objective Complete Sound ID', nil, 2)
+	PA.Options.args.QuestSounds.args.General.args.ID.args.ObjectiveProgressID = PA.ACH:Input('Objective Progress Sound ID', nil, 3)
+
+	PA.Options.args.QuestSounds.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -4)
+	PA.Options.args.QuestSounds.args.Authors = PA.ACH:Description(QS.Authors, -3, 'large')
+	PA.Options.args.QuestSounds.args.CreditsHeader = PA.ACH:Header(PA.ACL['Image Credits:'], -2)
+	PA.Options.args.QuestSounds.args.Credits = PA.ACH:Description(QS.Credits, -1, 'large')
 end
 
 function QS:BuildProfile()
@@ -283,7 +189,7 @@ function QS:Initialize()
 	local KT = _G.LibStub('AceAddon-3.0'):GetAddon('!KalielsTracker', true)
 
 	if KT and KT.db.profile.soundQuest then
-		_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?\n\n(This does not disable Kaliels Tracker)'
+		_G.StaticPopupDialogs.PROJECTAZILROKA.text = 'Kaliels Tracker Quest Sound and QuestSounds will make double sounds. Which one do you want to disable?|n|n(This does not disable Kaliels Tracker)'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = 'KT Quest Sound'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Quest Sounds'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()

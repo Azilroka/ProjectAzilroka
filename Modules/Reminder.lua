@@ -527,28 +527,14 @@ function AR:GetOptions()
 					},
 					conditions = {
 						order = 10,
-						type = 'group',
+						type = 'multiselect',
 						name = PA.ACL['Conditions'],
-						guiInline = true,
-						args = {
-							instance = {
-								order = 1,
-								type = 'toggle',
-								name = PA.ACL['Inside Raid/Party'],
-								desc = PA.ACL['Only run checks inside raid/party instances.'],
-							},
-							pvp = {
-								order = 2,
-								type = 'toggle',
-								name = PA.ACL['Inside BG/Arena'],
-								desc = PA.ACL['Only run checks inside BG/Arena instances.'],
-							},
-							combat = {
-								order = 3,
-								type = 'toggle',
-								name = PA.ACL['Combat'],
-								desc = PA.ACL['Only run checks during combat.'],
-							},
+						get = function(_, key) return AR.db.Filters[selectedGroup][selectedFilter][key] end,
+						set = function(_, key, value) AR.db.Filters[selectedGroup][selectedFilter][key] = value end,
+						values = {
+							instance = PA.ACL['Inside Raid/Party'],
+							pvp = PA.ACL['Inside BG/Arena'],
+							combat = PA.ACL['Combat'],
 						},
 					},
 					filterConditions = {
@@ -681,11 +667,7 @@ function AR:GetOptions()
 									return spellList
 								end,
 							},
-							spacer = {
-								order = 2,
-								type = 'description',
-								name = ' ',
-							}
+							spacer = PA.ACH:Spacer(2)
 						},
 					},
 					negateGroup = {
@@ -732,85 +714,29 @@ function AR:GetOptions()
 									return spellList
 								end,
 							},
-							spacer = {
-								order = 2,
-								type = 'description',
-								name = ' ',
-							}
+							spacer = PA.ACH:Spacer(2)
 						},
 					},
 				},
 			},
-			AuthorHeader = {
-				order = -4,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -3,
-				type = 'description',
-				name = AR.Authors,
-				fontSize = 'large',
-			},
 		},
 	}
+
+	PA.Options.args.AuraReminder.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.AuraReminder.args.Authors = PA.ACH:Description(AR.Authors, -1, 'large')
 
 	if PA.Retail then
 		local optionGroup = PA.Options.args.AuraReminder.args.filterGroup.args.filterConditions.args
 
-		local Specializations = {
-			['1'] = select(2, GetSpecializationInfo(1)),
-			['2'] = select(2, GetSpecializationInfo(2)),
-			['3'] = select(2, GetSpecializationInfo(3)),
-			['ANY'] = PA.ACL['Any'],
-		}
+		local Specializations = { ['ANY'] = PA.ACL['Any'] }
 
-		if PA.MyClass == 'DRUID' then
-			Specializations['4'] = select(2, GetSpecializationInfo(4))
+		for i = 1, 4 do
+			Specializations[tostring(i)] = select(2, GetSpecializationInfo(i))
 		end
 
-		optionGroup.role = {
-			order = 1,
-			type = 'select',
-			name = PA.ACL['Role'],
-			desc = PA.ACL['You must be a certain role for the icon to appear.'],
-			hidden = function() return selectedGroup == 'Global' end,
-			values = {
-				TANK = PA.ACL['Tank'],
-				DAMAGER = PA.ACL['Damage'],
-				HEALER = PA.ACL['Healer'],
-				ANY = PA.ACL['Any'],
-			},
-		}
-
-		optionGroup.tree = {
-			order = 2,
-			type = 'select',
-			name = PA.ACL['Talent Tree'],
-			desc = PA.ACL['You must be using a certain talent tree for the icon to show.'],
-			hidden = function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
-			get = function(info, value) return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree) end,
-			set = function(info, value)
-				if value == 'ANY' then
-					AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY'
-				else
-					AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value)
-				end
-			end,
-			values = Specializations,
-		}
-
-		optionGroup.talentTreeException = {
-			order = 2,
-			type = 'select',
-			name = PA.ACL['Tree Exception'],
-			desc = PA.ACL['Set a talent tree to not follow the reverse check.'],
-			get = function(info) return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end,
-			set = function(info, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end,
-			hidden = function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end,
-			values = CopyTable(Specializations),
-		}
-
+		optionGroup.role = PA.ACH:Select(PA.ACL['Role'], PA.ACL['You must be a certain role for the icon to appear.'], 1, { TANK = PA.ACL['Tank'], DAMAGER = PA.ACL['Damage'], HEALER = PA.ACL['Healer'], ANY = PA.ACL['Any'] }, nil, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or 'ANY' end, nil, nil, function() return selectedGroup == 'Global' end)
+		optionGroup.tree = PA.ACH:Select(PA.ACL['Talent Tree'], PA.ACL['You must be using a certain talent tree for the icon to show.'], 2, Specializations, nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree or 'ANY') end, function(_, value) if value == 'ANY' then AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY' else AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
+		optionGroup.talentTreeException = PA.ACH:Select(PA.ACL['Tree Exception'], PA.ACL['Set a talent tree to not follow the reverse check.'], 2, CopyTable(Specializations), nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end, function(_, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end, nil, function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
 		optionGroup.talentTreeException.values.NONE = PA.ACL['None']
 	end
 end

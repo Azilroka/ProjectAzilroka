@@ -60,172 +60,35 @@ function DO:SetOverlay()
 end
 
 function DO:GetOptions()
-	PA.Options.args.DragonOverlay = {
-		type = 'group',
-		name = DO.Title,
-		desc = DO.Description,
-		get = function(info) return DO.db[info[#info]] end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = DO.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					DO.db[info[#info]] = value
-					if (not DO.isEnabled) then
-						DO:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				set = function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end,
-				args = {
-					ClassIcon = {
-						order = 0,
-						type = 'toggle',
-						name = PA.ACL['Class Icon'],
-					},
-					FlipDragon = {
-						order = 1,
-						type = 'toggle',
-						name = PA.ACL['Flip Dragon'],
-					},
-					Strata = {
-						order = 2,
-						type = 'select',
-						name = PA.ACL['Frame Strata'],
-						values = {
-							['1-BACKGROUND'] = 'BACKGROUND',
-							['2-LOW'] = 'LOW',
-							['3-MEDIUM'] = 'MEDIUM',
-							['4-HIGH'] = 'HIGH',
-							['5-DIALOG'] = 'DIALOG',
-							['6-FULLSCREEN'] = 'FULLSCREEN',
-							['7-FULLSCREEN_DIALOG'] = 'FULLSCREEN_DIALOG',
-							['8-TOOLTIP'] = 'TOOLTIP',
-						},
-					},
-					Level = {
-						order = 3,
-						type = 'range',
-						name = PA.ACL['Frame Level'],
-						min = 0, max = 255, step = 1,
-					},
-					IconSize = {
-						order = 4,
-						type = 'range',
-						name = PA.ACL['Icon Size'],
-						min = 1, max = 255, step = 1,
-					},
-					Width = {
-						order = 5,
-						type = 'range',
-						name = PA.ACL['Width'],
-						min = 1, max = 255, step = 1,
-					},
-					Height = {
-						order = 6,
-						type = 'range',
-						name = PA.ACL['Height'],
-						min = 1, max = 255, step = 1,
-					},
-					Desc = {
-						order = 7,
-						type = 'description',
-						name = '',
-					},
-					Dragons = {
-						order = -6,
-						type = 'group',
-						name = 'Dragons',
-						guiInline = true,
-						args = {},
-					},
-					Textures = {
-						order = -5,
-						type = 'group',
-						name = 'Preview',
-						guiInline = true,
-						args = {},
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -4,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -3,
-				type = 'description',
-				name = DO.Authors,
-				fontSize = 'large',
-			},
-			CreditsHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Image Credits:'],
-			},
-			Credits = {
-				order = -1,
-				type = 'description',
-				name = DO.ImageCredits,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.DragonOverlay = PA.ACH:Group(DO.Title, DO.Description, nil, nil, function(info) return DO.db[info[#info]] end)
+	PA.Options.args.DragonOverlay.args.Header = PA.ACH:Header(DO.Header, 0)
+	PA.Options.args.DragonOverlay.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) DO.db[info[#info]] = value if not DO.isEnabled then DO:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.DragonOverlay.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end)
+	PA.Options.args.DragonOverlay.args.General.guiInline = true
+
+	PA.Options.args.DragonOverlay.args.General.args.ClassIcon = PA.ACH:Toggle(PA.ACL['Class Icon'], nil, 1)
+	PA.Options.args.DragonOverlay.args.General.args.FlipDragon = PA.ACH:Toggle(PA.ACL['Flip Dragon'], nil, 2)
+	PA.Options.args.DragonOverlay.args.General.args.Strata = PA.ACH:Select(PA.ACL['Frame Strata'], nil, 3, { BACKGROUND = 'BACKGROUND', LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', DIALOG = 'DIALOG', FULLSCREEN = 'FULLSCREEN', FULLSCREEN_DIALOG = 'FULLSCREEN_DIALOG', TOOLTIP = 'TOOLTIP' })
+	PA.Options.args.DragonOverlay.args.General.args.Level = PA.ACH:Range(PA.ACL['Frame Level'], nil, 4, { min = 0, max = 255, step = 1 })
+	PA.Options.args.DragonOverlay.args.General.args.IconSize = PA.ACH:Range(PA.ACL['Icon Size'], nil, 5, { min = 0, max = 256, step = 1 })
+	PA.Options.args.DragonOverlay.args.General.args.Width = PA.ACH:Range(PA.ACL['Width'], nil, 6, { min = 1, max = 256, step = 1 })
+	PA.Options.args.DragonOverlay.args.General.args.Height = PA.ACH:Range(PA.ACL['Height'], nil, 7, { min = 1, max = 256, step = 1 })
+
+	PA.Options.args.DragonOverlay.args.General.args.Dragons = PA.ACH:Group(PA.ACL['Dragons'], nil, -6)
+	PA.Options.args.DragonOverlay.args.General.args.Dragons.guiInline = true
+
+	PA.Options.args.DragonOverlay.args.General.args.Textures = PA.ACH:Group(PA.ACL['Preview'], nil, -5)
+	PA.Options.args.DragonOverlay.args.General.args.Textures.guiInline = true
 
 	for Option, Name in pairs({ ClassIconPoints = PA.ACL['Class Icon Points'], DragonPoints = PA.ACL['Dragon Points'] }) do
-		PA.Options.args.DragonOverlay.args.General.args[Option] = {
-			type = 'group',
-			name = Name,
-			guiInline = true,
-			get = function(info) return DO.db[Option][info[#info]] end,
-			set = function(info, value) DO.db[Option][info[#info]] = value DO:SetOverlay() end,
-			args = {
-				point = {
-					name = PA.ACL['Anchor Point'],
-					order = 1,
-					type = 'select',
-					values = PA.AllPoints,
-				},
-				relativeTo = {
-					name = PA.ACL['Relative Frame'],
-					order = 2,
-					type = 'select',
-					values = {},
-				},
-				relativePoint = {
-					name = PA.ACL['Relative Point'],
-					order = 3,
-					type = 'select',
-					values = PA.AllPoints,
-				},
-				xOffset = {
-					order = 4,
-					type = 'range',
-					name = PA.ACL['X Offset'],
-					min = -350, max = 350, step = 1,
-				},
-				yOffset = {
-					order = 5,
-					type = 'range',
-					name = PA.ACL['Y Offset'],
-					min = -350, max = 350, step = 1,
-				},
-			},
-		}
+		PA.Options.args.DragonOverlay.args.General.args[Option] = PA.ACH:Group(Name, nil, nil, nil, function(info) return DO.db[Option][info[#info]] end, function(info, value) DO.db[Option][info[#info]] = value DO:SetOverlay() end)
+		PA.Options.args.DragonOverlay.args.General.args[Option].guiInline = true
+		PA.Options.args.DragonOverlay.args.General.args[Option].args.point = PA.ACH:Select(PA.ACL['Anchor Point'], nil, 1, PA.AllPoints)
+		PA.Options.args.DragonOverlay.args.General.args[Option].args.relativeTo = PA.ACH:Select(PA.ACL['Relative Frame'], nil, 2, {})
+		PA.Options.args.DragonOverlay.args.General.args[Option].args.relativePoint = PA.ACH:Select(PA.ACL['Relative Point'], nil, 3, PA.AllPoints)
+		PA.Options.args.DragonOverlay.args.General.args[Option].args.xOffset = PA.ACH:Range(PA.ACL['X Offset'], nil, 4, { min = -350, max = 350, step = 1 })
+		PA.Options.args.DragonOverlay.args.General.args[Option].args.yOffset = PA.ACH:Range(PA.ACL['Y Offset'], nil, 5, { min = -350, max = 350, step = 1 })
 
 		local UnitFrameParents = { oUF_PetBattleFrameHider }
 
@@ -248,34 +111,18 @@ function DO:GetOptions()
 
 	PA.Options.args.DragonOverlay.args.General.args.ClassIconPoints.disabled = function() return (not DO.db.ClassIcon) end
 
+	local textures = {}
+	for texture in pairs(DO.Textures) do textures[texture] = texture:gsub('(%l)(%u%l)','%1 %2') end
+
 	for Option, Name in pairs({ elite = PA.ACL['Elite'], rare = PA.ACL['Rare'],	rareelite = PA.ACL['Rare Elite'], worldboss = PA.ACL['World Boss'] }) do
-		PA.Options.args.DragonOverlay.args.General.args.Dragons.args[Option] = {
-			name = Name,
-			type = "select",
-			values = {
-				Azure = 'Azure',
-				Chromatic = 'Chromatic',
-				Crimson = 'Crimson',
-				Golden = 'Golden',
-				Jade = 'Jade',
-				Onyx = 'Onyx',
-				HeavenlyBlue = 'Heavenly Blue',
-				HeavenlyCrimson = 'Heavenly Crimson',
-				HeavenlyGolden = 'Heavenly Golden',
-				HeavenlyJade = 'Heavenly Jade',
-				HeavenlyOnyx = 'Heavenly Onyx',
-				ClassicElite = 'Classic Elite',
-				ClassicRareElite = 'Classic Rare Elite',
-				ClassicRare = 'Classic Rare',
-				ClassicBoss = 'Classic Boss',
-			},
-		}
-		PA.Options.args.DragonOverlay.args.General.args.Textures.args[Option] = {
-			type = 'execute',
-			name = Name,
-			image = function() return DO.Textures[DO.db[Option]], strfind(DO.db[Option], 'Classic') and 32 or 128, 32 end,
-		}
+		PA.Options.args.DragonOverlay.args.General.args.Dragons.args[Option] = PA.ACH:Select(Name, nil, nil, textures)
+		PA.Options.args.DragonOverlay.args.General.args.Textures.args[Option] = PA.ACH:Execute(Name, nil, nil, nil, function() return DO.Textures[DO.db[Option]], strfind(DO.db[Option], 'Classic') and 32 or 128, 32 end)
 	end
+
+	PA.Options.args.DragonOverlay.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -4)
+	PA.Options.args.DragonOverlay.args.Authors = PA.ACH:Description(DO.Authors, -3, 'large')
+	PA.Options.args.DragonOverlay.args.CreditsHeader = PA.ACH:Header(PA.ACL['Image Credits:'], -2)
+	PA.Options.args.DragonOverlay.args.Credits = PA.ACH:Description(DO.ImageCredits, -1, 'large')
 end
 
 function DO:BuildProfile()

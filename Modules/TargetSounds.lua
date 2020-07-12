@@ -30,44 +30,11 @@ function TS:PLAYER_TARGET_CHANGED()
 end
 
 function TS:GetOptions()
-	PA.Options.args.TargetSounds = {
-		type = 'group',
-		name = TS.Title,
-		desc = TS.Description,
-		get = function(info) return TS.db[info[#info]] end,
-		set = function(info, value) TS.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = TS.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					TS.db[info[#info]] = value
-					if (not TS.isEnabled) then
-						TS:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			AuthorHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -1,
-				type = 'description',
-				name = TS.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.TargetSounds = PA.ACH:Group(TS.Title, TS.Description, nil, nil, function(info) return TS.db[info[#info]] end, function(info, value) TS.db[info[#info]] = value end)
+	PA.Options.args.TargetSounds.args.Header = PA.ACH:Header(TS.Header, 0)
+	PA.Options.args.TargetSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) TS.db[info[#info]] = value if (not TS.isEnabled) then TS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.TargetSounds.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.TargetSounds.args.Authors = PA.ACH:Description(TS.Authors, -1, 'large')
 end
 
 function TS:BuildProfile()

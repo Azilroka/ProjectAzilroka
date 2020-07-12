@@ -7,40 +7,17 @@ PA.EC, _G.Enhanced_Config = EC, EC
 EC.Title = PA.ACL["|cff1784d1Enhanced Config|r"]
 EC.Authors = "Azilroka"
 
-local DEVELOPERS = {
-	'Elv',
-	'Tukz',
-	'Hydrazine',
-	'NihilisticPandemonium',
-}
-
+local DEVELOPERS = { 'Elv', 'Tukz', 'Hydrazine', 'NihilisticPandemonium' }
 local DEVELOPER_STRING = ''
 
 sort(DEVELOPERS, function(a,b) return a < b end)
 for _, devName in pairs(DEVELOPERS) do
-	DEVELOPER_STRING = DEVELOPER_STRING..'\n'..devName
+	DEVELOPER_STRING = DEVELOPER_STRING..'|n'..devName
 end
 
-EC.Options = {
-	type = 'group',
-	name = EC.Title,
-	order = 205,
-	args = {
-		credits = {
-			type = 'group',
-			name = 'Credits',
-			order = -1,
-			args = {
-				text = {
-					order = 1,
-					type = 'description',
-					fontSize = 'medium',
-					name = 'Coding:\n'..DEVELOPER_STRING,
-				},
-			},
-		},
-	},
-}
+EC.Options = PA.ACH:Group(EC.Title, nil, 4)
+EC.Options.args.credits = PA.ACH:Group('Credits', nil, -1)
+EC.Options.args.credits.args.text = PA.ACH:Description('Coding:\n'..DEVELOPER_STRING, 1, 'medium')
 
 function EC:PositionGameMenuButton()
 	_G.GameMenuFrame:SetHeight(_G.GameMenuFrame:GetHeight() + _G.GameMenuButtonLogout:GetHeight() - 4)

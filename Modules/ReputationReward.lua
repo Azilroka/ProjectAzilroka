@@ -25,18 +25,8 @@ local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
 local GetQuestLogTitle = _G.GetQuestLogTitle
 local GetQuestLogSelection = _G.GetQuestLogSelection
 local C_QuestLog = _G.C_QuestLog
-local GetNumQuestLogRewards = _G.GetNumQuestLogRewards
 local GetNumQuestLogChoices = _G.GetNumQuestLogChoices
-local GetNumQuestLogRewardCurrencies = _G.GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardMoney = _G.GetQuestLogRewardMoney
-local GetQuestLogRewardXP = _G.GetQuestLogRewardXP
-local GetQuestLogRewardHonor = _G.GetQuestLogRewardHonor
-local GetNumQuestRewards = _G.GetNumQuestRewards
 local GetNumQuestChoices = _G.GetNumQuestChoices
-local GetNumRewardCurrencies = _G.GetNumRewardCurrencies
-local GetRewardMoney = _G.GetRewardMoney
-local GetRewardXP = _G.GetRewardXP
-local GetRewardHonor = _G.GetRewardHonor
 local UnitAura = _G.UnitAura
 local QuestInfo_GetRewardButton = _G.QuestInfo_GetRewardButton
 local SetItemButtonCount = _G.SetItemButtonCount
@@ -117,39 +107,16 @@ function RR:Show()
 		return
 	end
 
-	local numQuestRewards, numQuestChoices, numQuestCurrencies = 0, 0, 0
-	local money, xp, honor
+	local numQuestChoices = 0
 
 	if ( _G.QuestInfoFrame.questLog ) then
 		local questID = select(8, GetQuestLogTitle(GetQuestLogSelection()))
 		if C_QuestLog.ShouldShowQuestRewards(questID) then
-			numQuestRewards = GetNumQuestLogRewards()
 			numQuestChoices = GetNumQuestLogChoices()
-			numQuestCurrencies = GetNumQuestLogRewardCurrencies()
-			money = GetQuestLogRewardMoney();
-			xp = GetQuestLogRewardXP();
-			honor = GetQuestLogRewardHonor();
 		end
 	else
-		numQuestRewards = GetNumQuestRewards()
 		numQuestChoices = GetNumQuestChoices()
-		numQuestCurrencies = GetNumRewardCurrencies()
-		money = GetRewardMoney();
-		xp = GetRewardXP();
-		honor = GetRewardHonor();
 	end
-
-	local rewardsFrame = _G.QuestInfoFrame.rewardsFrame
-
-	local totalRewards = numQuestRewards + numQuestChoices + numQuestCurrencies
-	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
-
-	--if rewardsFrame.SkillPointFrame:IsShown() then
-	--	lastFrame = rewardsFrame.SkillPointFrame
-	--end
-
-	local baseIndex = totalRewards or 0
-	local buttonIndex = numQuestChoices == 1 and 1 or numQuestRewards > 0 and numQuestRewards or numQuestCurrencies > 0 and numQuestCurrencies or 0
 
 	wipe(RR.ReputationInfo)
 
@@ -184,26 +151,18 @@ function RR:Show()
 		end
 	end
 
-	local lastFrame = rewardsFrame.ItemReceiveText
+	local rewardsFrame, lastFrame = QuestInfo_ShowRewards()
+	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
 
-	if ( _G.QuestInfoFrame.mapView ) then
-		if xp and xp > 0 then
-			lastFrame = rewardsFrame.XPFrame
-		end
-		if money and money > 0 and xp and xp == 0 then
-			lastFrame = rewardsFrame.MoneyFrame
-		end
-		if money and money > 0 and xp and xp > 0 then
-			lastFrame = rewardsFrame.XPFrame
-		end
-	else
-		if xp and xp > 0 then
-			lastFrame = rewardsFrame.XPFrame
+	local rewardButtons = rewardsFrame.RewardButtons;
+	local buttonIndex = 1
+	for index, rewardButton in ipairs(rewardButtons) do
+		if not rewardButton:IsShown() then
+			buttonIndex = index
+			break
 		end
 	end
 
-	local index
-	local i = 1
 	local Height = _G.QuestInfoFrame.rewardsFrame:GetHeight()
 
 	if not _G.QuestInfoFrame.rewardsFrame:IsShown() then
@@ -211,10 +170,7 @@ function RR:Show()
 	end
 
 	for _, Info in pairs(RR.ReputationInfo) do
-		buttonIndex = buttonIndex + 1
-		index = i + baseIndex
-
-		local questItem = QuestInfo_GetRewardButton(rewardsFrame, index)
+		local questItem = QuestInfo_GetRewardButton(rewardsFrame, buttonIndex)
 		if questItem then
 			questItem:Show()
 
@@ -226,34 +182,33 @@ function RR:Show()
 			SetItemButtonTexture(questItem, PA.MyFaction and (PA.MyFaction == 'Neutral' and 'Interface/Icons/Achievement_Character_Pandaren_Female' or ('Interface/Icons/PVPCurrency-Conquest-%s'):format(PA.MyFaction)))
 			questItem.IconBorder:Hide()
 
-			if Info.Base < 0 then
-				questItem.Count:SetTextColor(1, 0, 0)
-			elseif Info.Bonus > 0 then
-				questItem.Count:SetTextColor(0, 1, 0)
-			else
-				questItem.Count:SetTextColor(1, 1, 1)
-			end
+			local r, g, b = 1, 1, 1
+			if Info.Base < 0 then r, g, b = 1, 0, 0 elseif Info.Bonus > 0 then r, g, b = 0, 1, 0 end
+
+			questItem.Count:SetTextColor(r, g, b)
+			questItem:ClearAllPoints()
 
 			if (buttonIndex > 1) then
-				if ( mod(buttonIndex, 2) == 1 ) then
-					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, index - 2) or lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+				if mod(buttonIndex, 2) == 1 then
+					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 2) or lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 					lastFrame = questItem
 				else
-					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, index - 1) or lastFrame, 'TOPRIGHT', 2, 0)
+					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 1) or lastFrame, 'TOPRIGHT', 2, 0)
 				end
 			else
 				questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 				Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 				lastFrame = questItem
 			end
-			i = i + 1
+
+			buttonIndex = buttonIndex + 1
 		end
 	end
 
 	if ( numQuestChoices == 1 ) then
 		local a, b, c, d, e = _G.QuestInfoFrame.rewardsFrame.ItemReceiveText:GetPoint()
-		_G.QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - (((i % 2) == 1 and ((i / 2) * (buttonHeight + REWARDS_SECTION_OFFSET)) or 0)))
+		_G.QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - ((((buttonIndex - 1) % 2) == 1 and (((buttonIndex - 1) / 2) * (buttonHeight + REWARDS_SECTION_OFFSET)) or 0)))
 	end
 
 	_G.QuestInfoFrame.rewardsFrame:Show()
@@ -261,57 +216,15 @@ function RR:Show()
 end
 
 function RR:GetOptions()
-	PA.Options.args.ReputationReward = {
-		type = 'group',
-		name = RR.Title,
-		desc = RR.Description,
-		get = function(info) return RR.db[info[#info]] end,
-		set = function(info, value) RR.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = RR.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					RR.db[info[#info]] = value
-					if (not RR.isEnabled) then
-						RR:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				args = {
-					ShowAll = {
-						order = 1,
-						type = 'toggle',
-						name = 'Show All Reputation',
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -1,
-				type = 'description',
-				name = RR.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.ReputationReward = PA.ACH:Group(RR.Title, RR.Description, nil, nil, function(info) return RR.db[info[#info]] end, function(info, value) RR.db[info[#info]] = value end)
+	PA.Options.args.ReputationReward.args.Header = PA.ACH:Header(RR.Header, 0)
+	PA.Options.args.ReputationReward.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) RR.db[info[#info]] = value if (not RR.isEnabled) then RR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.ReputationReward.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	PA.Options.args.ReputationReward.args.General.guiInline = true
+	PA.Options.args.ReputationReward.args.General.args.ShowAll = PA.ACH:Toggle(PA.ACL['Show All Reputation'], nil, 1)
+
+	PA.Options.args.ReputationReward.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.ReputationReward.args.Authors = PA.ACH:Description(RR.Authors, -1, 'large')
 end
 
 function RR:BuildProfile()
@@ -347,49 +260,5 @@ function RR:Initialize()
 
 	RR:BuildFactionHeaders()
 
---[[
-	QUEST_TEMPLATE_DETAIL.elements = {
-			QuestInfo_ShowTitle, 10, -10,
-			QuestInfo_ShowDescriptionText, 0, -5,
-			QuestInfo_ShowSeal, 0, 0,
-			QuestInfo_ShowObjectivesHeader, 0, -15,
-			QuestInfo_ShowObjectivesText, 0, -5,
-			QuestInfo_ShowSpecialObjectives, 0, -10,
-			QuestInfo_ShowGroupSize, 0, -10,
-			QuestInfo_ShowRewards, 0, -15,
-			RR.Show, 0, -15,
-			QuestInfo_ShowSpacer, 0, -15,
-		}
-
-	QUEST_TEMPLATE_LOG.elements = {
-			QuestInfo_ShowTitle, 5, -5,
-			QuestInfo_ShowType, 0, -5,
-			QuestInfo_ShowObjectivesText, 0, -5,
-			QuestInfo_ShowTimer, 0, -10,
-			QuestInfo_ShowObjectives, 0, -10,
-			QuestInfo_ShowSpecialObjectives, 0, -10,
-			QuestInfo_ShowRequiredMoney, 0, 0,
-			QuestInfo_ShowGroupSize, 0, -10,
-			QuestInfo_ShowDescriptionHeader, 0, -10,
-			QuestInfo_ShowDescriptionText, 0, -5,
-			QuestInfo_ShowSeal, 0, 0,
-			QuestInfo_ShowRewards, 0, -10,
-			RR.Show, 0, -15,
-			QuestInfo_ShowSpacer, 0, -10
-		}
-
-	QUEST_TEMPLATE_REWARD.elements = {
-			QuestInfo_ShowTitle, 5, -10,
-			QuestInfo_ShowRewardText, 0, -5,
-			QuestInfo_ShowRewards, 0, -10,
-			RR.Show, 0, -15,
-			QuestInfo_ShowSpacer, 0, -10
-		}
-
-	QUEST_TEMPLATE_MAP_REWARDS.elements = {
-			QuestInfo_ShowRewards, 8, -42,
-			RR.Show, 0, -15,
-		}
-]]
 	RR:SecureHook('QuestInfo_Display', 'Show')
 end
