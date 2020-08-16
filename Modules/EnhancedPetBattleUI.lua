@@ -130,11 +130,12 @@ function EPB:EnemyIconOnEnter()
 			if petLink then
 				GameTooltip:AddLine(" ")
 				local breed, breedIndex, h25, p25, s25 = ""
-				if _G.PetTracker then
-					breedIndex = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHealth, power, speed)
-					breed = EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breedIndex, 1) or _G.PetTracker:GetBreedName(breedIndex)
-					h25, p25, s25 = _G.PetTracker.Predict:Stats(speciesID, 25, rarity, breedIndex)
-				elseif BattlePetBreedID then
+				--if _G.PetTracker then
+				--	breedIndex = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHealth, power, speed)
+				--	breed = EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breedIndex, 1) or _G.PetTracker:GetBreedName(breedIndex)
+				--	h25, p25, s25 = _G.PetTracker.Predict:Stats(speciesID, 25, rarity, breedIndex)
+				--else
+				if BattlePetBreedID then
 					_G.BPBID_Options.format = 1 -- Forcing it, No Choice, I need this info
 					breedIndex = _G.GetBreedID_Battle(parent)
 					_G.BPBID_Options.format = 3 -- Forcing it, No Choice, I need this info
@@ -145,7 +146,7 @@ function EPB:EnemyIconOnEnter()
 				end
 				GameTooltip:AddDoubleLine(petLink, breed, 1, 1, 1, 1, 1, 1)
 				GameTooltip:AddDoubleLine("Species ID", speciesID, 1, 1, 1, 1, 0, 0)
-				if EPB.db["EnhanceTooltip"] and (_G.PetTracker or BattlePetBreedID) then
+				if EPB.db["EnhanceTooltip"] and BattlePetBreedID then -- _G.PetTracker
 					GameTooltip:AddDoubleLine(format("%s %d", _G.LEVEL, level), format("%s %d", _G.LEVEL, 25), 1, 1, 1, 1, 1, 1)
 					GameTooltip:AddDoubleLine(format("%s %s", EPB.TooltipHealthIcon, maxHealth), h25, 1, 1, 1, 1, 1, 1)
 					GameTooltip:AddDoubleLine(format("%s %s", EPB.TooltipPowerIcon, power), p25, 1, 1, 1, 1, 1, 1)
@@ -1139,10 +1140,11 @@ function EPB:InitPetFrameAPI()
 					pet.Power:SetTextColor(unpack(power > pet.OldPower and EPB.Colors.Green or power < pet.OldPower and EPB.Colors.Red or EPB.Colors.White))
 					pet.Speed:SetTextColor(unpack(speed > pet.OldSpeed and EPB.Colors.Green or speed < pet.OldSpeed and EPB.Colors.Red or EPB.Colors.White))
 
-					if _G.PetTracker then
-						local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
-						pet.BreedID:SetText(EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breed, .9) or _G.PetTracker:GetBreedName(breed))
-					elseif BattlePetBreedID then
+					--if _G.PetTracker then
+					--	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
+					--	pet.BreedID:SetText(EPB.db["PetTrackerIcon"] and _G.PetTracker:GetBreedIcon(breed, .9) or _G.PetTracker:GetBreedName(breed))
+					--else
+					if BattlePetBreedID then
 						pet.BreedID:SetText(_G.GetBreedID_Battle(pet))
 					end
 
@@ -1292,7 +1294,7 @@ function EPB:GetOptions()
 						name = "Enhance Tooltip",
 						desc = "Add More Detailed Info if BreedInfo is available.",
 						disabled = function()
-							return not (_G.PetTracker or BattlePetBreedID)
+							return not BattlePetBreedID
 						end
 					},
 					LevelBreakdown = {
@@ -1301,7 +1303,7 @@ function EPB:GetOptions()
 						name = "Level Breakdown",
 						desc = "Add Pet Level Breakdown if BreedInfo is available.",
 						disabled = function()
-							return not (EPB.db["EnhanceTooltip"] and (_G.PetTracker or BattlePetBreedID))
+							return not (EPB.db["EnhanceTooltip"] and BattlePetBreedID)
 						end
 					},
 					UseoUF = {

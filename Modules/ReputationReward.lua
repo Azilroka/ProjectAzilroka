@@ -152,6 +152,7 @@ function RR:Show()
 	end
 
 	local rewardsFrame, lastFrame = QuestInfo_ShowRewards()
+	if not rewardsFrame then return end
 	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
 
 	local rewardButtons = rewardsFrame.RewardButtons;

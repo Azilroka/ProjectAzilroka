@@ -308,6 +308,7 @@ function stAM:BuildFrame()
 
 	for i = 1, 30 do
 		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
+		CheckButton:Hide()
 		PA:SetTemplate(CheckButton)
 		CheckButton:SetSize(Width, Height)
 		CheckButton:SetPoint(unpack(i == 1 and {'TOPLEFT', AddOns, 'TOPLEFT', 10, -10} or {'TOP', AddOns.Buttons[i-1], 'BOTTOM', 0, -5}))
@@ -602,8 +603,6 @@ function stAM:UpdateAddonList()
 		local addonIndex = (not stAM.searchQuery and (stAM.scrollOffset + i)) or stAM.Frame.Search.AddOns[stAM.scrollOffset + i]
 		local info = stAM.AddOnInfo[addonIndex]
 
-		button:SetShown(i <= min(#stAM.Frame.Search.AddOns > 0 and #stAM.Frame.Search.AddOns or stAM.db.NumAddOns, stAM.db.NumAddOns))
-
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
 			button.name, button.title, button.authors, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Notes, info.Required, info.Optional
 			button.Text:SetText(button.title)
@@ -630,6 +629,9 @@ function stAM:UpdateAddonList()
 
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
 			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
+			button:SetShown(i <= min(#stAM.Frame.Search.AddOns > 0 and #stAM.Frame.Search.AddOns or stAM.db.NumAddOns, stAM.db.NumAddOns))
+		else
+			button:SetShown(false)
 		end
 	end
 end

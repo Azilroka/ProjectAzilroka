@@ -221,6 +221,7 @@ function PA:SetTemplate(frame)
 	if PA.AddOnSkins then
 		_G.AddOnSkins[1]:SetTemplate(frame)
 	else
+		if not frame.SetBackdrop then Mixin(frame, BackdropTemplateMixin) end
 		if frame.SetTemplate then
 			frame:SetTemplate('Transparent', true)
 		else
@@ -237,13 +238,12 @@ function PA:CreateBackdrop(frame)
 	else
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
+		if not frame.Backdrop.SetBackdrop then Mixin(frame.Backdrop, BackdropTemplateMixin) end
 		if frame.SetTemplate then
 			frame.Backdrop:SetTemplate('Transparent', true)
 		else
-			frame.Backdrop:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+			PA:SetTemplate(frame.Backdrop)
 		end
-		frame.Backdrop:SetBackdropColor(.08, .08, .08, .8)
-		frame.Backdrop:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
 	end
 end
 
