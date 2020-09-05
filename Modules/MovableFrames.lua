@@ -64,6 +64,9 @@ local AddOnFrames = {
 	Blizzard_AchievementUI = {
 		AchievementFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 96, -116 }
 	},
+	Blizzard_AnimaDiversionUI = {
+		AnimaDiversionFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
 	Blizzard_ArchaeologyUI = {
 		ArchaeologyFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
 	},
@@ -89,19 +92,25 @@ local AddOnFrames = {
 		CalendarViewHolidayFrame = { "TOPLEFT", _G.CalendarFrame, "TOPRIGHT", 3, -24 },
 	},
 	Blizzard_ChallengesUI = {
-		ChallengesKeystoneFrame = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		ChallengesKeystoneFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
 	Blizzard_Channels = {
-		ChannelFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 },
+		ChannelFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -96 }
 	},
 	Blizzard_Collections = {
 		CollectionsJournal = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
 	},
 	Blizzard_Communities = {
-		CommunitiesFrame = { "CENTER", "UIParent", "CENTER", 0, 0 },
+		CommunitiesFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
+	Blizzard_CovenantPreviewUI = {
+		CovenantPreviewFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
+	Blizzard_CovenantSanctum = {
+		CovenantSanctumFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
 	Blizzard_CraftUI = {
-		CraftFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 },
+		CraftFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
 	},
 	Blizzard_EncounterJournal = {
 		EncounterJournal = { "CENTER", "UIParent", "CENTER", 0, 0 }
@@ -139,12 +148,18 @@ local AddOnFrames = {
 	Blizzard_OrderHallUI = {
 		OrderHallTalentFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 32, -116 }
 	},
+	Blizzard_PlayerChoiceUI = {
+		PlayerChoiceFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
+	},
 	Blizzard_QuestChoice = {
 		QuestChoiceFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
 	Blizzard_TalentUI = {
 		PlayerTalentFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
 		TalentFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 100, -84 },
+	},
+	Blizzard_Soulbinds = {
+		SoulbindViewer = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
 	},
 	Blizzard_ScrappingMachineUI = {
 		ScrappingMachineFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
@@ -160,6 +175,9 @@ local AddOnFrames = {
 	},
 	Blizzard_VoidStorageUI = {
 		VoidStorageFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 16, -116 }
+	},
+	Blizzard_WeeklyRewards = {
+		WeeklyRewardsFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
 }
 
