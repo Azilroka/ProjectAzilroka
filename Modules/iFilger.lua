@@ -800,7 +800,7 @@ end
 function iFilger:GetOptions()
 	iFilger.db = PA.db.iFilger
 
-	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, nil, function(info) return iFilger.db[info[#info]] end, function(info, value) iFilger.db[info[#info]] = value end)
+	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, 'tab', function(info) return iFilger.db[info[#info]] end, function(info, value) iFilger.db[info[#info]] = value end)
 	PA.Options.args.iFilger.args.Header = PA.ACH:Header(iFilger.Header, 0)
 	PA.Options.args.iFilger.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) iFilger.db[info[#info]] = value if (not iFilger.isEnabled) then iFilger:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 	PA.Options.args.iFilger.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
@@ -812,7 +812,6 @@ function iFilger:GetOptions()
 			name = Name,
 			get = function(info) return iFilger.db[Name][info[#info]] end,
 			set = function(info, value) iFilger.db[Name][info[#info]] = value iFilger:UpdateAll() end,
-			childGroups = 'tree',
 			args = {
 				Enable = {
 					type = 'toggle',
@@ -855,6 +854,7 @@ function iFilger:GetOptions()
 				IconStack = {
 					type = 'group',
 					name = 'Stack Count',
+					inline = true,
 					order = 10,
 					args = {
 						StackCountFont = {
@@ -881,6 +881,7 @@ function iFilger:GetOptions()
 					type = 'group',
 					name = 'StatusBar',
 					order = 11,
+					inline = true,
 					args = {
 						StatusBar = {
 							order = 1,
@@ -1012,6 +1013,7 @@ function iFilger:GetOptions()
 					type = 'group',
 					name = PA.ACL["Filters"],
 					order = 12,
+					inline = true,
 					hidden = Name == 'Cooldowns',
 					args = {
 						selectFilter = {
