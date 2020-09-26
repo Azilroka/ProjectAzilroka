@@ -651,6 +651,7 @@ function SMB:Initialize()
 	SMB.Bar:SetMovable(true)
 	SMB.Bar:EnableMouse(true)
 	SMB.Bar:SetSize(SMB.db.IconSize, SMB.db.IconSize)
+	PA:SetTemplate(SMB.Bar)
 
 	SMB.Bar:SetScript('OnEnter', function(s) UIFrameFadeIn(s, 0.2, s:GetAlpha(), 1) end)
 	SMB.Bar:SetScript('OnLeave', function(s)
