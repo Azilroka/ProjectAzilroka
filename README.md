@@ -2,17 +2,17 @@
 
 ## Modules description  
 
-Cooldown Text  
+** Cooldown Text **  
 > Adjust Text Threshold, Low Threshold colors, Time Indicator colors and Fonts  
 
-Aura Reminder  
+** Aura Reminder **  
 > Add custom spell IDs and setup a reminder icon/sound if they come off cooldown  
 
-Big Buttons  
+** Big Buttons **  
 > A farm tool for Sunsong Ranch, customize Farm Tool size and Seed size  
 
-BrokerLDB  
-> Provides a custom DataBroker bar with custom options like mouseover width and height  
+** BrokerLDB **  
+* Provides a custom DataBroker bar with custom options like mouseover width and height *  
 
 DragonOverlay  
 > An overlay on UnitFrames for Boss, Elite, Rare and RareElite mobs  
