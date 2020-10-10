@@ -1,17 +1,60 @@
-I compiled my other addons into a single addon so I won't have to update multiple projects.
+# ProjectAzilroka  
 
-AddOns:
+## Modules description  
 
-BigButtons - 'A farm tool for Sunsong Ranch.'
-Dragon Overlay - 'Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite'
-Enhanced Config (Tukui Ace3 Config for all my projects)
-Enhanced Friends List - 'Provides Friends List Customization'
-Enhanced Shadows (Does not work in SLE & NihilistUI) - 'Adds options for registered shadows'
-Square Minimap Buttons/Bar - 'Minimap Button Bar / Minimap Button Skinning'
-Loot Confirm - 'Confirms Loot for Solo/Groups (Need/Greed/Disenchant)'
-Movable Frames - 'Make Blizzard Frames Movable'
-stAddonManager - 'A simple and minimalistic addon to disable/enabled addons without logging out.'
+> Cooldown Text  
+>> Adjust Text Threshold, Low Threshold colors, Time Indicator colors and Fonts  
 
-You can enable / disable these addons in the ProjectAzilroka section in the config.
+> Aura Reminder  
+>> Add custom spell IDs and setup a reminder icon/sound if they come off cooldown  
 
-If it isn't in the list in the config then it's disabled automatically.
+> Big Buttons  
+>> A farm tool for Sunsong Ranch, customize Farm Tool size and Seed size  
+
+> BrokerLDB  
+>> Provides a custom DataBroker bar with custom options like mouseover width and height  
+
+> DragonOverlay  
+>> An overlay on UnitFrames for Boss, Elite, Rare and RareElite mobs  
+
+> Enhanced Friends List  
+>> Friendlist customization for font size, icon style, texture and more  
+
+> Enhanced Pet Battle UI  
+>> Additional options for pet battles: Enhanced tooltips, portraits, fonts and more  
+
+> Enhanced Shadows  
+>> Adds options for already registered shadows: Color, Size, Color by class  
+
+> Faster Loot  
+>> Increases Auto-Loot speed near instantaneous  
+
+> iFilger  
+>> Minimalistic Auras(Buffs/Debuffs), Procs and Cooldowns manager  
+
+> Master Experience  
+>> Shows experience bars for party / battle.net friends with real-time update  
+
+> MouseoverAuras  
+>> Display Auras(Buffs/Debuffs) on your mouseover target (cursor anchor)  
+
+> Moveable Frames  
+>> Make Blizzard Frames moveable (e.g. Character Frame, Friendlist, Guild frame)  
+
+> OzCooldowns  
+>> Minimalistic class cooldowns options and Masque support  
+
+> QuestSounds  
+>> Audio for Quest progress and completions based on SharedMedia  
+
+> ReputationRewards  
+>> Adds reputation into the Quest log and Quest frame  
+
+> Square Minimap Buttons  
+>> Minimap AddOn button skinning and a bar to gather them all (Options: Mouseover, Shadows, Backdrop and more)  
+
+> stAddonManager  
+>> A simple and minimalistic module to customize the ingame Addon list (e.g. Font, Texture, Width, Height)  
+
+> TargetSounds  
+>> Audio for Target Sounds  
