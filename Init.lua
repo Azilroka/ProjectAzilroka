@@ -238,6 +238,7 @@ function PA:CreateBackdrop(frame)
 	else
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
+		frame.Backdrop:SetOutside(frame)
 		if not frame.Backdrop.SetBackdrop then Mixin(frame.Backdrop, BackdropTemplateMixin) end
 		if frame.SetTemplate then
 			frame.Backdrop:SetTemplate('Transparent', true)

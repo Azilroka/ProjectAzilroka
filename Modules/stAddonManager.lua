@@ -684,7 +684,7 @@ function stAM:GetOptions()
 	PA.Options.args.stAM.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) stAM.db[info[#info]] = value if not stAM.isEnabled then stAM:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.stAM.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.stAM.args.General.guiInline = true
+	PA.Options.args.stAM.args.General.inline = true
 
 	PA.Options.args.stAM.args.General.args.NumAddOns = PA.ACH:Range(PA.ACL['# Shown AddOns'], nil, 1, { min = 3, max = 30, step = 1 })
 	PA.Options.args.stAM.args.General.args.FrameWidth = PA.ACH:Range(PA.ACL['Frame Width'], nil, 2, { min = 250, max = 2048, step = 2 })
@@ -696,7 +696,7 @@ function stAM:GetOptions()
 	PA.Options.args.stAM.args.General.args.ClassColor = PA.ACH:Toggle(PA.ACL['Class Color Check Texture'], nil, 8)
 
 	PA.Options.args.stAM.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
-	PA.Options.args.stAM.args.General.args.FontSettings.guiInline = true
+	PA.Options.args.stAM.args.General.args.FontSettings.inline = true
 	PA.Options.args.stAM.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
 	PA.Options.args.stAM.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
 	PA.Options.args.stAM.args.General.args.FontSettings.args.FontFlag = PA.ACH:Select(PA.ACL['Font Outline'], nil, 3, PA.FontFlags)

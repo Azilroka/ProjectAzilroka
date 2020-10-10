@@ -65,7 +65,7 @@ function DO:GetOptions()
 	PA.Options.args.DragonOverlay.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) DO.db[info[#info]] = value if not DO.isEnabled then DO:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.DragonOverlay.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end)
-	PA.Options.args.DragonOverlay.args.General.guiInline = true
+	PA.Options.args.DragonOverlay.args.General.inline = true
 
 	PA.Options.args.DragonOverlay.args.General.args.ClassIcon = PA.ACH:Toggle(PA.ACL['Class Icon'], nil, 1)
 	PA.Options.args.DragonOverlay.args.General.args.FlipDragon = PA.ACH:Toggle(PA.ACL['Flip Dragon'], nil, 2)
@@ -76,14 +76,14 @@ function DO:GetOptions()
 	PA.Options.args.DragonOverlay.args.General.args.Height = PA.ACH:Range(PA.ACL['Height'], nil, 7, { min = 1, max = 256, step = 1 })
 
 	PA.Options.args.DragonOverlay.args.General.args.Dragons = PA.ACH:Group(PA.ACL['Dragons'], nil, -6)
-	PA.Options.args.DragonOverlay.args.General.args.Dragons.guiInline = true
+	PA.Options.args.DragonOverlay.args.General.args.Dragons.inline = true
 
 	PA.Options.args.DragonOverlay.args.General.args.Textures = PA.ACH:Group(PA.ACL['Preview'], nil, -5)
-	PA.Options.args.DragonOverlay.args.General.args.Textures.guiInline = true
+	PA.Options.args.DragonOverlay.args.General.args.Textures.inline = true
 
 	for Option, Name in pairs({ ClassIconPoints = PA.ACL['Class Icon Points'], DragonPoints = PA.ACL['Dragon Points'] }) do
 		PA.Options.args.DragonOverlay.args.General.args[Option] = PA.ACH:Group(Name, nil, nil, nil, function(info) return DO.db[Option][info[#info]] end, function(info, value) DO.db[Option][info[#info]] = value DO:SetOverlay() end)
-		PA.Options.args.DragonOverlay.args.General.args[Option].guiInline = true
+		PA.Options.args.DragonOverlay.args.General.args[Option].inline = true
 		PA.Options.args.DragonOverlay.args.General.args[Option].args.point = PA.ACH:Select(PA.ACL['Anchor Point'], nil, 1, PA.AllPoints)
 		PA.Options.args.DragonOverlay.args.General.args[Option].args.relativeTo = PA.ACH:Select(PA.ACL['Relative Frame'], nil, 2, {})
 		PA.Options.args.DragonOverlay.args.General.args[Option].args.relativePoint = PA.ACH:Select(PA.ACL['Relative Point'], nil, 3, PA.AllPoints)

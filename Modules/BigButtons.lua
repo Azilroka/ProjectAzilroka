@@ -242,7 +242,7 @@ function BB:GetOptions()
 	PA.Options.args.BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
-	PA.Options.args.BigButtons.args.General.guiInline = true
+	PA.Options.args.BigButtons.args.General.inline = true
 	PA.Options.args.BigButtons.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
 	PA.Options.args.BigButtons.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
 	PA.Options.args.BigButtons.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })

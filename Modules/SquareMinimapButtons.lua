@@ -575,10 +575,10 @@ function SMB:GetOptions()
 	PA.Options.args.SquareMinimapButtons.args.Header = PA.ACH:Header(SMB.Header, 0)
 	PA.Options.args.SquareMinimapButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SMB.db[info[#info]] = value if (not SMB.isEnabled) then SMB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 	PA.Options.args.SquareMinimapButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.SquareMinimapButtons.args.General.guiInline = true
+	PA.Options.args.SquareMinimapButtons.args.General.inline = true
 
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB = PA.ACH:Group(PA.ACL['Minimap Buttons / Bar'], nil, 1)
-	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.guiInline = true
+	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.inline = true
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.BarEnabled = PA.ACH:Toggle(PA.ACL['Enable Bar'], nil, 1)
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.BarMouseOver = PA.ACH:Toggle(PA.ACL['Bar MouseOver'], nil, 2)
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.Backdrop = PA.ACH:Toggle(PA.ACL['Bar Backdrop'], nil, 3)
@@ -589,7 +589,7 @@ function SMB:GetOptions()
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
 
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard = PA.ACH:Group(PA.ACL['Blizzard'], nil, 2, nil, nil, function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end)
-	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.guiInline = true
+	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.inline = true
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.args.HideGarrison = PA.ACH:Toggle(PA.ACL['Hide Garrison'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.MoveGarrison end, function() return PA.Classic end)
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.args.MoveGarrison = PA.ACH:Toggle(PA.ACL['Move Garrison Icon'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.HideGarrison end, function() return PA.Classic end)
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.args.MoveMail = PA.ACH:Toggle(PA.ACL['Move Mail Icon'])

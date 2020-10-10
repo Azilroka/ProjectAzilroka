@@ -475,7 +475,7 @@ function OzCD:GetOptions()
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
-				guiInline = true,
+				inline = true,
 				args = {
 					Masque = {
 						order = 0,
@@ -510,7 +510,7 @@ function OzCD:GetOptions()
 					Icons = {
 						order = 6,
 						type = 'group',
-						guiInline = true,
+						inline = true,
 						name = PA.ACL['Icons'],
 						args = {
 							Vertical = {
@@ -564,7 +564,7 @@ function OzCD:GetOptions()
 					StatusBars = {
 						order = 7,
 						type = 'group',
-						guiInline = true,
+						inline = true,
 						name = PA.ACL['Status Bar'],
 						disabled = function() return not OzCD.db.StatusBar end,
 						args = {
@@ -601,7 +601,7 @@ function OzCD:GetOptions()
 						order = 8,
 						type = 'group',
 						name = _G.SPELLS,
-						guiInline = true,
+						inline = true,
 						args = OzCD:GenerateSpellOptions(),
 						get = function(info) return OzCD.db.SpellCDs[tonumber(info[#info])] end,
 						set = function(info, value)	OzCD.db.SpellCDs[tonumber(info[#info])] = value end,

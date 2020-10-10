@@ -236,7 +236,7 @@ function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value if not BrokerLDB.isEnabled then BrokerLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.BrokerLDB.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value BrokerLDB:Update() end)
-	PA.Options.args.BrokerLDB.args.General.guiInline = true
+	PA.Options.args.BrokerLDB.args.General.inline = true
 
 	PA.Options.args.BrokerLDB.args.General.args.ShowIcon = PA.ACH:Toggle(PA.ACL['Show Icon'], nil, 1)
 	PA.Options.args.BrokerLDB.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 2)
@@ -245,7 +245,7 @@ function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB.args.General.args.PanelWidth = PA.ACH:Range(PA.ACL['Panel Width'], nil, 5, { min = 0, softMin = 140, max = 280, step = 1 })
 
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
-	PA.Options.args.BrokerLDB.args.General.args.FontSettings.guiInline = true
+	PA.Options.args.BrokerLDB.args.General.args.FontSettings.inline = true
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:Select(PA.ACL['Font Outline'], nil, 3, PA.FontFlags)

@@ -145,7 +145,7 @@ function QS:GetOptions()
 	PA.Options.args.QuestSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) QS.db[info[#info]] = value if (not QS.isEnabled) then QS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.QuestSounds.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.QuestSounds.args.General.guiInline = true
+	PA.Options.args.QuestSounds.args.General.inline = true
 
 	PA.Options.args.QuestSounds.args.General.args.LSM = PA.ACH:Group(PA.ACL['Sound by LSM'], nil, 1, nil, nil, nil, function() return QS.db.UseSoundID end)
 	PA.Options.args.QuestSounds.args.General.args.LSM.args.QuestComplete = PA.ACH:SharedMediaSound('Quest Complete', nil, 1)

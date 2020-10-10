@@ -288,90 +288,30 @@ function MF:ADDON_LOADED(_, addon)
 end
 
 function MF:GetOptions()
-	PA.Options.args.MovableFrames = {
-		type = 'group',
-		name = MF.Title,
-		desc = MF.Description,
-		childGroups = 'tab',
-		get = function(info) return MF.db[info[#info]] end,
-		set = function(info, value) MF.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = MF.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					MF.db[info[#info]] = value
-					if (not MF.isEnabled) then
-						MF:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				args = {
-					Permanent = {
-						order = 1,
-						type = 'group',
-						guiInline = true,
-						name = PA.ACL['Permanent Moving'],
-						get = function(info) return MF.db[info[#info]].Permanent end,
-						set = function(info, value) MF.db[info[#info]].Permanent = value end,
-						args = {},
-					},
-					Reset = {
-						order = 2,
-						type = 'group',
-						guiInline = true,
-						name = PA.ACL['Reset Moving'],
-						args = {},
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -2,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -1,
-				type = 'description',
-				name = MF.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.MovableFrames = PA.ACH:Group(MF.Title, MF.Description, nil, nil, function(info) return MF.db[info[#info]] end, function(info, value) MF.db[info[#info]] = value MF:Update() end)
+	PA.Options.args.MovableFrames.args.Header = PA.ACH:Header(MF.Header, 0)
+	PA.Options.args.MovableFrames.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.MovableFrames.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	PA.Options.args.MovableFrames.args.General.inline = true
+
+	PA.Options.args.MovableFrames.args.General.args.Permanent = PA.ACH:MultiSelect(PA.ACL['Permanent Moving'], nil, 1, {}, nil, nil, function(_, key) return MF.db[key].Permanent end, function(_, key, value) MF.db[key].Permanent = value end)
+	PA.Options.args.MovableFrames.args.General.args.Reset = PA.ACH:Group(PA.ACL['Reset Moving'], nil, 2)
+	PA.Options.args.MovableFrames.args.General.args.Reset.inline = true
 
 	for Frame in pairs(Frames) do
-		PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = PA.ACH:Toggle(Frame)
+		PA.Options.args.MovableFrames.args.General.args.Permanent.values[Frame] = Frame
 		PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = PA.ACH:Execute(Frame, nil, nil, function(info) _G.HideUIPanel(_G[info[#info]]) end, nil, nil, nil, nil, nil, function(info) return not MF.db[info[#info]].Permanent end)
 	end
 
 	for _, Table in pairs(AddOnFrames) do
 		for Frame in pairs(Table) do
-			PA.Options.args.MovableFrames.args.General.args.Permanent.args[Frame] = {
-				type = 'toggle',
-				name = Frame,
-			}
-
-			PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = {
-				type = 'execute',
-				name = Frame,
-				disabled = function(info) return not MF.db[info[#info]].Permanent end,
-				func = function(info) _G.HideUIPanel(_G[info[#info]]) end,
-			}
+			PA.Options.args.MovableFrames.args.General.args.Permanent.values[Frame] = Frame
+			PA.Options.args.MovableFrames.args.General.args.Reset.args[Frame] = PA.ACH:Execute(Frame, nil, nil, function(info) _G.HideUIPanel(_G[info[#info]]) end, nil, nil, nil, nil, nil, function(info) return not MF.db[info[#info]].Permanent end)
 		end
 	end
+
+	PA.Options.args.MovableFrames.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.MovableFrames.args.Authors = PA.ACH:Description(MF.Authors, -1, 'large')
 end
 
 function MF:BuildProfile()

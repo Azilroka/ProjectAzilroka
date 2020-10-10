@@ -221,7 +221,7 @@ function RR:GetOptions()
 	PA.Options.args.ReputationReward.args.Header = PA.ACH:Header(RR.Header, 0)
 	PA.Options.args.ReputationReward.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) RR.db[info[#info]] = value if (not RR.isEnabled) then RR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 	PA.Options.args.ReputationReward.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.ReputationReward.args.General.guiInline = true
+	PA.Options.args.ReputationReward.args.General.inline = true
 	PA.Options.args.ReputationReward.args.General.args.ShowAll = PA.ACH:Toggle(PA.ACL['Show All Reputation'], nil, 1)
 
 	PA.Options.args.ReputationReward.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)

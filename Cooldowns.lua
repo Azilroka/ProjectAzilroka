@@ -443,7 +443,7 @@ local function group(order, db, label)
 				order = 5,
 				type = "group",
 				name = PA.ACL["Text Threshold"],
-				guiInline = true,
+				inline = true,
 				get = function(info) return (profile(db))[info[#info]] end,
 				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
 				disabled = function() return not (profile(db)).checkSeconds end,
@@ -475,7 +475,7 @@ local function group(order, db, label)
 				order = 10,
 				type = "group",
 				name = PA.ACL["Color Override"],
-				guiInline = true,
+				inline = true,
 				args = {
 					override = {
 						type = "toggle",
@@ -623,7 +623,7 @@ local function group(order, db, label)
 				order = 20, -- keep this at the bottom
 				type = "group",
 				name = PA.ACL["Fonts"],
-				guiInline = true,
+				inline = true,
 				get = function(info) return (profile(db)).fonts[info[#info]] end,
 				set = function(info, value) (profile(db)).fonts[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
 				disabled = function() return not (profile(db)).fonts.enable end,

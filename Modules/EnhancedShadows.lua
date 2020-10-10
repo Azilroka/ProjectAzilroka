@@ -94,7 +94,7 @@ function ES:GetOptions()
 				order = 2,
 				type = 'group',
 				name = PA.ACL['General'],
-				guiInline = true,
+				inline = true,
 				args = {
 					Color = {
 						type = "color",

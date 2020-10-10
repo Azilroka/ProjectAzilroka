@@ -393,7 +393,7 @@ function AR:GetOptions()
 				order = 5,
 				type = 'group',
 				name = PA.ACL['Filter Control'],
-				guiInline = true,
+				inline = true,
 				args = {
 					addFilter = {
 						order = 1,
@@ -482,7 +482,7 @@ function AR:GetOptions()
 				order = 8,
 				type = 'group',
 				name = function() return selectedFilter end,
-				guiInline = true,
+				inline = true,
 				get = function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] end,
 				set = function(info, value) AR.db.Filters[selectedGroup][selectedFilter][info[#info]] = value end,
 				hidden = function() return not selectedFilter end,
@@ -541,7 +541,7 @@ function AR:GetOptions()
 						order = 11,
 						type = 'group',
 						name = PA.ACL['Filter Conditions'],
-						guiInline = true,
+						inline = true,
 						args = {
 							level = {
 								order = 4,
@@ -583,7 +583,7 @@ function AR:GetOptions()
 						order = 12,
 						type = 'group',
 						name = PA.ACL['Cooldown Conditions'],
-						guiInline = true,
+						inline = true,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'COOLDOWN' or selectedGroup == 'Global' end,
 						args = {
 							dscription = {
@@ -627,7 +627,7 @@ function AR:GetOptions()
 						order = 13,
 						type = 'group',
 						name = PA.ACL['Spells'],
-						guiInline = true,
+						inline = true,
 						get = function(info)
 							AR:UpdateFilterGroup('spellGroup')
 							return ''
@@ -674,7 +674,7 @@ function AR:GetOptions()
 						order = 14,
 						type = 'group',
 						name = PA.ACL['Negate Spells'],
-						guiInline = true,
+						inline = true,
 						get = function(info)
 							AR:UpdateFilterGroup('negateGroup')
 							return ''

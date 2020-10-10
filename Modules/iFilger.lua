@@ -462,7 +462,7 @@ function iFilger:SetPosition(element)
 
 	local col, row
 	for i, button in ipairs(element) do
-		if(not button) then break end
+		if (not button) then break end
 		col = (i - 1) % cols
 		row = floor((i - 1) / cols)
 
@@ -959,7 +959,7 @@ function iFilger:GetOptions()
 							type = 'group',
 							name = 'Name',
 							order = 11,
-							guiInline = true,
+							inline = true,
 							disabled = function() return not iFilger.db[Name].StatusBar end,
 							args = {
 								StatusBarNameEnabled = {
@@ -985,7 +985,7 @@ function iFilger:GetOptions()
 							type = 'group',
 							name = 'Time',
 							order = 12,
-							guiInline = true,
+							inline = true,
 							disabled = function() return not iFilger.db[Name].StatusBar end,
 							args = {
 								StatusBarTimeEnabled = {
@@ -1033,7 +1033,7 @@ function iFilger:GetOptions()
 							type = 'group',
 							name = function() return selectedFilter end,
 							hidden = function() return not selectedFilter end,
-							guiInline = true,
+							inline = true,
 							order = 10,
 							args = {
 								addSpell = {
@@ -1117,7 +1117,7 @@ function iFilger:GetOptions()
 							end,
 							hidden = function() return not GetSelectedSpell() end,
 							order = -15,
-							guiInline = true,
+							inline = true,
 							args = {
 								enabled = {
 									name = PA.ACL["Enable"],
@@ -1151,6 +1151,7 @@ function iFilger:GetOptions()
 	PA.Options.args.iFilger.args.Cooldowns.args.IgnoreDuration = PA.ACH:Range(PA.ACL['Ignore Duration Threshold'], PA.ACL['Duration in Seconds'], 7, { min = 2, max = 600, step = 1 })
 
 	PA.Options.args.iFilger.args.Cooldowns.args.Spells = PA.ACH:Group(_G.SPELLS, nil, 12, nil, function(info) return iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] end, function(info, value) iFilger.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end)
+	PA.Options.args.iFilger.args.Cooldowns.args.Spells.inline = true
 	PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = iFilger:GenerateSpellOptions()
 end
 

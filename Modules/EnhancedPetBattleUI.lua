@@ -1259,7 +1259,7 @@ function EPB:GetOptions()
 				order = 2,
 				type = "group",
 				name = "General",
-				guiInline = true,
+				inline = true,
 				args = {
 					HideBlizzard = {
 						order = 1,

@@ -49,56 +49,19 @@ function LC:START_LOOT_ROLL(_, rollID)
 end
 
 function LC:GetOptions()
-	PA.Options.args.LootConfirm = {
-		type = 'group',
-		name = LC.Title,
-		desc = LC.Description,
-		get = function(info) return LC.db[info[#info]] end,
-		set = function(info, value) LC.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = LC.Header
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					LC.db[info[#info]] = value
-					if (not LC.isEnabled) then
-						LC:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				guiInline = true,
-				args = {
-					AutoRoll = {
-						order = 0,
-						type = 'description',
-						name = PA.ACL['If Disenchant and Greed is selected. It will always try to Disenchant first.'],
-					},
-					Disenchant = {
-						order = 1,
-						type = 'toggle',
-						name = PA.ACL['Auto Disenchant'],
-					},
-					Greed = {
-						order = 2,
-						type = 'toggle',
-						name = PA.ACL['Auto Greed'],
-					},
-				},
-			},
-		},
-	}
+	PA.Options.args.LootConfirm = PA.ACH:Group(LC.Title, LC.Description, nil, nil, function(info) return LC.db[info[#info]] end)
+	PA.Options.args.LootConfirm.args.Header = PA.ACH:Header(LC.Header, 0)
+	PA.Options.args.LootConfirm.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) LC.db[info[#info]] = value if not LC.isEnabled then LC:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.LootConfirm.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	PA.Options.args.LootConfirm.args.General.inline = true
+
+	PA.Options.args.LootConfirm.args.General.args.AutoRoll = PA.ACH:Description(PA.ACL['If Disenchant and Greed is selected. It will always try to Disenchant first.'], 0, 'large')
+	PA.Options.args.LootConfirm.args.General.args.Disenchant = PA.ACH:Toggle(PA.ACL['Auto Disenchant'], nil, 1)
+	PA.Options.args.LootConfirm.args.General.args.Greed = PA.ACH:Toggle(PA.ACL['Auto Greed'], nil, 2)
+
+	PA.Options.args.LootConfirm.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.LootConfirm.args.Authors = PA.ACH:Description(LC.Authors, -1, 'large')
 end
 
 function LC:BuildProfile()
@@ -108,8 +71,12 @@ function LC:BuildProfile()
 	}
 end
 
-function LC:Initialize()
+function LC:UpdateSettings()
 	LC.db = PA.db['LootConfirm']
+end
+
+function LC:Initialize()
+	LC:UpdateSettings()
 
 	if LC.db.Enable ~= true then
 		return
