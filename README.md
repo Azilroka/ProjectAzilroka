@@ -2,25 +2,25 @@
 
 ## Modules description  
 
-** Cooldown Text **  
-> Adjust Text Threshold, Low Threshold colors, Time Indicator colors and Fonts  
+**Cooldown Text**  
+* Adjust Text Threshold, Low Threshold colors, Time Indicator colors and Fonts  
 
 ** Aura Reminder **  
-> Add custom spell IDs and setup a reminder icon/sound if they come off cooldown  
+* Add custom spell IDs and setup a reminder icon/sound if they come off cooldown  
 
 ** Big Buttons **  
-> A farm tool for Sunsong Ranch, customize Farm Tool size and Seed size  
+* A farm tool for Sunsong Ranch, customize Farm Tool size and Seed size  
 
 ** BrokerLDB **  
-* Provides a custom DataBroker bar with custom options like mouseover width and height *  
+* Provides a custom DataBroker bar with custom options like mouseover width and height  
 
-DragonOverlay  
-> An overlay on UnitFrames for Boss, Elite, Rare and RareElite mobs  
+** DragonOverlay **  
+* An overlay on UnitFrames for Boss, Elite, Rare and RareElite mobs  
 
-Enhanced Friends List  
-> Friendlist customization for font size, icon style, texture and more  
+** Enhanced Friends List **  
+* Friendlist customization for font size, icon style, texture and more  
 
-Enhanced Pet Battle UI  
+** Enhanced Pet Battle UI **  
 > Additional options for pet battles: Enhanced tooltips, portraits, fonts and more  
 
 Enhanced Shadows  
