@@ -397,315 +397,74 @@ local function profile(db)
 end
 
 local function group(order, db, label)
-	PA.Options.args.cooldown.args[db] = {
-		type = "group",
-		order = order,
-		name = label,
-		get = function(info)
-			local t = (profile(db))[info[#info]]
-			return t.r, t.g, t.b, t.a
-		end,
-		set = function(info, r, g, b)
-			local t = (profile(db))[info[#info]]
-			t.r, t.g, t.b = r, g, b;
-			PA:UpdateCooldownSettings(db);
-		end,
-		args = {
-			header = {
-				order = 1,
-				type = "header",
-				name = label,
-			},
-			reverse = {
-				type = "toggle",
-				order = 2,
-				name = PA.ACL["Reverse Toggle"],
-				desc = PA.ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."],
-				get = function(info) return (profile(db))[info[#info]] end,
-				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-			},
-			hideBlizzard = {
-				type = "toggle",
-				order = 3,
-				name = PA.ACL["Force Hide Blizzard Text"],
-				desc = PA.ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."],
-				get = function(info) return (profile(db))[info[#info]] end,
-				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-				disabled = function()
-					if db == "global" then
-						return PA.db.Cooldown.Enable
-					else
-						return (PA.db.Cooldown.Enable and not profile(db).reverse) or (not PA.db.Cooldown.Enable and profile(db).reverse)
-					end
-				end,
-			},
-			secondsGroup = {
-				order = 5,
-				type = "group",
-				name = PA.ACL["Text Threshold"],
-				inline = true,
-				get = function(info) return (profile(db))[info[#info]] end,
-				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-				disabled = function() return not (profile(db)).checkSeconds end,
-				args = {
-					checkSeconds = {
-						type = "toggle",
-						order = 1,
-						name = PA.ACL["Enable"],
-						desc = PA.ACL["This will override the global cooldown settings."],
-						disabled = false,
-					},
-					mmssThreshold = {
-						order = 2,
-						type = 'range',
-						name = PA.ACL["MM:SS Threshold"],
-						desc = PA.ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."],
-						min = -1, max = 10800, step = 1,
-					},
-					hhmmThreshold = {
-						order = 3,
-						type = 'range',
-						name = PA.ACL["HH:MM Threshold"],
-						desc = PA.ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."],
-						min = -1, max = 1440, step = 1,
-					},
-				}
-			},
-			colorGroup = {
-				order = 10,
-				type = "group",
-				name = PA.ACL["Color Override"],
-				inline = true,
-				args = {
-					override = {
-						type = "toggle",
-						order = 1,
-						name = PA.ACL["Enable"],
-						desc = PA.ACL["This will override the global cooldown settings."],
-						get = function(info) return (profile(db))[info[#info]] end,
-						set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-					},
-					threshold = {
-						type = 'range',
-						order = 2,
-						name = PA.ACL["Low Threshold"],
-						desc = PA.ACL["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"],
-						min = -1, max = 20, step = 1,
-						disabled = function() return not (profile(db)).override end,
-						get = function(info) return (profile(db))[info[#info]] end,
-						set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-					},
-					spacer1 = {
-						order = 3,
-						type = "header",
-						name = PA.ACL["Threshold Colors"]
-					},
-					spacer2 = {
-						order = 4,
-						type = "description",
-						name = " "
-					},
-					expiringColor = {
-						type = 'color',
-						order = 5,
-						name = PA.ACL["Expiring"],
-						desc = PA.ACL["Color when the text is about to expire"],
-						disabled = function() return not (profile(db)).override end,
-					},
-					secondsColor = {
-						type = 'color',
-						order = 6,
-						name = PA.ACL["Seconds"],
-						desc = PA.ACL["Color when the text is in the seconds format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					minutesColor = {
-						type = 'color',
-						order = 7,
-						name = PA.ACL["Minutes"],
-						desc = PA.ACL["Color when the text is in the minutes format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					hoursColor = {
-						type = 'color',
-						order = 8,
-						name = PA.ACL["Hours"],
-						desc = PA.ACL["Color when the text is in the hours format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					daysColor = {
-						type = 'color',
-						order = 9,
-						name = PA.ACL["Days"],
-						desc = PA.ACL["Color when the text is in the days format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					mmssColor = {
-						type = 'color',
-						order = 10,
-						name = PA.ACL["MM:SS"],
-						disabled = function() return not (profile(db)).override end,
-					},
-					hhmmColor = {
-						type = 'color',
-						order = 11,
-						name = PA.ACL["HH:MM"],
-						disabled = function() return not (profile(db)).override end,
-					},
-					spacer3 = {
-						order = 12,
-						type = "header",
-						name = PA.ACL["Time Indicator Colors"]
-					},
-					useIndicatorColor = {
-						type = "toggle",
-						order = 13,
-						name = PA.ACL["Use Indicator Color"],
-						get = function(info) return (profile(db))[info[#info]] end,
-						set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-						disabled = function() return not (profile(db)).override end,
-					},
-					spacer4 = {
-						order = 14,
-						type = "description",
-						name = ''
-					},
-					expireIndicator = {
-						type = 'color',
-						order = 15,
-						name = PA.ACL["Expiring"],
-						desc = PA.ACL["Color when the text is about to expire"],
-						disabled = function() return not (profile(db)).override end,
-					},
-					secondsIndicator = {
-						type = 'color',
-						order = 16,
-						name = PA.ACL["Seconds"],
-						desc = PA.ACL["Color when the text is in the seconds format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					minutesIndicator = {
-						type = 'color',
-						order = 17,
-						name = PA.ACL["Minutes"],
-						desc = PA.ACL["Color when the text is in the minutes format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					hoursIndicator = {
-						type = 'color',
-						order = 18,
-						name = PA.ACL["Hours"],
-						desc = PA.ACL["Color when the text is in the hours format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					daysIndicator = {
-						type = 'color',
-						order = 19,
-						name = PA.ACL["Days"],
-						desc = PA.ACL["Color when the text is in the days format."],
-						disabled = function() return not (profile(db)).override end,
-					},
-					hhmmColorIndicator = {
-						type = 'color',
-						order = 20,
-						name = PA.ACL["MM:SS"],
-						disabled = function() return not (profile(db)).override end,
-					},
-					mmssColorIndicator = {
-						type = 'color',
-						order = 21,
-						name = PA.ACL["HH:MM"],
-						disabled = function() return not (profile(db)).override end,
-					},
-				}
-			},
-			fontGroup = {
-				order = 20, -- keep this at the bottom
-				type = "group",
-				name = PA.ACL["Fonts"],
-				inline = true,
-				get = function(info) return (profile(db)).fonts[info[#info]] end,
-				set = function(info, value) (profile(db)).fonts[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
-				disabled = function() return not (profile(db)).fonts.enable end,
-				args = {
-					enable = {
-						type = "toggle",
-						order = 1,
-						name = PA.ACL["Enable"],
-						desc = PA.ACL["This will override the global cooldown settings."],
-						disabled = false,
-					},
-					spacer1 = {
-						order = 2,
-						type = "description",
-						name = " "
-					},
-					fontSize = {
-						order = 3,
-						type = 'range',
-						name = PA.ACL["Text Font Size"],
-						min = 10, max = 50, step = 1,
-					},
-					font = {
-						order = 4,
-						type = 'select',
-						name = PA.ACL["Font"],
-						dialogControl = 'LSM30_Font',
-						values = PA.LSM:HashTable('font'),
-					},
-					fontOutline = {
-						order = 5,
-						type = "select",
-						name = PA.ACL["Font Outline"],
-						values = PA.FontFlags,
-					},
-				}
-			}
-		},
-	}
+	local main = PA.ACH:Group(label, nil, order, nil, function(info) local t = (profile(db))[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b) local t = (profile(db))[info[#info]] t.r, t.g, t.b = r, g, b; PA:UpdateCooldownSettings(db); end)
+	PA.Options.args.Cooldown.args[db] = main
+
+	local mainArgs = main.args
+	mainArgs.reverse = PA.ACH:Toggle(PA.ACL["Reverse Toggle"], PA.ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."], 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end)
+	mainArgs.hideBlizzard = PA.ACH:Toggle(PA.ACL["Force Hide Blizzard Text"], PA.ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."], 2, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, nil, function() if db == 'global' then return PA.db.Cooldown.Enable else return (PA.db.Cooldown.Enable and not profile(db).reverse) or (not PA.db.Cooldown.Enable and profile(db).reverse) end end)
+
+	local seconds = PA.ACH:Group(PA.ACL["Text Threshold"], nil, 3, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, function() return not (profile(db)).checkSeconds end)
+	seconds.inline = true
+	seconds.args.checkSeconds = PA.ACH:Toggle(PA.ACL["Enable"], PA.ACL["This will override the global cooldown settings."], 1, nil, nil, nil, nil, nil, false)
+	seconds.args.mmssThreshold = PA.ACH:Range(PA.ACL["MM:SS Threshold"], PA.ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."], 2, { min = -1, max = 10800, step = 1 })
+	seconds.args.hhmmThreshold = PA.ACH:Range(PA.ACL["HH:MM Threshold"], PA.ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."], 3, { min = -1, max = 1440, step = 1 })
+	mainArgs.secondsGroup = seconds
+
+	local fonts = PA.ACH:Group(PA.ACL["Fonts"], nil, 4, nil, function(info) return (profile(db)).fonts[info[#info]] end, function(info, value) (profile(db)).fonts[info[#info]] = value; PA:UpdateCooldownSettings(db); end, function() return not (profile(db)).fonts.enable end)
+	fonts.inline = true
+	fonts.args.enable = PA.ACH:Toggle(PA.ACL["Enable"], PA.ACL["This will override the global cooldown settings."], 1, nil, nil, nil, nil, nil, false)
+	fonts.args.font = PA.ACH:SharedMediaFont(PA.ACL["Font"], nil, 2)
+	fonts.args.fontSize = PA.ACH:Range(PA.ACL["Font Size"], nil, 3, { min = 10, max = 50, step = 1 })
+	fonts.args.fontOutline = PA.ACH:FontFlags(PA.ACL["Font Outline"], nil, 4)
+	mainArgs.fontGroup = fonts
+
+	local colors = PA.ACH:Group(PA.ACL["Color Override"], nil, 5, nil, nil, nil, function() return not (profile(db)).override end)
+	colors.inline = true
+	colors.args.override = PA.ACH:Toggle(PA.ACL["Enable"], PA.ACL["This will override the global cooldown settings."], 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, false)
+	colors.args.threshold = PA.ACH:Range(PA.ACL["Low Threshold"], PA.ACL["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"], 2, { min = -1, max = 20, step = 1 }, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end)
+	mainArgs.colorGroup = colors
+
+	local tColors = PA.ACH:Group(PA.ACL["Threshold Colors"], nil, 3)
+	tColors.args.expiringColor = PA.ACH:Color(PA.ACL["Expiring"], PA.ACL["Color when the text is about to expire"], 1)
+	tColors.args.secondsColor = PA.ACH:Color(PA.ACL["Seconds"], PA.ACL["Color when the text is in the seconds format."], 2)
+	tColors.args.minutesColor = PA.ACH:Color(PA.ACL["Minutes"], PA.ACL["Color when the text is in the minutes format."], 3)
+	tColors.args.hoursColor = PA.ACH:Color(PA.ACL["Hours"], PA.ACL["Color when the text is in the hours format."], 4)
+	tColors.args.daysColor = PA.ACH:Color(PA.ACL["Days"], PA.ACL["Color when the text is in the days format."], 5)
+	tColors.args.mmssColor = PA.ACH:Color(PA.ACL["MM:SS"], nil, 6)
+	tColors.args.hhmmColor = PA.ACH:Color(PA.ACL["HH:MM"], nil, 7)
+	mainArgs.colorGroup.args.timeColors = tColors
+
+	local iColors = PA.ACH:Group(PA.ACL["Time Indicator Colors"], nil, 4, nil, nil, nil, function() return not (profile(db)).useIndicatorColor end)
+	iColors.args.useIndicatorColor = PA.ACH:Toggle(PA.ACL["Use Indicator Color"], nil, 0, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, false)
+	iColors.args.expireIndicator = PA.ACH:Color(PA.ACL["Expiring"], PA.ACL["Color when the text is about to expire"], 1)
+	iColors.args.secondsIndicator = PA.ACH:Color(PA.ACL["Seconds"], PA.ACL["Color when the text is in the seconds format."], 2)
+	iColors.args.minutesIndicator = PA.ACH:Color(PA.ACL["Minutes"], PA.ACL["Color when the text is in the minutes format."], 3)
+	iColors.args.hoursIndicator = PA.ACH:Color(PA.ACL["Hours"], PA.ACL["Color when the text is in the hours format."], 4)
+	iColors.args.daysIndicator = PA.ACH:Color(PA.ACL["Days"], PA.ACL["Color when the text is in the days format."], 5)
+	iColors.args.hhmmColorIndicator = PA.ACH:Color(PA.ACL["MM:SS"], nil, 6)
+	iColors.args.mmssColorIndicator = PA.ACH:Color(PA.ACL["HH:MM"], nil, 7)
+	mainArgs.colorGroup.args.indicatorColors = iColors
 
 	if db == 'global' then
-		-- clean up the main one
-		PA.Options.args.cooldown.args[db].args.reverse = nil
-		PA.Options.args.cooldown.args[db].args.colorGroup.args.override = nil
+		mainArgs.reverse = nil
+		mainArgs.colorGroup.args.override = nil
+		mainArgs.colorGroup.disabled = nil
+		mainArgs.colorGroup.name = PA.ACL["COLORS"]
 
-		-- remove disables
-		for _, x in pairs(PA.Options.args.cooldown.args[db].args.colorGroup.args) do
-			if x.disabled then x.disabled = nil end
-		end
-
-		-- rename the tab
-		PA.Options.args.cooldown.args[db].args.colorGroup.name = PA.ACL["COLORS"]
-
-		-- move hide blizzard option into the top toggles, keeping order 3 is fine and correct.
-		PA.Options.args.cooldown.args.hideBlizzard = PA.Options.args.cooldown.args[db].args.hideBlizzard
-		PA.Options.args.cooldown.args[db].args.hideBlizzard = nil
+		-- keep these two in this order
+		PA.Options.args.Cooldown.args.hideBlizzard = mainArgs.hideBlizzard
+		mainArgs.hideBlizzard = nil
 	else
-		PA.Options.args.cooldown.args[db].args.colorGroup.args.spacer2 = nil
+		mainArgs.reverse = nil
+		mainArgs.hideBlizzard = nil
+		mainArgs.fontGroup = nil
 	end
 end
 
-PA.Options.args.cooldown = {
-	type = 'group',
-	name = PA.ACL["Cooldown Text"],
-	childGroups = "tab",
-	order = 3,
-	get = function(info) return PA.db.Cooldown[info[#info]] end,
-	set = function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end,
-	args = {
-		intro = {
-			order = 1,
-			type = 'description',
-			name = PA.ACL["COOLDOWN_DESC"],
-		},
-		Enable = {
-			type = "toggle",
-			order = 2,
-			name = PA.ACL["Enable"],
-			desc = PA.ACL["Display cooldown text on anything with the cooldown spiral."]
-		},
-	},
-}
+PA.Options.args.Cooldown = PA.ACH:Group(PA.ACL["Cooldown Text"], nil, 2, 'tab', function(info) return PA.db.Cooldown[info[#info]] end, function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end)
+PA.Options.args.Cooldown.args.intro = PA.ACH:Description(PA.ACL["COOLDOWN_DESC"], 0)
+PA.Options.args.Cooldown.args.Enable = PA.ACH:Toggle(PA.ACL["Enable"], PA.ACL["Display cooldown text on anything with the cooldown spiral."], 1)
 
 group(5,  'global',     PA.ACL["Global"])
 group(6, 'OzCooldowns',  PA.ACL.OzCooldowns)

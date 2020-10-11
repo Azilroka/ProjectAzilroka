@@ -1350,12 +1350,7 @@ function EPB:GetOptions()
 						max = 24,
 						step = 1
 					},
-					FontFlag = {
-						name = "Font Flag",
-						order = 16,
-						type = "select",
-						values = PA.FontFlags
-					},
+					FontFlag = PA.ACH:FontFlags(PA.ACL["Font Flag"], nil, 16),
 					TextOffset = {
 						order = 17,
 						name = "Health/Experience Text Offset",

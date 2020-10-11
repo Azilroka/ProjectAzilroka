@@ -100,7 +100,6 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
 PA.ClassColor = { Color.r, Color.g, Color.b }
 
-PA.FontFlags = { MONOCHROME = 'MONOCHROME', MONOCHROMEOUTLINE = 'MONOCHROMEOUTLINE', NONE = 'None', OUTLINE = 'OUTLINE', THICKOUTLINE = 'THICKOUTLINE' }
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
@@ -161,6 +160,16 @@ end
 
 function PA:Print(...)
 	print(PA:Color(PA.Title..':'), ...)
+end
+
+function PA:ShortValue(value)
+	if (value >= 1e6) then
+		return gsub(format("%.1fm", value / 1e6), "%.?0+([km])$", "%1")
+	elseif (value >= 1e3 or value <= -1e3) then
+		return gsub(format("%.1fk", value / 1e3), "%.?0+([km])$", "%1")
+	else
+		return value
+	end
 end
 
 function PA:RGBToHex(r, g, b, header, ending)
