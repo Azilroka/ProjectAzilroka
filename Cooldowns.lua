@@ -185,7 +185,7 @@ function PA:Cooldown_IsEnabled(cd)
 	elseif cd.reverseToggle ~= nil then
 		return cd.reverseToggle
 	else
-		return PA.db.cooldown.Enable
+		return PA.db.Cooldown.Enable
 	end
 end
 
