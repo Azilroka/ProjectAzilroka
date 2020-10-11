@@ -473,8 +473,8 @@ StaticPopupDialogs["PROJECTAZILROKA_RL"] = {
 
 PA.Defaults = {
 	profile = {
-		cooldown = {
-			enable = true,
+		Cooldown = {
+			Enable = true,
 			threshold = 3,
 			hideBlizzard = false,
 			useIndicatorColor = false,

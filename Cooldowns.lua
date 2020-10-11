@@ -185,7 +185,7 @@ function PA:Cooldown_IsEnabled(cd)
 	elseif cd.reverseToggle ~= nil then
 		return cd.reverseToggle
 	else
-		return PA.db.cooldown.enable
+		return PA.db.cooldown.Enable
 	end
 end
 
@@ -212,22 +212,22 @@ function PA:Cooldown_Options(timer, db, parent)
 	end
 
 	timer.timeColors = colors or PA.TimeColors
-	timer.threshold = threshold or PA.db.cooldown.threshold or PA.TimeThreshold
-	timer.textColors = icolors or (PA.db.cooldown.useIndicatorColor and PA.TimeIndicatorColors)
-	timer.hhmmThreshold = hhmm or (PA.db.cooldown.checkSeconds and PA.db.cooldown.hhmmThreshold)
-	timer.mmssThreshold = mmss or (PA.db.cooldown.checkSeconds and PA.db.cooldown.mmssThreshold)
-	timer.hideBlizzard = db.hideBlizzard or PA.db.cooldown.hideBlizzard
+	timer.threshold = threshold or PA.db.Cooldown.threshold or PA.TimeThreshold
+	timer.textColors = icolors or (PA.db.Cooldown.useIndicatorColor and PA.TimeIndicatorColors)
+	timer.hhmmThreshold = hhmm or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.hhmmThreshold)
+	timer.mmssThreshold = mmss or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.mmssThreshold)
+	timer.hideBlizzard = db.hideBlizzard or PA.db.Cooldown.hideBlizzard
 
 	if db.reverse ~= nil then
-		timer.reverseToggle = (PA.db.cooldown.enable and not db.reverse) or (db.reverse and not PA.db.cooldown.enable)
+		timer.reverseToggle = (PA.db.Cooldown.Enable and not db.reverse) or (db.reverse and not PA.db.Cooldown.Enable)
 	else
 		timer.reverseToggle = nil
 	end
 
-	if (db ~= PA.db.cooldown) and db.fonts and db.fonts.enable then
+	if (db ~= PA.db.Cooldown) and db.fonts and db.fonts.enable then
 		fonts = db.fonts -- custom fonts override default fonts
-	elseif PA.db.cooldown.fonts and PA.db.cooldown.fonts.enable then
-		fonts = PA.db.cooldown.fonts -- default global font override
+	elseif PA.db.Cooldown.fonts and PA.db.Cooldown.fonts.enable then
+		fonts = PA.db.Cooldown.fonts -- default global font override
 	end
 
 	if fonts and fonts.enable then
@@ -260,7 +260,7 @@ function PA:CreateCooldownTimer(parent)
 
 	-- cooldown override settings
 	local db = (parent.CooldownOverride and PA.db[parent.CooldownOverride]) or PA.db
-	if db and db.cooldown then
+	if db and db.Cooldown then
 		PA:Cooldown_Options(timer, db.cooldown, parent)
 	end
 
@@ -320,7 +320,7 @@ function PA:ToggleBlizzardCooldownText(cd, timer, request)
 end
 
 function PA:GetCooldownColors(db)
-	if not db then db = PA.db.cooldown end -- just incase someone calls this without a first arg use the global
+	if not db then db = PA.db.Cooldown end -- just incase someone calls this without a first arg use the global
 	local c13 = PA:RGBToHex(db.hhmmColorIndicator.r, db.hhmmColorIndicator.g, db.hhmmColorIndicator.b) -- color for timers that are soon to expire
 	local c12 = PA:RGBToHex(db.mmssColorIndicator.r, db.mmssColorIndicator.g, db.mmssColorIndicator.b) -- color for timers that are soon to expire
 	local c11 = PA:RGBToHex(db.expireIndicator.r, db.expireIndicator.g, db.expireIndicator.b) -- color for timers that are soon to expire
@@ -344,12 +344,12 @@ function PA:UpdateCooldownOverride(module)
 
 	for _, parent in ipairs(cooldowns) do
 		local db = (parent.CooldownOverride and PA.db[parent.CooldownOverride]) or PA.db
-		if db and db.cooldown then
+		if db and db.Cooldown then
 			local timer = parent.isHooked and parent.isRegisteredCooldown and parent.timer
 			local cd = timer or parent
 
 			-- cooldown override settings
-			PA:Cooldown_Options(cd, db.cooldown, parent)
+			PA:Cooldown_Options(cd, db.Cooldown, parent)
 
 			-- update font on cooldowns
 			if timer and cd then -- has a parent, these are timers from RegisterCooldown
@@ -364,15 +364,15 @@ function PA:UpdateCooldownOverride(module)
 end
 
 function PA:UpdateCooldownSettings(module)
-	local db, timeColors, textColors = PA.db.cooldown, PA.TimeColors, PA.TimeIndicatorColors
+	local db, timeColors, textColors = PA.db.Cooldown, PA.TimeColors, PA.TimeIndicatorColors
 
 	-- update the module timecolors if the config called it but ignore 'global' and 'all':
 	-- global is the main call from config, all is the core file calls
-	local isModule = module and (module ~= 'global' and module ~= 'all') and PA.db[module] and PA.db[module].cooldown
+	local isModule = module and (module ~= 'global' and module ~= 'all') and PA.db[module] and PA.db[module].Cooldown
 	if isModule then
 		if not PA.TimeColors[module] then PA.TimeColors[module] = {} end
 		if not PA.TimeIndicatorColors[module] then PA.TimeIndicatorColors[module] = {} end
-		db, timeColors, textColors = PA.db[module].cooldown, PA.TimeColors[module], PA.TimeIndicatorColors[module]
+		db, timeColors, textColors = PA.db[module].Cooldown, PA.TimeColors[module], PA.TimeIndicatorColors[module]
 	end
 
 	timeColors[0], timeColors[1], timeColors[2], timeColors[3], timeColors[4], timeColors[5], timeColors[6], textColors[0], textColors[1], textColors[2], textColors[3], textColors[4], textColors[5], textColors[6] = PA:GetCooldownColors(db)
@@ -393,7 +393,7 @@ function PA:UpdateCooldownSettings(module)
 end
 
 local function profile(db)
-	return (db == 'global' and PA.db.cooldown) or PA.db[db].cooldown
+	return (db == 'global' and PA.db.Cooldown) or PA.db[db].Cooldown
 end
 
 local function group(order, db, label)
@@ -433,9 +433,9 @@ local function group(order, db, label)
 				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
 				disabled = function()
 					if db == "global" then
-						return PA.db.cooldown.enable
+						return PA.db.cooldown.Enable
 					else
-						return (PA.db.cooldown.enable and not profile(db).reverse) or (not PA.db.cooldown.enable and profile(db).reverse)
+						return (PA.db.cooldown.Enable and not profile(db).reverse) or (not PA.db.cooldown.Enable and profile(db).reverse)
 					end
 				end,
 			},
@@ -690,15 +690,15 @@ PA.Options.args.cooldown = {
 	name = PA.ACL["Cooldown Text"],
 	childGroups = "tab",
 	order = 3,
-	get = function(info) return PA.db.cooldown[info[#info]] end,
-	set = function(info, value) PA.db.cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end,
+	get = function(info) return PA.db.Cooldown[info[#info]] end,
+	set = function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end,
 	args = {
 		intro = {
 			order = 1,
 			type = 'description',
 			name = PA.ACL["COOLDOWN_DESC"],
 		},
-		enable = {
+		Enable = {
 			type = "toggle",
 			order = 2,
 			name = PA.ACL["Enable"],
