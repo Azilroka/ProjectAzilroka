@@ -397,8 +397,12 @@ function EFL:HandleBN()
 	isBNConnected = _G.BNConnected()
 end
 
-function EFL:Initialize()
+function EFL:UpdateSettings()
 	EFL.db = PA.db.EnhancedFriendsList
+end
+
+function EFL:Initialize()
+	EFL:UpdateSettings()
 
 	if EFL.db.Enable ~= true then
 		return

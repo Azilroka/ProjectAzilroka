@@ -65,71 +65,18 @@ function ES:UpdateShadow(shadow)
 end
 
 function ES:GetOptions()
-	PA.Options.args.EnhancedShadows = {
-		type = "group",
-		name = ES.Title,
-		desc = ES.Description,
-		get = function(info) return ES.db[info[#info]] end,
-		set = function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = ES.Header
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					ES.db[info[#info]] = value
-					if (not ES.isEnabled) then
-						ES:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			General = {
-				order = 2,
-				type = 'group',
-				name = PA.ACL['General'],
-				inline = true,
-				args = {
-					Color = {
-						type = "color",
-						order = 1,
-						name = PA.ACL['Shadow Color'],
-						hasAlpha = true,
-						get = function(info) return unpack(ES.db[info[#info]]) end,
-						set = function(info, r, g, b, a) ES.db[info[#info]] = { r, g, b, a } ES:UpdateShadows() end,
-					},
-					ColorByClass = {
-						type = 'toggle',
-						order = 2,
-						name = PA.ACL['Color by Class'],
-					},
-					Size = {
-						order = 3,
-						type = 'range',
-						name = PA.ACL['Size'],
-						min = 3, max = 10, step = 1,
-					},
-				},
-			},
-			AuthorHeader = {
-				order = -4,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -3,
-				type = 'description',
-				name = ES.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.EnhancedShadows = PA.ACH:Group(ES.Title, ES.Description, nil, nil, function(info) return ES.db[info[#info]] end)
+	PA.Options.args.EnhancedShadows.args.Header = PA.ACH:Header(ES.Header, 0)
+	PA.Options.args.EnhancedShadows.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) ES.db[info[#info]] = value if not ES.isEnabled then ES:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.EnhancedShadows.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end)
+	PA.Options.args.EnhancedShadows.args.General.inline = true
+	PA.Options.args.EnhancedShadows.args.General.args.Color = ACH:Color(PA.ACL['Shadow Color'], nil, 1, true, nil, function(info) return unpack(ES.db[info[#info]]) end, function(info, r, g, b, a) ES.db[info[#info]] = { r, g, b, a } ES:UpdateShadows() end)
+	PA.Options.args.EnhancedShadows.args.General.args.ColorByClass = PA.ACH:Toggle(PA.ACL['Color by Class'], nil, 2)
+	PA.Options.args.EnhancedShadows.args.General.args.Size = PA.ACH:Range(PA.ACL['Size'], nil, 3, { min = 1, max = 10, step = 1 })
+
+	PA.Options.args.EnhancedShadows.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.EnhancedShadows.args.Authors = PA.ACH:Description(ES.Authors, -1, 'large')
 end
 
 function ES:BuildProfile()
@@ -141,8 +88,12 @@ function ES:BuildProfile()
 	}
 end
 
-function ES:Initialize()
+function ES:UpdateSettings()
 	ES.db = PA.db.EnhancedShadows
+end
+
+function ES:Initialize()
+	ES:UpdateSettings()
 
 	if PA.SLE or PA.NUI or ES.db.Enable ~= true then
 		return

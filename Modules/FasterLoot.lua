@@ -62,44 +62,12 @@ function FL:BuildProfile()
 end
 
 function FL:GetOptions()
-	PA.Options.args.FasterLoot = {
-		type = 'group',
-		name = FL.Title,
-		desc = FL.Description,
-		get = function(info) return FL.db[info[#info]] end,
-		set = function(info, value) FL.db[info[#info]] = value end,
-		args = {
-			Header = {
-				order = 0,
-				type = 'header',
-				name = FL.Header,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = PA.ACL['Enable'],
-				set = function(info, value)
-					FL.db[info[#info]] = value
-					if (not FL.isEnabled) then
-						FL:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			AuthorHeader = {
-				order = -4,
-				type = 'header',
-				name = PA.ACL['Authors:'],
-			},
-			Authors = {
-				order = -3,
-				type = 'description',
-				name = FL.Authors,
-				fontSize = 'large',
-			},
-		},
-	}
+	PA.Options.args.FasterLoot = PA.ACH:Group(FL.Title, FL.Description, nil, nil, function(info) return FL.db[info[#info]] end)
+	PA.Options.args.FasterLoot.args.Header = PA.ACH:Header(FL.Header, 0)
+	PA.Options.args.FasterLoot.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) FL.db[info[#info]] = value if not FL.isEnabled then FL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
+	PA.Options.args.FasterLoot.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	PA.Options.args.FasterLoot.args.Authors = PA.ACH:Description(FL.Authors, -1, 'large')
 end
 
 function FL:Initialize()

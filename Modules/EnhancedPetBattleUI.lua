@@ -1402,12 +1402,12 @@ function EPB:BuildProfile()
 	end
 end
 
-function EPB:UpdateProfile()
-	self.db = self.data.profile
+function EPB:UpdateSettings()
+	EPB.db = PA.db.EnhancedPetBattleUI
 end
 
 function EPB:Initialize()
-	EPB.db = PA.db.EnhancedPetBattleUI
+	EPB:UpdateSettings()
 
 	if EPB.db.Enable ~= true then
 		return
@@ -1418,38 +1418,38 @@ function EPB:Initialize()
 	BattlePetBreedID = IsAddOnLoaded("BattlePetBreedID")
 	BreedInfo = LibStub("LibPetBreedInfo-1.0", true)
 
-	self:InitHealingForbiddenCheck()
-	self:BuildProfile()
+	EPB:InitHealingForbiddenCheck()
+	EPB:BuildProfile()
 
-	self:InitPetFrameAPI()
-	self:CreateFrames()
+	EPB:InitPetFrameAPI()
+	EPB:CreateFrames()
 
 	if BreedInfo then
 		BreedData = BreedInfo.breedData
 	end
 
-	self:Update()
+	EPB:Update()
 
 	_G.hooksecurefunc("PetBattleAuraHolder_Update", EPB.UpdateAuraHolder)
 
 	_G.PetBattleFrame:HookScript("OnEvent", EPB.HideBlizzard)
 
-	self.holder = self:CreateReviveBar()
-	self.holder.ReviveButton = self:CreateReviveButton()
-	self.holder.BandageButton = self:CreateBandageButton()
+	EPB.holder = EPB:CreateReviveBar()
+	EPB.holder.ReviveButton = EPB:CreateReviveButton()
+	EPB.holder.BandageButton = EPB:CreateBandageButton()
 
-	self:UpdateReviveBar()
-	self:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
-	self:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
+	EPB:UpdateReviveBar()
+	EPB:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
+	EPB:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
 
 	if GetAddOnEnableState(UnitName("player"), "PetTracker_Switcher") ~= 2 then
 		_G.PetBattlePetSelectionFrame_Show = function()
 			_G.PetBattleFrame_UpdateActionBarLayout(_G.PetBattleFrame)
-			self:ChangePetBattlePetSelectionFrameState(true)
+			EPB:ChangePetBattlePetSelectionFrameState(true)
 		end
 
 		_G.PetBattlePetSelectionFrame_Hide = function()
-			self:ChangePetBattlePetSelectionFrameState(false)
+			EPB:ChangePetBattlePetSelectionFrameState(false)
 		end
 	end
 	pcall(_G.LoadAddOn, "tdBattlePetScript")
@@ -1461,24 +1461,24 @@ end
 EPB.BattlePetChallengeDebuffID = 143999
 
 function EPB:InitHealingForbiddenCheck()
-	self.BattlePetChallengeDebuffName = GetSpellInfo(self.BattlePetChallengeDebuffID)
+	EPB.BattlePetChallengeDebuffName = GetSpellInfo(EPB.BattlePetChallengeDebuffID)
 end
 
 function EPB:IsHealingForbidden()
-	return AuraUtil_FindAuraByName(self.BattlePetChallengeDebuffName, "player", "HARMFUL") ~= nil
+	return AuraUtil_FindAuraByName(EPB.BattlePetChallengeDebuffName, "player", "HARMFUL") ~= nil
 end
 
 function EPB:CheckReviveBarVisibility()
-	if self:IsHealingForbidden() or UnitHealth("player") == 0 then
+	if EPB:IsHealingForbidden() or UnitHealth("player") == 0 then
 		if (UnitHealth("player") == 0) then
-			self:RegisterEvent("UNIT_HEALTH")
+			EPB:RegisterEvent("UNIT_HEALTH")
 		end
 		return false
 	end
 
 	local health, maxHealth, show, checkPercentage
 	checkPercentage = 0.85
-	if (self.lastBattleWasWild) then
+	if (EPB.lastBattleWasWild) then
 		checkPercentage = 0.6
 	end
 	for i = 1, C_PetJournal.GetNumPets() do

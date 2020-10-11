@@ -171,8 +171,12 @@ function DO:BuildProfile()
 	end
 end
 
-function DO:Initialize()
+function DO:UpdateSettings()
 	DO.db = PA.db.DragonOverlay
+end
+
+function DO:Initialize()
+	DO:UpdateSettings()
 
 	if DO.db.Enable ~= true then
 		return

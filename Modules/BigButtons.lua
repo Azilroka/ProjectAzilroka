@@ -255,8 +255,12 @@ function BB:BuildProfile()
 	PA.Defaults.profile.BigButtons = { Enable = true, DropTools = false, ToolSize = 50, SeedSize = 30 }
 end
 
-function BB:Initialize()
+function BB:UpdateSettings()
 	BB.db = PA.db.BigButtons
+end
+
+function BB:Initialize()
+	BB:UpdateSettings()
 
 	if BB.db.Enable ~= true then
 		return

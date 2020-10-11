@@ -268,8 +268,12 @@ function BrokerLDB:BuildProfile()
 	}
 end
 
-function BrokerLDB:Initialize()
+function BrokerLDB:UpdateSettings()
 	BrokerLDB.db = PA.db.BrokerLDB
+end
+
+function BrokerLDB:Initialize()
+	BrokerLDB:UpdateSettings()
 
 	if BrokerLDB.db.Enable ~= true then
 		return
