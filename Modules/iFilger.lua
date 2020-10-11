@@ -1155,8 +1155,12 @@ function iFilger:GetOptions()
 	PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = iFilger:GenerateSpellOptions()
 end
 
-function iFilger:Initialize()
+function iFilger:UpdateSettings()
 	iFilger.db = PA.db.iFilger
+end
+
+function iFilger:Initialize()
+	iFilger:UpdateSettings()
 
 	if iFilger.db.Enable ~= true then
 		return

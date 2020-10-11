@@ -269,8 +269,12 @@ function MA:BuildProfile()
 	}
 end
 
-function MA:Initialize()
+function MA:UpdateSettings()
 	MA.db = PA.db.MouseoverAuras
+end
+
+function MA:Initialize()
+	MA:UpdateSettings()
 
 	if MA.db.Enable ~= true then
 		return

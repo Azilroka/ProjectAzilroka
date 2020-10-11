@@ -444,7 +444,7 @@ function OzCD:GenerateSpellOptions()
 end
 
 function OzCD:GetOptions()
-	OzCD.db = PA.db.OzCooldowns
+	OzCD:UpdateSettings()
 
 	PA.Options.args.OzCooldowns = {
 		type = 'group',
@@ -669,7 +669,7 @@ function OzCD:UpdateSettings()
 end
 
 function OzCD:Initialize()
-	OzCD.db = PA.db.OzCooldowns
+	OzCD:UpdateSettings()
 
 	if OzCD.db.Enable ~= true then
 		return

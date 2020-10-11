@@ -723,8 +723,12 @@ function stAM:BuildProfile()
 	}
 end
 
-function stAM:Initialize()
+function stAM:UpdateSettings()
 	stAM.db = PA.db.stAddonManager
+end
+
+function stAM:Initialize()
+	stAM:UpdateSettings()
 
 	if stAM.db.Enable ~= true then
 		return

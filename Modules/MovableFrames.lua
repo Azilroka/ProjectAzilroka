@@ -332,8 +332,12 @@ function MF:BuildProfile()
 	end
 end
 
-function MF:Initialize()
+function MF:UpdateSettings()
 	MF.db = PA.db.MovableFrames
+end
+
+function MF:Initialize()
+	MF:UpdateSettings()
 
 	if MF.db.Enable ~= true then
 		return

@@ -72,7 +72,7 @@ function LC:BuildProfile()
 end
 
 function LC:UpdateSettings()
-	LC.db = PA.db['LootConfirm']
+	LC.db = PA.db.LootConfirm
 end
 
 function LC:Initialize()

@@ -621,8 +621,12 @@ function SMB:BuildProfile()
 	}
 end
 
-function SMB:Initialize()
+function SMB:UpdateSettings()
 	SMB.db = PA.db.SquareMinimapButtons
+end
+
+function SMB:Initialize()
+	SMB:UpdateSettings()
 
 	if SMB.db.Enable ~= true then
 		return
