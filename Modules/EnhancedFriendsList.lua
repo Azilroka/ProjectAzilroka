@@ -320,7 +320,7 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.inline = true
 	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFont = PA.ACH:SharedMediaFont(PA.ACL['Name Font'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 1)
 	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFontSize = PA.ACH:Range(PA.ACL['Name Font Size'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFontFlag = PA.ACH:Select(PA.ACL['Name Font Flag'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 3, PA.FontFlags)
+	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFontFlag = PA.ACH:FontFlags(PA.ACL['Name Font Flag'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 3)
 	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.ShowLevel = PA.ACH:Toggle(PA.ACL['Show Level'], nil, 4)
 	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.DiffLevel = PA.ACH:Toggle(PA.ACL['Level by Difficulty'], nil, 5, nil, nil, nil, nil, nil, function() return (not EFL.db.ShowLevel) end)
 
@@ -328,7 +328,7 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.inline = true
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFont = PA.ACH:SharedMediaFont(PA.ACL['Info Font'], PA.ACL['The font that the Zone / Server uses.'], 1)
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontSize = PA.ACH:Range(PA.ACL['Info Font Size'], PA.ACL['The font size that the Zone / Server uses.'], 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontFlag = PA.ACH:Select(PA.ACL['Info Font Outline'], PA.ACL['The font flag that the Zone / Server uses.'], 3, PA.FontFlags)
+	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontFlag = PA.ACH:FontFlags(PA.ACL['Info Font Outline'], PA.ACL['The font flag that the Zone / Server uses.'], 3)
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.StatusIconPack = PA.ACH:Select(PA.ACL['Status Icon Pack'], PA.ACL['Different Status Icons.'], 4, { Default = 'Default', Square = 'Square', D3 = 'Diablo 3' })
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusBackground = PA.ACH:Toggle(PA.ACL['Show Status Background'], nil, 5)
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusHighlight = PA.ACH:Toggle(PA.ACL['Show Status Highlight'], nil, 6)

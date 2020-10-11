@@ -248,7 +248,7 @@ function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.inline = true
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:Select(PA.ACL['Font Outline'], nil, 3, PA.FontFlags)
+	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
 
 	PA.Options.args.BrokerLDB.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
 	PA.Options.args.BrokerLDB.args.Authors = PA.ACH:Description(BrokerLDB.Authors, -1, 'large')
