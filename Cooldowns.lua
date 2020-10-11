@@ -261,7 +261,7 @@ function PA:CreateCooldownTimer(parent)
 	-- cooldown override settings
 	local db = (parent.CooldownOverride and PA.db[parent.CooldownOverride]) or PA.db
 	if db and db.Cooldown then
-		PA:Cooldown_Options(timer, db.cooldown, parent)
+		PA:Cooldown_Options(timer, db.Cooldown, parent)
 	end
 
 	PA:ToggleBlizzardCooldownText(parent, timer)
@@ -433,9 +433,9 @@ local function group(order, db, label)
 				set = function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end,
 				disabled = function()
 					if db == "global" then
-						return PA.db.cooldown.Enable
+						return PA.db.Cooldown.Enable
 					else
-						return (PA.db.cooldown.Enable and not profile(db).reverse) or (not PA.db.cooldown.Enable and profile(db).reverse)
+						return (PA.db.Cooldown.Enable and not profile(db).reverse) or (not PA.db.Cooldown.Enable and profile(db).reverse)
 					end
 				end,
 			},
