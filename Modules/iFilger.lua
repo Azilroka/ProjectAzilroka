@@ -734,7 +734,7 @@ function iFilger:BuildProfile()
 
 	PA.Defaults.profile.iFilger = {
 		Enable = false,
-		cooldown = CopyTable(PA.Defaults.profile.Cooldown),
+		Cooldown = CopyTable(PA.Defaults.profile.Cooldown),
 	}
 
 	for _, Name in ipairs({'Cooldowns', 'ItemCooldowns', 'Buffs', 'Procs', 'Enhancements', 'RaidDebuffs', 'TargetDebuffs', 'FocusBuffs', 'FocusDebuffs'}) do
