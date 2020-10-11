@@ -1,5 +1,5 @@
 local LibStub = LibStub
-local MAJOR, MINOR = 'LibAceConfigHelper', 1
+local MAJOR, MINOR = 'LibAceConfigHelper', 2
 local ACH = LibStub:NewLibrary(MAJOR, MINOR)
 local LSM = LibStub('LibSharedMedia-3.0')
 
