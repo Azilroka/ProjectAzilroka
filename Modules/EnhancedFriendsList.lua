@@ -59,7 +59,6 @@ EFL.Icons = {
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
 			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
-			Animated = MediaPath..'GameIcons/Bnet',
 		},
 		BSAp = {
 			Name = PA.ACL['Mobile'],
@@ -67,7 +66,6 @@ EFL.Icons = {
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
 			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
-			Animated = MediaPath..'GameIcons/Bnet',
 		},
 		[_G.BNET_CLIENT_D3 or 'D3'] = {
 			Name = PA.ACL['Diablo 3'],
@@ -244,11 +242,11 @@ function EFL:UpdateFriends(button)
 					end
 
 					local faction = info.gameAccountInfo.factionName
-					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db[faction] or 'Default'] or EFL.Icons.Game.Neutral.Launcher)
+					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db.GameIconPack or 'Default'] or EFL.Icons.Game.Neutral.Launcher)
 				else
 					if not EFL.Icons.Game[client] then client = 'BSAp' end
 					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
-					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db[client] or 'Default'])
+					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db.GameIconPack or 'Default'])
 				end
 
 				button.gameIcon:SetTexCoord(0, 1, 0, 1)
@@ -266,15 +264,6 @@ function EFL:UpdateFriends(button)
 		button.gameIcon:SetPoint('TOPRIGHT', -50, -2)
 	else
 		button.gameIcon:SetPoint('TOPRIGHT', -21, -2)
-	end
-
-	if not button.isUpdateHooked then
-		button:HookScript("OnUpdate", function(_, elapsed)
-			if button.gameIcon:GetTexture() == MediaPath..'GameIcons/Bnet' then
-				_G.AnimateTexCoords(button.gameIcon, 512, 256, 64, 64, 25, elapsed, 0.02)
-			end
-		end)
-		button.isUpdateHooked = true
 	end
 
 	if nameText then button.name:SetText(nameText) end
@@ -329,13 +318,14 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFont = PA.ACH:SharedMediaFont(PA.ACL['Info Font'], PA.ACL['The font that the Zone / Server uses.'], 1)
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontSize = PA.ACH:Range(PA.ACL['Info Font Size'], PA.ACL['The font size that the Zone / Server uses.'], 2, { min = 6, max = 22, step = 1 })
 	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontFlag = PA.ACH:FontFlags(PA.ACL['Info Font Outline'], PA.ACL['The font flag that the Zone / Server uses.'], 3)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.StatusIconPack = PA.ACH:Select(PA.ACL['Status Icon Pack'], PA.ACL['Different Status Icons.'], 4, { Default = 'Default', Square = 'Square', D3 = 'Diablo 3' })
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusBackground = PA.ACH:Toggle(PA.ACL['Show Status Background'], nil, 5)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusHighlight = PA.ACH:Toggle(PA.ACL['Show Status Highlight'], nil, 6)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.Texture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 7)
+	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusBackground = PA.ACH:Toggle(PA.ACL['Show Status Background'], nil, 4)
+	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusHighlight = PA.ACH:Toggle(PA.ACL['Show Status Highlight'], nil, 5)
+	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.Texture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 6)
 
-	PA.Options.args.EnhancedFriendsList.args.GameIcons = PA.ACH:Group(PA.ACL['Game Icons'], nil, 3)
-	PA.Options.args.EnhancedFriendsList.args.GameIcons.inline = true
+	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings = PA.ACH:Group(PA.ACL['Icon Settings'], nil, 3)
+	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.inline = true
+	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.args.GameIconPack = PA.ACH:Select(PA.ACL['Game Icon Pack'], nil, 1, { Default = 'Default', Launcher = 'Launcher' })
+	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.args.StatusIconPack = PA.ACH:Select(PA.ACL['Status Icon Pack'], PA.ACL['Different Status Icons.'], 2, { Default = 'Default', Square = 'Square', D3 = 'Diablo 3' })
 
 	PA.Options.args.EnhancedFriendsList.args.GameIconsPreview = PA.ACH:Group(PA.ACL['Game Icon Preview'], nil, 4)
 	PA.Options.args.EnhancedFriendsList.args.GameIconsPreview.inline = true
@@ -344,12 +334,8 @@ function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList.args.StatusIcons.inline = true
 
 	for Key, Value in pairs(EFL.Icons.Game) do
-		PA.Options.args.EnhancedFriendsList.args.GameIcons.args[Key] = PA.ACH:Select(Value.Name..PA.ACL[' Icon'], nil, Value.Order, { Default = 'Default', BlizzardChat = 'Blizzard Chat', Flat = 'Flat Style', Gloss = 'Glossy', Launcher = 'Launcher' })
-		PA.Options.args.EnhancedFriendsList.args.GameIconsPreview.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Game[info[#info]][EFL.db[Key]], 32, 32 end)
+		PA.Options.args.EnhancedFriendsList.args.GameIconsPreview.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Game[info[#info]][EFL.db.GameIconPack], 32, 32 end)
 	end
-
-	PA.Options.args.EnhancedFriendsList.args.GameIcons.args.App.values.Animated = 'Animated'
-	PA.Options.args.EnhancedFriendsList.args.GameIcons.args.BSAp.values.Animated = 'Animated'
 
 	for Key, Value in pairs(EFL.Icons.Status) do
 		PA.Options.args.EnhancedFriendsList.args.StatusIcons.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Status[info[#info]][EFL.db.StatusIconPack], 16, 16 end)
@@ -376,11 +362,8 @@ function EFL:BuildProfile()
 		ShowStatusHighlight = true,
 		ShowStatusBackground = false,
 		Texture = 'Solid',
+		GameIconPack = 'Launcher'
 	}
-
-	for GameIcon in pairs(EFL.Icons.Game) do
-		PA.Defaults.profile.EnhancedFriendsList[GameIcon] = 'Launcher'
-	end
 
 	if PA.ElvUI then
 		PA.Defaults.profile.EnhancedFriendsList.NameFont = _G.ElvUI[1].db.general.font

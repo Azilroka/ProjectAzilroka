@@ -798,9 +798,9 @@ function iFilger:GenerateSpellOptions()
 end
 
 function iFilger:GetOptions()
-	iFilger.db = PA.db.iFilger
+	iFilger:UpdateSettings()
 
-	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, 'tab', function(info) return iFilger.db[info[#info]] end, function(info, value) iFilger.db[info[#info]] = value end)
+	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, 'tab')
 	PA.Options.args.iFilger.args.Header = PA.ACH:Header(iFilger.Header, 0)
 	PA.Options.args.iFilger.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) iFilger.db[info[#info]] = value if (not iFilger.isEnabled) then iFilger:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
@@ -849,6 +849,7 @@ function iFilger:GetOptions()
 		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime.args.StatusBarTimeY = PA.ACH:Range(PA.ACL['Y Offset'], nil, 2, { min = -64, max = 64, step = 1 })
 
 		PA.Options.args.iFilger.args[Name].args.filterGroup = PA.ACH:Group(PA.ACL['Filters'], nil, 12, nil, nil, nil, nil, Name == 'Cooldowns')
+		PA.Options.args.iFilger.args[Name].args.filterGroup.inline = true
 		PA.Options.args.iFilger.args[Name].args.filterGroup.args.selectFilter = PA.ACH:Select(PA.ACL['Select Filter'], nil, 1, { Whitelist = 'Whitelist', Blacklist = 'Blacklist' }, nil, nil, function() return selectedFilter end, function(_, value) selectedFilter, selectedSpell = nil, nil if value ~= '' then selectedFilter = value end end)
 		PA.Options.args.iFilger.args[Name].args.filterGroup.args.resetFilter = PA.ACH:Execute(PA.ACL["Reset Filter"], PA.ACL["This will reset the contents of this filter back to default. Any spell you have added to this filter will be removed."], 2, function() wipe(iFilger.db[Name][selectedFilter]) selectedSpell = nil end, nil, true)
 
