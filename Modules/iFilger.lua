@@ -803,345 +803,63 @@ function iFilger:GetOptions()
 	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, 'tab', function(info) return iFilger.db[info[#info]] end, function(info, value) iFilger.db[info[#info]] = value end)
 	PA.Options.args.iFilger.args.Header = PA.ACH:Header(iFilger.Header, 0)
 	PA.Options.args.iFilger.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) iFilger.db[info[#info]] = value if (not iFilger.isEnabled) then iFilger:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+
 	PA.Options.args.iFilger.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
 	PA.Options.args.iFilger.args.Authors = PA.ACH:Description(iFilger.Authors, -1, 'large')
 
 	for _, Name in ipairs({'Cooldowns','ItemCooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'}) do
-		PA.Options.args.iFilger.args[Name] = {
-			type = 'group',
-			name = Name,
-			get = function(info) return iFilger.db[Name][info[#info]] end,
-			set = function(info, value) iFilger.db[Name][info[#info]] = value iFilger:UpdateAll() end,
-			args = {
-				Enable = {
-					type = 'toggle',
-					order = 0,
-					name = 'Enabled',
-				},
-				Size = {
-					type = 'range',
-					order = 1,
-					name = 'Icon Size',
-					min = 16, max = 64, step = 1,
-				},
-				Spacing = {
-					type = 'range',
-					order = 2,
-					name = 'Spacing',
-					min = 1, max = 18, step = 1,
-				},
-				NumPerRow = {
-					type = 'range',
-					order = 3,
-					name = 'Number Per Row',
-					min = 1, max = 24, step = 1,
-					hidden = function() return iFilger.db[Name].StatusBar end,
-				},
-				Direction = {
-					name = 'Growth Direction',
-					order = 4,
-					type = 'select',
-					hidden = function() return iFilger.db[Name].StatusBar end,
-					values = {LEFT = 'Left', RIGHT = 'Right'},
-				},
-				FilterByList = {
-					name = 'Filter by List',
-					order = 5,
-					type = 'select',
-					hidden = Name == 'Cooldowns',
-					values = { None = 'None', Whitelist = 'Whitelist', Blacklist = 'Blacklist' },
-				},
-				IconStack = {
-					type = 'group',
-					name = 'Stack Count',
-					inline = true,
-					order = 10,
-					args = {
-						StackCountFont = {
-							type = 'select', dialogControl = 'LSM30_Font',
-							order = 1,
-							name = 'Font',
-							values = PA.LSM:HashTable('font'),
-						},
-						StackCountFontSize = {
-							type = 'range',
-							order = 2,
-							name = 'Font Size',
-							min = 8, max = 18, step = 1,
-						},
-						StackCountFontFlag = {
-							name = 'Font Flag',
-							order = 3,
-							type = 'select',
-							values = PA.FontFlags,
-						},
-					},
-				},
-				StatusBarGroup = {
-					type = 'group',
-					name = 'StatusBar',
-					order = 11,
-					inline = true,
-					args = {
-						StatusBar = {
-							order = 1,
-							type = 'toggle',
-							name = 'Enabled',
-						},
-						FollowCooldownText = {
-							order = 2,
-							type = 'toggle',
-							name = 'Follow Cooldown Text Color',
-							desc = 'Follow Cooldown Text Colors (Expiring / Seconds)',
-						},
-						StatusBarWidth = {
-							type = 'range',
-							order = 3,
-							name = 'Width',
-							min = 1, max = 256, step = 1,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarHeight = {
-							type = 'range',
-							order = 4,
-							name = 'Height',
-							min = 1, max = 64, step = 1,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarTexture = {
-							type = 'select', dialogControl = 'LSM30_Statusbar',
-							order = 5,
-							name = 'Texture',
-							values = PA.LSM:HashTable('statusbar'),
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarTextureColor = {
-							type = 'color',
-							order = 6,
-							name = 'Texture Color',
-							hasAlpha = false,
-							get = function(info) return unpack(iFilger.db[Name][info[#info]]) end,
-							set = function(info, r, g, b, a) iFilger.db[Name][info[#info]] = { r, g, b, a} end,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarFont = {
-							type = 'select', dialogControl = 'LSM30_Font',
-							order = 7,
-							name = 'Font',
-							values = PA.LSM:HashTable('font'),
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarFontSize = {
-							type = 'range',
-							order = 8,
-							name = 'Font Size',
-							min = 8, max = 18, step = 1,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-						},
-						StatusBarFontFlag = {
-							name = 'Font Flag',
-							order = 9,
-							type = 'select',
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-							values = PA.FontFlags,
-						},
-						StatusBarDirection = {
-							name = 'Growth Direction',
-							order = 10,
-							type = 'select',
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-							values = {
-								UP = 'Up',
-								DOWN = 'Down',
-							},
-						},
-						StatusBarName = {
-							type = 'group',
-							name = 'Name',
-							order = 11,
-							inline = true,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-							args = {
-								StatusBarNameEnabled = {
-									order = 1,
-									type = 'toggle',
-									name = 'Enabled',
-								},
-								StatusBarNameX = {
-									type = 'range',
-									order = 2,
-									name = 'Name X Offset',
-									min = -256, max = 256, step = 1,
-								},
-								StatusBarNameY = {
-									type = 'range',
-									order = 3,
-									name = 'Name Y Offset',
-									min = -64, max = 64, step = 1,
-								},
-							},
-						},
-						StatusBarTime = {
-							type = 'group',
-							name = 'Time',
-							order = 12,
-							inline = true,
-							disabled = function() return not iFilger.db[Name].StatusBar end,
-							args = {
-								StatusBarTimeEnabled = {
-									order = 1,
-									type = 'toggle',
-									name = 'Enabled',
-								},
-								StatusBarTimeX = {
-									type = 'range',
-									order = 12,
-									name = 'Time X Offset',
-									min = -256, max = 256, step = 1,
-								},
-								StatusBarTimeY = {
-									type = 'range',
-									order = 13,
-									name = 'Time Y Offset',
-									min = -64, max = 64, step = 1,
-								},
-							},
-						},
-					},
-				},
-				filterGroup = {
-					type = 'group',
-					name = PA.ACL["Filters"],
-					order = 12,
-					inline = true,
-					hidden = Name == 'Cooldowns',
-					args = {
-						selectFilter = {
-							order = 2,
-							type = 'select',
-							name = PA.ACL["Select Filter"],
-							get = function(info) return selectedFilter end,
-							set = function(info, value)
-								selectedFilter, selectedSpell = nil, nil
-								if value ~= '' then
-									selectedFilter = value
-								end
-							end,
-							values = { Whitelist = 'Whitelist', Blacklist = 'Blacklist'},
-						},
-						filterGroup = {
-							type = 'group',
-							name = function() return selectedFilter end,
-							hidden = function() return not selectedFilter end,
-							inline = true,
-							order = 10,
-							args = {
-								addSpell = {
-									order = 1,
-									name = PA.ACL["Add SpellID"],
-									desc = PA.ACL["Add a spell to the filter."],
-									type = 'input',
-									get = function(info) return "" end,
-									set = function(info, value)
-										value = tonumber(value)
-										if not value then return end
+		PA.Options.args.iFilger.args[Name] = PA.ACH:Group(Name, nil, nil, nil, function(info) return iFilger.db[Name][info[#info]] end, function(info, value) iFilger.db[Name][info[#info]] = value iFilger:UpdateAll() end)
 
-										local spellName = GetSpellInfo(value)
-										selectedSpell = (spellName and value) or nil
-										if not selectedSpell then return end
+		PA.Options.args.iFilger.args[Name].args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 0)
+		PA.Options.args.iFilger.args[Name].args.Size = PA.ACH:Range(PA.ACL['Icon Size'], nil, 1, { min = 16, max = 64, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.Spacing = PA.ACH:Range(PA.ACL['Spacing'], nil, 2, { min = 0, max = 18, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.NumPerRow = PA.ACH:Range(PA.ACL['Number Per Row'], nil, 3, { min = 1, max = 24, step = 1 }, nil, nil, nil, nil, function() return iFilger.db[Name].StatusBar end)
+		PA.Options.args.iFilger.args[Name].args.Direction = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 4, { LEFT = 'Left', RIGHT = 'Right' }, nil, nil, nil, nil, nil, function() return iFilger.db[Name].StatusBar end)
+		PA.Options.args.iFilger.args[Name].args.FilterByList = PA.ACH:Select(PA.ACL['Filter by List'], nil, 5, { None = 'None', Whitelist = 'Whitelist', Blacklist = 'Blacklist' }, nil, nil, nil, nil, nil, Name == 'Cooldowns')
 
-										iFilger.db[Name][selectedFilter][value] = true
-									end,
-								},
-								removeSpell = {
-									order = 2,
-									name = PA.ACL["Remove Spell"],
-									desc = PA.ACL["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."],
-									type = 'execute',
-									func = function()
-										local value = GetSelectedSpell()
-										if not value then return end
-										selectedSpell = nil
+		PA.Options.args.iFilger.args[Name].args.IconStack = PA.ACH:Group(PA.ACL['Stack Count'], nil, 10)
+		PA.Options.args.iFilger.args[Name].args.IconStack.inline = true
+		PA.Options.args.iFilger.args[Name].args.IconStack.args.StackCountFont = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
+		PA.Options.args.iFilger.args[Name].args.IconStack.args.StackCountFontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 2, { min = 8, max = 18, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.IconStack.args.StackCountFontFlag = PA.ACH:FontFlags(PA.ACL['Font Flag'], nil, 3)
 
-										iFilger.db[Name][selectedFilter][value] = nil;
-									end,
-								},
-								selectSpell = {
-									name = PA.ACL["Select Spell"],
-									type = 'select',
-									order = 10,
-									width = "double",
-									get = function(info)
-										if not iFilger.db[Name][selectedFilter][selectedSpell] then
-											selectedSpell = nil
-										end
-										return selectedSpell or ''
-									end,
-									set = function(info, value)
-										selectedSpell = (value ~= '' and value) or nil
-									end,
-									values = function()
-										local list = iFilger.db[Name][selectedFilter]
-										if not list then return end
-										wipe(spellList)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup = PA.ACH:Group(PA.ACL['StatusBar'], nil, 11, nil, nil, nil, function() return not iFilger.db[Name].StatusBar end)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.inline = true
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBar = PA.ACH:Toggle(PA.ACL['Enable'], nil, 0, nil, nil, nil, nil, nil, false)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.FollowCooldownText = PA.ACH:Toggle(PA.ACL['Follow Cooldown Text Color'], PA.ACL['Follow Cooldown Text Colors (Expiring / Seconds)'], 1)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarWidth = PA.ACH:Range(PA.ACL['Width'], nil, 3, { min = 1, max = 256, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarHeight = PA.ACH:Range(PA.ACL['Height'], nil, 4, { min = 1, max = 64, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTexture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 5)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTextureColor = PA.ACH:Color(PA.ACL['Texture Color'], nil, 6, nil, nil, function(info) return unpack(iFilger.db[Name][info[#info]]) end, function(info, r, g, b, a) iFilger.db[Name][info[#info]] = { r, g, b, a} end)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarFont = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 7)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarFontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 8, { min = 8, max = 18, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarFontFlag = PA.ACH:FontFlags(PA.ACL['Font Flags'], nil, 9)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 10, { UP = 'Up', DOWN = 'Down' })
 
-										for filter in pairs(list) do
-											local spellName = tonumber(filter) and GetSpellInfo(filter)
-											local name = (spellName and format("%s |cFF888888(%s)|r", spellName, filter)) or tostring(filter)
-											spellList[filter] = name
-										end
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarName = PA.ACH:Group(PA.ACL['Name'], nil, 11)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarName.inline = true
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarName.args.StatusBarNameEnabled = PA.ACH:Toggle(PA.ACL['Enable'], nil, 0)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarName.args.StatusBarNameX = PA.ACH:Range(PA.ACL['X Offset'], nil, 1, { min = -256, max = 256, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarName.args.StatusBarNameY = PA.ACH:Range(PA.ACL['Y Offset'], nil, 2, { min = -64, max = 64, step = 1 })
 
-										if not next(spellList) then
-											spellList[''] = PA.ACL["None"]
-										end
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime = PA.ACH:Group(PA.ACL['Name'], nil, 12)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime.inline = true
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime.args.StatusBarTimeEnabled = PA.ACH:Toggle(PA.ACL['Enable'], nil, 0)
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime.args.StatusBarTimeX = PA.ACH:Range(PA.ACL['X Offset'], nil, 1, { min = -256, max = 256, step = 1 })
+		PA.Options.args.iFilger.args[Name].args.StatusBarGroup.args.StatusBarTime.args.StatusBarTimeY = PA.ACH:Range(PA.ACL['Y Offset'], nil, 2, { min = -64, max = 64, step = 1 })
 
-										return spellList
-									end,
-								},
-							},
-						},
-						resetFilter = {
-							order = 2,
-							type = "execute",
-							name = PA.ACL["Reset Filter"],
-							desc = PA.ACL["This will reset the contents of this filter back to default. Any spell you have added to this filter will be removed."],
-							confirm = true,
-							func = function(info) wipe(iFilger.db[Name][selectedFilter]) selectedSpell = nil end,
-						},
-						spellGroup = {
-							type = "group",
-							name = function()
-								local spell = GetSelectedSpell()
-								local spellName = spell and GetSpellInfo(spell)
-								return (spellName and spellName..' |cFF888888('..spell..')|r') or spell or ' '
-							end,
-							hidden = function() return not GetSelectedSpell() end,
-							order = -15,
-							inline = true,
-							args = {
-								enabled = {
-									name = PA.ACL["Enable"],
-									order = 0,
-									type = 'toggle',
-									get = function(info)
-										local spell = GetSelectedSpell()
-										if not spell then return end
+		PA.Options.args.iFilger.args[Name].args.filterGroup = PA.ACH:Group(PA.ACL['Filters'], nil, 12, nil, nil, nil, nil, Name == 'Cooldowns')
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.selectFilter = PA.ACH:Select(PA.ACL['Select Filter'], nil, 1, { Whitelist = 'Whitelist', Blacklist = 'Blacklist' }, nil, nil, function() return selectedFilter end, function(_, value) selectedFilter, selectedSpell = nil, nil if value ~= '' then selectedFilter = value end end)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.resetFilter = PA.ACH:Execute(PA.ACL["Reset Filter"], PA.ACL["This will reset the contents of this filter back to default. Any spell you have added to this filter will be removed."], 2, function() wipe(iFilger.db[Name][selectedFilter]) selectedSpell = nil end, nil, true)
 
-										return iFilger.db[Name][selectedFilter][spell]
-									end,
-									set = function(info, value)
-										local spell = GetSelectedSpell()
-										if not spell then return end
-
-										iFilger.db[Name][selectedFilter][spell] = value
-									end,
-								},
-							},
-						}
-					},
-				}
-			},
-		}
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.filterGroup = PA.ACH:Group(function() return selectedFilter end, nil, 10, nil, nil, nil, nil, function() return not selectedFilter end)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.filterGroup.inline = true
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.filterGroup.args.addSpell = PA.ACH:Input(PA.ACL['Add SpellID'], PA.ACL['Add a spell to the filter.'], 1, nil, nil, function() return '' end, function(_, value) value = tonumber(value) if not value then return end local spellName = GetSpellInfo(value) selectedSpell = (spellName and value) or nil if not selectedSpell then return end iFilger.db[Name][selectedFilter][value] = true end)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.filterGroup.args.removeSpell = PA.ACH:Execute(PA.ACL["Remove Spell"], PA.ACL["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."], 2, function() local value = GetSelectedSpell() if not value then return end selectedSpell = nil iFilger.db[Name][selectedFilter][value] = nil end, nil, true)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.filterGroup.args.selectSpell = PA.ACH:Select(PA.ACL["Select Spell"], nil, 10, function() local list = iFilger.db[Name][selectedFilter] if not list then return end wipe(spellList) for filter in pairs(list) do local spellName = tonumber(filter) and GetSpellInfo(filter) local name = (spellName and format("%s |cFF888888(%s)|r", spellName, filter)) or tostring(filter) spellList[filter] = name end if not next(spellList) then spellList[''] = PA.ACL["None"] end return spellList end, nil, 'double', function() if not iFilger.db[Name][selectedFilter][selectedSpell] then selectedSpell = nil end return selectedSpell or '' end, function(_, value) selectedSpell = (value ~= '' and value) or nil end)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.spellGroup = PA.ACH:Group(function() local spell = GetSelectedSpell() local spellName = spell and GetSpellInfo(spell) return (spellName and spellName..' |cFF888888('..spell..')|r') or spell or ' ' end, nil, -15, nil, nil, nil, nil, function() return not GetSelectedSpell() end)
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.spellGroup.inline = true
+		PA.Options.args.iFilger.args[Name].args.filterGroup.args.spellGroup.args.enabled = PA.ACH:Toggle(PA.ACL['Enable'], nil, 0, nil, nil, nil, function() local spell = GetSelectedSpell() if not spell then return end return iFilger.db[Name][selectedFilter][spell] end, function(_, value) local spell = GetSelectedSpell() if not spell then return end iFilger.db[Name][selectedFilter][spell] = value end)
 	end
 
 	PA.Options.args.iFilger.args.Cooldowns.args.UpdateSpeed = PA.ACH:Range(PA.ACL['Update Speed'], nil, 5, { min = .1, max = .5, step = .1 })
