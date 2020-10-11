@@ -524,7 +524,7 @@ function OzCD:BuildProfile()
 		Tooltips = true,
 		Vertical = false,
 		UpdateSpeed = .1,
-		cooldown = CopyTable(PA.Defaults.profile.cooldown),
+		cooldown = CopyTable(PA.Defaults.profile.Cooldown),
 	}
 end
 
