@@ -39,27 +39,18 @@ EFL.Icons = {
 			Name = _G.FACTION_ALLIANCE,
 			Order = 1,
 			Default = "Interface/FriendsFrame/Battlenet-WoWicon",
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WoW',
-			Flat = MediaPath..'GameIcons/Flat/Alliance',
-			Gloss = MediaPath..'GameIcons/Gloss/Alliance',
 			Launcher = MediaPath..'GameIcons/Launcher/Alliance',
 		},
 		Horde = {
 			Name = _G.FACTION_HORDE,
 			Order = 2,
 			Default = 'Interface/FriendsFrame/Battlenet-WoWicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WoW',
-			Flat = MediaPath..'GameIcons/Flat/Horde',
-			Gloss = MediaPath..'GameIcons/Gloss/Horde',
 			Launcher = MediaPath..'GameIcons/Launcher/Horde',
 		},
 		Neutral = {
 			Name = _G.FACTION_STANDING_LABEL4,
 			Order = 3,
 			Default = 'Interface/FriendsFrame/Battlenet-WoWicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WoW',
-			Flat = MediaPath..'GameIcons/Flat/WoW',
-			Gloss = MediaPath..'GameIcons/Gloss/WoW',
 			Launcher = MediaPath..'GameIcons/Launcher/WoW',
 		},
 		App = {
@@ -67,9 +58,6 @@ EFL.Icons = {
 			Order = 4,
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Battlenet',
-			Flat = MediaPath..'GameIcons/Flat/BattleNet',
-			Gloss = MediaPath..'GameIcons/Gloss/BattleNet',
 			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
 			Animated = MediaPath..'GameIcons/Bnet',
 		},
@@ -78,9 +66,6 @@ EFL.Icons = {
 			Order = 5,
 			Color = '82C5FF',
 			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Battlenet',
-			Flat = MediaPath..'GameIcons/Flat/BattleNet',
-			Gloss = MediaPath..'GameIcons/Gloss/BattleNet',
 			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
 			Animated = MediaPath..'GameIcons/Bnet',
 		},
@@ -88,81 +73,54 @@ EFL.Icons = {
 			Name = PA.ACL['Diablo 3'],
 			Color = 'C41F3B',
 			Default = 'Interface/FriendsFrame/Battlenet-D3icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-D3',
-			Flat = MediaPath..'GameIcons/Flat/D3',
-			Gloss = MediaPath..'GameIcons/Gloss/D3',
 			Launcher = MediaPath..'GameIcons/Launcher/D3',
 		},
 		[_G.BNET_CLIENT_WTCG or 'WTCG'] = {
 			Name = PA.ACL['Hearthstone'],
 			Color = 'FFB100',
 			Default = 'Interface/FriendsFrame/Battlenet-WTCGicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-WTCG',
-			Flat = MediaPath..'GameIcons/Flat/Hearthstone',
-			Gloss = MediaPath..'GameIcons/Gloss/Hearthstone',
 			Launcher = MediaPath..'GameIcons/Launcher/Hearthstone',
 		},
 		[_G.BNET_CLIENT_SC or 'S1'] = {
 			Name = PA.ACL['Starcraft'],
 			Color = 'C495DD',
 			Default = 'Interface/FriendsFrame/Battlenet-Sc2icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC',
-			Flat = MediaPath..'GameIcons/Flat/SC',
-			Gloss = MediaPath..'GameIcons/Gloss/SC',
 			Launcher = MediaPath..'GameIcons/Launcher/SC',
 		},
 		[_G.BNET_CLIENT_SC2 or 'S2'] = {
 			Name = PA.ACL['Starcraft 2'],
 			Color = 'C495DD',
 			Default = "Interface/ChatFrame/UI-ChatIcon-SC2",
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-SC2',
-			Flat = MediaPath..'GameIcons/Flat/SC2',
-			Gloss = MediaPath..'GameIcons/Gloss/SC2',
 			Launcher = MediaPath..'GameIcons/Launcher/SC2',
 		},
 		[_G.BNET_CLIENT_HEROES or 'Hero'] = {
 			Name = PA.ACL['Hero of the Storm'],
 			Color = '00CCFF',
 			Default = 'Interface/FriendsFrame/Battlenet-HotSicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-HotS',
-			Flat = MediaPath..'GameIcons/Flat/Heroes',
-			Gloss = MediaPath..'GameIcons/Gloss/Heroes',
 			Launcher = MediaPath..'GameIcons/Launcher/Heroes',
 		},
 		[_G.BNET_CLIENT_OVERWATCH or 'Pro'] = {
 			Name = PA.ACL['Overwatch'],
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-Overwatchicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-Overwatch',
-			Flat = MediaPath..'GameIcons/Flat/Overwatch',
-			Gloss = MediaPath..'GameIcons/Gloss/Overwatch',
 			Launcher = MediaPath..'GameIcons/Launcher/Overwatch',
 		},
 		[_G.BNET_CLIENT_COD or 'VIPR'] = {
 			Name = PA.ACL['Call of Duty 4'],
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyBlackOps4icon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-CallOfDutyBlackOps4',
-			Flat = MediaPath..'GameIcons/Launcher/COD4',
-			Gloss = MediaPath..'GameIcons/Launcher/COD4',
 			Launcher = MediaPath..'GameIcons/Launcher/COD4',
 		},
 		[_G.BNET_CLIENT_COD_MW or 'ODIN'] = {
 			Name = PA.ACL['Call of Duty Modern Warfare'],
 			Color = 'FFFFFF',
 			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyMWicon',
-			BlizzardChat = 'Interface/ChatFrame/UI-ChatIcon-CallOfDutyMWicon',
-			Flat = MediaPath..'GameIcons/Launcher/CODMW',
-			Gloss = MediaPath..'GameIcons/Launcher/CODMW',
 			Launcher = MediaPath..'GameIcons/Launcher/CODMW',
 		},
 		[_G.BNET_CLIENT_WC3 or 'W3'] = {
 			Name = PA.ACL['Warcraft 3 Reforged'],
 			Color = 'FFFFFF',
 			Default = "Interface/FriendsFrame/Battlenet-Warcraft3Reforged",
-			BlizzardChat = 'Interface/FriendsFrame/Battlenet-Warcraft3Reforged',
-			Flat = MediaPath..'GameIcons/Launcher/WC3R',
-			Gloss = MediaPath..'GameIcons/Launcher/WC3R',
 			Launcher = MediaPath..'GameIcons/Launcher/WC3R',
 		},
 	},
@@ -286,11 +244,11 @@ function EFL:UpdateFriends(button)
 					end
 
 					local faction = info.gameAccountInfo.factionName
-					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db[faction]] or EFL.Icons.Game.Neutral.Launcher)
+					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db[faction] or 'Default'] or EFL.Icons.Game.Neutral.Launcher)
 				else
 					if not EFL.Icons.Game[client] then client = 'BSAp' end
 					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
-					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db[client]])
+					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db[client] or 'Default'])
 				end
 
 				button.gameIcon:SetTexCoord(0, 1, 0, 1)

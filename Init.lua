@@ -507,13 +507,7 @@ PA.Defaults = {
 	}
 }
 
-PA.Options = {
-	type = 'group',
-	name = PA:Color(PA.Title),
-	order = 6,
-	childGroups = "tab",
-	args = {},
-}
+PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6, 'tab')
 
 function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
