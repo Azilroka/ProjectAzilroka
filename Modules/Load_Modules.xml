@@ -8,6 +8,7 @@
 	<Script file="FasterLoot.lua"/>
 	<Script file="iFilger.lua"/>
 	<Script file="LootConfirm.lua"/>
+	<Script file="MasterExperience.lua"/>
 	<Script file="MouseoverAuras.lua"/>
 	<Script file="MovableFrames.lua"/>
 	<Script file="OzCooldowns.lua"/>
