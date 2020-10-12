@@ -255,14 +255,15 @@ function MXP:QUEST_LOG_UPDATE()
 end
 
 function MXP:ConvertColorToClass(colorTable, classColorTable, multiplier)
+	local newColorTable = {}
 	multiplier = multiplier or 1
 	for key in pairs(classColorTable) do
 		if colorTable[key] then
-			colorTable[key] = classColorTable[key] * multiplier
+			newColorTable[key] = classColorTable[key] * multiplier
 		end
 	end
 
-	return colorTable
+	return newColorTable
 end
 
 function MXP:ClearBars()
