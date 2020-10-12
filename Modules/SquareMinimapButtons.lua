@@ -503,7 +503,7 @@ function SMB:GrabMinimapButtons()
 end
 
 function SMB:Update()
-	if not SMB.db.BarEnabled then return end
+	if not SMB.db.BarEnabled or not SMB.db.Enable then return end
 
 	local AnchorX, AnchorY = 0, 1
 	local ButtonsPerRow = SMB.db.ButtonsPerRow or 12
