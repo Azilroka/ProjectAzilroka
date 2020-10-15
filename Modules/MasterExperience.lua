@@ -54,35 +54,42 @@ function MXP:CheckQuests(questID, zoneOnly)
 	end
 end
 
+function MXP:AssignInfo(bar, infoString)
+	if infoString then
+		-- Split the String
+		bar.Info.name, bar.Info.class, bar.Info.level,
+		bar.Info.atMaxLevel, bar.Info.xpDisabled,
+		bar.Info.CurrentXP, bar.Info.XPToLevel, bar.Info.RestedXP,
+		bar.Info.QuestLogXP, bar.Info.ZoneQuestXP, bar.Info.CompletedQuestXP = strsplit(":", infoString)
+
+		-- Convert Strings to Number
+		bar.Info.CurrentXP, bar.Info.XPToLevel, bar.Info.RestedXP, bar.Info.QuestLogXP, bar.Info.ZoneQuestXP, bar.Info.CompletedQuestXP = tonumber(bar.Info.CurrentXP), tonumber(bar.Info.XPToLevel), tonumber(bar.Info.RestedXP), tonumber(bar.Info.QuestLogXP), tonumber(bar.Info.ZoneQuestXP), tonumber(bar.Info.CompletedQuestXP)
+
+		-- Convert String to Boolean
+		bar.Info.atMaxLevel, bar.Info.xpDisabled = bar.Info.atMaxLevel == 'true', bar.Info.xpDisabled == 'true'
+	end
+	return bar.Info
+end
+
 function MXP:UpdateBar(barID, infoString)
 	local bar = MXP.MasterExperience.Bars[barID] or MXP:CreateBar()
 	bar:Show()
 
-	-- Split the String
-	bar.Info.name, bar.Info.class, bar.Info.level,
-	bar.Info.atMaxLevel, bar.Info.xpDisabled,
-	bar.Info.CurrentXP, bar.Info.XPToLevel, bar.Info.RestedXP,
-	bar.Info.QuestLogXP, bar.Info.ZoneQuestXP, bar.Info.CompletedQuestXP = strsplit(":", infoString)
+	local info = MXP:AssignInfo(bar, infoString)
 
-	-- Convert Strings to Number
-	bar.Info.CurrentXP, bar.Info.XPToLevel, bar.Info.RestedXP, bar.Info.QuestLogXP, bar.Info.ZoneQuestXP, bar.Info.CompletedQuestXP = tonumber(bar.Info.CurrentXP), tonumber(bar.Info.XPToLevel), tonumber(bar.Info.RestedXP), tonumber(bar.Info.QuestLogXP), tonumber(bar.Info.ZoneQuestXP), tonumber(bar.Info.CompletedQuestXP)
+	if info.XPToLevel <= 0 then info.XPToLevel = 1 end
 
-	-- Convert String to Boolean
-	bar.Info.atMaxLevel, bar.Info.xpDisabled = bar.Info.atMaxLevel == 'true', bar.Info.xpDisabled == 'true'
-
-	if bar.Info.XPToLevel <= 0 then bar.Info.XPToLevel = 1 end
-
-	local remainXP = bar.Info.XPToLevel - bar.Info.CurrentXP
-	local remainPercent = remainXP / bar.Info.XPToLevel
-	bar.Info.RemainTotal, bar.Info.RemainBars = remainPercent * 100, remainPercent * 20
-	bar.Info.PercentXP, bar.Info.RemainXP = (bar.Info.CurrentXP / bar.Info.XPToLevel) * 100, remainXP
+	local remainXP = info.XPToLevel - info.CurrentXP
+	local remainPercent = remainXP / info.XPToLevel
+	info.RemainTotal, info.RemainBars = remainPercent * 100, remainPercent * 20
+	info.PercentXP, info.RemainXP = (info.CurrentXP / info.XPToLevel) * 100, remainXP
 
 	-- Set the Colors
 	local expColor, restedColor, questColor = MXP.db.Colors.Experience, MXP.db.Colors.Rested, MXP.db.Colors.Quest
 
-	if MXP.db.ColorByClass then
-		expColor = MXP:ConvertColorToClass(expColor, RAID_CLASS_COLORS[bar.Info.class])
-		restedColor = MXP:ConvertColorToClass(expColor, RAID_CLASS_COLORS[bar.Info.class], .6)
+	if MXP.db.ColorByClass and info.class then
+		expColor = MXP:ConvertColorToClass(expColor, RAID_CLASS_COLORS[info.class])
+		restedColor = MXP:ConvertColorToClass(restedColor, RAID_CLASS_COLORS[info.class], .6)
 	end
 
 	bar:SetStatusBarColor(expColor.r, expColor.g, expColor.b, expColor.a)
@@ -91,60 +98,62 @@ function MXP:UpdateBar(barID, infoString)
 
 	local displayString, textFormat = '', 'CURPERCREM'
 
-	if bar.Info.atMaxLevel or bar.Info.xpDisabled then
+	if info.atMaxLevel or info.xpDisabled then
 		bar:SetMinMaxValues(0, 1)
 		bar:SetValue(1)
 
-		displayString = bar.Info.xpDisabled and PA.ACL["Disabled"] or PA.ACL["Max Level"]
+		if displayString ~= 'NONE' then
+			displayString = info.xpDisabled and PA.ACL["Disabled"] or PA.ACL["Max Level"]
+		end
 	else
-		bar:SetMinMaxValues(0, bar.Info.XPToLevel)
-		bar:SetValue(bar.Info.CurrentXP)
+		bar:SetMinMaxValues(0, info.XPToLevel)
+		bar:SetValue(info.CurrentXP)
 
 		if textFormat == 'PERCENT' then
-			displayString = format('%.2f%%', bar.Info.PercentXP)
+			displayString = format('%.2f%%', info.PercentXP)
 		elseif textFormat == 'CURMAX' then
-			displayString = format('%s - %s', bar.Info.CurrentXP, bar.Info.XPToLevel)
+			displayString = format('%s - %s', info.CurrentXP, info.XPToLevel)
 		elseif textFormat == 'CURPERC' then
-			displayString = format('%s - %.2f%%', bar.Info.CurrentXP, bar.Info.PercentXP)
+			displayString = format('%s - %.2f%%', info.CurrentXP, info.PercentXP)
 		elseif textFormat == 'CUR' then
-			displayString = format('%s', bar.Info.CurrentXP)
+			displayString = format('%s', info.CurrentXP)
 		elseif textFormat == 'REM' then
-			displayString = format('%s', bar.Info.RemainXP)
+			displayString = format('%s', info.RemainXP)
 		elseif textFormat == 'CURREM' then
-			displayString = format('%s - %s', bar.Info.CurrentXP, bar.Info.RemainXP)
+			displayString = format('%s - %s', info.CurrentXP, info.RemainXP)
 		elseif textFormat == 'CURPERCREM' then
-			displayString = format('%s - %.2f%% (%s)', bar.Info.CurrentXP, bar.Info.PercentXP, bar.Info.RemainXP)
+			displayString = format('%s - %.2f%% (%s)', info.CurrentXP, info.PercentXP, info.RemainXP)
 		end
 
-		local isRested = bar.Info.RestedXP and bar.Info.RestedXP > 0
+		local isRested = info.RestedXP and info.RestedXP > 0
 		if isRested then
-			bar.Rested:SetMinMaxValues(0, bar.Info.XPToLevel)
-			bar.Rested:SetValue(min(bar.Info.CurrentXP + bar.Info.RestedXP, bar.Info.XPToLevel))
+			bar.Rested:SetMinMaxValues(0, info.XPToLevel)
+			bar.Rested:SetValue(min(info.CurrentXP + info.RestedXP, info.XPToLevel))
 
-			bar.Info.PercentRested = (bar.Info.RestedXP / bar.Info.XPToLevel) * 100
+			info.PercentRested = (info.RestedXP / info.XPToLevel) * 100
 
 			if textFormat == 'PERCENT' then
-				displayString = format('%s R:%.2f%%', displayString, bar.Info.PercentRested)
+				displayString = format('%s R:%.2f%%', displayString, info.PercentRested)
 			elseif textFormat == 'CURPERC' then
-				displayString = format('%s R:%s [%.2f%%]', displayString, bar.Info.RestedXP, bar.Info.PercentRested)
+				displayString = format('%s R:%s [%.2f%%]', displayString, info.RestedXP, info.PercentRested)
 			elseif textFormat ~= 'NONE' then
-				displayString = format('%s R:%s', displayString, bar.Info.RestedXP)
+				displayString = format('%s R:%s', displayString, info.RestedXP)
 			end
 		end
 
-		local hasQuestXP = bar.Info.QuestLogXP > 0
+		local hasQuestXP = info.QuestLogXP > 0
 		if hasQuestXP then
-			local QuestPercent = (bar.Info.QuestLogXP / bar.Info.XPToLevel) * 100
+			info.QuestPercent = (info.QuestLogXP / info.XPToLevel) * 100
 
-			bar.Quest:SetMinMaxValues(0, bar.Info.XPToLevel)
-			bar.Quest:SetValue(min(bar.Info.CurrentXP + bar.Info.QuestLogXP, bar.Info.XPToLevel))
+			bar.Quest:SetMinMaxValues(0, info.XPToLevel)
+			bar.Quest:SetValue(min(info.CurrentXP + info.QuestLogXP, info.XPToLevel))
 
 			if textFormat == 'PERCENT' then
-				displayString = format('%s Q:%.2f%%', displayString, QuestPercent)
+				displayString = format('%s Q:%.2f%%', displayString, info.QuestPercent)
 			elseif textFormat == 'CURPERC' then
-				displayString = format('%s Q:%s [%.2f%%]', displayString, bar.Info.QuestLogXP, QuestPercent)
+				displayString = format('%s Q:%s [%.2f%%]', displayString, info.QuestLogXP, info.QuestPercent)
 			elseif textFormat ~= 'NONE' then
-				displayString = format('%s Q:%s', displayString, bar.Info.QuestLogXP)
+				displayString = format('%s Q:%s', displayString, info.QuestLogXP)
 			end
 		end
 
@@ -153,7 +162,19 @@ function MXP:UpdateBar(barID, infoString)
 	end
 
 	bar.Text:SetText(displayString)
-	bar.Name:SetText(MXP.BNFriendsName[bar.Info.name] or bar.Info.name)
+	bar.Name:SetText(MXP.BNFriendsName[info.name] or info.name)
+
+	local numShown = 0
+	for _, Bar in ipairs(MXP.MasterExperience.Bars) do
+		if Bar:IsShown() then
+			numShown = numShown + 1
+		end
+	end
+
+	MXP.MasterExperience:SetSize(max(MXP.db.Width, numShown * MXP.db.Width), max(MXP.db.Height, numShown * MXP.db.Height))
+	if MXP.MasterExperience.mover then
+		MXP.MasterExperience.mover:SetSize(MXP.MasterExperience:GetSize())
+	end
 end
 
 function MXP:Bar_OnEnter()
@@ -164,12 +185,12 @@ function MXP:Bar_OnEnter()
 	_G.GameTooltip:ClearLines()
 	_G.GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -4)
 
-	_G.GameTooltip:AddLine(format('%s %s', self.Info.name, PA.ACL["Experience"]))
+	_G.GameTooltip:AddLine(format("%s's %s", MXP.BNFriendsName[self.Info.name] or self.Info.name, PA.ACL["Experience"]))
 	_G.GameTooltip:AddLine(' ')
 
 	_G.GameTooltip:AddDoubleLine(PA.ACL["XP:"], format(' %d / %d (%.2f%%)', self.Info.CurrentXP, self.Info.XPToLevel, self.Info.PercentXP), 1, 1, 1)
 	_G.GameTooltip:AddDoubleLine(PA.ACL["Remaining:"], format(' %s (%.2f%% - %d '..PA.ACL["Bars"]..')', self.Info.RemainXP, self.Info.RemainTotal, self.Info.RemainBars), 1, 1, 1)
-	_G.GameTooltip:AddDoubleLine(PA.ACL["Quest Log XP:"], self.Info.QuestLogXP, 1, 1, 1)
+	_G.GameTooltip:AddDoubleLine(PA.ACL["Quest Log XP:"], format('+%d (%.2f%%)', self.Info.QuestLogXP, self.Info.QuestPercent), 1, 1, 1)
 
 	if self.Info.RestedXP and self.Info.RestedXP > 0 then
 		_G.GameTooltip:AddDoubleLine(PA.ACL["Rested:"], format('+%d (%.2f%%)', self.Info.RestedXP, self.Info.PercentRested), 1, 1, 1)
@@ -193,15 +214,23 @@ function MXP:CreateBar()
 	PA:CreateBackdrop(Bar)
 	Bar:SetStatusBarTexture(PA.Solid)
 	Bar:Hide()
-	Bar:Size(250, 20)
+	Bar:SetSize(MXP.db.Width, MXP.db.Height)
 	Bar:SetScript('OnEnter', MXP.Bar_OnEnter)
 	Bar:SetScript('OnLeave', MXP.Bar_OnLeave)
 	Bar.Info = {}
 
-	if barIndex == 1 then
-		Bar:Point('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
+	if MXP.db.GrowthDirection == 'UP' then
+		if barIndex == 1 then
+			Bar:Point('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
+		else
+			Bar:Point('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
+		end
 	else
-		Bar:Point('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
+		if barIndex == 1 then
+			Bar:Point('TOP', MXP.MasterExperience, 'TOP', 0, 0)
+		else
+			Bar:Point('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
+		end
 	end
 
 	Bar.Text = Bar:CreateFontString(nil, 'OVERLAY')
@@ -254,8 +283,9 @@ function MXP:QUEST_LOG_UPDATE()
 	MXP:SendMessage()
 end
 
+local newColorTable = {}
 function MXP:ConvertColorToClass(colorTable, classColorTable, multiplier)
-	local newColorTable = {}
+	wipe(newColorTable)
 	multiplier = multiplier or 1
 	for key in pairs(classColorTable) do
 		if colorTable[key] then
@@ -303,6 +333,29 @@ function MXP:UpdateAllBars()
 	end
 end
 
+function MXP:UpdateCurrentBars()
+	for barIndex, bar in ipairs(MXP.MasterExperience.Bars) do
+		MXP:UpdateBar(barIndex)
+		bar:SetSize(MXP.db.Width, MXP.db.Height)
+		bar:ClearAllPoints()
+		bar:SetAlpha(MXP.db.MouseOver and 0 or 1)
+
+		if MXP.db.GrowthDirection == 'UP' then
+			if barIndex == 1 then
+				bar:Point('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
+			else
+				bar:Point('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
+			end
+		else
+			if barIndex == 1 then
+				bar:Point('TOP', MXP.MasterExperience, 'TOP', 0, 0)
+			else
+				bar:Point('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
+			end
+		end
+	end
+end
+
 function MXP:SendMessage()
 	local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', PLAYER_NAME_WITH_REALM, PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 
@@ -327,7 +380,7 @@ function MXP:HandleBNET()
 			local friendInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
 			for gameIndex = 1, C_BattleNet.GetFriendNumGameAccounts(friendIndex) do
 				local info = C_BattleNet.GetFriendGameAccountInfo(friendIndex, gameIndex)
-				if info and info.clientProgram == 'WoW' then
+				if info and info.clientProgram == 'WoW' and info.realmName and info.characterName then
 					MXP.BNFriendsWoW[info.gameAccountID] = format('%s-%s', info.characterName, info.realmName)
 					MXP.BNFriendsName[format('%s-%s', info.characterName, info.realmName)] = friendInfo.accountName
 				end
@@ -359,13 +412,18 @@ function MXP:GetOptions()
 	PA.Options.args.MasterExperience.args.Header = PA.ACH:Header(MXP.Header, 0)
 	PA.Options.args.MasterExperience.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value if not MXP.isEnabled then MXP:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	PA.Options.args.MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	PA.Options.args.MasterExperience.args.General.inline = true
-	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['Check BattleNet Friends'], nil, 0)
+	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['Check BattleNet Friends'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
 	PA.Options.args.MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 1)
-	PA.Options.args.MasterExperience.args.General.args.ColorByClass = PA.ACH:Toggle(PA.ACL['Color By Class'], nil, 2)
+	PA.Options.args.MasterExperience.args.General.args.GrowthDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 3, { UP = 'Up', DOWN = 'Down' })
 
-	PA.Options.args.MasterExperience.args.General.args.Colors = PA.ACH:Group(PA.ACL["Colors"], nil, 3, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General.args.SizeGroup = PA.ACH:Group(PA.ACL['Size'], nil, -2, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
+	PA.Options.args.MasterExperience.args.General.args.SizeGroup.args.Width = PA.ACH:Range(PA.ACL['Width'], nil, 1, { min = 1, max = 512, step = 1 })
+	PA.Options.args.MasterExperience.args.General.args.SizeGroup.args.Height = PA.ACH:Range(PA.ACL['Height'], nil, 2, { min = 1, max = 64, step = 1 })
+
+	PA.Options.args.MasterExperience.args.General.args.Colors = PA.ACH:Group(PA.ACL["Colors"], nil, -1, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateCurrentBars() end)
+	PA.Options.args.MasterExperience.args.General.args.Colors.args.ColorByClass = PA.ACH:Toggle(PA.ACL['Color By Class'], nil, 0, nil, nil, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	PA.Options.args.MasterExperience.args.General.args.Colors.args.Experience = PA.ACH:Color('Experience', nil, 1, true)
 	PA.Options.args.MasterExperience.args.General.args.Colors.args.Rested = PA.ACH:Color('Rested', nil, 2, true)
 	PA.Options.args.MasterExperience.args.General.args.Colors.args.Quest = PA.ACH:Color('Quest', nil, 3, true)
@@ -379,6 +437,9 @@ function MXP:BuildProfile()
 		Enable = true,
 		ColorByClass = false,
 		BattleNet = true,
+		GrowthDirection = 'UP',
+		Width = 256,
+		Height = 20,
 		Colors = {
 			Experience = { r = 0, g = .4, b = 1, a = .8 },
 			Rested = { r = 1, g = 0, b = 1, a = .2},

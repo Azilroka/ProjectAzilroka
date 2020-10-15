@@ -93,7 +93,7 @@ function DO:GetOptions()
 		local UnitFrameParents = { oUF_PetBattleFrameHider }
 
 		if PA.Tukui then
-			tinsert(UnitFrameParents, _G.Tukui[1].Panels.PetBattleHider)
+			tinsert(UnitFrameParents, _G.Tukui[1].PetHider)
 		end
 
 		if PA.ElvUI then
