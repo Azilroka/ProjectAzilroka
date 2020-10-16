@@ -182,6 +182,8 @@ function MXP:Bar_OnEnter()
 		UIFrameFadeIn(self, 0.4, self:GetAlpha(), 1)
 	end
 
+	if self.Info.atMaxLevel or self.Info.xpDisabled then return end
+
 	_G.GameTooltip:ClearLines()
 	_G.GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -4)
 
@@ -219,27 +221,21 @@ function MXP:CreateBar()
 	Bar:SetScript('OnLeave', MXP.Bar_OnLeave)
 	Bar.Info = {}
 
-	if MXP.db.GrowthDirection == 'UP' then
-		if barIndex == 1 then
-			Bar:Point('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
-		else
-			Bar:Point('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
-		end
-	else
-		if barIndex == 1 then
-			Bar:Point('TOP', MXP.MasterExperience, 'TOP', 0, 0)
-		else
-			Bar:Point('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
-		end
-	end
+	local point = MXP.db.GrowthDirection == 'UP' and 'BOTTOM' or 'TOP'
+	local relativeFrame = barIndex == 1 and MXP.MasterExperience or MXP.MasterExperience.Bars[barIndex - 1]
+	local relativePoint = barIndex == 1 and 'BOTTOM' or 'TOP'
+	local yOffset = barIndex == 1 and 0 or MXP.db.GrowthDirection == 'UP' and 2 or -2
+
+	Bar:Point(point, relativeFrame, relativePoint, 0, yOffset)
 
 	Bar.Text = Bar:CreateFontString(nil, 'OVERLAY')
-	Bar.Text:FontTemplate()
+	Bar.Text:SetFont(PA.LSM:Fetch('font', MXP.db.Font), MXP.db.FontSize, MXP.db.FontFlag)
 	Bar.Text:Point('CENTER')
 
 	Bar.Name = Bar:CreateFontString(nil, 'OVERLAY')
-	Bar.Name:FontTemplate()
-	Bar.Name:SetJustifyV("MIDDLE")
+	Bar.Name:SetFont(PA.LSM:Fetch('font', MXP.db.Font), MXP.db.FontSize, MXP.db.FontFlag)
+	Bar.Name:SetJustifyV('MIDDLE')
+	Bar.Name:SetJustifyH('RIGHT')
 	Bar.Name:Point('RIGHT', Bar, 'LEFT', -2, 0)
 
 	Bar.Rested = CreateFrame('StatusBar', '$parent_Rested', Bar)
@@ -322,7 +318,7 @@ function MXP:UpdateAllBars()
 	MXP:ClearBars()
 	MXP:SendMessage()
 
-	if IsInGroup() then
+	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
 		C_ChatInfo.SendAddonMessage('PA_MXP', 'REQUESTINFO', 'PARTY')
 	end
 
@@ -334,11 +330,15 @@ function MXP:UpdateAllBars()
 end
 
 function MXP:UpdateCurrentBars()
+	local font, fontSize, fontFlag = PA.LSM:Fetch('font', MXP.db.Font), MXP.db.FontSize, MXP.db.FontFlag
+
 	for barIndex, bar in ipairs(MXP.MasterExperience.Bars) do
 		MXP:UpdateBar(barIndex)
 		bar:SetSize(MXP.db.Width, MXP.db.Height)
 		bar:ClearAllPoints()
 		bar:SetAlpha(MXP.db.MouseOver and 0 or 1)
+		bar.Text:SetFont(font, fontSize, fontFlag)
+		bar.Name:SetFont(font, fontSize, fontFlag)
 
 		if MXP.db.GrowthDirection == 'UP' then
 			if barIndex == 1 then
@@ -414,9 +414,16 @@ function MXP:GetOptions()
 
 	PA.Options.args.MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	PA.Options.args.MasterExperience.args.General.inline = true
-	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['Check BattleNet Friends'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
-	PA.Options.args.MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 1)
+	PA.Options.args.MasterExperience.args.General.args.Party = PA.ACH:Toggle(PA.ACL['Check Party'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['Check BattleNet Friends'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 2)
 	PA.Options.args.MasterExperience.args.General.args.GrowthDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 3, { UP = 'Up', DOWN = 'Down' })
+
+	PA.Options.args.MasterExperience.args.General.args.FontGroup = PA.ACH:Group(PA.ACL['Font'], nil, 3)
+	PA.Options.args.MasterExperience.args.General.args.FontGroup.inline = true
+	PA.Options.args.MasterExperience.args.General.args.FontGroup.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
+	PA.Options.args.MasterExperience.args.General.args.FontGroup.args.FontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
+	PA.Options.args.MasterExperience.args.General.args.FontGroup.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
 
 	PA.Options.args.MasterExperience.args.General.args.SizeGroup = PA.ACH:Group(PA.ACL['Size'], nil, -2, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	PA.Options.args.MasterExperience.args.General.args.SizeGroup.args.Width = PA.ACH:Range(PA.ACL['Width'], nil, 1, { min = 1, max = 512, step = 1 })
@@ -434,12 +441,16 @@ end
 
 function MXP:BuildProfile()
 	PA.Defaults.profile.MasterExperience = {
-		Enable = true,
+		Enable = false,
 		ColorByClass = false,
 		BattleNet = true,
+		Party = true,
 		GrowthDirection = 'UP',
 		Width = 256,
 		Height = 20,
+		Font = 'Arial Narrow',
+		FontSize = 12,
+		FontFlag = 'OUTLINE',
 		Colors = {
 			Experience = { r = 0, g = .4, b = 1, a = .8 },
 			Rested = { r = 1, g = 0, b = 1, a = .2},
@@ -452,6 +463,10 @@ function MXP:UpdateSettings()
 	MXP.db = PA.db.MasterExperience
 end
 
+function MXP:ShortenRealm(realm)
+	return gsub(realm, '[%s%-]', '')
+end
+
 function MXP:Initialize()
 	MXP:UpdateSettings()
 
@@ -461,7 +476,7 @@ function MXP:Initialize()
 
 	MXP.isEnabled = true
 
-	PLAYER_NAME_WITH_REALM = format('%s-%s', UnitFullName("player"))
+	PLAYER_NAME_WITH_REALM = format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName()))
 	_G.C_ChatInfo.RegisterAddonMessagePrefix('PA_MXP')
 
 	if PA.Tukui then
