@@ -396,9 +396,9 @@ function EFL:Initialize()
 	EFL:RegisterEvent("BN_CONNECTED", 'HandleBN')
 	EFL:RegisterEvent("BN_DISCONNECTED", 'HandleBN')
 
-	--if PA.db.FG then
-	--	EFL:SecureHook(PA.FG, 'FriendGroups_UpdateFriendButton', function(self, button) EFL:UpdateFriends(button) end)
-	--else
+	if PA.db.FriendGroups and PA.db.FriendGroups.Enable then
+		EFL:SecureHook(_G.FriendGroups, 'FriendGroups_UpdateFriendButton', function(_, button) EFL:UpdateFriends(button) end)
+	else
 		EFL:SecureHook("FriendsFrame_UpdateFriendButton", 'UpdateFriends')
-	--end
+	end
 end
