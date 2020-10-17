@@ -25,8 +25,8 @@ MXP.BNFriendsWoW = {}
 MXP.BNFriendsName = {}
 
 MXP.MasterExperience = CreateFrame('Frame', 'MasterExperience', PA.PetBattleFrameHider)
-MXP.MasterExperience:Size(250, 400)
-MXP.MasterExperience:Point('BOTTOM', UIParent, 'BOTTOM', 0, 43)
+MXP.MasterExperience:SetSize(250, 400)
+MXP.MasterExperience:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 43)
 MXP.MasterExperience.Bars = {}
 
 if not (PA.Tukui or PA.ElvUI) then
@@ -226,17 +226,17 @@ function MXP:CreateBar()
 	local relativePoint = barIndex == 1 and 'BOTTOM' or 'TOP'
 	local yOffset = barIndex == 1 and 0 or MXP.db.GrowthDirection == 'UP' and 2 or -2
 
-	Bar:Point(point, relativeFrame, relativePoint, 0, yOffset)
+	Bar:SetPoint(point, relativeFrame, relativePoint, 0, yOffset)
 
 	Bar.Text = Bar:CreateFontString(nil, 'OVERLAY')
 	Bar.Text:SetFont(PA.LSM:Fetch('font', MXP.db.Font), MXP.db.FontSize, MXP.db.FontFlag)
-	Bar.Text:Point('CENTER')
+	Bar.Text:SetPoint('CENTER')
 
 	Bar.Name = Bar:CreateFontString(nil, 'OVERLAY')
 	Bar.Name:SetFont(PA.LSM:Fetch('font', MXP.db.Font), MXP.db.FontSize, MXP.db.FontFlag)
 	Bar.Name:SetJustifyV('MIDDLE')
 	Bar.Name:SetJustifyH('RIGHT')
-	Bar.Name:Point('RIGHT', Bar, 'LEFT', -2, 0)
+	Bar.Name:SetPoint('RIGHT', Bar, 'LEFT', -2, 0)
 
 	Bar.Rested = CreateFrame('StatusBar', '$parent_Rested', Bar)
 	Bar.Rested:SetFrameLevel(Bar:GetFrameLevel())
@@ -342,15 +342,15 @@ function MXP:UpdateCurrentBars()
 
 		if MXP.db.GrowthDirection == 'UP' then
 			if barIndex == 1 then
-				bar:Point('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
+				bar:SetPoint('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
 			else
-				bar:Point('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
+				bar:SetPoint('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
 			end
 		else
 			if barIndex == 1 then
-				bar:Point('TOP', MXP.MasterExperience, 'TOP', 0, 0)
+				bar:SetPoint('TOP', MXP.MasterExperience, 'TOP', 0, 0)
 			else
-				bar:Point('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
+				bar:SetPoint('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
 			end
 		end
 	end
