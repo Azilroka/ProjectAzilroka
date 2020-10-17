@@ -414,8 +414,8 @@ function MXP:GetOptions()
 
 	PA.Options.args.MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	PA.Options.args.MasterExperience.args.General.inline = true
-	PA.Options.args.MasterExperience.args.General.args.Party = PA.ACH:Toggle(PA.ACL['Check Party'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
-	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['Check BattleNet Friends'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General.args.Party = PA.ACH:Toggle(PA.ACL['Party'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	PA.Options.args.MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['BattleNet'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
 	PA.Options.args.MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 2)
 	PA.Options.args.MasterExperience.args.General.args.GrowthDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 3, { UP = 'Up', DOWN = 'Down' })
 
