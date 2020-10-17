@@ -558,8 +558,10 @@ function SMB:Update()
 	end
 
 	if ActualButtons == 0 then
+		UnregisterStateDriver(SMB.Bar, 'visibility')
 		SMB.Bar:Hide()
 	else
+		RegisterStateDriver(SMB.Bar, 'visibility', SMB.db.Visibility)
 		SMB.Bar:Show()
 	end
 
@@ -587,6 +589,7 @@ function SMB:GetOptions()
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.ButtonsPerRow = PA.ACH:Range(PA.ACL['Buttons Per Row'], nil, 6, { min = 1, max = 100, step = 1 })
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.Shadows = PA.ACH:Toggle(PA.ACL['Shadows'], nil, 7)
 	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
+	PA.Options.args.SquareMinimapButtons.args.General.args.MBB.args.Visibility = PA.ACH:Input(PA.ACL['Visibility'], nil, 8, nil, 'double')
 
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard = PA.ACH:Group(PA.ACL['Blizzard'], nil, 2, nil, nil, function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end)
 	PA.Options.args.SquareMinimapButtons.args.General.args.Blizzard.inline = true
@@ -618,6 +621,7 @@ function SMB:BuildProfile()
 		MoveGameTimeFrame = true,
 		Shadows = true,
 		ReverseDirection = false,
+		Visibility = '[petbattle] hide; show'
 	}
 end
 
