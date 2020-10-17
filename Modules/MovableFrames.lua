@@ -256,10 +256,10 @@ function MF:MakeMovable(Name)
 			function OpenWorldMap()
 				_G.ShowUIPanel(_G.WorldMapFrame)
 			end
-		end
 
-		_G.ToggleWorldMap()
-		_G.ToggleWorldMap()
+			_G.ToggleWorldMap()
+			_G.ToggleWorldMap()
+		end
 	end
 
 	Frame:EnableMouse(true)
