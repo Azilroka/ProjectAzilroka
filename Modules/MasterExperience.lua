@@ -264,8 +264,6 @@ end
 
 function MXP:PLAYER_XP_UPDATE()
 	CurrentXP, XPToLevel = UnitXP('player'), UnitXPMax('player')
-
-	MXP:SendMessage()
 end
 
 function MXP:QUEST_LOG_UPDATE()
@@ -358,7 +356,7 @@ end
 function MXP:SendMessage()
 	local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName())), PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 
-	if IsInGroup() then
+	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
 		C_ChatInfo.SendAddonMessage('PA_MXP', message, 'PARTY')
 	end
 
@@ -510,4 +508,6 @@ function MXP:Initialize()
 	MXP:PLAYER_LEVEL_UP()
 
 	MXP:UpdateAllBars()
+
+	MXP:ScheduleRepeatingTimer('SendMessage', 5)
 end
