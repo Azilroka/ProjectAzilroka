@@ -188,7 +188,10 @@ function MXP:Bar_OnEnter()
 
 	_G.GameTooltip:AddDoubleLine(PA.ACL["XP:"], format(' %d / %d (%.2f%%)', self.Info.CurrentXP, self.Info.XPToLevel, self.Info.PercentXP), 1, 1, 1)
 	_G.GameTooltip:AddDoubleLine(PA.ACL["Remaining:"], format(' %s (%.2f%% - %d '..PA.ACL["Bars"]..')', self.Info.RemainXP, self.Info.RemainTotal, self.Info.RemainBars), 1, 1, 1)
-	_G.GameTooltip:AddDoubleLine(PA.ACL["Quest Log XP:"], self.Info.QuestPercent and format('+%d (%.2f%%)', self.Info.QuestLogXP, self.Info.QuestPercent) or self.Info.QuestLogXP, 1, 1, 1)
+
+	if self.Info.QuestLogXP and self.Info.QuestLogXP > 0 then
+		_G.GameTooltip:AddDoubleLine(PA.ACL["Quest Log XP:"], format('+%d (%.2f%%)', self.Info.QuestLogXP, self.Info.QuestPercent), 1, 1, 1)
+	end
 
 	if self.Info.RestedXP and self.Info.RestedXP > 0 then
 		_G.GameTooltip:AddDoubleLine(PA.ACL["Rested:"], format('+%d (%.2f%%)', self.Info.RestedXP, self.Info.PercentRested), 1, 1, 1)
