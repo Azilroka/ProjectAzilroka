@@ -38,19 +38,15 @@ function MXP:CheckQuests(questID, zoneOnly)
 		return
 	end
 
-	C_QuestLog.SetSelectedQuest(questID)
-
-	if C_QuestLog.ShouldShowQuestRewards(questID) then
-		local isCompleted = C_QuestLog.ReadyForTurnIn(questID)
-		local experience = GetQuestLogRewardXP()
-		if zoneOnly then
-			ZoneQuestXP = ZoneQuestXP + experience
-		else
-			QuestLogXP = QuestLogXP + experience
-		end
-		if isCompleted then
-			CompletedQuestXP = CompletedQuestXP + experience
-		end
+	local isCompleted = C_QuestLog.ReadyForTurnIn(questID)
+	local experience = GetQuestLogRewardXP(questID)
+	if zoneOnly then
+		ZoneQuestXP = ZoneQuestXP + experience
+	else
+		QuestLogXP = QuestLogXP + experience
+	end
+	if isCompleted then
+		CompletedQuestXP = CompletedQuestXP + experience
 	end
 end
 
@@ -357,7 +353,7 @@ function MXP:UpdateCurrentBars()
 end
 
 function MXP:SendMessage()
-	local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', PLAYER_NAME_WITH_REALM, PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
+	local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName())), PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 
 	if IsInGroup() then
 		C_ChatInfo.SendAddonMessage('PA_MXP', message, 'PARTY')
@@ -477,6 +473,9 @@ function MXP:Initialize()
 	MXP.isEnabled = true
 
 	PLAYER_NAME_WITH_REALM = format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName()))
+
+	MXP.PLAYER_NAME_WITH_REALM = PLAYER_NAME_WITH_REALM
+
 	_G.C_ChatInfo.RegisterAddonMessagePrefix('PA_MXP')
 
 	if PA.Tukui then
