@@ -115,7 +115,7 @@ end
 PA.oUF = GetoUF()
 
 function PA:ClassColorCode(class)
-	local color = PA:GetClassColor(class)
+	local color = PA:GetClassColor(PA.Classes[class])
 	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
