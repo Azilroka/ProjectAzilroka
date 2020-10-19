@@ -10,6 +10,3 @@ externals:
 
 ignore:
 	- Libs/Ace3/tests
-
-move-folders:
-	ProjectAzilroka\Classic: ProjectAzilroka
