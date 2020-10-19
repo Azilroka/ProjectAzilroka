@@ -1,8 +1,7 @@
 local PA = _G.ProjectAzilroka
 local MXP = PA:NewModule('MasterXP', 'AceTimer-3.0', 'AceEvent-3.0')
 
-MXP.Title = 'Master Experience'
-MXP.Header = PA.ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
+MXP.Title = PA.ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
 MXP.Description = PA.ACL['Shows Experience Bars for Party / Battle.net Friends']
 MXP.Authors = 'Azilroka     NihilisticPandemonium'
 MXP.isEnabled = false
@@ -10,6 +9,9 @@ PA.MXP, _G.MasterExperience = MXP, MXP
 
 local _G = _G
 local min, format = min, format
+local tostring, tonumber = tostring, tonumber
+local strsplit = strsplit
+
 local CreateFrame = CreateFrame
 local GetXPExhaustion = GetXPExhaustion
 local IsXPUserDisabled = IsXPUserDisabled
@@ -17,16 +19,19 @@ local GetQuestLogRewardXP = GetQuestLogRewardXP
 local IsPlayerAtEffectiveMaxLevel = IsPlayerAtEffectiveMaxLevel
 local UnitXP, UnitXPMax = UnitXP, UnitXPMax
 
+local BNGetInfo = BNGetInfo
+
 local QuestLogXP, ZoneQuestXP, CompletedQuestXP = 0, 0, 0
 local CurrentXP, XPToLevel, RestedXP, CurrentLevel
 
-local PLAYER_NAME_WITH_REALM
-MXP.BNFriendsWoW = {}
-MXP.BNFriendsName = {}
+MXP.playerRealm = format('%s-%s', UnitName("player"), gsub(GetRealmName(), '[%s%-]', ''))
+MXP.battleTag = MXP.isBNConnected and select(2, BNGetInfo())
+MXP.BNFriends = {}
+MXP.isBNConnected = false
 
 MXP.MasterExperience = CreateFrame('Frame', 'MasterExperience', PA.PetBattleFrameHider)
 MXP.MasterExperience:SetSize(250, 400)
-MXP.MasterExperience:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 43)
+MXP.MasterExperience:SetPoint('BOTTOM', _G.UIParent, 'BOTTOM', 0, 43)
 MXP.MasterExperience.Bars = {}
 
 if not (PA.Tukui or PA.ElvUI) then
@@ -38,7 +43,7 @@ function MXP:CheckQuests(questID, zoneOnly)
 		return
 	end
 
-	local isCompleted = C_QuestLog.ReadyForTurnIn(questID)
+	local isCompleted = _G.C_QuestLog.ReadyForTurnIn(questID)
 	local experience = GetQuestLogRewardXP(questID)
 	if zoneOnly then
 		ZoneQuestXP = ZoneQuestXP + experience
@@ -153,12 +158,14 @@ function MXP:UpdateBar(barID, infoString)
 			end
 		end
 
+		displayString = format('%s %s - %s', PA.ACL['Lvl'], info.level, displayString)
+
 		bar.Rested:SetShown(isRested)
 		bar.Quest:SetShown(hasQuestXP)
 	end
 
 	bar.Text:SetText(displayString)
-	bar.Name:SetText(MXP.BNFriendsName[info.name] or info.name)
+	bar.Name:SetText(MXP.BNFriends[info.name] and MXP.BNFriends[info.name].accountName or info.name)
 
 	local numShown = 0
 	for _, Bar in ipairs(MXP.MasterExperience.Bars) do
@@ -183,7 +190,7 @@ function MXP:Bar_OnEnter()
 	_G.GameTooltip:ClearLines()
 	_G.GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -4)
 
-	_G.GameTooltip:AddLine(format("%s's %s", MXP.BNFriendsName[self.Info.name] or self.Info.name, PA.ACL["Experience"]))
+	_G.GameTooltip:AddLine(format("%s's %s", MXP.BNFriends[self.Info.name] and MXP.BNFriends[self.Info.name].accountName or self.Info.name, PA.ACL["Experience"]))
 	_G.GameTooltip:AddLine(' ')
 
 	_G.GameTooltip:AddDoubleLine(PA.ACL["XP:"], format(' %d / %d (%.2f%%)', self.Info.CurrentXP, self.Info.XPToLevel, self.Info.PercentXP), 1, 1, 1)
@@ -208,6 +215,15 @@ function MXP:Bar_OnLeave()
 	GameTooltip_Hide(self)
 end
 
+function MXP:GetBarPoints(barIndex)
+	local point = MXP.db.GrowthDirection == 'UP' and 'BOTTOM' or 'TOP'
+	local relativeFrame = barIndex == 1 and MXP.MasterExperience or MXP.MasterExperience.Bars[barIndex - 1]
+	local relativePoint = (barIndex == 1 or MXP.db.GrowthDirection == 'DOWN') and 'BOTTOM' or 'TOP'
+	local yOffset = barIndex == 1 and 0 or MXP.db.GrowthDirection == 'UP' and 2 or -2
+
+	return point, relativeFrame, relativePoint, yOffset
+end
+
 function MXP:CreateBar()
 	local barIndex = (#MXP.MasterExperience.Bars + 1)
 
@@ -220,11 +236,7 @@ function MXP:CreateBar()
 	Bar:SetScript('OnLeave', MXP.Bar_OnLeave)
 	Bar.Info = {}
 
-	local point = MXP.db.GrowthDirection == 'UP' and 'BOTTOM' or 'TOP'
-	local relativeFrame = barIndex == 1 and MXP.MasterExperience or MXP.MasterExperience.Bars[barIndex - 1]
-	local relativePoint = barIndex == 1 and 'BOTTOM' or 'TOP'
-	local yOffset = barIndex == 1 and 0 or MXP.db.GrowthDirection == 'UP' and 2 or -2
-
+	local point, relativeFrame, relativePoint, yOffset = MXP:GetBarPoints(barIndex)
 	Bar:SetPoint(point, relativeFrame, relativePoint, 0, yOffset)
 
 	Bar.Text = Bar:CreateFontString(nil, 'OVERLAY')
@@ -319,9 +331,31 @@ function MXP:UpdateAllBars()
 		C_ChatInfo.SendAddonMessage('PA_MXP', 'REQUESTINFO', 'PARTY')
 	end
 
-	if MXP.db.BattleNet and BNConnected() then
-		for friend in pairs(MXP.BNFriendsWoW) do
-			BNSendGameData(friend, 'PA_MXP', 'REQUESTINFO')
+	if MXP.db.BattleNet and MXP.isBNConnected then
+		for _, info in pairs(MXP.BNFriends) do
+			if info.presenceID then
+				BNSendGameData(info.presenceID, 'PA_MXP', 'REQUESTINFO')
+			end
+		end
+	end
+end
+
+function MXP:BattleNetUpdate(_, friendIndex)
+	if MXP.isBNConnected and friendIndex then
+		local hideBar = true
+		local friendInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
+		for gameIndex = 1, C_BattleNet.GetFriendNumGameAccounts(friendIndex) do
+			local info = C_BattleNet.GetFriendGameAccountInfo(friendIndex, gameIndex)
+			if info and info.clientProgram == 'WoW' then
+				BNSendGameData(info.gameAccountID, 'PA_MXP', 'REQUESTINFO')
+				hideBar = false
+			end
+		end
+		if hideBar then
+			local bar = MXP.MasterExperience.Bars[MXP:GetAssignedBar(friendInfo.battleTag)]
+			if bar then
+				bar:Hide()
+			end
 		end
 	end
 end
@@ -337,76 +371,78 @@ function MXP:UpdateCurrentBars()
 		bar.Text:SetFont(font, fontSize, fontFlag)
 		bar.Name:SetFont(font, fontSize, fontFlag)
 
-		if MXP.db.GrowthDirection == 'UP' then
-			if barIndex == 1 then
-				bar:SetPoint('BOTTOM', MXP.MasterExperience, 'BOTTOM', 0, 0)
-			else
-				bar:SetPoint('BOTTOM', MXP.MasterExperience.Bars[barIndex - 1], 'TOP', 0, 2)
-			end
-		else
-			if barIndex == 1 then
-				bar:SetPoint('TOP', MXP.MasterExperience, 'TOP', 0, 0)
-			else
-				bar:SetPoint('TOP', MXP.MasterExperience.Bars[barIndex - 1], 'BOTTOM', 0, -2)
-			end
-		end
+		local point, relativeFrame, relativePoint, yOffset = MXP:GetBarPoints(barIndex)
+		bar:SetPoint(point, relativeFrame, relativePoint, 0, yOffset)
 	end
 end
 
 function MXP:SendMessage()
-	local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName())), PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
-
+	local message = format('%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
+		message = format('%s:%s', MXP.playerRealm, message)
 		C_ChatInfo.SendAddonMessage('PA_MXP', message, 'PARTY')
 	end
 
-	if MXP.db.BattleNet and BNConnected() then
-		for friend in pairs(MXP.BNFriendsWoW) do
-			BNSendGameData(friend, 'PA_MXP', message)
+	if MXP.db.BattleNet and MXP.isBNConnected then
+		message = format('%s:%s', MXP.battleTag, message)
+		for _, info in pairs(MXP.BNFriends) do
+			if info.presenceID then
+				BNSendGameData(info.presenceID, 'PA_MXP', message)
+			end
 		end
 	end
 end
 
 function MXP:HandleBNET()
-	wipe(MXP.BNFriendsWoW)
-	wipe(MXP.BNFriendsName)
+	wipe(MXP.BNFriends)
 
-	if BNConnected() then
+	if MXP.isBNConnected then
+		MXP:BattleTag()
 		local _, numBNetOnline = BNGetNumFriends()
 		for friendIndex = 1, numBNetOnline do
 			local friendInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
 			for gameIndex = 1, C_BattleNet.GetFriendNumGameAccounts(friendIndex) do
 				local info = C_BattleNet.GetFriendGameAccountInfo(friendIndex, gameIndex)
-				if info and info.clientProgram == 'WoW' and info.realmName and info.characterName then
-					MXP.BNFriendsWoW[info.gameAccountID] = format('%s-%s', info.characterName, info.realmName)
-					MXP.BNFriendsName[format('%s-%s', info.characterName, info.realmName)] = friendInfo.accountName
+				if info and info.clientProgram == 'WoW' then
+					MXP.BNFriends[friendInfo.battleTag] = { presenceID = info.gameAccountID, accountName = friendInfo.accountName }
+					MXP.BNFriends[info.gameAccountID] = { battleTag = friendInfo.battleTag, accountName = friendInfo.accountName }
 				end
 			end
 		end
 	end
 end
 
+function MXP:HandleBNStatus()
+	MXP.isBNConnected = _G.BNConnected()
+end
+
+function MXP:BattleTag()
+	if not MXP.battleTag then
+		MXP.battleTag = MXP.isBNConnected and select(2, BNGetInfo())
+	end
+end
+
 function MXP:RecieveMessage(event, prefix, message, _, sender)
 	if prefix ~= 'PA_MXP' then return end
 
-	if event == 'CHAT_MSG_ADDON' and sender ~= PLAYER_NAME_WITH_REALM then
+	if event == 'CHAT_MSG_ADDON' and sender ~= MXP.playerRealm then
 		if message == 'REQUESTINFO' then
 			MXP:SendMessage()
 		else
 			MXP:UpdateBar(MXP:GetAssignedBar(sender), message)
 		end
-	elseif event == 'BN_CHAT_MSG_ADDON' and MXP.db.BattleNet and MXP.BNFriendsWoW[sender] then
+	elseif event == 'BN_CHAT_MSG_ADDON' and MXP.db.BattleNet and MXP.BNFriends[sender] then
 		if message == 'REQUESTINFO' then
 			MXP:SendMessage()
 		else
-			MXP:UpdateBar(MXP:GetAssignedBar(MXP.BNFriendsWoW[sender]), message)
+			MXP:UpdateBar(MXP:GetAssignedBar(MXP.BNFriends[sender].battleTag), message)
 		end
 	end
 end
 
 function MXP:GetOptions()
 	PA.Options.args.MasterExperience = PA.ACH:Group(MXP.Title, MXP.Description, nil, nil, function(info) return MXP.db[info[#info]] end)
-	PA.Options.args.MasterExperience.args.Header = PA.ACH:Header(MXP.Header, 0)
+	PA.Options.args.MasterExperience.args.Description = PA.ACH:Description(MXP.Description, 0)
 	PA.Options.args.MasterExperience.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value if not MXP.isEnabled then MXP:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
@@ -460,10 +496,6 @@ function MXP:UpdateSettings()
 	MXP.db = PA.db.MasterExperience
 end
 
-function MXP:ShortenRealm(realm)
-	return gsub(realm, '[%s%-]', '')
-end
-
 function MXP:Initialize()
 	MXP:UpdateSettings()
 
@@ -472,10 +504,6 @@ function MXP:Initialize()
 	end
 
 	MXP.isEnabled = true
-
-	PLAYER_NAME_WITH_REALM = format('%s-%s', UnitName("player"), MXP:ShortenRealm(GetRealmName()))
-
-	MXP.PLAYER_NAME_WITH_REALM = PLAYER_NAME_WITH_REALM
 
 	_G.C_ChatInfo.RegisterAddonMessagePrefix('PA_MXP')
 
@@ -494,13 +522,18 @@ function MXP:Initialize()
 	MXP:RegisterEvent('ENABLE_XP_GAIN', 'SendMessage')
 	MXP:RegisterEvent('QUEST_LOG_UPDATE')
 	MXP:RegisterEvent('GROUP_ROSTER_UPDATE', 'UpdateAllBars')
-	MXP:RegisterEvent('BN_FRIEND_INFO_CHANGED', 'UpdateAllBars')
+	MXP:RegisterEvent('BN_FRIEND_INFO_CHANGED', 'BattleNetUpdate')
 	MXP:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE', 'HandleBNET')
 	MXP:RegisterEvent('BN_FRIEND_ACCOUNT_OFFLINE', 'HandleBNET')
 	MXP:RegisterEvent('PLAYER_XP_UPDATE')
 	MXP:RegisterEvent('UPDATE_EXHAUSTION')
 	MXP:RegisterEvent('PLAYER_LEVEL_UP')
+	MXP:RegisterEvent("BN_CONNECTED", 'HandleBNStatus')
+	MXP:RegisterEvent("BN_DISCONNECTED", 'HandleBNStatus')
 
+	MXP:BattleTag()
+
+	MXP:HandleBNStatus()
 	MXP:HandleBNET()
 	MXP:UPDATE_EXHAUSTION()
 	MXP:PLAYER_XP_UPDATE()
@@ -509,5 +542,5 @@ function MXP:Initialize()
 
 	MXP:UpdateAllBars()
 
-	MXP:ScheduleRepeatingTimer('SendMessage', 5)
+	MXP:ScheduleRepeatingTimer('SendMessage', 2)
 end

@@ -3,8 +3,7 @@ local AR = PA:NewModule('AuraReminder', 'AceEvent-3.0', 'AceTimer-3.0')
 
 PA.AR = AR
 
-AR.Title = 'Aura Reminder'
-AR.Header = '|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'
+AR.Title = '|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'
 AR.Description = 'Reminder for Buffs / Debuffs'
 AR.Authors = 'Azilroka    NihilisticPandemonium'
 AR.isEnabled = false
@@ -318,14 +317,14 @@ local addGroupTemplate = { name = '', template = ''}
 function AR:GetOptions()
 	PA.Options.args.AuraReminder = {
 		type = 'group',
-		name = 'Aura Reminder',
+		name = AR.Title,
 		get = function(info) return AR.db[info[#info]] end,
 		set = function(info, value) AR.db[info[#info]] = value end,
 		args = {
-			Header = {
+			Description = {
 				order = 0,
-				type = 'header',
-				name = AR.Header,
+				type = 'description',
+				name = AR.Description,
 			},
 			Enable = {
 				order = 1,

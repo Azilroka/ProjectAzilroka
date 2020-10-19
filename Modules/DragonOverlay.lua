@@ -7,8 +7,7 @@ local pairs, tinsert, select, unpack = pairs, tinsert, select, unpack
 local strfind, strsub = strfind, strsub
 local UnitIsPlayer, UnitClass, UnitClassification = UnitIsPlayer, UnitClass, UnitClassification
 
-DO.Title = 'Dragon Overlay'
-DO.Header = PA.ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r']
+DO.Title = PA.ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r']
 DO.Description = PA.ACL['Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite']
 DO.Authors = 'Azilroka    NihilisticPandemonium'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
@@ -61,7 +60,7 @@ end
 
 function DO:GetOptions()
 	PA.Options.args.DragonOverlay = PA.ACH:Group(DO.Title, DO.Description, nil, nil, function(info) return DO.db[info[#info]] end)
-	PA.Options.args.DragonOverlay.args.Header = PA.ACH:Header(DO.Header, 0)
+	PA.Options.args.DragonOverlay.args.Description = PA.ACH:Description(DO.Description, 0)
 	PA.Options.args.DragonOverlay.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) DO.db[info[#info]] = value if not DO.isEnabled then DO:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.DragonOverlay.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) DO.db[info[#info]] = value DO:SetOverlay() end)

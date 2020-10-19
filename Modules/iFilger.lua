@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local iFilger = PA:NewModule('iFilger', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.iFilger = iFilger
 
-iFilger.Title = 'iFilger'
-iFilger.Header = '|cFF16C3F2i|r|cFFFFFFFFFilger|r'
+iFilger.Title = '|cFF16C3F2i|r|cFFFFFFFFFilger|r'
 iFilger.Description = 'Minimalistic Auras / Buffs / Procs / Cooldowns'
 iFilger.Authors = 'Azilroka    Nils Ruesch    Ildyria'
 
@@ -801,7 +800,7 @@ function iFilger:GetOptions()
 	iFilger:UpdateSettings()
 
 	PA.Options.args.iFilger = PA.ACH:Group(iFilger.Title, iFilger.Description, nil, 'tab')
-	PA.Options.args.iFilger.args.Header = PA.ACH:Header(iFilger.Header, 0)
+	PA.Options.args.iFilger.args.Description = PA.ACH:Description(iFilger.Description, 0)
 	PA.Options.args.iFilger.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) iFilger.db[info[#info]] = value if (not iFilger.isEnabled) then iFilger:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.iFilger.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)

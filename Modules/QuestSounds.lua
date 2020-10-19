@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.QS = QS
 
-QS.Title = 'QuestSounds'
-QS.Header = PA.ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
+QS.Title = PA.ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
 QS.Description = PA.ACL['Audio for Quest Progress & Completions.']
 QS.Authors = 'Azilroka'
 QS.Credits = 'Yoco'
@@ -141,7 +140,7 @@ end
 
 function QS:GetOptions()
 	PA.Options.args.QuestSounds = PA.ACH:Group(QS.Title, QS.Description, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end)
-	PA.Options.args.QuestSounds.args.Header = PA.ACH:Header(QS.Header, 0)
+	PA.Options.args.QuestSounds.args.Description = PA.ACH:Description(QS.Description, 0)
 	PA.Options.args.QuestSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) QS.db[info[#info]] = value if (not QS.isEnabled) then QS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.QuestSounds.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

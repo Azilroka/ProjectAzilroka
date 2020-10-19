@@ -4,8 +4,7 @@ if PA.Classic then return end
 local RR = PA:NewModule('ReputationReward', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 PA.RR = RR
 
-RR.Title = 'ReputationRewards'
-RR.Header = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
+RR.Title = PA.ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r']
 RR.Description = PA.ACL['Adds Reputation into Quest Log & Quest Frame.']
 RR.Authors = 'Azilroka'
 RR.isEnabled = false
@@ -13,6 +12,7 @@ RR.isEnabled = false
 local _G = _G
 local floor = floor
 local pairs = pairs
+local ipairs = ipairs
 local select = select
 local wipe = wipe
 local mod = mod
@@ -24,7 +24,6 @@ local GetNumQuestLogRewardFactions = _G.GetNumQuestLogRewardFactions
 local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
 local GetQuestLogTitle = _G.GetQuestLogTitle
 local GetQuestLogSelection = _G.GetQuestLogSelection
-local C_QuestLog = _G.C_QuestLog
 local GetNumQuestLogChoices = _G.GetNumQuestLogChoices
 local GetNumQuestChoices = _G.GetNumQuestChoices
 local UnitAura = _G.UnitAura
@@ -111,7 +110,7 @@ function RR:Show()
 
 	if ( _G.QuestInfoFrame.questLog ) then
 		local questID = select(8, GetQuestLogTitle(GetQuestLogSelection()))
-		if C_QuestLog.ShouldShowQuestRewards(questID) then
+		if _G.C_QuestLog.ShouldShowQuestRewards(questID) then
 			numQuestChoices = GetNumQuestLogChoices()
 		end
 	else
@@ -151,7 +150,7 @@ function RR:Show()
 		end
 	end
 
-	local rewardsFrame, lastFrame = QuestInfo_ShowRewards()
+	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
 	if not rewardsFrame then return end
 	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
 
@@ -187,18 +186,13 @@ function RR:Show()
 			if Info.Base < 0 then r, g, b = 1, 0, 0 elseif Info.Bonus > 0 then r, g, b = 0, 1, 0 end
 
 			questItem.Count:SetTextColor(r, g, b)
-			questItem:ClearAllPoints()
 
 			if (buttonIndex > 1) then
 				if mod(buttonIndex, 2) == 1 then
-					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 2) or lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 					lastFrame = questItem
-				else
-					questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 1) or lastFrame, 'TOPRIGHT', 2, 0)
 				end
 			else
-				questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 				Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 				lastFrame = questItem
 			end
@@ -218,7 +212,7 @@ end
 
 function RR:GetOptions()
 	PA.Options.args.ReputationReward = PA.ACH:Group(RR.Title, RR.Description, nil, nil, function(info) return RR.db[info[#info]] end, function(info, value) RR.db[info[#info]] = value end)
-	PA.Options.args.ReputationReward.args.Header = PA.ACH:Header(RR.Header, 0)
+	PA.Options.args.ReputationReward.args.Description = PA.ACH:Description(RR.Description, 0)
 	PA.Options.args.ReputationReward.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) RR.db[info[#info]] = value if (not RR.isEnabled) then RR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.ReputationReward.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

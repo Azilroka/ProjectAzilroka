@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.OzCD = OzCD
 
-OzCD.Title = 'OzCooldowns'
-OzCD.Header = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
+OzCD.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
 OzCD.Description = 'Minimalistic Cooldowns'
 OzCD.Authors = 'Azilroka    Nimaear'
 OzCD.isEnabled = false
@@ -447,7 +446,7 @@ function OzCD:GetOptions()
 	OzCD:UpdateSettings()
 
 	PA.Options.args.OzCooldowns = PA.ACH:Group(OzCD.Title, OzCD.Description, nil, nil, function(info) return OzCD.db[info[#info]] end, function(info, value) OzCD.db[info[#info]] = value end)
-	PA.Options.args.OzCooldowns.args.Header = PA.ACH:Header(OzCD.Header, 0)
+	PA.Options.args.OzCooldowns.args.Description = PA.ACH:Description(OzCD.Description, 0)
 	PA.Options.args.OzCooldowns.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) OzCD.db[info[#info]] = value if (not OzCD.isEnabled) then OzCD:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.OzCooldowns.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

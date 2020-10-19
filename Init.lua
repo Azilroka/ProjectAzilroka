@@ -97,9 +97,6 @@ PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(", ", "    ")
 
-local Color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.MyClass] or RAID_CLASS_COLORS[PA.MyClass]
-PA.ClassColor = { Color.r, Color.g, Color.b }
-
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
@@ -116,6 +113,18 @@ local function GetoUF()
 	return _G[_G.GetAddOnMetadata(key, 'X-oUF')]
 end
 PA.oUF = GetoUF()
+
+function PA:ClassColorCode(class)
+	local color = PA:GetClassColor(class)
+	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
+end
+
+function PA:GetClassColor(class)
+	return _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class] or { r = 1, g = 1, b = 1 }
+end
+
+local Color = PA:GetClassColor(PA.MyClass)
+PA.ClassColor = { Color.r, Color.g, Color.b }
 
 PA.Classes = {}
 
@@ -141,12 +150,6 @@ function PA:GetUIScale()
 	end
 
 	return magic/scale
-end
-
-function PA:ClassColorCode(class)
-	local color = class and (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[PA.Classes[class]] or RAID_CLASS_COLORS[PA.Classes[class]]) or { r = 1, g = 1, b = 1 }
-
-	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
 function PA:GetClassName(class)
@@ -230,7 +233,7 @@ function PA:SetTemplate(frame)
 	if PA.AddOnSkins then
 		_G.AddOnSkins[1]:SetTemplate(frame)
 	else
-		if not frame.SetBackdrop then Mixin(frame, BackdropTemplateMixin) end
+		if not frame.SetBackdrop then _G.Mixin(frame,  _G.BackdropTemplateMixin) end
 		if frame.SetTemplate then
 			frame:SetTemplate('Transparent', true)
 		else
@@ -248,12 +251,7 @@ function PA:CreateBackdrop(frame)
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
 		frame.Backdrop:SetOutside(frame)
-		if not frame.Backdrop.SetBackdrop then Mixin(frame.Backdrop, BackdropTemplateMixin) end
-		if frame.SetTemplate then
-			frame.Backdrop:SetTemplate('Transparent', true)
-		else
-			PA:SetTemplate(frame.Backdrop)
-		end
+		PA:SetTemplate(frame.Backdrop)
 	end
 end
 
@@ -516,7 +514,7 @@ PA.Defaults = {
 	}
 }
 
-PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6, 'tab')
+PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6, 'tree')
 
 function PA:GetOptions()
 	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options

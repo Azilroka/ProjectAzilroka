@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
-SMB.Title = 'Square Minimap Buttons'
-SMB.Header = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
+SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
 SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
 SMB.Authors = 'Azilroka    NihilisticPandemonium    Sinaris    Omega    Durc'
 SMB.isEnabled = false
@@ -574,7 +573,7 @@ end
 
 function SMB:GetOptions()
 	PA.Options.args.SquareMinimapButtons = PA.ACH:Group(SMB.Title, SMB.Description, nil, nil, function(info) return SMB.db[info[#info]] end, function(info, value) SMB.db[info[#info]] = value SMB:Update() end)
-	PA.Options.args.SquareMinimapButtons.args.Header = PA.ACH:Header(SMB.Header, 0)
+	PA.Options.args.SquareMinimapButtons.args.Description = PA.ACH:Description(SMB.Description, 0)
 	PA.Options.args.SquareMinimapButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SMB.db[info[#info]] = value if (not SMB.isEnabled) then SMB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 	PA.Options.args.SquareMinimapButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
 	PA.Options.args.SquareMinimapButtons.args.General.inline = true

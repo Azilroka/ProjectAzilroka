@@ -4,8 +4,7 @@ if PA.Retail then return end
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
 PA.LC, _G.LootConfirm = LC, LC
 
-LC.Title = 'Loot Confirm'
-LC.Header = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
+LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
 LC.Authors = 'Azilroka     NihilisticPandemonium'
 LC.isEnabled = false
@@ -50,7 +49,7 @@ end
 
 function LC:GetOptions()
 	PA.Options.args.LootConfirm = PA.ACH:Group(LC.Title, LC.Description, nil, nil, function(info) return LC.db[info[#info]] end)
-	PA.Options.args.LootConfirm.args.Header = PA.ACH:Header(LC.Header, 0)
+	PA.Options.args.LootConfirm.args.Description = PA.ACH:Description(LC.Description, 0)
 	PA.Options.args.LootConfirm.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) LC.db[info[#info]] = value if not LC.isEnabled then LC:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.LootConfirm.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

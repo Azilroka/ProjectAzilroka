@@ -7,8 +7,7 @@ local pairs = pairs
 local tinsert = tinsert
 local tremove = tremove
 
-BrokerLDB.Title = 'BrokerLDB'
-BrokerLDB.Header = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
+BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
 BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BrokerLDB.Authors = 'Azilroka'
 BrokerLDB.isEnabled = false
@@ -232,7 +231,7 @@ end
 
 function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB = PA.ACH:Group(BrokerLDB.Title, BrokerLDB.Description, nil, nil, function(info) return BrokerLDB.db[info[#info]] end)
-	PA.Options.args.BrokerLDB.args.Header = PA.ACH:Header(BrokerLDB.Header, 0)
+	PA.Options.args.BrokerLDB.args.Description = PA.ACH:Description(BrokerLDB.Description, 0)
 	PA.Options.args.BrokerLDB.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value if not BrokerLDB.isEnabled then BrokerLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.BrokerLDB.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value BrokerLDB:Update() end)
@@ -247,7 +246,7 @@ function BrokerLDB:GetOptions()
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.inline = true
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
-	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
+	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
 	PA.Options.args.BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
 
 	PA.Options.args.BrokerLDB.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)

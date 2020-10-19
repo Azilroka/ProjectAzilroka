@@ -5,8 +5,7 @@ end
 
 local EPB = PA:NewModule("EnhancedPetBattleUI", "AceEvent-3.0")
 
-EPB.Title = "Enhanced Pet Battle UI"
-EPB.Header = "|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"
+EPB.Title = "|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"
 EPB.Description = ""
 EPB.Authors = "Azilroka    NihilisticPandemonium"
 EPB.isEnabled = false
@@ -1237,10 +1236,10 @@ function EPB:GetOptions()
 			EPB:Update()
 		end,
 		args = {
-			Header = {
+			Description = {
 				order = 0,
-				type = "header",
-				name = EPB.Header
+				type = "description",
+				name = EPB.Description
 			},
 			Enable = {
 				order = 1,

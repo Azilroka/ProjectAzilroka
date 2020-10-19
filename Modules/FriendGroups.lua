@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local FG = PA:NewModule('FriendGroups', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.FriendGroups= FG
 
-FG.Title = 'Friend Groups'
-FG.Header = PA.ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
+FG.Title = PA.ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
 FG.Description = PA.ACL['Manage Firends List with Groups']
 FG.Authors = 'Azilroka'
 FG.Credits = 'Mikeprod    frankkkkk'
@@ -950,10 +949,10 @@ function FG:GetOptions()
 		get = function(info) return FG.db[info[#info]] end,
 		set = function(info, value) FG.db[info[#info]] = value end,
 		args = {
-			Header = {
+			Description = {
 				order = 0,
-				type = 'header',
-				name = FG.Header,
+				type = 'description',
+				name = FG.Description,
 			},
 			Enable = {
 				order = 1,

@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.ES = ES
 
-ES.Title = 'Enhanced Shadows'
-ES.Header = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
+ES.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
 ES.Description = PA.ACL['Adds options for registered shadows']
 ES.Authors = 'Azilroka     NihilisticPandemonium'
 ES.isEnabled = false
@@ -66,7 +65,7 @@ end
 
 function ES:GetOptions()
 	PA.Options.args.EnhancedShadows = PA.ACH:Group(ES.Title, ES.Description, nil, nil, function(info) return ES.db[info[#info]] end)
-	PA.Options.args.EnhancedShadows.args.Header = PA.ACH:Header(ES.Header, 0)
+	PA.Options.args.EnhancedShadows.args.Description = PA.ACH:Description(ES.Description, 0)
 	PA.Options.args.EnhancedShadows.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) ES.db[info[#info]] = value if not ES.isEnabled then ES:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.EnhancedShadows.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) ES.db[info[#info]] = value ES:UpdateShadows() end)

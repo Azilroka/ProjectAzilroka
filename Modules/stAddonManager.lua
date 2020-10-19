@@ -5,8 +5,7 @@ PA.stAM, _G.stAddonManager = stAM, stAM
 _G.stAddonManagerProfilesDB = {}
 _G.stAddonManagerServerDB = {}
 
-stAM.Title = 'stAddonManager'
-stAM.Header = PA.ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
+stAM.Title = PA.ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
 stAM.Description = PA.ACL['A simple and minimalistic addon to disable/enabled addons without logging out.']
 stAM.Authors = 'Azilroka    Safturento'
 stAM.isEnabled = false
@@ -680,7 +679,7 @@ end
 
 function stAM:GetOptions()
 	PA.Options.args.stAM = PA.ACH:Group(stAM.Title, stAM.Description, nil, nil, function(info) return stAM.db[info[#info]] end, function(info, value) stAM.db[info[#info]] = value stAM:Update() end)
-	PA.Options.args.stAM.args.Header = PA.ACH:Header(stAM.Header, 0)
+	PA.Options.args.stAM.args.Description = PA.ACH:Description(stAM.Description, 0)
 	PA.Options.args.stAM.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) stAM.db[info[#info]] = value if not stAM.isEnabled then stAM:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.stAM.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

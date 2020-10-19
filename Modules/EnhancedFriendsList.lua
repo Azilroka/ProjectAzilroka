@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 
-EFL.Title = 'Enhanced Friends List'
-EFL.Header = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
+EFL.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
 EFL.Description = PA.ACL['Provides Friends List Customization']
 EFL.Authors = 'Azilroka'
 EFL.Credits = 'Marotheit    Merathilis'
@@ -30,131 +29,31 @@ local isBNConnected = _G.BNConnected()
 local LEVEL = LEVEL
 
 --[[
-/run for i,v in pairs(_G) do if type(v)=="string" and v:match("Honorable") then print(i,"=",v) end end
+/run for i,v in pairs(_G) do if type(v)=="string" and i:match("BNET_CLIENT_") then print(i,"=",v) end end
 ]]
 
 EFL.Icons = {
 	Game = {
-		Alliance = {
-			Name = _G.FACTION_ALLIANCE,
-			Order = 1,
-			Default = "Interface/FriendsFrame/Battlenet-WoWicon",
-			Launcher = MediaPath..'GameIcons/Launcher/Alliance',
-		},
-		Horde = {
-			Name = _G.FACTION_HORDE,
-			Order = 2,
-			Default = 'Interface/FriendsFrame/Battlenet-WoWicon',
-			Launcher = MediaPath..'GameIcons/Launcher/Horde',
-		},
-		Neutral = {
-			Name = _G.FACTION_STANDING_LABEL4,
-			Order = 3,
-			Default = 'Interface/FriendsFrame/Battlenet-WoWicon',
-			Launcher = MediaPath..'GameIcons/Launcher/WoW',
-		},
-		App = {
-			Name = PA.ACL['App'],
-			Order = 4,
-			Color = '82C5FF',
-			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
-			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
-		},
-		BSAp = {
-			Name = PA.ACL['Mobile'],
-			Order = 5,
-			Color = '82C5FF',
-			Default = 'Interface/FriendsFrame/Battlenet-Battleneticon',
-			Launcher = MediaPath..'GameIcons/Launcher/BattleNet',
-		},
-		[_G.BNET_CLIENT_D3 or 'D3'] = {
-			Name = PA.ACL['Diablo 3'],
-			Color = 'C41F3B',
-			Default = 'Interface/FriendsFrame/Battlenet-D3icon',
-			Launcher = MediaPath..'GameIcons/Launcher/D3',
-		},
-		[_G.BNET_CLIENT_WTCG or 'WTCG'] = {
-			Name = PA.ACL['Hearthstone'],
-			Color = 'FFB100',
-			Default = 'Interface/FriendsFrame/Battlenet-WTCGicon',
-			Launcher = MediaPath..'GameIcons/Launcher/Hearthstone',
-		},
-		[_G.BNET_CLIENT_SC or 'S1'] = {
-			Name = PA.ACL['Starcraft'],
-			Color = 'C495DD',
-			Default = 'Interface/FriendsFrame/Battlenet-Sc2icon',
-			Launcher = MediaPath..'GameIcons/Launcher/SC',
-		},
-		[_G.BNET_CLIENT_SC2 or 'S2'] = {
-			Name = PA.ACL['Starcraft 2'],
-			Color = 'C495DD',
-			Default = "Interface/ChatFrame/UI-ChatIcon-SC2",
-			Launcher = MediaPath..'GameIcons/Launcher/SC2',
-		},
-		[_G.BNET_CLIENT_HEROES or 'Hero'] = {
-			Name = PA.ACL['Hero of the Storm'],
-			Color = '00CCFF',
-			Default = 'Interface/FriendsFrame/Battlenet-HotSicon',
-			Launcher = MediaPath..'GameIcons/Launcher/Heroes',
-		},
-		[_G.BNET_CLIENT_OVERWATCH or 'Pro'] = {
-			Name = PA.ACL['Overwatch'],
-			Color = 'FFFFFF',
-			Default = 'Interface/FriendsFrame/Battlenet-Overwatchicon',
-			Launcher = MediaPath..'GameIcons/Launcher/Overwatch',
-		},
-		[_G.BNET_CLIENT_COD or 'VIPR'] = {
-			Name = PA.ACL['Call of Duty 4'],
-			Color = 'FFFFFF',
-			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyBlackOps4icon',
-			Launcher = MediaPath..'GameIcons/Launcher/COD4',
-		},
-		[_G.BNET_CLIENT_COD_MW or 'ODIN'] = {
-			Name = PA.ACL['Call of Duty Modern Warfare'],
-			Color = 'FFFFFF',
-			Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyMWicon',
-			Launcher = MediaPath..'GameIcons/Launcher/CODMW',
-		},
-		[_G.BNET_CLIENT_WC3 or 'W3'] = {
-			Name = PA.ACL['Warcraft 3 Reforged'],
-			Color = 'FFFFFF',
-			Default = "Interface/FriendsFrame/Battlenet-Warcraft3Reforged",
-			Launcher = MediaPath..'GameIcons/Launcher/WC3R',
-		},
+		Alliance = { Name = _G.FACTION_ALLIANCE, Order = 1, Default = "Interface/FriendsFrame/Battlenet-WoWicon", Launcher = MediaPath..'GameIcons/Launcher/Alliance' },
+		Horde = { Name = _G.FACTION_HORDE, Order = 2, Default = 'Interface/FriendsFrame/Battlenet-WoWicon', Launcher = MediaPath..'GameIcons/Launcher/Horde' },
+		Neutral = { Name = _G.FACTION_STANDING_LABEL4, Order = 3, Default = 'Interface/FriendsFrame/Battlenet-WoWicon', Launcher = MediaPath..'GameIcons/Launcher/WoW' },
+		App = { Name = PA.ACL['App'], Order = 4, Color = '82C5FF', Default = 'Interface/FriendsFrame/Battlenet-Battleneticon', Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
+		BSAp = { Name = PA.ACL['Mobile'], Order = 5, Color = '82C5FF', Default = 'Interface/FriendsFrame/Battlenet-Battleneticon', Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
+		D3 = { Name = PA.ACL['Diablo 3'], Color = 'C41F3B', Default = 'Interface/FriendsFrame/Battlenet-D3icon', Launcher = MediaPath..'GameIcons/Launcher/D3' },
+		WTCG = { Name = PA.ACL['Hearthstone'], Color = 'FFB100', Default = 'Interface/FriendsFrame/Battlenet-WTCGicon', Launcher = MediaPath..'GameIcons/Launcher/Hearthstone' },
+		S1 = { Name = PA.ACL['Starcraft'], Color = 'C495DD', Default = 'Interface/FriendsFrame/Battlenet-Sc2icon', Launcher = MediaPath..'GameIcons/Launcher/SC' },
+		S2 = { Name = PA.ACL['Starcraft 2'], Color = 'C495DD', Default = "Interface/ChatFrame/UI-ChatIcon-SC2", Launcher = MediaPath..'GameIcons/Launcher/SC2' },
+		Hero = { Name = PA.ACL['Hero of the Storm'], Color = '00CCFF', Default = 'Interface/FriendsFrame/Battlenet-HotSicon', Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
+		Pro = { Name = PA.ACL['Overwatch'], Color = 'FFFFFF', Default = 'Interface/FriendsFrame/Battlenet-Overwatchicon', Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
+		VIPR = { Name = PA.ACL['Call of Duty 4'], Color = 'FFFFFF', Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyBlackOps4icon', Launcher = MediaPath..'GameIcons/Launcher/COD4' },
+		ODIN = { Name = PA.ACL['Call of Duty Modern Warfare'], Color = 'FFFFFF', Default = 'Interface/FriendsFrame/Battlenet-CallOfDutyMWicon', Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
+		W3 = { Name = PA.ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = "Interface/FriendsFrame/Battlenet-Warcraft3Reforged", Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
 	},
 	Status = {
-		Online = {
-			Name = _G.FRIENDS_LIST_ONLINE,
-			Order = 1,
-			Default = _G.FRIENDS_TEXTURE_ONLINE,
-			Square = MediaPath..'StatusIcons/Square/Online',
-			D3 = MediaPath..'StatusIcons/D3/Online',
-			Color = {.243, .57, 1},
-		},
-		Offline = {
-			Name = _G.FRIENDS_LIST_OFFLINE,
-			Order = 2,
-			Default = _G.FRIENDS_TEXTURE_OFFLINE,
-			Square = MediaPath..'StatusIcons/Square/Offline',
-			D3 = MediaPath..'StatusIcons/D3/Offline',
-			Color = {.486, .518, .541},
-		},
-		DND = {
-			Name = _G.DEFAULT_DND_MESSAGE,
-			Order = 3,
-			Default = _G.FRIENDS_TEXTURE_DND,
-			Square = MediaPath..'StatusIcons/Square/DND',
-			D3 = MediaPath..'StatusIcons/D3/DND',
-			Color = {1, 0, 0},
-		},
-		AFK = {
-			Name = _G.DEFAULT_AFK_MESSAGE,
-			Order = 4,
-			Default = _G.FRIENDS_TEXTURE_AFK,
-			Square = MediaPath..'StatusIcons/Square/AFK',
-			D3 = MediaPath..'StatusIcons/D3/AFK',
-			Color = {1, 1, 0},
-		},
+		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
+		Offline = { Name = _G.FRIENDS_LIST_OFFLINE, Order = 2, Default = _G.FRIENDS_TEXTURE_OFFLINE, Square = MediaPath..'StatusIcons/Square/Offline', D3 = MediaPath..'StatusIcons/D3/Offline', Color = {.486, .518, .541} },
+		DND = { Name = _G.DEFAULT_DND_MESSAGE, Order = 3, Default = _G.FRIENDS_TEXTURE_DND, Square = MediaPath..'StatusIcons/Square/DND', D3 = MediaPath..'StatusIcons/D3/DND', Color = {1, 0, 0} },
+		AFK = { Name = _G.DEFAULT_AFK_MESSAGE, Order = 4, Default = _G.FRIENDS_TEXTURE_AFK, Square = MediaPath..'StatusIcons/Square/AFK', D3 = MediaPath..'StatusIcons/D3/AFK', Color = {1, 1, 0} },
 	}
 }
 
@@ -299,7 +198,7 @@ end
 
 function EFL:GetOptions()
 	PA.Options.args.EnhancedFriendsList = PA.ACH:Group(EFL.Title, EFL.Description, nil, nil, function(info) return EFL.db[info[#info]] end, function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end)
-	PA.Options.args.EnhancedFriendsList.args.Header = PA.ACH:Header(EFL.Header, 0)
+	PA.Options.args.EnhancedFriendsList.args.Description = PA.ACH:Description(EFL.Description, 0)
 	PA.Options.args.EnhancedFriendsList.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) EFL.db[info[#info]] = value if not EFL.isEnabled then EFL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.EnhancedFriendsList.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)

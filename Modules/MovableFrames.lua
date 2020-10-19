@@ -2,8 +2,7 @@ local PA = _G.ProjectAzilroka
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
-MF.Title = 'Movable Frames'
-MF.Header = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
+MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
 MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 MF.isEnabled = false
@@ -289,7 +288,7 @@ end
 
 function MF:GetOptions()
 	PA.Options.args.MovableFrames = PA.ACH:Group(MF.Title, MF.Description, nil, nil, function(info) return MF.db[info[#info]] end, function(info, value) MF.db[info[#info]] = value MF:Update() end)
-	PA.Options.args.MovableFrames.args.Header = PA.ACH:Header(MF.Header, 0)
+	PA.Options.args.MovableFrames.args.Header = PA.ACH:Description(MF.Description, 0)
 	PA.Options.args.MovableFrames.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 	PA.Options.args.MovableFrames.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
 	PA.Options.args.MovableFrames.args.General.inline = true

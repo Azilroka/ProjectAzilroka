@@ -4,8 +4,7 @@ if PA.Classic then return end
 local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
 PA.BB, _G.BigButtons = BB, BB
 
-BB.Title = 'BigButtons'
-BB.Header = PA.ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r']
+BB.Title = PA.ACL['|cFF16C3F2Big|r |cFFFFFFFFButtons|r']
 BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
 BB.Authors = 'Azilroka    NihilisticPandemonium'
 BB.isEnabled = false
@@ -238,7 +237,7 @@ end
 
 function BB:GetOptions()
 	PA.Options.args.BigButtons = PA.ACH:Group(BB.Title, BB.Description, nil, nil, function(info) return BB.db[info[#info]] end)
-	PA.Options.args.BigButtons.args.Header = PA.ACH:Header(BB.Header, 0)
+	PA.Options.args.BigButtons.args.Description = PA.ACH:Description(BB.Description, 0)
 	PA.Options.args.BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
 	PA.Options.args.BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
