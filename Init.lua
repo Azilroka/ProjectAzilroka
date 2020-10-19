@@ -114,6 +114,10 @@ local function GetoUF()
 end
 PA.oUF = GetoUF()
 
+PA.Classes = {}
+for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
+for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
+
 function PA:ClassColorCode(class)
 	local color = PA:GetClassColor(PA.Classes[class])
 	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
@@ -126,8 +130,6 @@ end
 local Color = PA:GetClassColor(PA.MyClass)
 PA.ClassColor = { Color.r, Color.g, Color.b }
 
-PA.Classes = {}
-
 PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', _G.UIParent, 'GameTooltipTemplate')
 PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
 
@@ -135,9 +137,6 @@ PA.PetBattleFrameHider = CreateFrame('Frame', 'PA_PetBattleFrameHider', UIParent
 PA.PetBattleFrameHider:SetAllPoints()
 PA.PetBattleFrameHider:SetFrameStrata('LOW')
 RegisterStateDriver(PA.PetBattleFrameHider, 'visibility', '[petbattle] hide; show')
-
-for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
-for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
 
 function PA:GetUIScale()
 	local effectiveScale = _G.UIParent:GetEffectiveScale()
