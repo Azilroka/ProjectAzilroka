@@ -377,14 +377,13 @@ function MXP:UpdateCurrentBars()
 end
 
 function MXP:SendMessage()
-	local message = format('%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', PA.MyClass, CurrentLevel, tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
-		message = format('%s:%s', MXP.playerRealm, message)
+		local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', MXP.playerRealm, PA.MyClass or UnitClass('player'), CurrentLevel or UnitLevel('player'), tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 		C_ChatInfo.SendAddonMessage('PA_MXP', message, 'PARTY')
 	end
 
 	if MXP.db.BattleNet and MXP.isBNConnected then
-		message = format('%s:%s', MXP.battleTag, message)
+		local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', MXP.battleTag, PA.MyClass or UnitClass('player'), CurrentLevel or UnitLevel('player'), tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 		for _, info in pairs(MXP.BNFriends) do
 			if info.presenceID then
 				BNSendGameData(info.presenceID, 'PA_MXP', message)
@@ -542,5 +541,9 @@ function MXP:Initialize()
 
 	MXP:UpdateAllBars()
 
-	MXP:ScheduleRepeatingTimer('SendMessage', 2)
+	if IsPlayerAtEffectiveMaxLevel() then -- Place in recieve only mode.
+		MXP:SendMessage()
+	else
+		MXP:ScheduleRepeatingTimer('SendMessage', 2)
+	end
 end
