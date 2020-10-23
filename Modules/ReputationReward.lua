@@ -22,7 +22,6 @@ local GetFactionInfoByID = _G.GetFactionInfoByID
 local GetNumFactions = _G.GetNumFactions
 local GetNumQuestLogRewardFactions = _G.GetNumQuestLogRewardFactions
 local GetQuestLogRewardFactionInfo = _G.GetQuestLogRewardFactionInfo
-local C_QuestLog_GetSelectedQuest = _G.C_QuestLog.GetSelectedQuest()
 local GetNumQuestLogChoices = _G.GetNumQuestLogChoices
 local GetNumQuestChoices = _G.GetNumQuestChoices
 local UnitAura = _G.UnitAura
@@ -108,7 +107,7 @@ function RR:Show()
 	local numQuestChoices = 0
 
 	if ( _G.QuestInfoFrame.questLog ) then
-		local questID = C_QuestLog_GetSelectedQuest()
+		local questID = _G.C_QuestLog.GetSelectedQuest()
 		if _G.C_QuestLog.ShouldShowQuestRewards(questID) then
 			numQuestChoices = GetNumQuestLogChoices(questID)
 		end
