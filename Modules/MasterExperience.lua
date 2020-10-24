@@ -8,7 +8,7 @@ MXP.isEnabled = false
 PA.MXP, _G.MasterExperience = MXP, MXP
 
 local _G = _G
-local min, format = min, format
+local min, max, format = min, max, format
 local tostring, tonumber = tostring, tonumber
 local strsplit = strsplit
 
@@ -89,8 +89,8 @@ function MXP:UpdateBar(barID, infoString)
 	local expColor, restedColor, questColor = MXP.db.Colors.Experience, MXP.db.Colors.Rested, MXP.db.Colors.Quest
 
 	if MXP.db.ColorByClass and info.class then
-		expColor = MXP:ConvertColorToClass(expColor, RAID_CLASS_COLORS[info.class])
-		restedColor = MXP:ConvertColorToClass(restedColor, RAID_CLASS_COLORS[info.class], .6)
+		expColor = MXP:ConvertColorToClass(expColor, PA:GetClassColor(info.class))
+		restedColor = MXP:ConvertColorToClass(restedColor, PA:GetClassColor(info.class), .6)
 	end
 
 	bar:SetStatusBarColor(expColor.r, expColor.g, expColor.b, expColor.a)
@@ -282,7 +282,10 @@ function MXP:QUEST_LOG_UPDATE()
 	QuestLogXP, ZoneQuestXP, CompletedQuestXP = 0, 0, 0
 
 	for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-		MXP:CheckQuests(C_QuestLog.GetQuestIDForLogIndex(i), C_QuestLog.GetInfo(i).isOnMap)
+		local info = C_QuestLog.GetInfo(i)
+		if not info.isHidden then
+			MXP:CheckQuests(C_QuestLog.GetQuestIDForLogIndex(i), info.isOnMap)
+		end
 	end
 
 	MXP:SendMessage()

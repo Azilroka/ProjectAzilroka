@@ -119,12 +119,12 @@ for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
 
 function PA:ClassColorCode(class)
-	local color = PA:GetClassColor(PA.Classes[class])
+	local color = PA:GetClassColor(PA.Classes[class] or class)
 	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
 function PA:GetClassColor(class)
-	return _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class] or { r = 1, g = 1, b = 1 }
+	return _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] or _G.RAID_CLASS_COLORS[class or 'PRIEST']
 end
 
 local Color = PA:GetClassColor(PA.MyClass)
