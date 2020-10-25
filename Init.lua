@@ -119,7 +119,7 @@ for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
 for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
 
 function PA:ClassColorCode(class)
-	local color = PA:GetClassColor(PA.Classes[class] or class)
+	local color = PA:GetClassColor(PA.Classes[class])
 	return format('FF%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
@@ -236,7 +236,7 @@ function PA:SetTemplate(frame)
 		if frame.SetTemplate then
 			frame:SetTemplate('Transparent', true)
 		else
-			frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, tile = false, tileSize = 0, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
+			frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, edgeSize = 1 })
 		end
 		frame:SetBackdropColor(.08, .08, .08, .8)
 		frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
