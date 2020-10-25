@@ -380,6 +380,8 @@ function MXP:UpdateCurrentBars()
 end
 
 function MXP:SendMessage()
+	if not IsPlayerInWorld() then return end
+
 	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
 		local message = format('%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d:%d', MXP.playerRealm, PA.MyClass or UnitClass('player'), CurrentLevel or UnitLevel('player'), tostring(IsPlayerAtEffectiveMaxLevel()), tostring(IsXPUserDisabled()), CurrentXP or 0, XPToLevel or 0, RestedXP or 0, QuestLogXP or 0, ZoneQuestXP or 0, CompletedQuestXP or 0)
 		C_ChatInfo.SendAddonMessage('PA_MXP', message, 'PARTY')
