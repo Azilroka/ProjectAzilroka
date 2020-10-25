@@ -149,12 +149,18 @@ function RR:Show()
 	end
 
 	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
-	if not rewardsFrame then return end
+	if not rewardsFrame:IsShown() then
+		rewardsFrame:Show()
+		rewardsFrame.ItemReceiveText:SetText(REWARD_ITEMS_ONLY)
+		lastFrame = rewardsFrame.ItemReceiveText
+	end
+
 	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
 
 	local rewardButtons = rewardsFrame.RewardButtons;
 	local buttonIndex = 1
 	for index, rewardButton in ipairs(rewardButtons) do
+		rewardButton:EnableMouse(true)
 		if not rewardButton:IsShown() then
 			buttonIndex = index
 			break
@@ -169,34 +175,36 @@ function RR:Show()
 
 	for _, Info in pairs(RR.ReputationInfo) do
 		local questItem = QuestInfo_GetRewardButton(rewardsFrame, buttonIndex)
-		if questItem then
-			questItem:Show()
+		questItem:Show()
+		questItem:EnableMouse(false)
+		questItem.type = "reward"
+		questItem.objectType = "reputation"
+		questItem.Name:SetText(Info.Name)
+		SetItemButtonCount(questItem, Info.Base + Info.Bonus)
+		SetItemButtonTexture(questItem, PA.MyFaction and (PA.MyFaction == 'Neutral' and 'Interface/Icons/Achievement_Character_Pandaren_Female' or ('Interface/Icons/PVPCurrency-Conquest-%s'):format(PA.MyFaction)))
+		questItem.IconBorder:Hide()
 
-			questItem.type = "reward"
-			questItem.objectType = "reputation"
+		local r, g, b = 1, 1, 1
+		if Info.Base < 0 then r, g, b = 1, 0, 0 elseif Info.Bonus > 0 then r, g, b = 0, 1, 0 end
 
-			questItem.Name:SetText(Info.Name)
-			SetItemButtonCount(questItem, Info.Base + Info.Bonus)
-			SetItemButtonTexture(questItem, PA.MyFaction and (PA.MyFaction == 'Neutral' and 'Interface/Icons/Achievement_Character_Pandaren_Female' or ('Interface/Icons/PVPCurrency-Conquest-%s'):format(PA.MyFaction)))
-			questItem.IconBorder:Hide()
+		questItem.Count:SetTextColor(r, g, b)
+		questItem:ClearAllPoints()
 
-			local r, g, b = 1, 1, 1
-			if Info.Base < 0 then r, g, b = 1, 0, 0 elseif Info.Bonus > 0 then r, g, b = 0, 1, 0 end
-
-			questItem.Count:SetTextColor(r, g, b)
-
-			if (buttonIndex > 1) then
-				if mod(buttonIndex, 2) == 1 then
-					Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
-					lastFrame = questItem
-				end
-			else
+		if (buttonIndex > 1) then
+			if mod(buttonIndex, 2) == 1 then
+				questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 2) or lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
 				Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
 				lastFrame = questItem
+			else
+				questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 1) or lastFrame, 'TOPRIGHT', 1, 0)
 			end
-
-			buttonIndex = buttonIndex + 1
+		else
+			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
+			Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
+			lastFrame = questItem
 		end
+
+		buttonIndex = buttonIndex + 1
 	end
 
 	if ( numQuestChoices == 1 ) then
@@ -204,7 +212,6 @@ function RR:Show()
 		_G.QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - ((((buttonIndex - 1) % 2) == 1 and (((buttonIndex - 1) / 2) * (buttonHeight + REWARDS_SECTION_OFFSET)) or 0)))
 	end
 
-	_G.QuestInfoFrame.rewardsFrame:Show()
 	_G.QuestInfoFrame.rewardsFrame:SetHeight(Height)
 end
 
