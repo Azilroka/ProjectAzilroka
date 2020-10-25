@@ -217,7 +217,7 @@ function SMB:HandleBlizzardButtons()
 			_G.GarrisonLandingPageMinimapButton:UnregisterAllEvents()
 			_G.GarrisonLandingPageMinimapButton:SetParent(SMB.Hider)
 			_G.GarrisonLandingPageMinimapButton:Hide()
-		elseif SMB.db.MoveGarrison and not _G.GarrisonLandingPageMinimapButton.SMB then
+		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.GarrisonLandingPageMinimapButton.SMB then
 			_G.GarrisonLandingPageMinimapButton:SetParent(Minimap)
 			_G.GarrisonLandingPageMinimapButton_OnLoad(_G.GarrisonLandingPageMinimapButton)
 			_G.GarrisonLandingPageMinimapButton_UpdateIcon(_G.GarrisonLandingPageMinimapButton)
