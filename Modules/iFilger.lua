@@ -224,7 +224,7 @@ function iFilger:UpdateActiveCooldowns()
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
 				if Panel.db.StatusBar then
-					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
+					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.Cooldown.threshold)
 					local color = PA.TimeColors[formatid]
 
 					button.StatusBar:SetValue(CurrentDuration / Duration)
@@ -281,7 +281,7 @@ function iFilger:UpdateItemCooldowns()
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
 				if Panel.db.StatusBar then
-					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.cooldown.threshold)
+					local timervalue, formatid = PA:GetTimeInfo(CurrentDuration, iFilger.db.Cooldown.threshold)
 					local color = PA.TimeColors[formatid]
 
 					button.StatusBar:SetValue(CurrentDuration / Duration)
@@ -619,7 +619,7 @@ function iFilger:CreateAuraIcon(element)
 			s.elapsed = (s.elapsed or 0) + elapsed
 			if (s.elapsed > COOLDOWN_MIN_DURATION) then
 				local expiration = Frame.expiration - GetTime()
-				local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.cooldown.threshold)
+				local timervalue, formatid = PA:GetTimeInfo(expiration, iFilger.db.Cooldown.threshold)
 				local color = PA.TimeColors[formatid]
 				if timervalue then
 					local Normalized = expiration / Frame.duration
