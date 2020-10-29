@@ -261,7 +261,7 @@ function PA:CreateShadow(frame)
 		frame:CreateShadow()
 		if not PA.SLE and not PA.NUI then
 			PA.ES:RegisterFrameShadows(frame)
-		elseif PA.SLE or PA.NUI then
+		elseif PA.NUI then
 			_G.EnhancedShadows:RegisterShadow(frame.shadow)
 		end
 	end
