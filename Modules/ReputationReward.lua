@@ -100,6 +100,17 @@ end
 function RR:Show()
 	local numRepFactions = GetNumQuestLogRewardFactions()
 
+	local buttonIndex = 1
+	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
+	local rewardButtons = rewardsFrame.RewardButtons;
+	for index, rewardButton in ipairs(rewardButtons) do
+		rewardButton:EnableMouse(true)
+		if not rewardButton:IsShown() then
+			buttonIndex = index
+			break
+		end
+	end
+
 	if numRepFactions == 0 then
 		return
 	end
@@ -148,7 +159,6 @@ function RR:Show()
 		end
 	end
 
-	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
 	if not rewardsFrame:IsShown() then
 		rewardsFrame:Show()
 		rewardsFrame.ItemReceiveText:SetText(REWARD_ITEMS_ONLY)
@@ -156,17 +166,6 @@ function RR:Show()
 	end
 
 	local buttonHeight = rewardsFrame.RewardButtons[1]:GetHeight()
-
-	local rewardButtons = rewardsFrame.RewardButtons;
-	local buttonIndex = 1
-	for index, rewardButton in ipairs(rewardButtons) do
-		rewardButton:EnableMouse(true)
-		if not rewardButton:IsShown() then
-			buttonIndex = index
-			break
-		end
-	end
-
 	local Height = _G.QuestInfoFrame.rewardsFrame:GetHeight()
 
 	if not _G.QuestInfoFrame.rewardsFrame:IsShown() then
