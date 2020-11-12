@@ -127,7 +127,7 @@ end
 function DO:BuildProfile()
 	PA.Defaults.profile.DragonOverlay = {
 		Enable = true,
-		Strata = '3-MEDIUM',
+		Strata = 'MEDIUM',
 		Level = 12,
 		IconSize = 32,
 		Width = 128,
