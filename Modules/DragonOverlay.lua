@@ -53,7 +53,7 @@ function DO:SetOverlay()
 		DO.frame:ClearAllPoints()
 		DO.frame:SetPoint(DO.db[Points]['point'], _G[DO.db[Points]['relativeTo']].Health, DO.db[Points]['relativePoint'], DO.db[Points]['xOffset'], DO.db[Points]['yOffset'])
 		DO.frame:SetParent(DO.db[Points]['relativeTo'])
-		DO.frame:SetFrameStrata(strsub(DO.db['Strata'], 3))
+		DO.frame:SetFrameStrata(DO.db['Strata'])
 		DO.frame:SetFrameLevel(DO.db['Level'])
 	end
 end
