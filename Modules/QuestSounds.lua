@@ -9,6 +9,7 @@ QS.Credits = 'Yoco'
 QS.isEnabled = false
 
 local PlaySoundFile = PlaySoundFile
+local PlaySound = PlaySound
 
 function QS:CountCompletedObjectives()
 	local Objectives = C_QuestLog.GetQuestObjectives(QS.QuestID)
@@ -41,7 +42,7 @@ function QS:PlaySoundFile(file)
 	QS.IsPlaying = true
 
 	if QS.db.UseSoundID then
-		PlaySoundFile(file)
+		PlaySound(file)
 	else
 		PlaySoundFile(PA.LSM:Fetch('sound', file))
 	end
@@ -84,8 +85,8 @@ function QS:UNIT_QUEST_LOG_CHANGED(_, unit)
 	QS:ScheduleTimer('CheckQuest', 1)
 end
 
-function QS:QUEST_WATCH_UPDATE(_, quesID)
-	QS:SetQuest(quesID)
+function QS:QUEST_WATCH_UPDATE(_, questID)
+	QS:SetQuest(questID)
 end
 
 function QS:RegisterSounds()
@@ -147,7 +148,7 @@ function QS:GetOptions()
 	PA.Options.args.QuestSounds.args.General.args.LSM.args.ObjectiveProgress = PA.ACH:SharedMediaSound('Objective Progress', nil, 3)
 
 	PA.Options.args.QuestSounds.args.General.args.ID = PA.ACH:Group(PA.ACL['Sound by SoundID'], nil, 2, nil, function(info) return tostring(QS.db[info[#info]]) end, function(info, value) QS.db[info[#info]] = tonumber(value) end, function() return (not QS.db.UseSoundID) end)
-	PA.Options.args.QuestSounds.args.General.args.ID.args.UseSoundID = PA.ACH:Toggle(PA.ACL['Use Sound ID'], nil, 1, nil, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end, false)
+	PA.Options.args.QuestSounds.args.General.args.ID.args.UseSoundID = PA.ACH:Toggle(PA.ACL['Use Sound ID'], nil, 0, nil, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end, false)
 	PA.Options.args.QuestSounds.args.General.args.ID.args.QuestCompleteID = PA.ACH:Input('Quest Complete Sound ID', nil, 1)
 	PA.Options.args.QuestSounds.args.General.args.ID.args.ObjectiveCompleteID = PA.ACH:Input('Objective Complete Sound ID', nil, 2)
 	PA.Options.args.QuestSounds.args.General.args.ID.args.ObjectiveProgressID = PA.ACH:Input('Objective Progress Sound ID', nil, 3)
@@ -207,7 +208,6 @@ function QS:Initialize()
 
 	QS.isEnabled = true
 
-	QS.QuestID = 0
 	QS.ObjectivesComplete = 0
 	QS.ObjectivesTotal = 0
 	QS.IsPlaying = false
