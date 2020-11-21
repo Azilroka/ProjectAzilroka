@@ -98,10 +98,11 @@ function RR:GetBonusReputation(amtBase, factionID)
 end
 
 function RR:Show()
-	local numRepFactions = GetNumQuestLogRewardFactions()
+	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
+
+	if not rewardsFrame then return end
 
 	local buttonIndex = 1
-	local rewardsFrame, lastFrame = _G.QuestInfo_ShowRewards()
 	local rewardButtons = rewardsFrame.RewardButtons;
 	for index, rewardButton in ipairs(rewardButtons) do
 		rewardButton:EnableMouse(true)
@@ -111,6 +112,7 @@ function RR:Show()
 		end
 	end
 
+	local numRepFactions = GetNumQuestLogRewardFactions()
 	if numRepFactions == 0 then
 		return
 	end
