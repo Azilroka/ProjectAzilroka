@@ -8,13 +8,13 @@ QS.Authors = 'Azilroka'
 QS.Credits = 'Yoco'
 QS.isEnabled = false
 
-local GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile = GetNumQuestLeaderBoards, GetQuestLogLeaderBoard, PlaySoundFile
+local PlaySoundFile = PlaySoundFile
 
-function QS:CountCompletedObjectives(index)
-	local Completed, Total = 0, GetNumQuestLeaderBoards(index)
-	for i = 1, Total do
-		local _, _, Finished = GetQuestLogLeaderBoard(i, index)
-		if Finished then
+function QS:CountCompletedObjectives()
+	local Objectives = C_QuestLog.GetQuestObjectives(QS.QuestID)
+	local Completed, Total = 0, #Objectives
+	for _, objective in ipairs(Objectives) do
+		if objective.finished then
 			Completed = Completed + 1
 		end
 	end
@@ -23,9 +23,8 @@ function QS:CountCompletedObjectives(index)
 end
 
 function QS:SetQuest(index)
-	QS.QuestIndex = index
-
-	QS:ScheduleTimer(function() QS:CheckQuest() end, .5)
+	QS.QuestID = index
+	QS:ScheduleTimer('CheckQuest', .5)
 end
 
 function QS:ResetSoundPlayback()
@@ -33,9 +32,9 @@ function QS:ResetSoundPlayback()
 end
 
 function QS:PlaySoundFile(file)
-	QS.QuestIndex = 0
+	QS.QuestID = nil
 
-	if QS.IsPlaying or file == nil or file == '' then
+	if QS.IsPlaying or not file or file == '' then
 		return
 	end
 
@@ -51,46 +50,42 @@ function QS:PlaySoundFile(file)
 end
 
 function QS:CheckQuest()
-	if QS.QuestIndex == 0 then
-		return
-	end
+	if not QS.QuestID then return end
 
-	--local _, _, _, _, _, complete, daily, id = GetQuestLogTitle(index)
-
-	QS.ObjectivesCompleted, QS.ObjectivesTotal = QS:CountCompletedObjectives(QS.QuestIndex)
-
-	if QS.ObjectivesCompleted == QS.ObjectivesTotal then
+	if C_QuestLog.ReadyForTurnIn(QS.QuestID) then
 		QS:ResetSoundPlayback()
 		if QS.db.UseSoundID then
 			QS:PlaySoundFile(QS.db.QuestCompleteID)
 		else
 			QS:PlaySoundFile(QS.db.QuestComplete)
 		end
-	elseif QS.ObjectivesCompleted > QS.ObjectivesTotal then
-		if QS.db.UseSoundID then
-			QS:PlaySoundFile(QS.db.ObjectiveCompleteID)
-		else
-			QS:PlaySoundFile(QS.db.ObjectiveComplete)
-		end
 	else
-		if QS.db.UseSoundID then
-			QS:PlaySoundFile(QS.db.ObjectiveProgressID)
+		QS.ObjectivesCompleted, QS.ObjectivesTotal = QS:CountCompletedObjectives(QS.QuestID)
+
+		if QS.ObjectivesCompleted > QS.ObjectivesTotal then
+			if QS.db.UseSoundID then
+				QS:PlaySoundFile(QS.db.ObjectiveCompleteID)
+			else
+				QS:PlaySoundFile(QS.db.ObjectiveComplete)
+			end
 		else
-			QS:PlaySoundFile(QS.db.ObjectiveProgress)
+			if QS.db.UseSoundID then
+				QS:PlaySoundFile(QS.db.ObjectiveProgressID)
+			else
+				QS:PlaySoundFile(QS.db.ObjectiveProgress)
+			end
 		end
 	end
 end
 
 function QS:UNIT_QUEST_LOG_CHANGED(_, unit)
-	if unit ~= 'player' then
-		return
-	end
+	if unit ~= 'player' then return end
 
 	QS:ScheduleTimer('CheckQuest', 1)
 end
 
-function QS:QUEST_WATCH_UPDATE(_, index)
-	QS:SetQuest(index)
+function QS:QUEST_WATCH_UPDATE(_, quesID)
+	QS:SetQuest(quesID)
 end
 
 function QS:RegisterSounds()
@@ -212,7 +207,7 @@ function QS:Initialize()
 
 	QS.isEnabled = true
 
-	QS.QuestIndex = 0
+	QS.QuestID = 0
 	QS.ObjectivesComplete = 0
 	QS.ObjectivesTotal = 0
 	QS.IsPlaying = false
