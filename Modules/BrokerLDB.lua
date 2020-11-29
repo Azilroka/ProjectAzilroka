@@ -1,26 +1,26 @@
 local PA = _G.ProjectAzilroka
-local BrokerLDB = PA:NewModule('BrokerLDB', 'AceEvent-3.0')
-PA.BrokerLDB, _G.BrokerLDB = BrokerLDB, BrokerLDB
+local BLDB = PA:NewModule('BLDB', 'AceEvent-3.0')
+PA.BLDB, _G.BLDB = BLDB, BLDB
 
 local _G = _G
 local pairs = pairs
 local tinsert = tinsert
 local tremove = tremove
 
-BrokerLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
-BrokerLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
-BrokerLDB.Authors = 'Azilroka'
-BrokerLDB.isEnabled = false
+BLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
+BLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
+BLDB.Authors = 'Azilroka'
+BLDB.isEnabled = false
 
-function BrokerLDB:TextUpdate(_, Name, _, Data)
-	BrokerLDB.PluginObjects[Name]:SetText(Data)
+function BLDB:TextUpdate(_, Name, _, Data)
+	BLDB.PluginObjects[Name]:SetText(Data)
 end
 
-function BrokerLDB:ValueUpdate(_, Name, _, Data, Object)
-	BrokerLDB.PluginObjects[Name]:SetFormattedText('%s %s', Data, Object.suffix)
+function BLDB:ValueUpdate(_, Name, _, Data, Object)
+	BLDB.PluginObjects[Name]:SetFormattedText('%s %s', Data, Object.suffix)
 end
 
-function BrokerLDB:AnimateSlide(frame, x, y, duration)
+function BLDB:AnimateSlide(frame, x, y, duration)
 	frame.anim = frame:CreateAnimationGroup('Move_In')
 	frame.anim.in1 = frame.anim:CreateAnimation('Translation')
 	frame.anim.in1:SetDuration(0)
@@ -40,130 +40,130 @@ function BrokerLDB:AnimateSlide(frame, x, y, duration)
 	frame.anim.out1:SetScript('OnFinished', function() frame:Hide() end)
 end
 
-function BrokerLDB:AnimSlideIn(frame)
+function BLDB:AnimSlideIn(frame)
 	frame.anim.out1:Stop()
 	frame:Show()
 	frame.anim:Play()
 end
 
-function BrokerLDB:AnimSlideOut(frame)
+function BLDB:AnimSlideOut(frame)
 	frame.anim:Finish()
 	frame.anim:Stop()
 	frame.anim.out1:Play()
 end
 
-function BrokerLDB:SlideOut()
-	for _, Slides in pairs(BrokerLDB.Whitelist) do
-		BrokerLDB:AnimSlideIn(Slides)
+function BLDB:SlideOut()
+	for _, Slides in pairs(BLDB.Whitelist) do
+		BLDB:AnimSlideIn(Slides)
 	end
-	BrokerLDB:AnimSlideIn(BrokerLDB.Frame)
-	BrokerLDB.Frame.Arrow:SetRotation(1.57)
-	BrokerLDB.Slide = 'Out'
+	BLDB:AnimSlideIn(BLDB.Frame)
+	BLDB.Frame.Arrow:SetRotation(1.57)
+	BLDB.Slide = 'Out'
 end
 
-function BrokerLDB:SlideIn()
-	for _, Slides in pairs(BrokerLDB.Buttons) do
+function BLDB:SlideIn()
+	for _, Slides in pairs(BLDB.Buttons) do
 		Slides:Hide()
 	end
-	BrokerLDB.Frame.Arrow:SetRotation(-1.57)
-	BrokerLDB.Slide = 'In'
+	BLDB.Frame.Arrow:SetRotation(-1.57)
+	BLDB.Slide = 'In'
 end
 
-function BrokerLDB:Update()
+function BLDB:Update()
 	for Name, Object in PA.LDB:DataObjectIterator() do
-		BrokerLDB:New(nil, Name, Object)
+		BLDB:New(nil, Name, Object)
 	end
 
-	for Key, Slide in pairs(BrokerLDB.Buttons) do
-		Slide.Text:SetFont(PA.LSM:Fetch('font', BrokerLDB.db['Font']), BrokerLDB.db['FontSize'], BrokerLDB.db['FontFlag'])
-		if BrokerLDB.db['ShowIcon'] and BrokerLDB.db['ShowText'] then
-			if BrokerLDB.db['PanelWidth'] == 0 then BrokerLDB.db['PanelWidth'] = 140 end
-			Slide:SetSize(BrokerLDB.db['PanelWidth'] + BrokerLDB.db['PanelHeight'], BrokerLDB.db['PanelHeight'])
+	for Key, Slide in pairs(BLDB.Buttons) do
+		Slide.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
+		if BLDB.db['ShowIcon'] and BLDB.db['ShowText'] then
+			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
+			Slide:SetSize(BLDB.db['PanelWidth'] + BLDB.db['PanelHeight'], BLDB.db['PanelHeight'])
 			Slide.IconBackdrop:Show()
 			Slide.IconBackdrop:SetPoint('RIGHT', Slide, 'RIGHT', -2, 0)
-			Slide.IconBackdrop:Size(BrokerLDB.db['PanelHeight'] - 4)
+			Slide.IconBackdrop:Size(BLDB.db['PanelHeight'] - 4)
 			Slide.Text:Show()
-			Slide.Text:SetPoint('CENTER', -(BrokerLDB.db['PanelHeight'] / 2), 0)
-		elseif BrokerLDB.db['ShowIcon'] then
-			BrokerLDB.db['PanelWidth'] = 0
-			Slide:SetSize(BrokerLDB.db['PanelHeight'], BrokerLDB.db['PanelHeight'])
+			Slide.Text:SetPoint('CENTER', -(BLDB.db['PanelHeight'] / 2), 0)
+		elseif BLDB.db['ShowIcon'] then
+			BLDB.db['PanelWidth'] = 0
+			Slide:SetSize(BLDB.db['PanelHeight'], BLDB.db['PanelHeight'])
 			Slide.IconBackdrop:Show()
-			Slide.IconBackdrop:Size(BrokerLDB.db['PanelHeight'])
+			Slide.IconBackdrop:Size(BLDB.db['PanelHeight'])
 			Slide.IconBackdrop:SetPoint('RIGHT', Slide, 'RIGHT', 0, 0)
 			Slide.Text:Hide()
-		elseif BrokerLDB.db['ShowText'] then
-			if BrokerLDB.db['PanelWidth'] == 0 then BrokerLDB.db['PanelWidth'] = 140 end
-			Slide:SetSize(BrokerLDB.db['PanelWidth'], BrokerLDB.db['PanelHeight'])
+		elseif BLDB.db['ShowText'] then
+			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
+			Slide:SetSize(BLDB.db['PanelWidth'], BLDB.db['PanelHeight'])
 			Slide.IconBackdrop:Hide()
 			Slide.Text:Show()
 			Slide.Text:SetPoint('CENTER', 0, 0)
 		end
 		if Slide.anim then
-			local x = BrokerLDB.db["PanelWidth"] + BrokerLDB.db["PanelHeight"]
+			local x = BLDB.db["PanelWidth"] + BLDB.db["PanelHeight"]
 			Slide.anim.in1:SetOffset(-x, 0)
 			Slide.anim.in2:SetOffset(x, 0)
 			Slide.anim.out2:SetOffset(-x, 0)
 		end
-		for _, Blacklisted in pairs(BrokerLDB.Blacklist) do
-			if Slide:GetName() == Blacklisted then tremove(BrokerLDB.Whitelist, Key) Slide.Enabled = false return end
+		for _, Blacklisted in pairs(BLDB.Blacklist) do
+			if Slide:GetName() == Blacklisted then tremove(BLDB.Whitelist, Key) Slide.Enabled = false return end
 		end
 	end
 
 	local yOffSet = 0
-	for _, Slide in pairs(BrokerLDB.Whitelist) do
-		Slide:SetPoint('TOPLEFT', BrokerLDB.Frame, 'TOPRIGHT', 1, yOffSet)
-		yOffSet = yOffSet - BrokerLDB.db['PanelHeight'] - 1
+	for _, Slide in pairs(BLDB.Whitelist) do
+		Slide:SetPoint('TOPLEFT', BLDB.Frame, 'TOPRIGHT', 1, yOffSet)
+		yOffSet = yOffSet - BLDB.db['PanelHeight'] - 1
 	end
 
-	BrokerLDB.Frame:Height((BrokerLDB.db['PanelHeight'] * #BrokerLDB.Whitelist) + (#BrokerLDB.Whitelist - 1))
-	if (#BrokerLDB.Buttons == 0 or #BrokerLDB.Whitelist == 0) then
-		BrokerLDB.Frame:Hide()
+	BLDB.Frame:Height((BLDB.db['PanelHeight'] * #BLDB.Whitelist) + (#BLDB.Whitelist - 1))
+	if (#BLDB.Buttons == 0 or #BLDB.Whitelist == 0) then
+		BLDB.Frame:Hide()
 	end
 
-	if not BrokerLDB.db['MouseOver'] then
-		UIFrameFadeIn(BrokerLDB.Frame, 0.2, BrokerLDB.Frame:GetAlpha(), 1)
+	if not BLDB.db['MouseOver'] then
+		UIFrameFadeIn(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 1)
 	else
-		UIFrameFadeOut(BrokerLDB.Frame, 0.2, BrokerLDB.Frame:GetAlpha(), 0)
+		UIFrameFadeOut(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 0)
 	end
 end
 
-function BrokerLDB:AddBlacklistFrame(frame)
+function BLDB:AddBlacklistFrame(frame)
 	frame.Enabled = false
 	local index
-	for i, v in pairs(BrokerLDB.Whitelist) do
+	for i, v in pairs(BLDB.Whitelist) do
 		if v == frame:GetName() then
 			index = i
 			break
 		end
 	end
-	tremove(BrokerLDB.Whitelist, index)
-	tinsert(BrokerLDB.Blacklist, frame:GetName())
-	BrokerLDB:SlideIn()
-	BrokerLDB:Update()
+	tremove(BLDB.Whitelist, index)
+	tinsert(BLDB.Blacklist, frame:GetName())
+	BLDB:SlideIn()
+	BLDB:Update()
 end
 
-function BrokerLDB:RemoveBlacklistFrame(frame)
+function BLDB:RemoveBlacklistFrame(frame)
 	frame.Enabled = true
 	local index
-	for i, v in pairs(BrokerLDB.Blacklist) do
+	for i, v in pairs(BLDB.Blacklist) do
 		if v == frame:GetName() then
 			index = i
 			break
 		end
 	end
-	tremove(BrokerLDB.Blacklist, index)
-	tinsert(BrokerLDB.Whitelist, frame)
-	BrokerLDB:SlideIn()
-	BrokerLDB:Update()
+	tremove(BLDB.Blacklist, index)
+	tinsert(BLDB.Whitelist, frame)
+	BLDB:SlideIn()
+	BLDB:Update()
 end
 
-function BrokerLDB:New(_, Name, Object)
-	if _G['BrokerLDB_'..Name] then return end
-	for _, v in pairs(BrokerLDB.Ignore) do
+function BLDB:New(_, Name, Object)
+	if _G['BLDB_'..Name] then return end
+	for _, v in pairs(BLDB.Ignore) do
 		if Name == v then return end
 	end
 
-	local Frame = CreateFrame('Frame', 'BrokerLDB_'..Name, BrokerLDB.Frame)
+	local Frame = CreateFrame('Frame', 'BLDB_'..Name, BLDB.Frame)
 	Frame:Hide()
 	Frame.pluginName = Name
 	Frame.pluginObject = Object
@@ -171,15 +171,15 @@ function BrokerLDB:New(_, Name, Object)
 	Frame:SetFrameStrata('BACKGROUND')
 	Frame:SetFrameLevel(3)
 	Frame:SetTemplate('Transparent')
-	BrokerLDB:AnimateSlide(Frame, -150, 0, 1)
-	Frame:SetHeight(BrokerLDB.db['PanelHeight'])
-	Frame:SetWidth(BrokerLDB.db['PanelWidth'])
+	BLDB:AnimateSlide(Frame, -150, 0, 1)
+	Frame:SetHeight(BLDB.db['PanelHeight'])
+	Frame:SetWidth(BLDB.db['PanelWidth'])
 	Frame.Enabled = true
-	tinsert(BrokerLDB.Buttons, Frame)
-	tinsert(BrokerLDB.Whitelist, Frame)
+	tinsert(BLDB.Buttons, Frame)
+	tinsert(BLDB.Whitelist, Frame)
 
 	Frame.Text = Frame:CreateFontString(nil, 'OVERLAY')
-	Frame.Text:SetFont(PA.LSM:Fetch('font', BrokerLDB.db['Font']), BrokerLDB.db['FontSize'], BrokerLDB.db['FontFlag'])
+	Frame.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 	Frame.Text:SetPoint('CENTER', Frame)
 
 	Frame.IconBackdrop = CreateFrame('Frame', nil, Frame)
@@ -189,19 +189,19 @@ function BrokerLDB:New(_, Name, Object)
 	Frame.Icon:SetInside()
 	Frame.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-	BrokerLDB.PluginObjects[Name] = Frame.Text
+	BLDB.PluginObjects[Name] = Frame.Text
 
-	BrokerLDB:TextUpdate(nil, Name, nil, Object.text or Object.label or Name)
-	PA.LDB.RegisterCallback(BrokerLDB, 'LibDataBroker_AttributeChanged_'..Name..'_text', 'TextUpdate')
+	BLDB:TextUpdate(nil, Name, nil, Object.text or Object.label or Name)
+	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..Name..'_text', 'TextUpdate')
 	if Object.suffix then
-		BrokerLDB:ValueUpdate(nil, Name, nil, Object.value or Name, Object)
-		PA.LDB.RegisterCallback(BrokerLDB, 'LibDataBroker_AttributeChanged_'..Name..'_value', 'ValueUpdate')
+		BLDB:ValueUpdate(nil, Name, nil, Object.value or Name, Object)
+		PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..Name..'_value', 'ValueUpdate')
 	end
 
 	Frame:SetScript('OnEnter', function(s)
 		if s.anim:IsPlaying() then return end
 		if s.pluginObject.OnTooltipShow then
-			GameTooltip:SetOwner(s, 'ANCHOR_RIGHT' , 2, -(BrokerLDB.db['PanelHeight']))
+			GameTooltip:SetOwner(s, 'ANCHOR_RIGHT' , 2, -(BLDB.db['PanelHeight']))
 			GameTooltip:SetTemplate('Transparent')
 			GameTooltip:ClearLines()
 			s.pluginObject.OnTooltipShow(GameTooltip, s)
@@ -224,19 +224,19 @@ function BrokerLDB:New(_, Name, Object)
 		end
 	end)
 	Frame:SetScript('OnUpdate', function(s) s.Icon:SetTexture(Object.icon) end)
-	tinsert(BrokerLDB.EasyMenu, { text = 'Show '..Name, checked = function() return Frame.Enabled end, func = function() if Frame.Enabled then BrokerLDB:AddBlacklistFrame(Frame) else BrokerLDB:RemoveBlacklistFrame(Frame) end BrokerLDB:Update() end } )
+	tinsert(BLDB.EasyMenu, { text = 'Show '..Name, checked = function() return Frame.Enabled end, func = function() if Frame.Enabled then BLDB:AddBlacklistFrame(Frame) else BLDB:RemoveBlacklistFrame(Frame) end BLDB:Update() end } )
 
 	if Object.OnCreate then Object.OnCreate(Object, Frame) end
 end
 
-function BrokerLDB:GetOptions()
-	local BrokerLDB = PA.ACH:Group(BrokerLDB.Title, BrokerLDB.Description, nil, nil, function(info) return BrokerLDB.db[info[#info]] end)
+function BLDB:GetOptions()
+	local BrokerLDB = PA.ACH:Group(BLDB.Title, BLDB.Description, nil, nil, function(info) return BLDB.db[info[#info]] end)
 	PA.Options.args.BrokerLDB = BrokerLDB
 
-	BrokerLDB.args.Description = PA.ACH:Description(BrokerLDB.Description, 0)
-	BrokerLDB.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value if not BrokerLDB.isEnabled then BrokerLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	BrokerLDB.args.Description = PA.ACH:Description(BLDB.Description, 0)
+	BrokerLDB.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BLDB.db[info[#info]] = value if not BLDB.isEnabled then BLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	BrokerLDB.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BrokerLDB.db[info[#info]] = value BrokerLDB:Update() end)
+	BrokerLDB.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BLDB.db[info[#info]] = value BLDB:Update() end)
 	BrokerLDB.args.General.inline = true
 
 	BrokerLDB.args.General.args.ShowIcon = PA.ACH:Toggle(PA.ACL['Show Icon'], nil, 1)
@@ -252,10 +252,10 @@ function BrokerLDB:GetOptions()
 	BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
 
 	BrokerLDB.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	BrokerLDB.args.Authors = PA.ACH:Description(BrokerLDB.Authors, -1, 'large')
+	BrokerLDB.args.Authors = PA.ACH:Description(BLDB.Authors, -1, 'large')
 end
 
-function BrokerLDB:BuildProfile()
+function BLDB:BuildProfile()
 	PA.Defaults.profile.BrokerLDB = {
 		Enable = false,
 		PanelHeight = 20,
@@ -269,32 +269,32 @@ function BrokerLDB:BuildProfile()
 	}
 end
 
-function BrokerLDB:UpdateSettings()
-	BrokerLDB.db = PA.db.BrokerLDB
+function BLDB:UpdateSettings()
+	BLDB.db = PA.db.BrokerLDB
 end
 
-function BrokerLDB:Initialize()
-	BrokerLDB:UpdateSettings()
+function BLDB:Initialize()
+	BLDB:UpdateSettings()
 
-	if BrokerLDB.db.Enable ~= true then
+	if BLDB.db.Enable ~= true then
 		return
 	end
 
-	BrokerLDB.isEnabled = true
+	BLDB.isEnabled = true
 
-	BrokerLDB.DropDown = CreateFrame('Frame', 'BrokerLDBDropDown', UIParent, 'UIDropDownMenuTemplate')
-	BrokerLDB.Slide = 'In'
-	BrokerLDB.EasyMenu = {}
+	BLDB.DropDown = CreateFrame('Frame', 'BLDBDropDown', UIParent, 'UIDropDownMenuTemplate')
+	BLDB.Slide = 'In'
+	BLDB.EasyMenu = {}
 
-	BrokerLDB.Buttons = {}
-	BrokerLDB.PluginObjects = {}
+	BLDB.Buttons = {}
+	BLDB.PluginObjects = {}
 
-	BrokerLDB.Ignore = { 'Cork' }
+	BLDB.Ignore = { 'Cork' }
 
-	BrokerLDB.Whitelist = {}
-	BrokerLDB.Blacklist = {}
+	BLDB.Whitelist = {}
+	BLDB.Blacklist = {}
 
-	PA.LDB.RegisterCallback(BrokerLDB, 'LibDataBroker_DataObjectCreated', 'New')
+	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_DataObjectCreated', 'New')
 
 	local Frame = CreateFrame('Button', nil, UIParent)
 	Frame.Arrow = Frame:CreateTexture(nil, 'OVERLAY')
@@ -306,11 +306,11 @@ function BrokerLDB:Initialize()
 	Frame:SetPoint('LEFT', UIParent, 'LEFT', 1, 0)
 	Frame:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
 	Frame:SetTemplate('Transparent')
-	BrokerLDB:AnimateSlide(Frame, -150, 0, 1)
+	BLDB:AnimateSlide(Frame, -150, 0, 1)
 
 	Frame:SetScript('OnEnter', function(s) UIFrameFadeIn(s, 0.2, s:GetAlpha(), 1) end)
 	Frame:SetScript('OnLeave', function(s)
-		if BrokerLDB.Slide == 'In' and BrokerLDB.db['MouseOver'] then
+		if BLDB.Slide == 'In' and BLDB.db['MouseOver'] then
 			UIFrameFadeOut(s, 0.2, s:GetAlpha(), 0)
 		end
 	end)
@@ -318,18 +318,18 @@ function BrokerLDB:Initialize()
 	Frame:SetScript('OnClick', function(s, btn)
 		if s.anim:IsPlaying() then return end
 		if btn == 'LeftButton' then
-			if BrokerLDB.Slide == 'In' then
-				BrokerLDB:SlideOut()
+			if BLDB.Slide == 'In' then
+				BLDB:SlideOut()
 			else
-				BrokerLDB:SlideIn()
+				BLDB:SlideIn()
 			end
 		else
-			EasyMenu(BrokerLDB.EasyMenu, BrokerLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
+			EasyMenu(BLDB.EasyMenu, BLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
 		end
 	end)
 
-	BrokerLDB.Frame = Frame
+	BLDB.Frame = Frame
 
-	BrokerLDB:Update()
-	BrokerLDB:SlideIn()
+	BLDB:Update()
+	BLDB:SlideIn()
 end
