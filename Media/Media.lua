@@ -38,7 +38,7 @@ LSM:Register('font', 'Visitor TT2 BRK', Path..[[Fonts\Visitor.ttf]])
 LSM:Register('font', 'Youthanasia Texture Regular', Path..[[Fonts\YOUTTX.ttf]])
 LSM:Register('font', 'Youthanasia Texture', Path..[[Fonts\YOUTHAN.ttf]])
 
-LSM:Register('sound', 'Warning', Path..[[Media\Sounds\Warning.mp3]])
+LSM:Register('sound', 'Warning', Path..[[Sounds\Warning.mp3]])
 
 LSM:Register('font', 'Tukui Combat', Path..[[Fonts\Diediedie.ttf]])
 LSM:Register('font', 'Tukui Pixel', Path..[[Fonts\Visitor.ttf]])

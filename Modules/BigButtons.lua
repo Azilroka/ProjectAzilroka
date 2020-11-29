@@ -236,18 +236,20 @@ function BB:DropTools()
 end
 
 function BB:GetOptions()
-	PA.Options.args.BigButtons = PA.ACH:Group(BB.Title, BB.Description, nil, nil, function(info) return BB.db[info[#info]] end)
-	PA.Options.args.BigButtons.args.Description = PA.ACH:Description(BB.Description, 0)
-	PA.Options.args.BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	local BigButtons = PA.ACH:Group(BB.Title, BB.Description, nil, nil, function(info) return BB.db[info[#info]] end)
+	PA.Options.args.BigButtons = BigButtons
 
-	PA.Options.args.BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
-	PA.Options.args.BigButtons.args.General.inline = true
-	PA.Options.args.BigButtons.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
-	PA.Options.args.BigButtons.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
-	PA.Options.args.BigButtons.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
+	BigButtons.args.Description = PA.ACH:Description(BB.Description, 0)
+	BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	PA.Options.args.BigButtons.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	PA.Options.args.BigButtons.args.Authors = PA.ACH:Description(BB.Authors, -1, 'large')
+	BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
+	BigButtons.args.General.inline = true
+	BigButtons.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
+	BigButtons.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
+	BigButtons.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
+
+	BigButtons.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	BigButtons.args.Authors = PA.ACH:Description(BB.Authors, -1, 'large')
 end
 
 function BB:BuildProfile()

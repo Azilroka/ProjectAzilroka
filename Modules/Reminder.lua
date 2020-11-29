@@ -58,9 +58,11 @@ do
 end
 
 function AR:FindPlayerAura(db, checkPersonal, filter)
-	for spellID, value in pairs(db) do
-		if value == true then
-			return AR:FindAuraBySpellID(spellID, 'player', filter, checkPersonal and 'player')
+	if db then
+		for spellID, value in pairs(db) do
+			if value == true then
+				return AR:FindAuraBySpellID(spellID, 'player', filter, checkPersonal and 'player')
+			end
 		end
 	end
 end
@@ -315,12 +317,10 @@ end
 local addGroupTemplate = { name = '', template = ''}
 
 function AR:GetOptions()
-	PA.Options.args.AuraReminder = {
-		type = 'group',
-		name = AR.Title,
-		get = function(info) return AR.db[info[#info]] end,
-		set = function(info, value) AR.db[info[#info]] = value end,
-		args = {
+	local AuraReminder = PA.ACH:Group(AR.Title, nil, nil, 'tree', function(info) return AR.db[info[#info]] end, function(info, value) AR.db[info[#info]] = value end)
+	PA.Options.args.AuraReminder = AuraReminder
+
+	AuraReminder.args = {
 			Description = {
 				order = 0,
 				type = 'description',
@@ -710,6 +710,9 @@ function AR:GetOptions()
 											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
 										end
 									end
+									if not next(spellList) then
+										spellList[''] = PA.ACL['None']
+									end
 									return spellList
 								end,
 							},
@@ -718,8 +721,7 @@ function AR:GetOptions()
 					},
 				},
 			},
-		},
-	}
+		}
 
 	PA.Options.args.AuraReminder.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
 	PA.Options.args.AuraReminder.args.Authors = PA.ACH:Description(AR.Authors, -1, 'large')

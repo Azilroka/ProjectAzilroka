@@ -197,53 +197,55 @@ function EFL:UpdateFriends(button)
 end
 
 function EFL:GetOptions()
-	PA.Options.args.EnhancedFriendsList = PA.ACH:Group(EFL.Title, EFL.Description, nil, nil, function(info) return EFL.db[info[#info]] end, function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end)
-	PA.Options.args.EnhancedFriendsList.args.Description = PA.ACH:Description(EFL.Description, 0)
-	PA.Options.args.EnhancedFriendsList.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) EFL.db[info[#info]] = value if not EFL.isEnabled then EFL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	local EnhancedFriendsList = PA.ACH:Group(EFL.Title, EFL.Description, nil, nil, function(info) return EFL.db[info[#info]] end, function(info, value) EFL.db[info[#info]] = value _G.FriendsFrame_Update() end)
+	PA.Options.args.EnhancedFriendsList = EnhancedFriendsList
 
-	PA.Options.args.EnhancedFriendsList.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.EnhancedFriendsList.args.General.inline = true
+	EnhancedFriendsList.args.Description = PA.ACH:Description(EFL.Description, 0)
+	EnhancedFriendsList.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) EFL.db[info[#info]] = value if not EFL.isEnabled then EFL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings = PA.ACH:Group(PA.ACL['Name Settings'], nil, 1)
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.inline = true
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFont = PA.ACH:SharedMediaFont(PA.ACL['Name Font'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 1)
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFontSize = PA.ACH:Range(PA.ACL['Name Font Size'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.NameFontFlag = PA.ACH:FontFlags(PA.ACL['Name Font Flag'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 3)
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.ShowLevel = PA.ACH:Toggle(PA.ACL['Show Level'], nil, 4)
-	PA.Options.args.EnhancedFriendsList.args.General.args.NameSettings.args.DiffLevel = PA.ACH:Toggle(PA.ACL['Level by Difficulty'], nil, 5, nil, nil, nil, nil, nil, function() return (not EFL.db.ShowLevel) end)
+	EnhancedFriendsList.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	EnhancedFriendsList.args.General.inline = true
 
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings = PA.ACH:Group(PA.ACL['Info Settings'], nil, 2)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.inline = true
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFont = PA.ACH:SharedMediaFont(PA.ACL['Info Font'], PA.ACL['The font that the Zone / Server uses.'], 1)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontSize = PA.ACH:Range(PA.ACL['Info Font Size'], PA.ACL['The font size that the Zone / Server uses.'], 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontFlag = PA.ACH:FontFlags(PA.ACL['Info Font Outline'], PA.ACL['The font flag that the Zone / Server uses.'], 3)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusBackground = PA.ACH:Toggle(PA.ACL['Show Status Background'], nil, 4)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusHighlight = PA.ACH:Toggle(PA.ACL['Show Status Highlight'], nil, 5)
-	PA.Options.args.EnhancedFriendsList.args.General.args.InfoSettings.args.Texture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 6)
+	EnhancedFriendsList.args.General.args.NameSettings = PA.ACH:Group(PA.ACL['Name Settings'], nil, 1)
+	EnhancedFriendsList.args.General.args.NameSettings.inline = true
+	EnhancedFriendsList.args.General.args.NameSettings.args.NameFont = PA.ACH:SharedMediaFont(PA.ACL['Name Font'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 1)
+	EnhancedFriendsList.args.General.args.NameSettings.args.NameFontSize = PA.ACH:Range(PA.ACL['Name Font Size'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 2, { min = 6, max = 22, step = 1 })
+	EnhancedFriendsList.args.General.args.NameSettings.args.NameFontFlag = PA.ACH:FontFlags(PA.ACL['Name Font Flag'], PA.ACL['The font that the RealID / Character Name / Level uses.'], 3)
+	EnhancedFriendsList.args.General.args.NameSettings.args.ShowLevel = PA.ACH:Toggle(PA.ACL['Show Level'], nil, 4)
+	EnhancedFriendsList.args.General.args.NameSettings.args.DiffLevel = PA.ACH:Toggle(PA.ACL['Level by Difficulty'], nil, 5, nil, nil, nil, nil, nil, function() return (not EFL.db.ShowLevel) end)
 
-	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings = PA.ACH:Group(PA.ACL['Icon Settings'], nil, 3)
-	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.inline = true
-	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.args.GameIconPack = PA.ACH:Select(PA.ACL['Game Icon Pack'], nil, 1, { Default = 'Default', Launcher = 'Launcher' })
-	PA.Options.args.EnhancedFriendsList.args.General.args.IconSettings.args.StatusIconPack = PA.ACH:Select(PA.ACL['Status Icon Pack'], PA.ACL['Different Status Icons.'], 2, { Default = 'Default', Square = 'Square', D3 = 'Diablo 3' })
+	EnhancedFriendsList.args.General.args.InfoSettings = PA.ACH:Group(PA.ACL['Info Settings'], nil, 2)
+	EnhancedFriendsList.args.General.args.InfoSettings.inline = true
+	EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFont = PA.ACH:SharedMediaFont(PA.ACL['Info Font'], PA.ACL['The font that the Zone / Server uses.'], 1)
+	EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontSize = PA.ACH:Range(PA.ACL['Info Font Size'], PA.ACL['The font size that the Zone / Server uses.'], 2, { min = 6, max = 22, step = 1 })
+	EnhancedFriendsList.args.General.args.InfoSettings.args.InfoFontFlag = PA.ACH:FontFlags(PA.ACL['Info Font Outline'], PA.ACL['The font flag that the Zone / Server uses.'], 3)
+	EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusBackground = PA.ACH:Toggle(PA.ACL['Show Status Background'], nil, 4)
+	EnhancedFriendsList.args.General.args.InfoSettings.args.ShowStatusHighlight = PA.ACH:Toggle(PA.ACL['Show Status Highlight'], nil, 5)
+	EnhancedFriendsList.args.General.args.InfoSettings.args.Texture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 6)
 
-	PA.Options.args.EnhancedFriendsList.args.GameIconsPreview = PA.ACH:Group(PA.ACL['Game Icon Preview'], nil, 4)
-	PA.Options.args.EnhancedFriendsList.args.GameIconsPreview.inline = true
+	EnhancedFriendsList.args.General.args.IconSettings = PA.ACH:Group(PA.ACL['Icon Settings'], nil, 3)
+	EnhancedFriendsList.args.General.args.IconSettings.inline = true
+	EnhancedFriendsList.args.General.args.IconSettings.args.GameIconPack = PA.ACH:Select(PA.ACL['Game Icon Pack'], nil, 1, { Default = 'Default', Launcher = 'Launcher' })
+	EnhancedFriendsList.args.General.args.IconSettings.args.StatusIconPack = PA.ACH:Select(PA.ACL['Status Icon Pack'], PA.ACL['Different Status Icons.'], 2, { Default = 'Default', Square = 'Square', D3 = 'Diablo 3' })
 
-	PA.Options.args.EnhancedFriendsList.args.StatusIcons = PA.ACH:Group(PA.ACL['Status Icon Preview'], nil, 5)
-	PA.Options.args.EnhancedFriendsList.args.StatusIcons.inline = true
+	EnhancedFriendsList.args.GameIconsPreview = PA.ACH:Group(PA.ACL['Game Icon Preview'], nil, 4)
+	EnhancedFriendsList.args.GameIconsPreview.inline = true
+
+	EnhancedFriendsList.args.StatusIcons = PA.ACH:Group(PA.ACL['Status Icon Preview'], nil, 5)
+	EnhancedFriendsList.args.StatusIcons.inline = true
 
 	for Key, Value in pairs(EFL.Icons.Game) do
-		PA.Options.args.EnhancedFriendsList.args.GameIconsPreview.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Game[info[#info]][EFL.db.GameIconPack], 32, 32 end)
+		EnhancedFriendsList.args.GameIconsPreview.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Game[info[#info]][EFL.db.GameIconPack], 32, 32 end)
 	end
 
 	for Key, Value in pairs(EFL.Icons.Status) do
-		PA.Options.args.EnhancedFriendsList.args.StatusIcons.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Status[info[#info]][EFL.db.StatusIconPack], 16, 16 end)
+		EnhancedFriendsList.args.StatusIcons.args[Key] = PA.ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Status[info[#info]][EFL.db.StatusIconPack], 16, 16 end)
 	end
 
-	PA.Options.args.EnhancedFriendsList.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -4)
-	PA.Options.args.EnhancedFriendsList.args.Authors = PA.ACH:Description(EFL.Authors, -3, 'large')
-	PA.Options.args.EnhancedFriendsList.args.CreditsHeader = PA.ACH:Header(PA.ACL['Image Credits:'], -2)
-	PA.Options.args.EnhancedFriendsList.args.Credits = PA.ACH:Description(EFL.Credits, -1, 'large')
+	EnhancedFriendsList.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -4)
+	EnhancedFriendsList.args.Authors = PA.ACH:Description(EFL.Authors, -3, 'large')
+	EnhancedFriendsList.args.CreditsHeader = PA.ACH:Header(PA.ACL['Image Credits:'], -2)
+	EnhancedFriendsList.args.Credits = PA.ACH:Description(EFL.Credits, -1, 'large')
 end
 
 function EFL:BuildProfile()

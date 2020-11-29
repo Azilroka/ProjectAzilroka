@@ -217,16 +217,18 @@ function RR:Show()
 end
 
 function RR:GetOptions()
-	PA.Options.args.ReputationReward = PA.ACH:Group(RR.Title, RR.Description, nil, nil, function(info) return RR.db[info[#info]] end, function(info, value) RR.db[info[#info]] = value end)
-	PA.Options.args.ReputationReward.args.Description = PA.ACH:Description(RR.Description, 0)
-	PA.Options.args.ReputationReward.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) RR.db[info[#info]] = value if (not RR.isEnabled) then RR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	local ReputationReward = PA.ACH:Group(RR.Title, RR.Description, nil, nil, function(info) return RR.db[info[#info]] end, function(info, value) RR.db[info[#info]] = value end)
+	PA.Options.args.ReputationReward = ReputationReward
 
-	PA.Options.args.ReputationReward.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.ReputationReward.args.General.inline = true
-	PA.Options.args.ReputationReward.args.General.args.ShowAll = PA.ACH:Toggle(PA.ACL['Show All Reputation'], nil, 1)
+	ReputationReward.args.Description = PA.ACH:Description(RR.Description, 0)
+	ReputationReward.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) RR.db[info[#info]] = value if (not RR.isEnabled) then RR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	PA.Options.args.ReputationReward.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	PA.Options.args.ReputationReward.args.Authors = PA.ACH:Description(RR.Authors, -1, 'large')
+	ReputationReward.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	ReputationReward.args.General.inline = true
+	ReputationReward.args.General.args.ShowAll = PA.ACH:Toggle(PA.ACL['Show All Reputation'], nil, 1)
+
+	ReputationReward.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	ReputationReward.args.Authors = PA.ACH:Description(RR.Authors, -1, 'large')
 end
 
 function RR:BuildProfile()

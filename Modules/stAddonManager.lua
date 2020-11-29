@@ -678,30 +678,32 @@ function stAM:Update()
 end
 
 function stAM:GetOptions()
-	PA.Options.args.stAM = PA.ACH:Group(stAM.Title, stAM.Description, nil, nil, function(info) return stAM.db[info[#info]] end, function(info, value) stAM.db[info[#info]] = value stAM:Update() end)
-	PA.Options.args.stAM.args.Description = PA.ACH:Description(stAM.Description, 0)
-	PA.Options.args.stAM.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) stAM.db[info[#info]] = value if not stAM.isEnabled then stAM:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	local stAddonManager = PA.ACH:Group(stAM.Title, stAM.Description, nil, nil, function(info) return stAM.db[info[#info]] end, function(info, value) stAM.db[info[#info]] = value stAM:Update() end)
+	PA.Options.args.stAddonManager = stAddonManager
 
-	PA.Options.args.stAM.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
-	PA.Options.args.stAM.args.General.inline = true
+	stAddonManager.args.Description = PA.ACH:Description(stAM.Description, 0)
+	stAddonManager.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) stAM.db[info[#info]] = value if not stAM.isEnabled then stAM:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	PA.Options.args.stAM.args.General.args.NumAddOns = PA.ACH:Range(PA.ACL['# Shown AddOns'], nil, 1, { min = 3, max = 30, step = 1 })
-	PA.Options.args.stAM.args.General.args.FrameWidth = PA.ACH:Range(PA.ACL['Frame Width'], nil, 2, { min = 250, max = 2048, step = 2 })
-	PA.Options.args.stAM.args.General.args.ButtonHeight = PA.ACH:Range(PA.ACL['Button Height'], nil, 3, { min = 3, max = 30, step = 1 })
-	PA.Options.args.stAM.args.General.args.ButtonWidth = PA.ACH:Range(PA.ACL['Button Width'], nil, 4, { min = 3, max = 30, step = 1 })
-	PA.Options.args.stAM.args.General.args.EnableRequiredAddons = PA.ACH:Toggle(PA.ACL['Enable Required AddOns'], PA.ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'], 5)
-	PA.Options.args.stAM.args.General.args.CheckTexture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 6)
-	PA.Options.args.stAM.args.General.args.CheckColor = PA.ACH:Color(COLOR_PICKER, nil, 2, true, nil, function(info) return unpack(stAM.db[info[#info]]) end, function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end, function() return stAM.db.ClassColor end)
-	PA.Options.args.stAM.args.General.args.ClassColor = PA.ACH:Toggle(PA.ACL['Class Color Check Texture'], nil, 8)
+	stAddonManager.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	stAddonManager.args.General.inline = true
 
-	PA.Options.args.stAM.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
-	PA.Options.args.stAM.args.General.args.FontSettings.inline = true
-	PA.Options.args.stAM.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
-	PA.Options.args.stAM.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
-	PA.Options.args.stAM.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
+	stAddonManager.args.General.args.NumAddOns = PA.ACH:Range(PA.ACL['# Shown AddOns'], nil, 1, { min = 3, max = 30, step = 1 })
+	stAddonManager.args.General.args.FrameWidth = PA.ACH:Range(PA.ACL['Frame Width'], nil, 2, { min = 250, max = 2048, step = 2 })
+	stAddonManager.args.General.args.ButtonHeight = PA.ACH:Range(PA.ACL['Button Height'], nil, 3, { min = 3, max = 30, step = 1 })
+	stAddonManager.args.General.args.ButtonWidth = PA.ACH:Range(PA.ACL['Button Width'], nil, 4, { min = 3, max = 30, step = 1 })
+	stAddonManager.args.General.args.EnableRequiredAddons = PA.ACH:Toggle(PA.ACL['Enable Required AddOns'], PA.ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'], 5)
+	stAddonManager.args.General.args.CheckTexture = PA.ACH:SharedMediaStatusbar(PA.ACL['Texture'], nil, 6)
+	stAddonManager.args.General.args.CheckColor = PA.ACH:Color(COLOR_PICKER, nil, 2, true, nil, function(info) return unpack(stAM.db[info[#info]]) end, function(info, r, g, b, a) stAM.db[info[#info]] = { r, g, b, a} stAM:Update() end, function() return stAM.db.ClassColor end)
+	stAddonManager.args.General.args.ClassColor = PA.ACH:Toggle(PA.ACL['Class Color Check Texture'], nil, 8)
 
-	PA.Options.args.stAM.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	PA.Options.args.stAM.args.Authors = PA.ACH:Description(stAM.Authors, -1, 'large')
+	stAddonManager.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
+	stAddonManager.args.General.args.FontSettings.inline = true
+	stAddonManager.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
+	stAddonManager.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(FONT_SIZE, nil, 2, { min = 6, max = 22, step = 1 })
+	stAddonManager.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
+
+	stAddonManager.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	stAddonManager.args.Authors = PA.ACH:Description(stAM.Authors, -1, 'large')
 end
 
 function stAM:BuildProfile()
