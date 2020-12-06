@@ -199,10 +199,6 @@ function RR:Show()
 			else
 				questItem:SetPoint('TOPLEFT', QuestInfo_GetRewardButton(rewardsFrame, buttonIndex - 1) or lastFrame, 'TOPRIGHT', 1, 0)
 			end
-		else
-			questItem:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT', 0, -REWARDS_SECTION_OFFSET)
-			Height = Height + buttonHeight + REWARDS_SECTION_OFFSET
-			lastFrame = questItem
 		end
 
 		buttonIndex = buttonIndex + 1
@@ -213,7 +209,7 @@ function RR:Show()
 		_G.QuestInfoFrame.rewardsFrame.ItemReceiveText:SetPoint(a, b, c, d, e - ((((buttonIndex - 1) % 2) == 1 and (((buttonIndex - 1) / 2) * (buttonHeight + REWARDS_SECTION_OFFSET)) or 0)))
 	end
 
-	_G.QuestInfoFrame.rewardsFrame:SetHeight(Height)
+	_G.QuestInfoFrame.rewardsFrame:SetHeight(Height + ((buttonIndex / 2) * buttonHeight))
 end
 
 function RR:GetOptions()
