@@ -89,7 +89,7 @@ end
 function stAM:BuildFrame()
 	local Frame = CreateFrame('Frame', 'stAMFrame', UIParent)
 	local Close = CreateFrame('Button', 'stAMCloseButton', Frame)
-	local Search = CreateFrame('EditBox', 'stAMSearchBox', Frame)
+	local Search = CreateFrame('EditBox', 'stAMSearchBox', Frame, 'SearchBoxTemplate')
 
 	local Profiles = CreateFrame('Button', 'stAMProfiles', Frame)
 	local AddOns = CreateFrame('Frame', 'stAMAddOns', Frame)
@@ -158,26 +158,16 @@ function stAM:BuildFrame()
 	Search:SetPoint('TOPLEFT', Title, 'BOTTOMLEFT', 10, -10)
 	Search:SetPoint('BOTTOMRIGHT', Profiles, 'BOTTOMLEFT', -5, 0)
 	Search:SetSize(1, 20)
+	Search.Left:SetTexture()
+	Search.Middle:SetTexture()
+	Search.Right:SetTexture()
 	PA:SetTemplate(Search)
-	Search:SetAutoFocus(false)
-	Search:SetTextInsets(5, 5, 0, 0)
-	Search:SetTextColor(1, 1, 1)
-	Search:SetFont(font, 12, fontFlag)
-	Search:SetShadowOffset(0,0)
-	Search:SetText(PA.ACL['Search'])
 	Search.AddOns = {}
-	Search:HookScript('OnEscapePressed', function() stAM:UpdateAddonList() Search:SetText('Search') Search:ClearFocus()end)
+	Search:HookScript('OnEscapePressed', function() stAM:UpdateAddonList() end)
 	Search:HookScript('OnTextChanged', function(_, userInput) stAM.scrollOffset = 0 stAM.searchQuery = userInput stAM:UpdateAddonList() end)
 	Search:HookScript('OnEditFocusGained', function() Search:SetBackdropBorderColor(unpack(stAM.db.CheckColor)) Search:HighlightText() end)
 	Search:HookScript('OnEditFocusLost', function() PA:SetTemplate(Search) Search:HighlightText(0, 0) end)
-	Search:HookScript('OnEnterPressed', function()
-		if strlen(strtrim(Search:GetText())) == 0 then
-			stAM:UpdateAddonList()
-			Search:SetText('Search')
-			stAM.searchQuery = false
-		end
-		Search:ClearFocus()
-	end)
+	Search.clearButton:HookScript('OnClick', stAM.UpdateAddonList)
 
 	PA:SetTemplate(Reload)
 	Reload:SetSize(70, 20)
@@ -331,6 +321,7 @@ function stAM:BuildFrame()
 			GameTooltip:ClearLines()
 			GameTooltip:AddDoubleLine('AddOn:', CheckButton.title, 1, 1, 1, 1, 1, 1)
 			GameTooltip:AddDoubleLine(PA.ACL['Authors:'], CheckButton.authors, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine(PA.ACL['Version:'], CheckButton.version, 1, 1, 1, 1, 1, 1)
 			if CheckButton.notes ~= nil then
 				GameTooltip:AddDoubleLine('Notes:', CheckButton.notes, 1, 1, 1, 1, 1, 1)
 			end
@@ -603,7 +594,7 @@ function stAM:UpdateAddonList()
 		local info = stAM.AddOnInfo[addonIndex]
 
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
-			button.name, button.title, button.authors, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Notes, info.Required, info.Optional
+			button.name, button.title, button.authors, button.version, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Version, info.Notes, info.Required, info.Optional
 			button.Text:SetText(button.title)
 			button.Icon:SetShown(info.Missing or info.Disabled)
 			button.StatusText:SetShown(info.Missing or info.Disabled)
@@ -766,8 +757,9 @@ function stAM:Initialize()
 		end
 
 		local Authors = GetAddOnMetadata(i, 'Author')
+		local Version = GetAddOnMetadata(i, 'Version')
 
-		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = Authors, Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
+		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = Authors, Version = Version, Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
 	end
 
 	stAM.SelectedCharacter = PA.MyName

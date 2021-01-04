@@ -250,6 +250,7 @@ function SMB:HandleBlizzardButtons()
 			_G.MiniMapTracking.Show = nil
 
 			_G.MiniMapTracking:Show()
+			PA:SetTemplate(_G.MiniMapTracking)
 
 			_G.MiniMapTracking:SetParent(SMB.Bar)
 			_G.MiniMapTracking:SetSize(Size, Size)
