@@ -218,6 +218,7 @@ function SMB:HandleBlizzardButtons()
 			_G.GarrisonLandingPageMinimapButton:SetParent(SMB.Hider)
 			_G.GarrisonLandingPageMinimapButton:Hide()
 		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.GarrisonLandingPageMinimapButton.SMB then
+			Mixin(GarrisonLandingPageMinimapButton, BackdropTemplateMixin)
 			_G.GarrisonLandingPageMinimapButton:SetParent(Minimap)
 			_G.GarrisonLandingPageMinimapButton_OnLoad(_G.GarrisonLandingPageMinimapButton)
 			_G.GarrisonLandingPageMinimapButton_UpdateIcon(_G.GarrisonLandingPageMinimapButton)
@@ -519,6 +520,9 @@ function SMB:Update()
 		Anchor, DirMult = 'TOPRIGHT', -1
 	end
 
+	SMB.Bar:SetFrameStrata(SMB.db.Strata)
+	SMB.Bar:SetFrameLevel(SMB.db.Level)
+
 	for _, Button in pairs(SMB.Buttons) do
 		if Button:IsVisible() then
 			AnchorX, ActualButtons = AnchorX + 1, ActualButtons + 1
@@ -536,8 +540,8 @@ function SMB:Update()
 			Button:SetPoint(Anchor, SMB.Bar, Anchor, DirMult * (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
 			Button:SetSize(Size, Size)
 			Button:SetScale(1)
-			Button:SetFrameStrata('MEDIUM')
-			Button:SetFrameLevel(SMB.Bar:GetFrameLevel() + 1)
+			Button:SetFrameStrata(SMB.db.Strata)
+			Button:SetFrameLevel(SMB.db.Level + 1)
 			Button:SetScript('OnDragStart', nil)
 			Button:SetScript('OnDragStop', nil)
 			--Button:SetScript('OnEvent', nil)
@@ -593,7 +597,12 @@ function SMB:GetOptions()
 	SquareMinimapButtons.args.General.args.MBB.args.ButtonsPerRow = PA.ACH:Range(PA.ACL['Buttons Per Row'], nil, 6, { min = 1, max = 100, step = 1 })
 	SquareMinimapButtons.args.General.args.MBB.args.Shadows = PA.ACH:Toggle(PA.ACL['Shadows'], nil, 7)
 	SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
-	SquareMinimapButtons.args.General.args.MBB.args.Visibility = PA.ACH:Input(PA.ACL['Visibility'], nil, 8, nil, 'double')
+	SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
+	SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
+	SquareMinimapButtons.args.General.args.Strata = PA.ACH:Select(PA.ACL['Frame Strata'], nil, 3, { BACKGROUND = 'BACKGROUND', LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', DIALOG = 'DIALOG', FULLSCREEN = 'FULLSCREEN', FULLSCREEN_DIALOG = 'FULLSCREEN_DIALOG', TOOLTIP = 'TOOLTIP' })
+	SquareMinimapButtons.args.General.args.Level = PA.ACH:Range(PA.ACL['Frame Level'], nil, 4, { min = 0, max = 255, step = 1 })
+
+	SquareMinimapButtons.args.General.args.MBB.args.Visibility = PA.ACH:Input(PA.ACL['Visibility'], nil, 12, nil, 'double')
 
 	SquareMinimapButtons.args.General.args.Blizzard = PA.ACH:Group(PA.ACL['Blizzard'], nil, 2, nil, nil, function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end)
 	SquareMinimapButtons.args.General.args.Blizzard.inline = true
@@ -611,6 +620,8 @@ end
 function SMB:BuildProfile()
 	PA.Defaults.profile.SquareMinimapButtons = {
 		Enable = true,
+		Strata = 'MEDIUM',
+		Level = 12,
 		BarMouseOver = false,
 		BarEnabled = true,
 		Backdrop = true,

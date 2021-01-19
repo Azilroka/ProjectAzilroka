@@ -166,7 +166,7 @@ function stAM:BuildFrame()
 	Search:HookScript('OnEscapePressed', function() stAM:UpdateAddonList() end)
 	Search:HookScript('OnTextChanged', function(_, userInput) stAM.scrollOffset = 0 stAM.searchQuery = userInput stAM:UpdateAddonList() end)
 	Search:HookScript('OnEditFocusGained', function() Search:SetBackdropBorderColor(unpack(stAM.db.CheckColor)) Search:HighlightText() end)
-	Search:HookScript('OnEditFocusLost', function() PA:SetTemplate(Search) Search:HighlightText(0, 0) end)
+	Search:HookScript('OnEditFocusLost', function() PA:SetTemplate(Search) Search:HighlightText(0, 0) PA:SetTemplate(Search) end)
 	Search.clearButton:HookScript('OnClick', stAM.UpdateAddonList)
 
 	PA:SetTemplate(Reload)

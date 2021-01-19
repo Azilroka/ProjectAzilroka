@@ -46,9 +46,11 @@ EFL.Icons = {
 		S2 = { Name = PA.ACL['Starcraft 2'], Color = 'C495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC2), Launcher = MediaPath..'GameIcons/Launcher/SC2' },
 		Hero = { Name = PA.ACL['Hero of the Storm'], Color = '00CCFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_HEROES), Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
 		Pro = { Name = PA.ACL['Overwatch'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_OVERWATCH), Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
-		VIPR = { Name = PA.ACL['Call of Duty 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
+		VIPR = { Name = PA.ACL['Call of Duty 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
 		ODIN = { Name = PA.ACL['Call of Duty Modern Warfare'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW), Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
 		W3 = { Name = PA.ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
+		LAZR = { Name = PA.ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
+		ZEUS = { Name = PA.ACL['Call of Duty Cold War'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
 	},
 	Status = {
 		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
@@ -60,8 +62,8 @@ EFL.Icons = {
 
 function EFL:CreateTexture(button, type, layer)
 	if button.efl and button.efl[type] then
-		button.efl[type].Left:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
-		button.efl[type].Right:SetTexture(PA.LSM:Fetch('statusbar', self.db['Texture']))
+		button.efl[type].Left:SetTexture(PA.LSM:Fetch('statusbar', EFL.db['Texture']))
+		button.efl[type].Right:SetTexture(PA.LSM:Fetch('statusbar', EFL.db['Texture']))
 		return
 	end
 

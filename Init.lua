@@ -239,7 +239,7 @@ function PA:SetTemplate(frame)
 			frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, edgeSize = 1 })
 		end
 		frame:SetBackdropColor(.08, .08, .08, .8)
-		frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
+		frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 	end
 end
 
@@ -268,29 +268,21 @@ function PA:CreateShadow(frame)
 end
 
 function PA:SetInside(obj, anchor, xOffset, yOffset, anchor2)
-	xOffset = xOffset or 1
-	yOffset = yOffset or 1
-	anchor = anchor or obj:GetParent()
+	xOffset, yOffset, anchor = xOffset or 1, yOffset or 1, anchor or obj:GetParent()
 
 	assert(anchor)
-	if obj:GetPoint() then
-		obj:ClearAllPoints()
-	end
 
+	if obj:GetPoint() then obj:ClearAllPoints() end
 	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
 end
 
 function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
-	xOffset = xOffset or 1
-	yOffset = yOffset or 1
-	anchor = anchor or obj:GetParent()
+	xOffset, yOffset, anchor = xOffset or 1, yOffset or 1, anchor or obj:GetParent()
 
 	assert(anchor)
-	if obj:GetPoint() then
-		obj:ClearAllPoints()
-	end
 
+	if obj:GetPoint() then obj:ClearAllPoints() end
 	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
