@@ -252,6 +252,7 @@ function OzCD:CreateCooldown(index)
 
 	if PA.Masque and OzCD.db.Masque then
 		OzCD.MasqueGroup:AddButton(Frame)
+		OzCD.MasqueGroup:ReSkin()
 	else
 		PA:CreateBackdrop(Frame)
 		PA:CreateShadow(Frame.Backdrop)
