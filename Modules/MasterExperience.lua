@@ -328,9 +328,14 @@ end
 
 function MXP:UpdateAllBars()
 	MXP:ClearBars()
-	MXP:SendMessage()
 
-	if MXP.db.Party and IsInGroup(LE_PARTY_CATEGORY_HOME) and not IsInRaid() then
+	local inParty = IsInGroup() and not IsInRaid()
+
+	if MXP.db.BattleNet and MXP.isBNConnected or MXP.db.Party and inParty then
+		MXP:SendMessage()
+	end
+
+	if MXP.db.Party and inParty then
 		C_ChatInfo.SendAddonMessage('PA_MXP', 'REQUESTINFO', 'PARTY')
 	end
 
