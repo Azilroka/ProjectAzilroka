@@ -121,12 +121,18 @@ function SMB:LockButton(Button)
 	for _, Function in pairs(ButtonFunctions) do
 		Button[Function] = PA.Noop
 	end
+
+	if Button.SetFixedFrameStrata then Button:SetFixedFrameStrata(true) end
+	if Button.SetFixedFrameLevel then Button:SetFixedFrameLevel(true) end
 end
 
 function SMB:UnlockButton(Button)
 	for _, Function in pairs(ButtonFunctions) do
 		Button[Function] = nil
 	end
+
+	if Button.SetFixedFrameStrata then Button:SetFixedFrameStrata(false) end
+	if Button.SetFixedFrameLevel then Button:SetFixedFrameLevel(false) end
 end
 
 function SMB:OnUpdate()
