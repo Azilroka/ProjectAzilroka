@@ -135,6 +135,11 @@ function SMB:UnlockButton(Button)
 	if Button.SetFixedFrameLevel then Button:SetFixedFrameLevel(false) end
 end
 
+function SMB:ToggleBar_FrameStrataLevel(value)
+	if SMB.Bar.SetFixedFrameStrata then SMB.Bar:SetFixedFrameStrata(value) end
+	if SMB.Bar.SetFixedFrameLevel then SMB.Bar:SetFixedFrameLevel(value) end
+end
+
 function SMB:OnUpdate()
 	local mx, my = Minimap:GetCenter()
 	local px, py = GetCursorPosition()
@@ -526,8 +531,10 @@ function SMB:Update()
 		Anchor, DirMult = 'TOPRIGHT', -1
 	end
 
+	SMB:ToggleBar_FrameStrataLevel(false)
 	SMB.Bar:SetFrameStrata(SMB.db.Strata)
 	SMB.Bar:SetFrameLevel(SMB.db.Level)
+	SMB:ToggleBar_FrameStrataLevel(true)
 
 	for _, Button in pairs(SMB.Buttons) do
 		if Button:IsVisible() then
@@ -664,8 +671,6 @@ function SMB:Initialize()
 	SMB.Bar = CreateFrame('Frame', 'SquareMinimapButtonBar', _G.UIParent)
 	SMB.Bar:Hide()
 	SMB.Bar:SetPoint('RIGHT', _G.UIParent, 'RIGHT', -45, 0)
-	SMB.Bar:SetFrameStrata('MEDIUM')
-	SMB.Bar:SetFrameLevel(1)
 	SMB.Bar:SetClampedToScreen(true)
 	SMB.Bar:SetMovable(true)
 	SMB.Bar:EnableMouse(true)
