@@ -283,7 +283,7 @@ function MXP:QUEST_LOG_UPDATE()
 
 	for i = 1, C_QuestLog.GetNumQuestLogEntries() do
 		local info = C_QuestLog.GetInfo(i)
-		if not info.isHidden then
+		if info and not info.isHidden then
 			MXP:CheckQuests(C_QuestLog.GetQuestIDForLogIndex(i), info.isOnMap)
 		end
 	end
