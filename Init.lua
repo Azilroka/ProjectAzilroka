@@ -98,6 +98,16 @@ PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
 PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(', ', '    ')
 
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
+PA.GrowthDirection = {
+	DOWN_RIGHT = format(PA.ACL["%s and then %s"], PA.ACL["Down"], PA.ACL["Right"]),
+	DOWN_LEFT = format(PA.ACL["%s and then %s"], PA.ACL["Down"], PA.ACL["Left"]),
+	UP_RIGHT = format(PA.ACL["%s and then %s"], PA.ACL["Up"], PA.ACL["Right"]),
+	UP_LEFT = format(PA.ACL["%s and then %s"], PA.ACL["Up"], PA.ACL["Left"]),
+	RIGHT_DOWN = format(PA.ACL["%s and then %s"], PA.ACL["Right"], PA.ACL["Down"]),
+	RIGHT_UP = format(PA.ACL["%s and then %s"], PA.ACL["Right"], PA.ACL["Up"]),
+	LEFT_DOWN = format(PA.ACL["%s and then %s"], PA.ACL["Left"], PA.ACL["Down"]),
+	LEFT_UP = format(PA.ACL["%s and then %s"], PA.ACL["Left"], PA.ACL["Up"]),
+}
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
@@ -249,7 +259,7 @@ function PA:CreateBackdrop(frame)
 	else
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
-		frame.Backdrop:SetOutside(frame)
+		PA:SetOutside(frame.backdrop, frame)
 		PA:SetTemplate(frame.Backdrop)
 	end
 end

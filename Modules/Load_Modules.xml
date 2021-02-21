@@ -18,4 +18,7 @@
 	<Script file="Reminder.lua"/>
 	<Script file="ReputationReward.lua"/>
 	<Script file="TargetSounds.lua"/>
+
+	<Include file="TorghastBuffs.xml"/>
+	<Script file="TorghastBuffs.lua"/>
 </Ui>
