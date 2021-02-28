@@ -22,7 +22,7 @@ local VISIBLE = 1
 local HIDDEN = 0
 
 function MA:CreateAuraIcon(index)
-	local button = CreateFrame('Button', MA.Holder:GetDebugName()..'Button'..index, MA.Holder)
+	local button = CreateFrame('Button', MA.Holder:GetName()..'Button'..index, MA.Holder)
 	button:EnableMouse(false)
 
 	button.cd = CreateFrame('Cooldown', '$parentCooldown', button, 'CooldownFrameTemplate')

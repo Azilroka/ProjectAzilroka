@@ -259,7 +259,7 @@ function PA:CreateBackdrop(frame)
 	else
 		frame.Backdrop = CreateFrame('Frame', nil, frame)
 		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
-		PA:SetOutside(frame.backdrop, frame)
+		PA:SetOutside(frame.Backdrop, frame)
 		PA:SetTemplate(frame.Backdrop)
 	end
 end
