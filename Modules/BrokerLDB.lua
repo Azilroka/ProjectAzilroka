@@ -7,6 +7,10 @@ local pairs = pairs
 local tinsert = tinsert
 local tremove = tremove
 
+local CreateFrame = CreateFrame
+local GameTooltip = GameTooltip
+local UIParent = UIParent
+
 BLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
 BLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BLDB.Authors = 'Azilroka'
@@ -79,22 +83,22 @@ function BLDB:Update()
 		if BLDB.db['ShowIcon'] and BLDB.db['ShowText'] then
 			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
 			Slide:SetSize(BLDB.db['PanelWidth'] + BLDB.db['PanelHeight'], BLDB.db['PanelHeight'])
-			Slide.IconBackdrop:Show()
-			Slide.IconBackdrop:SetPoint('RIGHT', Slide, 'RIGHT', -2, 0)
-			Slide.IconBackdrop:Size(BLDB.db['PanelHeight'] - 4)
+			Slide.Icon:Show()
+			Slide.Icon:SetPoint('RIGHT', Slide, 'RIGHT', -2, 0)
+			Slide.Icon:Size(BLDB.db['PanelHeight'] - 4)
 			Slide.Text:Show()
 			Slide.Text:SetPoint('CENTER', -(BLDB.db['PanelHeight'] / 2), 0)
 		elseif BLDB.db['ShowIcon'] then
 			BLDB.db['PanelWidth'] = 0
 			Slide:SetSize(BLDB.db['PanelHeight'], BLDB.db['PanelHeight'])
-			Slide.IconBackdrop:Show()
-			Slide.IconBackdrop:Size(BLDB.db['PanelHeight'])
-			Slide.IconBackdrop:SetPoint('RIGHT', Slide, 'RIGHT', 0, 0)
+			Slide.Icon:Show()
+			Slide.Icon:Size(BLDB.db['PanelHeight'])
+			Slide.Icon:SetPoint('RIGHT', Slide, 'RIGHT', 0, 0)
 			Slide.Text:Hide()
 		elseif BLDB.db['ShowText'] then
 			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
 			Slide:SetSize(BLDB.db['PanelWidth'], BLDB.db['PanelHeight'])
-			Slide.IconBackdrop:Hide()
+			Slide.Icon:Hide()
 			Slide.Text:Show()
 			Slide.Text:SetPoint('CENTER', 0, 0)
 		end
@@ -121,9 +125,9 @@ function BLDB:Update()
 	end
 
 	if not BLDB.db['MouseOver'] then
-		UIFrameFadeIn(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 1)
+		_G.UIFrameFadeIn(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 1)
 	else
-		UIFrameFadeOut(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 0)
+		_G.UIFrameFadeOut(BLDB.Frame, 0.2, BLDB.Frame:GetAlpha(), 0)
 	end
 end
 
@@ -170,7 +174,7 @@ function BLDB:New(_, Name, Object)
 
 	Frame:SetFrameStrata('BACKGROUND')
 	Frame:SetFrameLevel(3)
-	Frame:SetTemplate('Transparent')
+	PA:SetTemplate(Frame, 'Transparent')
 	BLDB:AnimateSlide(Frame, -150, 0, 1)
 	Frame:SetHeight(BLDB.db['PanelHeight'])
 	Frame:SetWidth(BLDB.db['PanelWidth'])
@@ -182,12 +186,9 @@ function BLDB:New(_, Name, Object)
 	Frame.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 	Frame.Text:SetPoint('CENTER', Frame)
 
-	Frame.IconBackdrop = CreateFrame('Frame', nil, Frame)
-	Frame.IconBackdrop:SetTemplate()
-
 	Frame.Icon = Frame.IconBackdrop:CreateTexture(nil, 'ARTWORK')
-	Frame.Icon:SetInside()
 	Frame.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	PA:CreateBackdrop(Frame.Icon)
 
 	BLDB.PluginObjects[Name] = Frame.Text
 
@@ -202,12 +203,12 @@ function BLDB:New(_, Name, Object)
 		if s.anim:IsPlaying() then return end
 		if s.pluginObject.OnTooltipShow then
 			GameTooltip:SetOwner(s, 'ANCHOR_RIGHT' , 2, -(BLDB.db['PanelHeight']))
-			GameTooltip:SetTemplate('Transparent')
+			PA:SetTemplate(GameTooltip, 'Transparent')
 			GameTooltip:ClearLines()
 			s.pluginObject.OnTooltipShow(GameTooltip, s)
 			GameTooltip:Show()
 		elseif s.pluginObject.OnEnter then
-			GameTooltip:SetTemplate('Transparent')
+			PA:SetTemplate(GameTooltip, 'Transparent')
 			s.pluginObject.OnEnter(s)
 		end
 	end)
@@ -305,13 +306,13 @@ function BLDB:Initialize()
 	Frame:SetWidth(15)
 	Frame:SetPoint('LEFT', UIParent, 'LEFT', 1, 0)
 	Frame:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
-	Frame:SetTemplate('Transparent')
+	PA:SetTemplate(Frame, 'Transparent')
 	BLDB:AnimateSlide(Frame, -150, 0, 1)
 
-	Frame:SetScript('OnEnter', function(s) UIFrameFadeIn(s, 0.2, s:GetAlpha(), 1) end)
+	Frame:SetScript('OnEnter', function(s) _G.UIFrameFadeIn(s, 0.2, s:GetAlpha(), 1) end)
 	Frame:SetScript('OnLeave', function(s)
 		if BLDB.Slide == 'In' and BLDB.db['MouseOver'] then
-			UIFrameFadeOut(s, 0.2, s:GetAlpha(), 0)
+			_G.UIFrameFadeOut(s, 0.2, s:GetAlpha(), 0)
 		end
 	end)
 
@@ -324,7 +325,7 @@ function BLDB:Initialize()
 				BLDB:SlideIn()
 			end
 		else
-			EasyMenu(BLDB.EasyMenu, BLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
+			_G.EasyMenu(BLDB.EasyMenu, BLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
 		end
 	end)
 
