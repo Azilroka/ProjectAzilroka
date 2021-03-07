@@ -1740,11 +1740,7 @@ end
 function EPB:UpdateTDBattlePetScriptAutoButton()
 	_G.tdBattlePetScriptAutoButton:SetParent(self.Ally)
 	_G.tdBattlePetScriptAutoButton:ClearAllPoints()
-	if PA.ElvUI then
-		_G.tdBattlePetScriptAutoButton:SetPoint("CENTER", _G.ElvUI[1].UIParent, "CENTER", 0, 0)
-	else
-		_G.tdBattlePetScriptAutoButton:SetPoint("TOP", self.Ally, "BOTTOM", 0, -40)
-	end
+	_G.tdBattlePetScriptAutoButton:SetPoint("TOP", self.Ally, "BOTTOM", 0, -40)
 	_G.tdBattlePetScriptAutoButton:Hide()
 	_G.tdBattlePetScriptAutoButton:Show()
 
@@ -1754,7 +1750,7 @@ function EPB:UpdateTDBattlePetScriptAutoButton()
 	end
 
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(_G.tdBattlePetScriptAutoButton, "tdBattleScriptAutoButtonMover", "tdBattleScript Auto Button", nil, nil, nil, "ALL,SOLO")
+		_G.ElvUI[1]:CreateMover(_G.tdBattlePetScriptAutoButton, "tdBattlePetScriptAutoButtonMover", "tdBattleBetScript Auto Button", nil, nil, nil, "ALL,GENERAL,SOLO")
 	end
 end
 
