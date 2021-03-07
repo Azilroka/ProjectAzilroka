@@ -219,7 +219,7 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 		C_PetBattles.GetBreedQuality(petInfo.petOwner, petInfo.petIndex)
 	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
 
-	return _G.PetTracker:GetBreedIcon(breed, .9)
+	return _G.PetTracker.Breeds:Icon(breed, .9)
 end
 
 for textFormat in pairs(styles) do
