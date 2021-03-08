@@ -494,9 +494,12 @@ function SMB:GrabMinimapButtons()
 	local UpdateBar
 	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
-		if NumChildren > (Frame.SMBNumChildren or 0) then
+		if not Frame.SMBNumChildrenSet then
+			Frame.SMBNumChildren = 0
+			Frame.SMBNumChildrenSet = true
+		end
+		if NumChildren > Frame.SMBNumChildren then
 			for i = 1, NumChildren do
-				if true then end -- Race condition?
 				local object = select(i, Frame:GetChildren())
 				if object then
 					local name = object:GetName()
