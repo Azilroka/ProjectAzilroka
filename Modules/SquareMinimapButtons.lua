@@ -496,6 +496,7 @@ function SMB:GrabMinimapButtons()
 		local NumChildren = Frame:GetNumChildren()
 		if NumChildren > (Frame.SMBNumChildren or 0) then
 			for i = 1, NumChildren do
+				if true then end -- Race condition?
 				local object = select(i, Frame:GetChildren())
 				if object then
 					local name = object:GetName()
