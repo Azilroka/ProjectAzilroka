@@ -482,6 +482,8 @@ function SMB:SkinMinimapButton(Button)
 	tinsert(SMB.Buttons, Button)
 end
 
+SMB.ButtonCounts = {}
+
 function SMB:GrabMinimapButtons()
 	if (InCombatLockdown() or C_PetBattles and C_PetBattles.IsInBattle()) then return end
 
@@ -494,11 +496,7 @@ function SMB:GrabMinimapButtons()
 	local UpdateBar
 	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
-		if not Frame.SMBNumChildrenSet then
-			Frame.SMBNumChildren = 0
-			Frame.SMBNumChildrenSet = true
-		end
-		if NumChildren > Frame.SMBNumChildren then
+		if NumChildren > (SMB.ButtonCounts[Frame] or 0) then
 			for i = 1, NumChildren do
 				local object = select(i, Frame:GetChildren())
 				if object then
@@ -510,7 +508,7 @@ function SMB:GrabMinimapButtons()
 				end
 			end
 
-			Frame.SMBNumChildren = NumChildren
+			SMB.ButtonCounts[Frame] = NumChildren
 			UpdateBar = true
 		end
 	end
