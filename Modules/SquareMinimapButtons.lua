@@ -659,6 +659,11 @@ function SMB:UpdateSettings()
 	SMB.db = PA.db.SquareMinimapButtons
 end
 
+function SMB:PLAYER_ENTERING_WORLD()
+	wipe(SMB.ButtonCounts)
+	SMB:GrabMinimapButtons()
+end
+
 function SMB:Initialize()
 	SMB:UpdateSettings()
 
@@ -692,6 +697,7 @@ function SMB:Initialize()
 		_G.ElvUI[1]:CreateMover(SMB.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
 	end
 
+	SMB:RegisterEvent("PLAYER_ENTERING_WORLD")
 	SMB:ScheduleRepeatingTimer('GrabMinimapButtons', 6)
 	SMB:ScheduleTimer('HandleBlizzardButtons', 7)
 end
