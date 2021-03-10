@@ -1436,7 +1436,7 @@ function EPB:Initialize()
 	EPB:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
 	EPB:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
 
-	if GetAddOnEnableState(UnitName("player"), "PetTracker_Switcher") ~= 2 then
+	if not _G.PetTracker_Sets or _G.PetTracker_Sets.switcher == false then
 		_G.PetBattlePetSelectionFrame_Show = function()
 			_G.PetBattleFrame_UpdateActionBarLayout(_G.PetBattleFrame)
 			EPB:ChangePetBattlePetSelectionFrameState(true)
