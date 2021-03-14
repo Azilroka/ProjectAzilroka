@@ -228,13 +228,13 @@ function TB:BuildProfile()
 		countXOffset = 0,
 		countYOffset = 0,
 		growthDirection = 'LEFT_DOWN',
-		horizontalSpacing = 6,
-		maxWraps = 3,
-		size = 32,
+		horizontalSpacing = 2,
+		maxWraps = 5,
+		size = 24,
 		sortDir = '-',
 		sortMethod = 'INDEX',
-		verticalSpacing = 16,
-		wrapAfter = 12,
+		verticalSpacing = 2,
+		wrapAfter = 10,
 	}
 end
 
