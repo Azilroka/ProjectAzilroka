@@ -238,6 +238,7 @@ function EPB:InitPetFrameAPI()
 				frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
 				frame.RaisedElementParent:SetFrameLevel(10000)
 				PA:SetInside(frame.RaisedElementParent)
+
 				frame.Name = self:ConstructTagString(frame)
 				frame.PBHealth = self:ConstructHealth(frame, petOwner, petIndex)
 				frame.PBExperience = self:ConstructExperience(frame, petOwner, petIndex)
@@ -1435,6 +1436,7 @@ function EPB:Initialize()
 	EPB:UpdateReviveBar()
 	EPB:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
 	EPB:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
+	EPB:RegisterEvent("PET_BATTLE_CLOSE", "UpdateReviveBar")
 
 	if not _G.PetTracker_Sets or _G.PetTracker_Sets.switcher == false then
 		_G.PetBattlePetSelectionFrame_Show = function()
@@ -1513,7 +1515,7 @@ end
 
 function EPB:UNIT_HEALTH()
 	if (UnitHealth("player") > 0) then
-		self:CheckReviveBarVisibility()
+		self:UpdateReviveBar()
 		self:UnregisterEvent("UNIT_HEALTH")
 	end
 end
@@ -1568,17 +1570,8 @@ function EPB:CreateExtraActionButton(name)
 		_self:SetBackdropBorderColor(unpack(_self.BorderColor))
 		GameTooltip:Hide()
 	end)
-	Button:RegisterEvent("PLAYER_ENTERING_WORLD")
-	Button:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
-	Button:RegisterEvent("BAG_UPDATE")
-	Button:SetScript("OnEvent", function(_self)
-		if InCombatLockdown() then
-			_self:RegisterEvent("PLAYER_REGEN_ENABLED")
-			return
-		end
-		_self:SetShown(self:CheckReviveBarVisibility())
-		_self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-	end)
+
+	Button:Show()
 
 	return Button
 end
