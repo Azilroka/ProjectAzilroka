@@ -81,7 +81,10 @@ local function UpdateColor(self, event, unit)
 	local element = self.PBHealth
 
 	local r, g, b, t
-	if (element.colorSmooth) then
+	if(element.colorClass) then
+		local _, class = UnitClass("player")
+		t = self.colors.class[class]
+	elseif (element.colorSmooth) then
 		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
 	elseif (element.colorHealth) then
 		t = self.colors.health

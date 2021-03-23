@@ -59,6 +59,8 @@ EPB["TooltipPowerIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:
 EPB["TooltipSpeedIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:0:16:16:32|t"
 EPB.Events = { "PLAYER_ENTERING_WORLD", "PET_BATTLE_MAX_HEALTH_CHANGED", "PET_BATTLE_HEALTH_CHANGED", "PET_BATTLE_AURA_APPLIED", "PET_BATTLE_AURA_CANCELED", "PET_BATTLE_AURA_CHANGED", "PET_BATTLE_XP_CHANGED", "PET_BATTLE_OPENING_START", "PET_BATTLE_OPENING_DONE", "PET_BATTLE_CLOSE", "BATTLE_PET_CURSOR_CLEAR", "PET_JOURNAL_LIST_UPDATE" }
 
+local E = PA.ElvUI and ElvUI[1]
+
 function EPB:ChangePetBattlePetSelectionFrameState(state)
 	if state and self.lastState then
 		state = false
@@ -228,6 +230,7 @@ function EPB:InitPetFrameAPI()
 				local petOwner = ActivePetOwner
 				local petIndex = ActivePetIndex
 				frame.pbouf_petinfo = {petOwner = petOwner, petIndex = petIndex}
+				frame.unit = unit
 				frame.PBAuras = {}
 				frame.PBBuffs = self:ConstructBuffs(frame, petOwner, petIndex)
 				frame.PBDebuffs = self:ConstructDebuffs(frame, petOwner, petIndex)
@@ -292,13 +295,42 @@ function EPB:InitPetFrameAPI()
 				else
 					PA:CreateBackdrop(health)
 				end
-
+				health.colorClass = PA.ElvUI and E.db.unitframe.colors.healthclass
 				health.colorSmooth = true
+				health.invertColor = health.colorClass and petOwner == LE_BATTLE_PET_ENEMY
 
 				health:SetFrameLevel(frame:GetFrameLevel() + 5)
 				health:SetReverseFill(petOwner == LE_BATTLE_PET_ENEMY)
 				health.value = self:ConstructTagString(frame)
+				if PA.ElvUI then
+					health.PostUpdateColor = EPB.PostUpdateHealthColor
+				end
 				return health
+			end
+
+
+			function EPB:PostUpdateHealthColor(_, r, g, b)
+				local colors = E.db.unitframe.colors
+				local newr, newg, newb -- fallback for bg if custom settings arent used
+				if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
+				if (((colors.healthclass and colors.colorhealthbyvalue))) then
+					if (colors.healthclass and self.invertColor) then
+						r = math.max(1-r,0.15)
+						g = math.max(1-g,0.15)
+						b = math.max(1-b,0.15)
+					end
+					newr, newg, newb = oUF:ColorGradient(self.cur or 1, self.max or 1, 1, 0, 0, 1, 1, 0, r, g, b)
+					self:SetStatusBarColor(newr, newg, newb)
+				end
+				if self.bg then
+					self.bg.multiplier = (colors.healthMultiplier > 0 and colors.healthMultiplier) or 0.35
+
+					if newb then
+						self.bg:SetVertexColor(newr * self.bg.multiplier, newg * self.bg.multiplier, newb * self.bg.multiplier)
+					else
+						self.bg:SetVertexColor(r * self.bg.multiplier, g * self.bg.multiplier, b * self.bg.multiplier)
+					end
+				end
 			end
 
 			function EPB:ConstructExperience(frame, petOwner, petIndex)
