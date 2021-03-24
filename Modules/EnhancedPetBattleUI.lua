@@ -297,7 +297,7 @@ function EPB:InitPetFrameAPI()
 				end
 				health.colorClass = PA.ElvUI and E.db.unitframe.colors.healthclass
 				health.colorSmooth = true
-				health.invertColor = health.colorClass and petOwner == LE_BATTLE_PET_ENEMY
+				health.invertClassColor = petOwner == LE_BATTLE_PET_ENEMY
 
 				health:SetFrameLevel(frame:GetFrameLevel() + 5)
 				health:SetReverseFill(petOwner == LE_BATTLE_PET_ENEMY)
@@ -314,7 +314,7 @@ function EPB:InitPetFrameAPI()
 				local newr, newg, newb -- fallback for bg if custom settings arent used
 				if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
 				if (((colors.healthclass and colors.colorhealthbyvalue))) then
-					if (colors.healthclass and self.invertColor) then
+					if (colors.healthclass and self.invertClassColor) then
 						r = math.max(1-r,0.15)
 						g = math.max(1-g,0.15)
 						b = math.max(1-b,0.15)
@@ -325,7 +325,22 @@ function EPB:InitPetFrameAPI()
 				if self.bg then
 					self.bg.multiplier = (colors.healthMultiplier > 0 and colors.healthMultiplier) or 0.35
 
-					if newb then
+					if colors.useDeadBackdrop and (self.cur or 1) == 0 then
+						self.bg:SetVertexColor(colors.health_backdrop_dead.r, colors.health_backdrop_dead.g, colors.health_backdrop_dead.b)
+					elseif colors.customhealthbackdrop then
+						self.bg:SetVertexColor(colors.health_backdrop.r, colors.health_backdrop.g, colors.health_backdrop.b)
+					elseif colors.classbackdrop then
+						local _, Class = UnitClass("player")
+						color = parent.colors.class[Class]
+						if color and self.invertClassColor then
+							for i = 1,3 do
+								color[i] = math.max(1-color[i],0.15)
+							end
+						end
+						if color then
+							self.bg:SetVertexColor(color[1] * self.bg.multiplier, color[2] * self.bg.multiplier, color[3] * self.bg.multiplier)
+						end
+					elseif newb then
 						self.bg:SetVertexColor(newr * self.bg.multiplier, newg * self.bg.multiplier, newb * self.bg.multiplier)
 					else
 						self.bg:SetVertexColor(r * self.bg.multiplier, g * self.bg.multiplier, b * self.bg.multiplier)
