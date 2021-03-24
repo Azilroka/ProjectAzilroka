@@ -296,8 +296,8 @@ function EPB:InitPetFrameAPI()
 					PA:CreateBackdrop(health)
 				end
 				health.colorClass = PA.ElvUI and E.db.unitframe.colors.healthclass
-				health.colorSmooth = true
-				health.invertClassColor = petOwner == LE_BATTLE_PET_ENEMY
+				health.colorSmooth = PA.ElvUI and E.db.unitframe.colors.colorhealthbyvalue or true
+				health.isEnemy = petOwner == LE_BATTLE_PET_ENEMY
 
 				health:SetFrameLevel(frame:GetFrameLevel() + 5)
 				health:SetReverseFill(petOwner == LE_BATTLE_PET_ENEMY)
@@ -310,17 +310,21 @@ function EPB:InitPetFrameAPI()
 
 
 			function EPB:PostUpdateHealthColor(_, r, g, b)
+				local parent = self:GetParent()
 				local colors = E.db.unitframe.colors
 				local newr, newg, newb -- fallback for bg if custom settings arent used
 				if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
 				if (((colors.healthclass and colors.colorhealthbyvalue))) then
-					if (colors.healthclass and self.invertClassColor) then
+					if (colors.healthclass and self.isEnemy) then
 						r = math.max(1-r,0.15)
 						g = math.max(1-g,0.15)
 						b = math.max(1-b,0.15)
 					end
 					newr, newg, newb = oUF:ColorGradient(self.cur or 1, self.max or 1, 1, 0, 0, 1, 1, 0, r, g, b)
 					self:SetStatusBarColor(newr, newg, newb)
+				elseif self.isEnemy then
+					local color = parent.colors.reaction[HOSTILE_REACTION]
+					if color then self:SetStatusBarColor(color[1], color[2], color[3]) end
 				end
 				if self.bg then
 					self.bg.multiplier = (colors.healthMultiplier > 0 and colors.healthMultiplier) or 0.35
