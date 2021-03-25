@@ -484,7 +484,7 @@ end
 
 SMB.ButtonCounts = {}
 
-function SMB:GrabMinimapButtons()
+function SMB:GrabMinimapButtons(forceUpdate)
 	if (InCombatLockdown() or C_PetBattles and C_PetBattles.IsInBattle()) then return end
 
 	for _, Button in pairs(SMB.UnrulyButtons) do
@@ -493,7 +493,7 @@ function SMB:GrabMinimapButtons()
 		end
 	end
 
-	local UpdateBar
+	local UpdateBar = forceUpdate
 	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
 		if NumChildren > (SMB.ButtonCounts[Frame] or 0) then
@@ -661,7 +661,7 @@ end
 
 function SMB:PLAYER_ENTERING_WORLD()
 	wipe(SMB.ButtonCounts)
-	SMB:GrabMinimapButtons()
+	SMB:GrabMinimapButtons(true)
 end
 
 function SMB:Initialize()
