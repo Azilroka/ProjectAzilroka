@@ -1,6 +1,6 @@
 ## Interface: 90002
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
-## Author: Azilroka, NihilisticPandemonium
+## Author: Azilroka, Nihilistzsche
 ## Version: 1.75
 ## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB

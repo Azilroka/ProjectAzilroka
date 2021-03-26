@@ -9,7 +9,7 @@ local UnitIsPlayer, UnitClass, UnitClassification = UnitIsPlayer, UnitClass, Uni
 
 DO.Title = PA.ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r']
 DO.Description = PA.ACL['Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite']
-DO.Authors = 'Azilroka    NihilisticPandemonium'
+DO.Authors = 'Azilroka    Nihilistzsche'
 DO.ImageCredits = 'Codeblake    Kkthnxbye    Narley    Durandil'
 DO.isEnabled = false
 

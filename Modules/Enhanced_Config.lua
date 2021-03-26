@@ -7,7 +7,7 @@ PA.EC, _G.Enhanced_Config = EC, EC
 EC.Title = PA.ACL["|cff1784d1Enhanced Config|r"]
 EC.Authors = "Azilroka"
 
-local DEVELOPERS = { 'Elv', 'Tukz', 'Hydrazine', 'NihilisticPandemonium' }
+local DEVELOPERS = { 'Elv', 'Tukz', 'Hydrazine', 'Nihilistzsche' }
 local DEVELOPER_STRING = ''
 
 sort(DEVELOPERS, function(a,b) return a < b end)

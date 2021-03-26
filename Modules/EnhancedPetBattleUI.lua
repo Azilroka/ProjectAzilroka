@@ -7,7 +7,7 @@ local EPB = PA:NewModule("EnhancedPetBattleUI", "AceEvent-3.0")
 
 EPB.Title = "|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"
 EPB.Description = ""
-EPB.Authors = "Azilroka    NihilisticPandemonium"
+EPB.Authors = "Azilroka    Nihilistzsche"
 EPB.isEnabled = false
 
 _G.EPB = EPB
@@ -1361,7 +1361,7 @@ function EPB:GetOptions()
 						order = 7,
 						type = "toggle",
 						name = "Use oUF for the pet frames",
-						desc = "Use the new PBUF library by NihilisticPandemonium included with ProjectAzilroka to create new pet frames using the oUF unitframe template system.",
+						desc = "Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system.",
 						disabled = function()
 							return not PA.oUF
 						end,

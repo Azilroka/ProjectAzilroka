@@ -4,7 +4,7 @@ PA.ES = ES
 
 ES.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
 ES.Description = PA.ACL['Adds options for registered shadows']
-ES.Authors = 'Azilroka     NihilisticPandemonium'
+ES.Authors = 'Azilroka     Nihilistzsche'
 ES.isEnabled = false
 
 local unpack, floor, pairs = unpack, floor, pairs

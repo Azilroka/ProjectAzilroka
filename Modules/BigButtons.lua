@@ -6,7 +6,7 @@ PA.BB, _G.BigButtons = BB, BB
 
 BB.Title = PA.ACL['|cFF16C3F2Big|r |cFFFFFFFFButtons|r']
 BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
-BB.Authors = 'Azilroka    NihilisticPandemonium'
+BB.Authors = 'Azilroka    Nihilistzsche'
 BB.isEnabled = false
 
 local _G = _G
