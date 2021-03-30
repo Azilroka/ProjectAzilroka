@@ -58,6 +58,7 @@ SMB.IgnoreButton = {
 	'TukuiMinimapZone',
 	'TukuiMinimapCoord',
 	'RecipeRadarMinimapButtonFrame',
+	'InstanceDifficultyFrame',
 }
 
 SMB.GenericIgnore = {
