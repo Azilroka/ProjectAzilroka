@@ -299,6 +299,12 @@ function EPB:InitPetFrameAPI()
 				health.colorSmooth = PA.ElvUI and E.db.unitframe.colors.colorhealthbyvalue or true
 				health.isEnemy = petOwner == LE_BATTLE_PET_ENEMY
 
+				local clipFrame = CreateFrame('Frame', nil, health)
+				clipFrame:SetClipsChildren(true)
+				clipFrame:SetAllPoints()
+				clipFrame:EnableMouse(false)
+				health.ClipFrame = clipFrame
+
 				health:SetFrameLevel(frame:GetFrameLevel() + 5)
 				health:SetReverseFill(petOwner == LE_BATTLE_PET_ENEMY)
 				health.value = self:ConstructTagString(frame)
@@ -377,7 +383,7 @@ function EPB:InitPetFrameAPI()
 			end
 
 			function EPB:ConstructCutaway(frame, petOwner, petIndex)
-				local chealth = frame.PBHealth:CreateTexture(nil, "ARTWORK")
+				local chealth = frame.PBHealth.ClipFrame:CreateTexture(nil, "ARTWORK")
 
 				return { Health = chealth }
 			end
