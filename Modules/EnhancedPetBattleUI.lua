@@ -622,14 +622,14 @@ function EPB:InitPetFrameAPI()
 				frame.PBSpeed:SetPoint("TOP", frame.PBPower, "BOTTOM", 0, -3)
 				frame.PBSpeed.value:SetPoint(ps.statInitialPoint, frame.PBSpeed, ps.statRelativePoint, ps.statOffsetX, 0)
 				frame.PBSpeed.value:SetJustifyH(ps.statJustifyH)
-				frame:Tag(frame.Name, "[pbuf:qualitycolor][pbuf:smartlevel] [pbuf:name]")
-				frame:Tag(frame.PBHealth.value, "[pbuf:health:current-percent]")
+				frame:Tag(frame.Name, EPB.db.nameFormat)
+				frame:Tag(frame.PBHealth.value, EPB.db.healthFormat)
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
-					frame:Tag(frame.PBExperience.value, "[pbuf:xp:current-max-percent]")
+					frame:Tag(frame.PBExperience.value, EPB.db.xpFormat)
 				end
-				frame:Tag(frame.PBPower.value, "[pbuf:power:comparecolor][pbuf:power]")
-				frame:Tag(frame.PBSpeed.value, "[pbuf:speed:comparecolor][pbuf:speed]")
-				frame:Tag(frame.BreedID, "[pbuf:breedicon]")
+				frame:Tag(frame.PBPower.value, EPB.db.powerFormat)
+				frame:Tag(frame.PBSpeed.value, EPB.db.speedFormat)
+				frame:Tag(frame.BreedID, EPB.db.breedFormat)
 			end
 
 			function EPB:UpdatePetFrame(frame)
@@ -1415,7 +1415,49 @@ function EPB:GetOptions()
 						min = -10,
 						max = 10,
 						step = 1
-					}
+					},
+					nameFormat = {
+						type = "input",
+						width = "full",
+						name = "Name Format",
+						order = 18,
+						disabled = function() return not EPB.db.UseoUF end
+					},
+					healthFormat = {
+						type = "input",
+						width = "full",
+						name = "Health Format",
+						order = 19,
+						disabled = function() return not EPB.db.UseoUF end
+					},
+					xpFormat = {
+						type = "input",
+						width = "full",
+						name = "Experience Format",
+						order = 20,
+						disabled = function() return not EPB.db.UseoUF end
+					},
+					powerFormat = {
+						type = "input",
+						width = "full",
+						name = "Power Format",
+						order = 21,
+						disabled = function() return not EPB.db.UseoUF end
+					},
+					speedFormat = {
+						type = "input",
+						width = "full",
+						name = "Speed Format",
+						order = 22,
+						disabled = function() return not EPB.db.UseoUF end
+					},
+					breedFormat = {
+						type = "input",
+						width = "full",
+						name = "Breed Format",
+						order = 23,
+						disabled = function() return not EPB.db.UseoUF end
+					},
 				}
 			}
 		}
@@ -1440,7 +1482,13 @@ function EPB:BuildProfile()
 		ShowNameplates = true,
 		BreedIDOnNameplate = true,
 		["3DPortrait"] = true,
-		["UseoUF"] = PA.oUF ~= nil
+		["UseoUF"] = PA.oUF ~= nil,
+		nameFormat = "[pbuf:qualitycolor][pbuf:smartlevel] [pbuf:name]",
+		healthFormat = "[pbuf:health:current-percent]",
+		xpFormat = "[pbuf:xp:current-max-percent]",
+		powerFormat = "[pbuf:power:comparecolor][pbuf:power]",
+		speedFormat = "[pbuf:speed:comparecolor][pbuf:speed]",
+		breedFormat = "[pbuf:breedicon]",
 	}
 
 	if PA.Tukui then
