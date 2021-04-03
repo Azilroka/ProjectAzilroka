@@ -622,7 +622,7 @@ function EPB:InitPetFrameAPI()
 				frame.PBSpeed:SetPoint("TOP", frame.PBPower, "BOTTOM", 0, -3)
 				frame.PBSpeed.value:SetPoint(ps.statInitialPoint, frame.PBSpeed, ps.statRelativePoint, ps.statOffsetX, 0)
 				frame.PBSpeed.value:SetJustifyH(ps.statJustifyH)
-				frame:Tag(frame.Name, "[pbuf:qualitycolor][pbuf:level] [pbuf:name]")
+				frame:Tag(frame.Name, "[pbuf:qualitycolor][pbuf:smartlevel] [pbuf:name]")
 				frame:Tag(frame.PBHealth.value, "[pbuf:health:current-percent]")
 				if petInfo.petOwner == LE_BATTLE_PET_ALLY then
 					frame:Tag(frame.PBExperience.value, "[pbuf:xp:current-max-percent]")

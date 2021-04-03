@@ -118,6 +118,16 @@ oUF.Tags.Methods["pbuf:level"] = function()
 	return level
 end
 
+oUF.Tags.Events["pbuf:smartlevel"] = levelEvents
+oUF.Tags.Methods["pbuf:smartlevel"] = function()
+	local petInfo = _FRAME.pbouf_petinfo
+	if not petInfo then
+		return ""
+	end
+	local level = C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex)
+	return level < 25 and level or ""
+end
+
 oUF.Tags.Events["pbuf:power"] = auraEvents
 oUF.Tags.Methods["pbuf:power"] = function()
 	local petInfo = _FRAME.pbouf_petinfo
@@ -287,6 +297,7 @@ if ElvUI then
 	E:AddTagInfo("pbuf:qualitycolor", 'ProjectAzilroka', nil, nil)
 	E:AddTagInfo("pbuf:name", 'ProjectAzilroka', nil, nil)
 	E:AddTagInfo("pbuf:level", 'ProjectAzilroka', nil, nil)
+	E:AddTagInfo("pbuf:smartlevel", 'ProjectAzilroka', nil, nil)
 	E:AddTagInfo("pbuf:power", 'ProjectAzilroka', nil, nil)
 	E:AddTagInfo("pbuf:power:comparecolor", 'ProjectAzilroka', nil, nil)
 	E:AddTagInfo("pbuf:speed", 'ProjectAzilroka', nil, nil)
