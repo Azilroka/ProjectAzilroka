@@ -1385,6 +1385,22 @@ function EPB:GetOptions()
 							return EPB.db.UseoUF
 						end
 					},
+					healthThreshold = {
+						order = 9,
+						type = 'range',
+						name = "Health Threshold",
+						desc = "When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar.",
+						isPercent = true,
+						min = 0, max = 1, step = 0.01,
+					},
+					wildHealthThreshold = {
+						order = 10,
+						type = 'range',
+						name = "Wild Health Threshold",
+						desc = "When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar.",
+						isPercent = true,
+						min = 0, max = 1, step = 0.01,
+					},
 					StatusBarTexture = {
 						type = "select",
 						dialogControl = "LSM30_Statusbar",
@@ -1489,6 +1505,8 @@ function EPB:BuildProfile()
 		powerFormat = "[pbuf:power:comparecolor][pbuf:power]",
 		speedFormat = "[pbuf:speed:comparecolor][pbuf:speed]",
 		breedFormat = "[pbuf:breedicon]",
+		healthThreshold = 0.85,
+		wildHealthThreshold = 0.65,
 	}
 
 	if PA.Tukui then
@@ -1578,9 +1596,9 @@ function EPB:CheckReviveBarVisibility()
 	end
 
 	local health, maxHealth, show, checkPercentage
-	checkPercentage = 0.85
+	checkPercentage = EPB.overrideHealthThreshold or EPB.db.healthThreshold
 	if (EPB.lastBattleWasWild) then
-		checkPercentage = 0.6
+		checkPercentage = EPB.db.wildHealthThreshold
 	end
 	for i = 1, C_PetJournal.GetNumPets() do
 		local petID = C_PetJournal.GetPetInfoByIndex(i)
