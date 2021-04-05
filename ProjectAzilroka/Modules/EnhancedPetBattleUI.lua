@@ -1587,8 +1587,20 @@ function EPB:IsHealingForbidden()
 	return AuraUtil_FindAuraByName(EPB.BattlePetChallengeDebuffName, "player", "HARMFUL") ~= nil
 end
 
+function EPB:BlockHealing()
+	self.healingBlocked = true
+end
+
+function EPB:UnblockHealing()
+	self.healingBlocked = nil
+end
+
+function EPB:IsHealingBlocked()
+	return self.healingBlocked
+end
+
 function EPB:CheckReviveBarVisibility()
-	if EPB:IsHealingForbidden() or UnitHealth("player") == 0 then
+	if EPB:IsHealingBlocked() or EPB:IsHealingForbidden() or UnitHealth("player") == 0 then
 		if (UnitHealth("player") == 0) then
 			EPB:RegisterEvent("UNIT_HEALTH")
 		end
