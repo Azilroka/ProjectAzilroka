@@ -246,7 +246,9 @@ function EPB:InitPetFrameAPI()
 				frame.PBHealth = self:ConstructHealth(frame, petOwner, petIndex)
 				frame.PBExperience = self:ConstructExperience(frame, petOwner, petIndex)
 				frame.PBPortrait = self:ConstructPotrait(frame, petOwner, petIndex)
-				frame.PBCutaway = self:ConstructCutaway(frame, petOwner, petIndex)
+				if PA.ElvUI then
+					frame.PBCutaway = self:ConstructCutaway(frame, petOwner, petIndex)
+				end
 				frame.PBFamilyIcon = self:ConstructFamilyIcon(frame, petOwner, petIndex)
 				frame.PBDeadIndicator = self:ConstructDeadIndicator(frame, petOwner, petIndex)
 				frame.PBPower = self:ConstructPower(frame, petOwner, petIndex)
@@ -382,10 +384,12 @@ function EPB:InitPetFrameAPI()
 				return deadIndicator
 			end
 
-			function EPB:ConstructCutaway(frame, petOwner, petIndex)
-				local chealth = frame.PBHealth.ClipFrame:CreateTexture(nil, "ARTWORK")
+			if PA.ElvUI then
+				function EPB:ConstructCutaway(frame, petOwner, petIndex)
+					local chealth = frame.PBHealth.ClipFrame:CreateTexture(nil, "ARTWORK")
 
-				return { Health = chealth }
+					return { Health = chealth }
+				end
 			end
 
 			function EPB:ConstructFamilyIcon(frame, petOwner, petIndex)

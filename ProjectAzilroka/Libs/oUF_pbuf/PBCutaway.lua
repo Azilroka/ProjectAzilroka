@@ -16,14 +16,13 @@ local _G = _G
 local max = math.max
 local hooksecurefunc = hooksecurefunc
 
-local E  -- placeholder
+local E -- placeholder
 
 local function checkElvUI()
 	if not E then
-		E = _G.ElvUI[1]
-		if not E then
-			return
-		end
+		E = _G.ElvUI and _G.ElvUI[1]
+
+		assert(E, "PBCutaway was not able to locate ElvUI and it is required.")
 	end
 end
 
