@@ -275,6 +275,20 @@ function PA:CreateShadow(frame)
 	end
 end
 
+function PA:CopyTable(current, default)
+	if type(current) ~= 'table' then
+		current = {}
+	end
+
+	if type(default) == 'table' then
+		for option, value in pairs(default) do
+			current[option] = (type(value) == 'table' and PA:CopyTable(current[option], value)) or value
+		end
+	end
+
+	return current
+end
+
 function PA:SetInside(obj, anchor, xOffset, yOffset, anchor2)
 	xOffset, yOffset, anchor = xOffset or 1, yOffset or 1, anchor or obj:GetParent()
 
@@ -516,7 +530,11 @@ PA.Defaults = {
 PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
-	PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
+	if _G.ElvUI then
+		PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
+	else
+		PA.AceOptionsPanel.Options.args = PA:CopyTable(PA.Options.args, PA.AceOptionsPanel.Options.args)
+	end
 end
 
 function PA:BuildProfile()

@@ -1,5 +1,4 @@
 <Ui>
-	<Script file="BigButtons.lua"/>
 	<Script file="BrokerLDB.lua"/>
 	<Script file="DragonOverlay.lua"/>
 	<Script file="EnhancedFriendsList.lua"/>
@@ -12,11 +11,12 @@
 	<Script file="MouseoverAuras.lua"/>
 	<Script file="MovableFrames.lua"/>
 	<Script file="OzCooldowns.lua"/>
-	<Script file="SquareMinimapButtons.lua"/>
-	<Script file="stAddonManager.lua"/>
 	<Script file="QuestSounds.lua"/>
 	<Script file="Reminder.lua"/>
 	<Script file="ReputationReward.lua"/>
+	<Script file="SquareMinimapButtons.lua"/>
+	<Script file="stAddonManager.lua"/>
+	<Script file="SunsongRanchFarmer.lua"/>
 	<Script file="TargetSounds.lua"/>
 
 	<Include file="TorghastBuffs.xml"/>

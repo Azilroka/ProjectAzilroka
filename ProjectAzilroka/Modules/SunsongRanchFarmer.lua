@@ -1,13 +1,13 @@
 local PA = _G.ProjectAzilroka
 if PA.Classic then return end
 
-local BB = PA:NewModule('BigButtons', 'AceEvent-3.0')
-PA.BB, _G.BigButtons = BB, BB
+local SRF = PA:NewModule('SunsongRanchFarmer', 'AceEvent-3.0')
+PA.SRF, _G.SunsongRanchFramer = SRF, SRF
 
-BB.Title = PA.ACL['|cFF16C3F2Big|r |cFFFFFFFFButtons|r']
-BB.Description = PA.ACL['A farm tool for Sunsong Ranch.']
-BB.Authors = 'Azilroka    Nihilistzsche'
-BB.isEnabled = false
+SRF.Title = PA.ACL['|cFF16C3F2Sunsong|r |cFFFFFFFFRanch Farmer|r']
+SRF.Description = PA.ACL['A farm tool for Sunsong Ranch.']
+SRF.Authors = 'Azilroka    Nihilistzsche'
+SRF.isEnabled = false
 
 local _G = _G
 
@@ -45,13 +45,13 @@ local Locales = {
 	ruRU = { Ranch = 'Ферма Солнечной Песни', Market = 'Рынок Полугорья' },
 }
 
-BB.Ranch, BB.Market = Locales[Locale].Ranch, Locales[Locale].Market
+SRF.Ranch, SRF.Market = Locales[Locale].Ranch, Locales[Locale].Market
 
-BB.Events = {'PLAYER_ENTERING_WORLD', 'ZONE_CHANGED', 'ZONE_CHANGED_NEW_AREA', 'ZONE_CHANGED_INDOORS', 'BAG_UPDATE'}
+SRF.Events = {'PLAYER_ENTERING_WORLD', 'ZONE_CHANGED', 'ZONE_CHANGED_NEW_AREA', 'ZONE_CHANGED_INDOORS', 'BAG_UPDATE'}
 
-BB.Tools = { 79104, 80513, 89880, 89815 }
+SRF.Tools = { 79104, 80513, 89880, 89815 }
 
-BB.Seeds = {
+SRF.Seeds = {
 	[1] = { Seed = 79102, Bag = 80809 }, -- Green Cabbage
 	[2] = { Seed = 89328, Bag = 89848 }, -- Jade Squash
 	[3] = { Seed = 80590, Bag = 84782 }, -- Juicycrunch Carrot
@@ -74,14 +74,76 @@ BB.Seeds = {
 	[20] = { Seed = 85269 }, -- Winter Blossom
 }
 
-function BB:Update()
-	if not BB.Bar then return end
+SRF.Quests = {
+	--Tillers counsil
+	[31945] = { 80591, 84783}, -- Gina, Scallion
+	[31946] = {80590, 84782}, -- Mung-Mung, Juicycrunch Carrot
+	[31947] = {79102, 80809}, -- Farmer Fung, Green Cabbage
+	[31949] = {89326, 89847}, -- Nana, Witchberry
+	[30527] = {89329, 89849}, -- Haohan, Striped Melon
+
+	--Farmer Yoon
+	[31943] = {89326, 89847}, -- Witchberry
+	[31942] = {89329, 89849}, -- Striped Melon
+	[31941] = {89328, 89848}, -- Jade Squash
+	[31669] = {79102, 80809}, -- Green Cabbage
+	[31670] = {80590, 84782}, -- Juicycrunch Carrot
+	[31672] = {80592, 85153}, -- Mogu Pumpkin
+	[31673] = {80593, 85158}, -- Red Blossom Leek
+	[31674] = {80594, 85162}, -- Pink Turnip
+	[31675] = {80595, 85163}, -- White Turnip
+	[31671] = {80591, 84783}, -- Scallion
+
+	--Work Orders
+	[32645] = {89326, 89847}, -- Witchberry (Alliance Only)
+	[32653] = {89329, 89849}, -- Striped Melon
+	--[31941] = {89328, 89848}, -- Jade Squash
+	[32649] = {79102, 80809}, -- Green Cabbage
+	--[31670] = {80590, 84782}, -- Juicycrunch Carrot
+	[32658] = {80592, 85153}, -- Mogu Pumpkin
+	[32642] = {80593, 85158}, -- Red Blossom Leek (Horde Only)
+	--[31674] = {80594, 85162}, -- Pink Turnip
+	[32647] = {80595, 85163}, -- White Turnip
+	--[31671] = {80591, 84783}, -- Scallion
+}
+
+--local function QuestItems(itemID)
+--	for i = 1, GetNumQuestLogEntries() do
+--		for qid, sid in pairs(FarmQuests) do
+--			if qid == select(9, GetQuestLogTitle(i)) then
+--				if itemID == sid[1] or itemID == sid[2] then
+--					return true
+--				end
+--			end
+--		end
+--	end
+
+--	return false
+--end
+
+--	for i = 1, SeedAnchor.NumBars do
+--		local seedBar = CreateFrame("Frame", SeedAnchor.BarsName..i, SeedAnchor)
+--		seedBar:SetFrameStrata("BACKGROUND")
+
+--		if i == 1 or i == 3 then
+--			seedBar.Autotarget = function(button)
+--				if not E.db.sle.legacy.farm.autotarget then return end
+--				local container, slot = SLE:BagSearch(button.itemId)
+--				if container and slot then
+--					button:SetAttribute("type", "macro")
+--					button:SetAttribute("macrotext", format("/targetexact %s \n/use %s %s", L["Tilled Soil"], container, slot))
+--				end
+--			end
+--		end
+
+function SRF:Update()
+	if not SRF.Bar then return end
 
 	local PrevButton, NumShown = nil, 0
-	for _, Button in pairs(BB.Bar.Buttons) do
+	for _, Button in pairs(SRF.Bar.Buttons) do
 		if Button:IsShown() then
 			Button:ClearAllPoints()
-			Button:SetPoint(unpack(PrevButton and {'LEFT', PrevButton, 'RIGHT', (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3), 0} or {'LEFT', BB.Bar, 'LEFT', 0, 0}))
+			Button:SetPoint(unpack(PrevButton and {'LEFT', PrevButton, 'RIGHT', (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3), 0} or {'LEFT', SRF.Bar, 'LEFT', 0, 0}))
 			PrevButton = Button
 			NumShown = NumShown + 1
 		end
@@ -89,24 +151,24 @@ function BB:Update()
 
 	if NumShown == 0 then NumShown = 1 end
 
-	BB.Bar:SetSize(NumShown * (50 + (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3)), 50)
+	SRF.Bar:SetSize(NumShown * (50 + (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3)), 50)
 end
 
-function BB:InSeedZone()
+function SRF:InSeedZone()
 	local SubZone = GetSubZoneText()
-	if SubZone == BB.Ranch or SubZone == BB.Market then
+	if SubZone == SRF.Ranch or SubZone == SRF.Market then
 		return true
 	else
 		return false
 	end
 end
 
-function BB:InFarmZone()
-	return GetSubZoneText() == BB.Ranch
+function SRF:InFarmZone()
+	return GetSubZoneText() == SRF.Ranch
 end
 
-function BB:CreateBigButton(ItemID)
-	local Button = CreateFrame('Button', nil, BB.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
+function SRF:CreateBigButton(ItemID)
+	local Button = CreateFrame('Button', nil, SRF.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	Button:Hide()
 	PA:SetTemplate(Button)
 	Button:SetSize(50, 50)
@@ -126,7 +188,7 @@ function BB:CreateBigButton(ItemID)
 
 	PA:CreateShadow(Button)
 
-	for _, event in pairs(BB.Events) do
+	for _, event in pairs(SRF.Events) do
 		Button:RegisterEvent(event)
 	end
 
@@ -138,9 +200,9 @@ function BB:CreateBigButton(ItemID)
 
 	Button:SetScript('OnEvent', function()
 		if not InCombatLockdown() then
-			if BB:InFarmZone() and GetItemCount(ItemID) == 1 then
+			if SRF:InFarmZone() and GetItemCount(ItemID) == 1 then
 				Button:Show()
-				BB:Update()
+				SRF:Update()
 			end
 			Button:UnregisterEvent('PLAYER_REGEN_ENABLED')
 		else
@@ -148,17 +210,17 @@ function BB:CreateBigButton(ItemID)
 		end
 	end)
 
-	tinsert(BB.Bar.Buttons, Button)
+	tinsert(SRF.Bar.Buttons, Button)
 end
 
 local SeedX, SeedY = 0, 1
-function BB:CreateSeedButton(ItemID)
+function SRF:CreateSeedButton(ItemID)
 	SeedX = SeedX + 1
 	if SeedX > 10 then
 		SeedX, SeedY = 1, 2
 	end
 
-	local Button = CreateFrame('Button', nil, BB.Bar.SeedsFrame, 'SecureActionButtonTemplate, ActionButtonTemplate')
+	local Button = CreateFrame('Button', nil, SRF.Bar.SeedsFrame, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	PA:SetTemplate(Button)
 	Button:SetSize(30, 30)
 	Button:SetAttribute('type', 'item')
@@ -199,7 +261,7 @@ function BB:CreateSeedButton(ItemID)
 		end
 	end
 
-	for _, event in pairs(BB.Events) do
+	for _, event in pairs(SRF.Events) do
 		Button:RegisterEvent(event)
 	end
 
@@ -217,12 +279,12 @@ function BB:CreateSeedButton(ItemID)
 
 	PA:CreateShadow(Button)
 
-	tinsert(BB.Bar.SeedsFrame.Buttons, Button)
+	tinsert(SRF.Bar.SeedsFrame.Buttons, Button)
 end
 
-function BB:DropTools()
-	if not BB:InSeedZone() and BB.db.DropTools then
-		for _, ItemID in pairs(BB.Tools) do
+function SRF:DropTools()
+	if not SRF:InSeedZone() and SRF.db.DropTools then
+		for _, ItemID in pairs(SRF.Tools) do
 			for container = 0, NUM_BAG_SLOTS do
 				for slot = 1, GetContainerNumSlots(container) do
 					if ItemID == GetContainerItemID(container, slot) then
@@ -235,77 +297,77 @@ function BB:DropTools()
 	end
 end
 
-function BB:GetOptions()
-	local BigButtons = PA.ACH:Group(BB.Title, BB.Description, nil, nil, function(info) return BB.db[info[#info]] end)
-	PA.Options.args.BigButtons = BigButtons
+function SRF:GetOptions()
+	local SunsongRanchFramer = PA.ACH:Group(SRF.Title, SRF.Description, nil, nil, function(info) return SRF.db[info[#info]] end)
+	PA.Options.args.SunsongRanchFramer = SunsongRanchFramer
 
-	BigButtons.args.Description = PA.ACH:Description(BB.Description, 0)
-	BigButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BB.db[info[#info]] = value if not BB.isEnabled then BB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	SunsongRanchFramer.args.Description = PA.ACH:Description(SRF.Description, 0)
+	SunsongRanchFramer.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SRF.db[info[#info]] = value if not SRF.isEnabled then SRF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	BigButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BB.db[info[#info]] = value BB:Update() end)
-	BigButtons.args.General.inline = true
-	BigButtons.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
-	BigButtons.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
-	BigButtons.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
+	SunsongRanchFramer.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) SRF.db[info[#info]] = value SRF:Update() end)
+	SunsongRanchFramer.args.General.inline = true
+	SunsongRanchFramer.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
+	SunsongRanchFramer.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
+	SunsongRanchFramer.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
 
-	BigButtons.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	BigButtons.args.Authors = PA.ACH:Description(BB.Authors, -1, 'large')
+	SunsongRanchFramer.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	SunsongRanchFramer.args.Authors = PA.ACH:Description(SRF.Authors, -1, 'large')
 end
 
-function BB:BuildProfile()
-	PA.Defaults.profile.BigButtons = { Enable = true, DropTools = false, ToolSize = 50, SeedSize = 30 }
+function SRF:BuildProfile()
+	PA.Defaults.profile.SunsongRanchFramer = { Enable = true, DropTools = false, ToolSize = 36, SeedSize = 24 }
 end
 
-function BB:UpdateSettings()
-	BB.db = PA.db.BigButtons
+function SRF:UpdateSettings()
+	SRF.db = PA.db.SunsongRanchFramer
 end
 
-function BB:Initialize()
-	BB:UpdateSettings()
+function SRF:Initialize()
+	SRF:UpdateSettings()
 
-	if BB.db.Enable ~= true then
+	if SRF.db.Enable ~= true then
 		return
 	end
 
-	BB.isEnabled = true
+	SRF.isEnabled = true
 
-	local Bar = CreateFrame('Frame', 'BigButtonsBar', _G.UIParent, "SecureHandlerStateTemplate")
-	BB.Bar = Bar
+	local Bar = CreateFrame('Frame', 'SunsongRanchFramerBar', _G.UIParent, "SecureHandlerStateTemplate")
+	SRF.Bar = Bar
 	Bar:Hide()
 	Bar:SetFrameStrata('MEDIUM')
 	Bar:SetFrameLevel(0)
-	Bar:SetSize(50, 50)
+	Bar:SetSize(36, 36)
 	Bar:ClearAllPoints()
 	Bar:SetPoint('TOP', _G.UIParent, 'TOP', 0, -250)
 	Bar.Buttons = {}
 
-	Bar.SeedsFrame = CreateFrame('Frame', 'BigButtonsSeedBar', _G.UIParent)
+	Bar.SeedsFrame = CreateFrame('Frame', 'SunsongRanchFramerSeedBar', _G.UIParent)
 	Bar.SeedsFrame:SetFrameStrata('MEDIUM')
 	Bar.SeedsFrame:SetFrameLevel(0)
 	Bar.SeedsFrame:SetSize(344, 72)
 	Bar.SeedsFrame:SetPoint('TOP', _G.UIParent, 'TOP', 0, -300)
 	Bar.SeedsFrame.Buttons = {}
 
-	for _, ItemID in pairs(BB.Tools) do
-		BB:CreateBigButton(ItemID)
+	for _, ItemID in pairs(SRF.Tools) do
+		SRF:CreateBigButton(ItemID)
 	end
 
 	for i = 1, 20 do
-		BB:CreateSeedButton(BB.Seeds[i].Seed)
+		SRF:CreateSeedButton(SRF.Seeds[i].Seed)
 	end
 
-	for _, event in pairs(BB.Events) do
+	for _, event in pairs(SRF.Events) do
 		Bar:RegisterEvent(event)
 		Bar.SeedsFrame:RegisterEvent(event)
 	end
 
 	Bar:SetScript('OnEvent', function(frame)
 		if not InCombatLockdown() then
-			if BB:InFarmZone() then
+			if SRF:InFarmZone() then
 				frame:Show()
 				UIFrameFadeIn(frame, 0.5, 0, 1)
 			else
-				BB:DropTools()
+				SRF:DropTools()
 				frame:Hide()
 			end
 		end
@@ -313,7 +375,7 @@ function BB:Initialize()
 
 	Bar.SeedsFrame:SetScript('OnEvent', function(frame)
 		if not InCombatLockdown() then
-			if BB:InSeedZone() then
+			if SRF:InSeedZone() then
 				frame:Show()
 				UIFrameFadeIn(frame, 0.5, 0, 1)
 			else
@@ -323,11 +385,11 @@ function BB:Initialize()
 	end)
 
 	if PA.Tukui then
-		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar)
-		_G.Tukui[1]['Movers']:RegisterFrame(BB.Bar.SeedsFrame)
+		_G.Tukui[1]['Movers']:RegisterFrame(SRF.Bar)
+		_G.Tukui[1]['Movers']:RegisterFrame(SRF.Bar.SeedsFrame)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(BB.Bar, 'BigButtonsFarmBar', 'BigButtons Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
-		_G.ElvUI[1]:CreateMover(BB.Bar.SeedsFrame, 'BigButtonsSeedBarMover', 'BigButtons Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,BigButtons')
+		_G.ElvUI[1]:CreateMover(SRF.Bar, 'SunsongRanchFramerFarmBar', 'Sunsong Ranch Framer Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFramer')
+		_G.ElvUI[1]:CreateMover(SRF.Bar.SeedsFrame, 'SunsongRanchFramerSeedBarMover', 'Sunsong Ranch Framer Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFramer')
 	end
 
 	PA:CreateShadow(Bar.SeedsFrame)
