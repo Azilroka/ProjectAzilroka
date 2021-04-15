@@ -1,9 +1,12 @@
 ## Interface: 90005
+## Interface-Classic: 11306
+## Interface-BC: 20501
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka, Nihilistzsche
 ## Version: 1.76
 ## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
+## X-Curse-Project-ID: 311661
 
 Libs\Load_Libs.xml
 Locales\Load_Locales.xml
