@@ -3,10 +3,13 @@ package-as: ProjectAzilroka
 enable-nolib-creation: no
 
 externals:
-	Libs/Ace3:
-		url: https://github.com/Azilroka/Ace3
-	Libs/LibDataBroker-1.1:
-		url: https://repos.wowace.com/wow/libdatabroker-1-1
+  ProjectAzilroka/Libs/Ace3:
+    url: https://github.com/Azilroka/Ace3
+  ProjectAzilroka/Libs/LibDataBroker-1.1:
+    url: https://repos.wowace.com/wow/libdatabroker-1-1
 
 ignore:
-	- Libs/Ace3/tests
+  - ProjectAzilroka/Libs/Ace3/tests
+
+move-folders:
+    ProjectAzilroka/ProjectAzilroka: ProjectAzilroka
