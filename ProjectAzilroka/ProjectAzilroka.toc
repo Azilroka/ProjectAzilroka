@@ -7,6 +7,7 @@
 ## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 ## X-Curse-Project-ID: 311661
+## X-Wago-ID: baNDy46o
 
 Libs\Load_Libs.xml
 Locales\Load_Locales.xml
