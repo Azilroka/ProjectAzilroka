@@ -2,7 +2,7 @@ local PA = _G.ProjectAzilroka
 if PA.Classic then return end
 
 local SRF = PA:NewModule('SunsongRanchFarmer', 'AceEvent-3.0')
-PA.SRF, _G.SunsongRanchFramer = SRF, SRF
+PA.SRF, _G.SunsongRanchFarmer = SRF, SRF
 
 SRF.Title = PA.ACL['|cFF16C3F2Sunsong|r |cFFFFFFFFRanch Farmer|r']
 SRF.Description = PA.ACL['A farm tool for Sunsong Ranch.']
@@ -298,28 +298,28 @@ function SRF:DropTools()
 end
 
 function SRF:GetOptions()
-	local SunsongRanchFramer = PA.ACH:Group(SRF.Title, SRF.Description, nil, nil, function(info) return SRF.db[info[#info]] end)
-	PA.Options.args.SunsongRanchFramer = SunsongRanchFramer
+	local SunsongRanchFarmer = PA.ACH:Group(SRF.Title, SRF.Description, nil, nil, function(info) return SRF.db[info[#info]] end)
+	PA.Options.args.SunsongRanchFarmer = SunsongRanchFarmer
 
-	SunsongRanchFramer.args.Description = PA.ACH:Description(SRF.Description, 0)
-	SunsongRanchFramer.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SRF.db[info[#info]] = value if not SRF.isEnabled then SRF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	SunsongRanchFarmer.args.Description = PA.ACH:Description(SRF.Description, 0)
+	SunsongRanchFarmer.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SRF.db[info[#info]] = value if not SRF.isEnabled then SRF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	SunsongRanchFramer.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) SRF.db[info[#info]] = value SRF:Update() end)
-	SunsongRanchFramer.args.General.inline = true
-	SunsongRanchFramer.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
-	SunsongRanchFramer.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
-	SunsongRanchFramer.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
+	SunsongRanchFarmer.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) SRF.db[info[#info]] = value SRF:Update() end)
+	SunsongRanchFarmer.args.General.inline = true
+	SunsongRanchFarmer.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
+	SunsongRanchFarmer.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
+	SunsongRanchFarmer.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
 
-	SunsongRanchFramer.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	SunsongRanchFramer.args.Authors = PA.ACH:Description(SRF.Authors, -1, 'large')
+	SunsongRanchFarmer.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	SunsongRanchFarmer.args.Authors = PA.ACH:Description(SRF.Authors, -1, 'large')
 end
 
 function SRF:BuildProfile()
-	PA.Defaults.profile.SunsongRanchFramer = { Enable = true, DropTools = false, ToolSize = 36, SeedSize = 24 }
+	PA.Defaults.profile.SunsongRanchFarmer = { Enable = true, DropTools = false, ToolSize = 36, SeedSize = 24 }
 end
 
 function SRF:UpdateSettings()
-	SRF.db = PA.db.SunsongRanchFramer
+	SRF.db = PA.db.SunsongRanchFarmer
 end
 
 function SRF:Initialize()
@@ -331,7 +331,7 @@ function SRF:Initialize()
 
 	SRF.isEnabled = true
 
-	local Bar = CreateFrame('Frame', 'SunsongRanchFramerBar', _G.UIParent, "SecureHandlerStateTemplate")
+	local Bar = CreateFrame('Frame', 'SunsongRanchFarmerBar', _G.UIParent, "SecureHandlerStateTemplate")
 	SRF.Bar = Bar
 	Bar:Hide()
 	Bar:SetFrameStrata('MEDIUM')
@@ -341,7 +341,7 @@ function SRF:Initialize()
 	Bar:SetPoint('TOP', _G.UIParent, 'TOP', 0, -250)
 	Bar.Buttons = {}
 
-	Bar.SeedsFrame = CreateFrame('Frame', 'SunsongRanchFramerSeedBar', _G.UIParent)
+	Bar.SeedsFrame = CreateFrame('Frame', 'SunsongRanchFarmerSeedBar', _G.UIParent)
 	Bar.SeedsFrame:SetFrameStrata('MEDIUM')
 	Bar.SeedsFrame:SetFrameLevel(0)
 	Bar.SeedsFrame:SetSize(344, 72)
@@ -388,8 +388,8 @@ function SRF:Initialize()
 		_G.Tukui[1]['Movers']:RegisterFrame(SRF.Bar)
 		_G.Tukui[1]['Movers']:RegisterFrame(SRF.Bar.SeedsFrame)
 	elseif PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(SRF.Bar, 'SunsongRanchFramerFarmBar', 'Sunsong Ranch Framer Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFramer')
-		_G.ElvUI[1]:CreateMover(SRF.Bar.SeedsFrame, 'SunsongRanchFramerSeedBarMover', 'Sunsong Ranch Framer Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFramer')
+		_G.ElvUI[1]:CreateMover(SRF.Bar, 'SunsongRanchFarmerFarmBar', 'Sunsong Ranch Framer Farm Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFarmer')
+		_G.ElvUI[1]:CreateMover(SRF.Bar.SeedsFrame, 'SunsongRanchFarmerSeedBarMover', 'Sunsong Ranch Framer Seed Bar Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,SunsongRanchFarmer')
 	end
 
 	PA:CreateShadow(Bar.SeedsFrame)
