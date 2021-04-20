@@ -207,7 +207,7 @@ oUF.Tags.Methods["pbuf:breed"] = function()
 		return ""
 	end
 	_G.BPBID_Options.format = 3
-	return _G.GetBreedID_Battle({petOwner = petInfo.petOwner, petIndex = petInfo.petIndex})
+	return _G.GetBreedID_Battle(petInfo)
 end
 
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
@@ -222,7 +222,7 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 	end
 
 	_G.BPBID_Options.format = 1
-	local breed = _G.GetBreedID_Battle({petOwner = petInfo.petOwner, petIndex = petInfo.petIndex})
+	local breed = _G.GetBreedID_Battle(petInfo)
 	return _G.PetTracker.Breeds:Icon(breed, .9)
 end
 
