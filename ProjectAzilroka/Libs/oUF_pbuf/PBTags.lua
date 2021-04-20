@@ -206,6 +206,7 @@ oUF.Tags.Methods["pbuf:breed"] = function()
 	if not IsAddOnLoaded("BattlePetBreedID") then
 		return ""
 	end
+	_G.BPBID_Options.format = 3
 	return _G.GetBreedID_Battle({petOwner = petInfo.petOwner, petIndex = petInfo.petIndex})
 end
 
@@ -216,19 +217,12 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 		return ""
 	end
 
-	if not _G.PetTracker then
+	if not _G.PetTracker or not IsAddOnLoaded('BattlePetBreedID') then
 		return ""
 	end
 
-	local level, maxHP, speciesID, power, speed, rarity =
-		C_PetBattles.GetLevel(petInfo.petOwner, petInfo.petIndex),
-		C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex),
-		C_PetBattles.GetPetSpeciesID(petInfo.petOwner, petInfo.petIndex),
-		C_PetBattles.GetPower(petInfo.petOwner, petInfo.petIndex),
-		C_PetBattles.GetSpeed(petInfo.petOwner, petInfo.petIndex),
-		C_PetBattles.GetBreedQuality(petInfo.petOwner, petInfo.petIndex)
-	local breed = _G.PetTracker.Predict:Breed(speciesID, level, rarity, maxHP, power, speed)
-
+	_G.BPBID_Options.format = 1
+	local breed = _G.GetBreedID_Battle({petOwner = petInfo.petOwner, petIndex = petInfo.petIndex})
 	return _G.PetTracker.Breeds:Icon(breed, .9)
 end
 
