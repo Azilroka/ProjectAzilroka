@@ -207,8 +207,12 @@ oUF.Tags.Methods["pbuf:breed"] = function()
 		return ""
 	end
 
-	_VARS.GetBreedInfo(petInfo)
-	return petInfo.breedInfo.text
+	local breedInfo = petInfo.breedInfo
+	if not breedInfo then
+		_VARS.GetBreedInfo(petInfo)
+		breedInfo = petInfo.breedInfo
+	end
+	return breedInfo.text
 end
 
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
@@ -222,8 +226,12 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 		return ""
 	end
 
-	_VARS.GetBreedInfo(petInfo)
-	return petInfo.breedInfo.icon or ""
+	local breedInfo = petInfo.breedInfo
+	if not breedInfo then
+		_VARS.GetBreedInfo(petInfo)
+		breedInfo = petInfo.breedInfo
+	end
+	return breedInfo.icon or ""
 end
 
 for textFormat in pairs(styles) do
