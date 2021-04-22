@@ -1591,7 +1591,7 @@ function EPB:IsHealingForbidden()
 	return AuraUtil_FindAuraByName(EPB.BattlePetChallengeDebuffName, "player", "HARMFUL") ~= nil
 end
 
-function EPB:SetOverrideHealthThreshhold(value)
+function EPB:SetOverrideHealthThreshold(value)
 	self.overrideHealthThreshold = value
 end
 
