@@ -111,14 +111,27 @@ end
 function IF:DisableUnit(button)
 	button:Disable()
 	button:UnregisterEvent('UNIT_AURA')
+
 	for _, element in ipairs(button) do
 		element:Hide()
 	end
+
+	if button:GetAttribute('unit') then
+		UnregisterUnitWatch(button)
+	end
+
+	IF:ToggleMover(button)
 end
 
 function IF:EnableUnit(button)
 	button:Enable()
 	button:RegisterEvent('UNIT_AURA')
+
+	if button:GetAttribute('unit') then
+		RegisterUnitWatch(button)
+	end
+
+	IF:ToggleMover(button)
 end
 
 function IF:ScanTooltip(index, bookType)
@@ -336,6 +349,16 @@ function IF:CreateMover(frame)
 		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
 	elseif PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(frame)
+	end
+end
+
+function IF:ToggleMover(frame)
+	if PA.ElvUI then
+		if frame.db.Enable then
+			_G.ElvUI[1]:EnableMover(frame.mover:GetName())
+		else
+			_G.ElvUI[1]:DisableMover(frame.mover:GetName())
+		end
 	end
 end
 
@@ -661,13 +684,17 @@ function IF:CreateAuraIcon(element)
 end
 
 function IF:UpdateAll()
-	for _, Frame in pairs(IF.Panels) do
+	for FrameName, Frame in pairs(IF.Panels) do
+		Frame.db = IF.db[FrameName]
+
 		if Frame.db.Enable then
 			IF:EnableUnit(Frame)
 		else
 			IF:DisableUnit(Frame)
 		end
+
 		Frame:SetWidth((Frame.db.StatusBar and 1 or Frame.db.NumPerRow) * (Frame.db.StatusBar and Frame.db.StatusBarWidth or Frame.db.Size))
+
 		for _, Button in ipairs(Frame) do
 			Button:SetSize(Frame.db.Size, Frame.db.Size)
 			Button.Stacks:SetFont(PA.LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
@@ -907,7 +934,7 @@ function IF:Initialize()
 	IF:RegisterEvent('SPELL_UPDATE_COOLDOWN')		-- Process Cooldown Queue
 	IF:RegisterEvent('SPELLS_CHANGED')
 	IF:RegisterEvent('BAG_UPDATE_COOLDOWN')
-	IF:RegisterEvent('PLAYER_TARGET_CHANGED', function() IF:UpdateAuras(IF.Panels.TargetDebuffs, 'target') end)
+	IF:RegisterEvent('PLAYER_TARGET_CHANGED', function() if IF.db.TargetDebuffs.Enable then IF:UpdateAuras(IF.Panels.TargetDebuffs, 'target') end end)
 
 	if PA.Retail then
 		IF.Panels.FocusBuffs = IF:Spawn('focus', 'FocusBuffs', IF.db.FocusBuffs, 'HELPFUL', { 'TOPRIGHT', UIParent, 'CENTER', -53, 53 })
