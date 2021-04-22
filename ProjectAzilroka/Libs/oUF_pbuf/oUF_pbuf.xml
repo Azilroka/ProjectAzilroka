@@ -8,5 +8,6 @@
 	<Script file="PBPortrait.lua"/>
 	<Script file="PBSpeed.lua"/>
 	<Script file="PBPower.lua"/>
+	<Script file="PBBreedInfo.lua"/>
 	<Script file="PBTags.lua"/>
 </Ui>

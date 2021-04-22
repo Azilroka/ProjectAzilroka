@@ -206,8 +206,9 @@ oUF.Tags.Methods["pbuf:breed"] = function()
 	if not IsAddOnLoaded("BattlePetBreedID") then
 		return ""
 	end
-	_G.BPBID_Options.format = 3
-	return _G.GetBreedID_Battle(petInfo)
+
+	_VARS.GetBreedInfo(petInfo)
+	return petInfo.breedInfo.text
 end
 
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
@@ -217,13 +218,12 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 		return ""
 	end
 
-	if not _G.PetTracker or not IsAddOnLoaded('BattlePetBreedID') then
+	if not IsAddOnLoaded("BattlePetBreedID") then
 		return ""
 	end
 
-	_G.BPBID_Options.format = 1
-	local breed = _G.GetBreedID_Battle(petInfo)
-	return _G.PetTracker.Breeds:Icon(breed, .9)
+	_VARS.GetBreedInfo(petInfo)
+	return petInfo.breedInfo.icon or ""
 end
 
 for textFormat in pairs(styles) do
