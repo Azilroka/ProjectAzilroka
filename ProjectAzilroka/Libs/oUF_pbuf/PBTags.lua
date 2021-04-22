@@ -25,6 +25,7 @@ local levelEvents = string.join(" ", events[1], events[2], events[3])
 local healthEvents = string.join(" ", events[1], events[2], events[4], events[5])
 local xpEvents = string.join(" ", events[1], events[2], events[6])
 local auraEvents = string.join(" ", events[1], events[2], events[7], events[8], events[9])
+local GetBreedInfo = oUF.Tags.Vars.GetBreedInfo
 
 local styles = {
 	["CURRENT"] = "%s",
@@ -209,7 +210,7 @@ oUF.Tags.Methods["pbuf:breed"] = function()
 
 	local breedInfo = petInfo.breedInfo
 	if not breedInfo then
-		_VARS.GetBreedInfo(petInfo)
+		GetBreedInfo(petInfo)
 		breedInfo = petInfo.breedInfo
 	end
 	return breedInfo.text
@@ -228,7 +229,7 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 
 	local breedInfo = petInfo.breedInfo
 	if not breedInfo then
-		_VARS.GetBreedInfo(petInfo)
+		GetBreedInfo(petInfo)
 		breedInfo = petInfo.breedInfo
 	end
 	return breedInfo.icon or ""
