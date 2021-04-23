@@ -227,7 +227,7 @@ oUF.Tags.Methods["pbuf:breedicon"] = function()
 	end
 
 	local breedInfo = petInfo.breedInfo
-	if not breedInfo then
+	if not breedInfo or not breedInfo.icon then
 		_VARS.GetBreedInfo(petInfo)
 		breedInfo = petInfo.breedInfo
 	end
