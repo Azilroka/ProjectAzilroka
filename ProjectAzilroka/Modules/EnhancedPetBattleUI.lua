@@ -1888,11 +1888,6 @@ function EPB:UpdateTDBattlePetScriptAutoButton()
 	_G.tdBattlePetScriptAutoButton:Hide()
 	_G.tdBattlePetScriptAutoButton:Show()
 
-	if (PA.AS and not _G.tdBattlePetScriptAutoButton.skinned) then
-		PA.AS:SkinButton(_G.tdBattlePetScriptAutoButton)
-		_G.tdBattlePetScriptAutoButton.skinned = true
-	end
-
 	if PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(_G.tdBattlePetScriptAutoButton, "tdBattlePetScriptAutoButtonMover", "tdBattlePetScript Auto Button", nil, nil, nil, "ALL,GENERAL,SOLO")
 	end
