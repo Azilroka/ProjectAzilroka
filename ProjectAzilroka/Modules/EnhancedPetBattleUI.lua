@@ -1890,6 +1890,8 @@ function EPB:UpdateTDBattlePetScriptAutoButton()
 
 	if PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(_G.tdBattlePetScriptAutoButton, "tdBattlePetScriptAutoButtonMover", "tdBattlePetScript Auto Button", nil, nil, nil, "ALL,GENERAL,SOLO")
+	elseif PA.Tukui then
+		_G.Tukui[1]["Movers"]:RegisterFrame(_G.tdBattlePetScriptAutoButton)
 	end
 end
 
