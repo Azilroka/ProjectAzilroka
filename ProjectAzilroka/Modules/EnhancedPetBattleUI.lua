@@ -324,9 +324,9 @@ function EPB:InitPetFrameAPI()
 				if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
 				if (((colors.healthclass and colors.colorhealthbyvalue))) then
 					if (colors.healthclass and self.isEnemy) then
-						r = math.max(1-r,0.15)
-						g = math.max(1-g,0.15)
-						b = math.max(1-b,0.15)
+						r = math.max(1-r,0.35)
+						g = math.max(1-g,0.35)
+						b = math.max(1-b,0.35)
 					end
 					newr, newg, newb = oUF:ColorGradient(self.cur or 1, self.max or 1, 1, 0, 0, 1, 1, 0, r, g, b)
 					self:SetStatusBarColor(newr, newg, newb)
