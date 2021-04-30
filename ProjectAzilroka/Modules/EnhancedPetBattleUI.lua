@@ -323,10 +323,11 @@ function EPB:InitPetFrameAPI()
 				local newr, newg, newb -- fallback for bg if custom settings arent used
 				if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
 				if (((colors.healthclass and colors.colorhealthbyvalue))) then
+					local capColor = PA.MyClass == "PRIEST"
 					if (colors.healthclass and self.isEnemy) then
-						r = math.max(1-r,0.35)
-						g = math.max(1-g,0.35)
-						b = math.max(1-b,0.35)
+						r = capColor and math.max(1-r,0.35) or 1-r
+						g = capColor and math.max(1-g,0.35) or 1-g
+						b = capColor and math.max(1-b,0.35) or 1-b
 					end
 					newr, newg, newb = oUF:ColorGradient(self.cur or 1, self.max or 1, 1, 0, 0, 1, 1, 0, r, g, b)
 					self:SetStatusBarColor(newr, newg, newb)
