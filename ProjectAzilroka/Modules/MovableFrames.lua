@@ -147,9 +147,6 @@ local AddOnFrames = {
 	Blizzard_OrderHallUI = {
 		OrderHallTalentFrame = { "TOPLEFT", "UIParent", "TOPLEFT", 32, -116 }
 	},
-	Blizzard_PlayerChoiceUI = {
-		PlayerChoiceFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
-	},
 	Blizzard_QuestChoice = {
 		QuestChoiceFrame = { "CENTER", "UIParent", "CENTER", 0, 0 }
 	},
