@@ -20,20 +20,20 @@ Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 Media\Media.lua
 
 # Modules
-BrokerLDB.lua
-DragonOverlay.lua
-EnhancedFriendsList.lua
-EnhancedShadows.lua
-FasterLoot.lua
-iFilger.lua
-LootConfirm.lua
-MasterExperience.lua
-MouseoverAuras.lua
-MovableFrames.lua
-OzCooldowns.lua
-QuestSounds.lua
-Reminder.lua
-ReputationReward.lua
-SquareMinimapButtons.lua
-stAddonManager.lua
-TargetSounds.lua
+Modules\BrokerLDB.lua
+Modules\DragonOverlay.lua
+Modules\EnhancedFriendsList.lua
+Modules\EnhancedShadows.lua
+Modules\FasterLoot.lua
+Modules\iFilger.lua
+Modules\LootConfirm.lua
+Modules\MasterExperience.lua
+Modules\MouseoverAuras.lua
+Modules\MovableFrames.lua
+Modules\OzCooldowns.lua
+Modules\QuestSounds.lua
+Modules\Reminder.lua
+Modules\ReputationReward.lua
+Modules\SquareMinimapButtons.lua
+Modules\stAddonManager.lua
+Modules\TargetSounds.lua
