@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 20501
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka, Nihilistzsche
 ## Version: 1.76
@@ -12,8 +12,6 @@ Locales\Load_Locales.xml
 
 Init.lua
 
-Libs\oUF_pbuf\oUF_pbuf.xml
-
 Cooldowns.lua
 Modules\Enhanced_Config.lua
 
@@ -25,7 +23,6 @@ Media\Media.lua
 BrokerLDB.lua
 DragonOverlay.lua
 EnhancedFriendsList.lua
-EnhancedPetBattleUI.lua
 EnhancedShadows.lua
 FasterLoot.lua
 iFilger.lua
@@ -39,8 +36,4 @@ Reminder.lua
 ReputationReward.lua
 SquareMinimapButtons.lua
 stAddonManager.lua
-SunsongRanchFarmer.lua
 TargetSounds.lua
-
-TorghastBuffs.xml
-TorghastBuffs.lua

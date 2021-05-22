@@ -70,8 +70,9 @@ end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
-PA.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 PA.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+PA.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+PA.BCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
@@ -397,7 +398,15 @@ PA.ClassicServerNameByID = {
 
 local accountInfo = { gameAccountInfo = {} }
 function PA:GetBattleNetInfo(friendIndex)
-	if PA.Classic then
+	if PA.Retail then
+		accountInfo = _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
+
+		if accountInfo and accountInfo.gameAccountInfo.wowProjectID == _G.WOW_PROJECT_CLASSIC then
+			accountInfo.gameAccountInfo.realmDisplayName = PA.ClassicServerNameByID[accountInfo.gameAccountInfo.realmID] or accountInfo.gameAccountInfo.realmID
+		end
+
+		return accountInfo
+	else
 		local bnetIDAccount, accountName, battleTag, isBattleTag, _, bnetIDGameAccount, _, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, _, messageTime, _, isReferAFriend, canSummonFriend, isFavorite = BNGetFriendInfo(friendIndex)
 
 		if not bnetIDGameAccount then return end
@@ -457,14 +466,6 @@ function PA:GetBattleNetInfo(friendIndex)
 			accountInfo.gameAccountInfo.className = nil
 			accountInfo.gameAccountInfo.characterLevel = nil
 			accountInfo.gameAccountInfo.raceName = nil
-		end
-
-		return accountInfo
-	else
-		accountInfo = _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
-
-		if accountInfo and accountInfo.gameAccountInfo.wowProjectID == _G.WOW_PROJECT_CLASSIC then
-			accountInfo.gameAccountInfo.realmDisplayName = PA.ClassicServerNameByID[accountInfo.gameAccountInfo.realmID] or accountInfo.gameAccountInfo.realmID
 		end
 
 		return accountInfo
