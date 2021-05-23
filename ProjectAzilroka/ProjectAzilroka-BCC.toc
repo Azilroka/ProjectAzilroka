@@ -33,7 +33,6 @@ Modules\MovableFrames.lua
 Modules\OzCooldowns.lua
 Modules\QuestSounds.lua
 Modules\Reminder.lua
-Modules\ReputationReward.lua
 Modules\SquareMinimapButtons.lua
 Modules\stAddonManager.lua
 Modules\TargetSounds.lua
