@@ -318,12 +318,12 @@ function MF:BuildProfile()
 	end
 
 	for Frame, DefaultPoints in pairs(Frames) do
-		PA.Defaults.profile.MovableFrames[Frame] = { Permanent = true, Points = DefaultPoints }
+		PA.Defaults.profile.MovableFrames[Frame] = { Permanent = false, Points = DefaultPoints }
 	end
 
 	for _, Table in pairs(AddOnFrames) do
 		for Frame, DefaultPoints in pairs(Table) do
-			PA.Defaults.profile.MovableFrames[Frame] = { Permanent = true, Points = DefaultPoints }
+			PA.Defaults.profile.MovableFrames[Frame] = { Permanent = false, Points = DefaultPoints }
 		end
 	end
 end
