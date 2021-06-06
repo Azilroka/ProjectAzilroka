@@ -15,6 +15,11 @@ local strsplit = strsplit
 local CreateFrame = CreateFrame
 local GetXPExhaustion = GetXPExhaustion
 local IsXPUserDisabled = IsXPUserDisabled
+
+if not IsXPUserDisabled then
+	function IsXPUserDisabled() return false end
+end
+
 local GetQuestLogRewardXP = GetQuestLogRewardXP
 local IsPlayerAtEffectiveMaxLevel = IsPlayerAtEffectiveMaxLevel
 local UnitXP, UnitXPMax = UnitXP, UnitXPMax

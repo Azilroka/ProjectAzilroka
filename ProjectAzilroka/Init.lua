@@ -84,6 +84,7 @@ function PA:IsAddOnEnabled(addon, character)
 	if (type(character) == 'boolean' and character == true) then
 		character = nil
 	end
+
 	return GetAddOnEnableState(character, addon) == 2
 end
 
@@ -91,6 +92,7 @@ function PA:IsAddOnPartiallyEnabled(addon, character)
 	if (type(character) == 'boolean' and character == true) then
 		character = nil
 	end
+
 	return GetAddOnEnableState(character, addon) == 1
 end
 
