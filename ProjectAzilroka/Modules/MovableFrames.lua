@@ -238,7 +238,7 @@ function MF:MakeMovable(Name)
 	end
 
 	if Name == 'WorldMapFrame' then
-		if PA.Classic then
+		if (PA.Classic or PA.BCC) then
 			MF:SetUIPanelAttribute(_G.WorldMapFrame, 'maximizePoint', nil)
 
 			function ToggleWorldMap()
