@@ -502,8 +502,8 @@ function SMB:GrabMinimapButtons(forceUpdate)
 			for i = 1, NumChildren do
 				local object = select(i, Frame:GetChildren())
 				if object then
-					local name = object:GetName()
-					local width = object:GetWidth()
+					local name = object.GetName and object:GetName()
+					local width = object.GetWidth and object:GetWidth()
 					if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
 						SMB:SkinMinimapButton(object)
 					end
