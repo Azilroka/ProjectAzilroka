@@ -464,7 +464,7 @@ function stAM:InitProfiles()
 
 	ProfileMenu.Buttons = {}
 
-	for i = 1, 10 do
+	for i = 1, 20 do
 		local Pullout = CreateFrame('Frame', nil, ProfileMenu)
 		Pullout:SetWidth(210)
 		Pullout:SetHeight(stAM.db.ButtonHeight)
