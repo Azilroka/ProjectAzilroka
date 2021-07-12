@@ -69,6 +69,7 @@ function LC:BuildProfile()
 	PA.Defaults.profile.LootConfirm = {
 		Enable = false,
 		Greed = false,
+		Disenchant = false,
 	}
 end
 
