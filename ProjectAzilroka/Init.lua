@@ -2,7 +2,7 @@ local AddOnName = ...
 local _G = _G
 local LibStub = LibStub
 
-local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceEvent-3.0', 'AceTimer-3.0')
+local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
 
 _G.ProjectAzilroka = PA
 
@@ -534,9 +534,7 @@ PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
 	if _G.ElvUI then
-		PA.AceOptionsPanel.Options.args.ProjectAzilroka = PA.Options
-	else
-		PA.AceOptionsPanel.Options.args = PA:CopyTable(PA.Options.args, PA.AceOptionsPanel.Options.args)
+		_G.ElvUI.Options.args.ProjectAzilroka = PA.Options
 	end
 end
 
@@ -572,7 +570,6 @@ function PA:PLAYER_LOGIN()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
-	PA.AceOptionsPanel = PA.ElvUI and _G.ElvUI[1] or PA.EC
 
 	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
 
@@ -584,6 +581,9 @@ function PA:PLAYER_LOGIN()
 
 	if PA.EP then
 		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
+	else
+		PA.AC:RegisterOptionsTable('ProjectAzilroka', PA.Options)
+		PA.ACD:AddToBlizOptions('ProjectAzilroka', 'ProjectAzilroka')
 	end
 
 	PA:UpdateCooldownSettings('all')

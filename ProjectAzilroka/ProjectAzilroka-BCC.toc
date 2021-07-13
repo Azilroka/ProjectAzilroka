@@ -13,9 +13,6 @@ Locales\Load_Locales.xml
 Init.lua
 
 Cooldowns.lua
-Modules\Enhanced_Config.lua
-
-Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 
 Media\Media.lua
 

@@ -17,9 +17,6 @@ Init.lua
 Libs\oUF_pbuf\oUF_pbuf.xml
 
 Cooldowns.lua
-Modules\Enhanced_Config.lua
-
-Libs\LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.lua
 
 Media\Media.lua
 
