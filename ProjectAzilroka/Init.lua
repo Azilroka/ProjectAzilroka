@@ -534,7 +534,7 @@ PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
 	if _G.ElvUI then
-		_G.ElvUI.Options.args.ProjectAzilroka = PA.Options
+		_G.ElvUI[1].Options.args.ProjectAzilroka = PA.Options
 	end
 end
 
