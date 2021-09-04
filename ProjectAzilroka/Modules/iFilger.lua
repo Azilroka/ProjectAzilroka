@@ -337,7 +337,7 @@ function IF:UpdateDelayedCooldowns()
 
 		CurrentDuration = (Start + Duration - GetTime())
 
-		if Enable and CurrentDuration and (CurrentDuration < IF.db.Cooldowns.SuppressDuration) then
+		if Enable == 1 and CurrentDuration and (CurrentDuration < IF.db.Cooldowns.SuppressDuration) then
 			IF.DelayCooldowns[SpellID] = nil
 			IF.ActiveCooldowns[SpellID] = Duration
 		end
@@ -532,7 +532,7 @@ function IF:PLAYER_ENTERING_WORLD()
 		local Start, Duration, Enable = GetSpellCooldown(SpellID)
 		local CurrentDuration = (Start + Duration - GetTime()) or 0
 
-		if Enable and (CurrentDuration > .1) and (CurrentDuration < IF.db.Cooldowns.IgnoreDuration) then
+		if Enable == 1 and (CurrentDuration > .1) and (CurrentDuration < IF.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= IF.db.Cooldowns.SuppressDuration) then
 				IF.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
@@ -574,7 +574,7 @@ function IF:SPELL_UPDATE_COOLDOWN()
 
 		CurrentDuration = (Start + Duration - GetTime())
 
-		if Enable and CurrentDuration and (CurrentDuration < IF.db.Cooldowns.IgnoreDuration) then
+		if Enable == 1 and CurrentDuration and (CurrentDuration < IF.db.Cooldowns.IgnoreDuration) then
 			if (CurrentDuration >= IF.db.Cooldowns.SuppressDuration) or IF.HasCDDelay[SpellID] then
 				IF.DelayCooldowns[SpellID] = true
 			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
@@ -596,7 +596,7 @@ function IF:BAG_UPDATE_COOLDOWN()
 			local itemID = GetContainerItemID(bagID, slotID)
 			if itemID then
 				local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
-				if duration and duration > GLOBAL_COOLDOWN_TIME then
+				if duration and duration > GLOBAL_COOLDOWN_TIME and enable == 1 then
 					IF.ItemCooldowns[itemID] = true
 				end
 			end

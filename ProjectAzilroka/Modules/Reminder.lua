@@ -285,8 +285,8 @@ function AR:UpdateFilterGroup(group)
 				end
 
 				optionName.name = function() return format('%s (%s)', GetSpellInfo(spell), spell) end
-				optionName.get = function(info) return spell and AR.db.Filters[selectedGroup][selectedFilter][group][spell] end
-				optionName.set = function(info, value) AR.db.Filters[selectedGroup][selectedFilter][group][spell] = value end
+				optionName.get = function() return spell and AR.db.Filters[selectedGroup][selectedFilter][group][spell] end
+				optionName.set = function(_, value) AR.db.Filters[selectedGroup][selectedFilter][group][spell] = value end
 				optionName.hidden = false
 
 				i = i + 1
@@ -350,14 +350,14 @@ function AR:GetOptions()
 				order = 3,
 				type = 'select',
 				name = PA.ACL['Select Group'],
-				get = function(info)
+				get = function()
 					if selectedGroup == 'Global' then
 						return selectedGroup
 					else
 						return 'Class'
 					end
 				end,
-				set = function(info, value)
+				set = function(_, value)
 					selectedFilter = nil
 					if value == 'Class' then
 						selectedGroup = PA.MyClass
@@ -371,8 +371,8 @@ function AR:GetOptions()
 				order = 4,
 				type = 'select',
 				name = PA.ACL['Select Filter'],
-				get = function(info) return selectedFilter ~= '' and selectedFilter or '' end,
-				set = function(info, value)
+				get = function() return selectedFilter ~= '' and selectedFilter or '' end,
+				set = function(_, value)
 					selectedFilter = value ~= '' and value or nil
 					AR:UpdateFilterGroup('spellGroup')
 					AR:UpdateFilterGroup('negateGroup')
@@ -398,11 +398,9 @@ function AR:GetOptions()
 						order = 1,
 						type = 'input',
 						name = PA.ACL['New Filter Name'],
-						get = function(info) return addGroupTemplate.name end,
-						set = function(info, value)
-							if AR.db.Filters[selectedGroup][value] then
-								return
-							end
+						get = function() return addGroupTemplate.name end,
+						set = function(_, value)
+							if AR.db.Filters[selectedGroup][value] then return end
 							addGroupTemplate.name = value
 						end,
 					},
@@ -410,8 +408,8 @@ function AR:GetOptions()
 						order = 2,
 						type = 'select',
 						name = PA.ACL['New Filter Type'],
-						get = function(info) return addGroupTemplate.template end,
-						set = function(info, value)
+						get = function() return addGroupTemplate.template end,
+						set = function(_, value)
 							if AR.db.Filters[selectedGroup][value] then
 								return
 							end
@@ -431,14 +429,12 @@ function AR:GetOptions()
 						type = 'execute',
 						order = 3,
 						name = PA.ACL['Add Filter'],
-						hidden = function(info)
-							return addGroupTemplate.name == '' or addGroupTemplate.template == ''
-						end,
-						func = function(info)
+						hidden = function() return addGroupTemplate.name == '' or addGroupTemplate.template == '' end,
+						func = function()
 							AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template }
 							if addGroupTemplate.template == 'COOLDOWN' then
 								AR.db.Filters[selectedGroup][addGroupTemplate.name].cooldownAlpha = .5
-							elseif addGroupTemplate.template == 'WEAPON' then
+							--elseif addGroupTemplate.template == 'WEAPON' then
 							else
 								AR.db.Filters[selectedGroup][addGroupTemplate.name].spellGroup = {}
 								AR.db.Filters[selectedGroup][addGroupTemplate.name].negateGroup = {}
@@ -454,9 +450,9 @@ function AR:GetOptions()
 						order = 5,
 						type = 'select',
 						name = PA.ACL['Remove Filter'],
-						get = function(info) return '' end,
-						confirm = function(info, value) return PA.ACL['Remove Filter']..' - '..value end,
-						set = function(info, value)
+						get = function() return '' end,
+						confirm = function(_, value) return PA.ACL['Remove Filter']..' - '..value end,
+						set = function(_, value)
 							selectedFilter = nil
 							if DefaultFilters[selectedGroup][value] then
 								AR.db.Filters[selectedGroup][value].enable = false;
@@ -627,17 +623,14 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Spells'],
 						inline = true,
-						get = function(info)
-							AR:UpdateFilterGroup('spellGroup')
-							return ''
-						end,
+						get = function() AR:UpdateFilterGroup('spellGroup') return '' end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
 								order = 0,
 								type = 'input',
 								name = PA.ACL['New ID'],
-								set = function(info, value)
+								set = function(_, value)
 									value = tonumber(value)
 									if not value then return end
 
@@ -651,7 +644,7 @@ function AR:GetOptions()
 								type = 'select',
 								name = PA.ACL['Remove ID'],
 								get = function() return '' end,
-								set = function(info, value)
+								set = function(_, value)
 									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = nil;
 									AR:UpdateFilterGroup('spellGroup')
 								end,
@@ -674,17 +667,14 @@ function AR:GetOptions()
 						type = 'group',
 						name = PA.ACL['Negate Spells'],
 						inline = true,
-						get = function(info)
-							AR:UpdateFilterGroup('negateGroup')
-							return ''
-						end,
+						get = function() AR:UpdateFilterGroup('negateGroup') return '' end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 						args = {
 							AddSpell = {
 								order = 0,
 								type = 'input',
 								name = PA.ACL['New ID'],
-								set = function(info, value)
+								set = function(_, value)
 									value = tonumber(value)
 									if not value then return end
 
@@ -698,7 +688,7 @@ function AR:GetOptions()
 								type = 'select',
 								name = PA.ACL['Remove ID'],
 								get = function() return '' end,
-								set = function(info, value)
+								set = function(_, value)
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = nil;
 									AR:UpdateFilterGroup('negateGroup')
 								end,

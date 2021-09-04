@@ -108,6 +108,7 @@ local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 
 local RemoveTextureID = {
 	[136430] = true,
 	[136467] = true,
+	[136477] = true,
 	[136468] = true,
 	[130924] = true,
 }
@@ -430,6 +431,7 @@ function SMB:SkinMinimapButton(Button)
 				Region:SetTexture()
 			else
 				Texture = strlower(tostring(Region:GetTexture()))
+
 				if RemoveTextureFile[Texture] or strfind(Texture, 'interface/characterframe') or (strfind(Texture, 'interface/minimap') and not strfind(Texture, 'interface/minimap/tracking')) or strfind(Texture, 'border') or strfind(Texture, 'background') or strfind(Texture, 'alphamask') or strfind(Texture, 'highlight') then
 					Region:SetTexture()
 					Region:SetAlpha(0)
