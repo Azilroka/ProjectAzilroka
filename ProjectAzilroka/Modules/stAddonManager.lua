@@ -491,14 +491,14 @@ function stAM:InitProfiles()
 		Pullout.Load:SetScript('OnClick', function(_, btn)
 			if btn == 'RightButton' then
 				local Dialog = _G.StaticPopupDialogs.STADDONMANAGER_RENAMEPROFILE
-				Dialog.OnAccept = function()
+				Dialog.OnAccept = function(dialog)
 					_G.stAddonManagerProfilesDB[Pullout.Name] = nil
-					stAM:NewAddOnProfile(Dialog.editBox:GetText())
+					stAM:NewAddOnProfile(dialog.editBox:GetText())
 					stAM:UpdateProfiles()
 				end
-				Dialog.EditBoxOnEnterPressed = function()
+				Dialog.EditBoxOnEnterPressed = function(editBox)
 					_G.stAddonManagerProfilesDB[Pullout.Name] = nil
-					stAM:NewAddOnProfile(Dialog:GetText())
+					stAM:NewAddOnProfile(editBox:GetText())
 					stAM:UpdateProfiles()
 					Dialog:GetParent():Hide()
 				end
