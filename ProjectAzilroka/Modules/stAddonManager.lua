@@ -500,7 +500,7 @@ function stAM:InitProfiles()
 					_G.stAddonManagerProfilesDB[Pullout.Name] = nil
 					stAM:NewAddOnProfile(editBox:GetText())
 					stAM:UpdateProfiles()
-					Dialog:GetParent():Hide()
+					editBox:GetParent():Hide()
 				end
 				_G.StaticPopup_Show('STADDONMANAGER_RENAMEPROFILE')
 			else
