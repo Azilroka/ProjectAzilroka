@@ -464,7 +464,7 @@ function stAM:InitProfiles()
 
 	ProfileMenu.Buttons = {}
 
-	for i = 1, 20 do
+	for i = 1, 30 do
 		local Pullout = CreateFrame('Frame', nil, ProfileMenu)
 		Pullout:SetWidth(210)
 		Pullout:SetHeight(stAM.db.ButtonHeight)
@@ -545,7 +545,7 @@ function stAM:UpdateProfiles()
 
 	local PreviousButton
 	for i, Button in ipairs(ProfileMenu.Buttons) do
-		local isShown = i <= #stAM.Profiles
+		local isShown = i <= min(#stAM.Profiles, 30)
 		if isShown then
 			Button.Load.Text:SetText(stAM.Profiles[i])
 		end
@@ -562,7 +562,7 @@ function stAM:UpdateProfiles()
 		PreviousButton = Button
 	end
 
-	ProfileMenu:SetHeight((#stAM.Profiles + 2) * (stAM.db.ButtonHeight + 5) + 15)
+	ProfileMenu:SetHeight((min(#stAM.Profiles, 30) + 2) * (stAM.db.ButtonHeight + 5) + 15)
 end
 
 function stAM:ToggleProfiles()
