@@ -444,31 +444,19 @@ function PA:GetBattleNetInfo(friendIndex)
 			zoneName, realmName = strsplit("-", gameText)
 		end
 
-		if client == _G.BNET_CLIENT_WOW then
-			accountInfo.gameAccountInfo.characterName = characterName
-			accountInfo.gameAccountInfo.factionName = faction ~= '' and faction or nil
-			accountInfo.gameAccountInfo.playerGuid = guid
-			accountInfo.gameAccountInfo.wowProjectID = wowProjectID
-			accountInfo.gameAccountInfo.realmID = realmID
-			accountInfo.gameAccountInfo.realmDisplayName = realmName
-			accountInfo.gameAccountInfo.realmName = realmName
-			accountInfo.gameAccountInfo.areaName = zoneName
-			accountInfo.gameAccountInfo.className = class
-			accountInfo.gameAccountInfo.characterLevel = level
-			accountInfo.gameAccountInfo.raceName = race
-		else
-			accountInfo.gameAccountInfo.characterName = nil
-			accountInfo.gameAccountInfo.factionName = nil
-			accountInfo.gameAccountInfo.playerGuid = nil
-			accountInfo.gameAccountInfo.wowProjectID = nil
-			accountInfo.gameAccountInfo.realmID = nil
-			accountInfo.gameAccountInfo.realmDisplayName = nil
-			accountInfo.gameAccountInfo.realmName = nil
-			accountInfo.gameAccountInfo.areaName = nil
-			accountInfo.gameAccountInfo.className = nil
-			accountInfo.gameAccountInfo.characterLevel = nil
-			accountInfo.gameAccountInfo.raceName = nil
-		end
+		local isWow = client == _G.BNET_CLIENT_WOW
+
+		accountInfo.gameAccountInfo.characterName = isWow and characterName
+		accountInfo.gameAccountInfo.factionName = isWow and faction ~= '' and faction
+		accountInfo.gameAccountInfo.playerGuid = isWow and guid
+		accountInfo.gameAccountInfo.wowProjectID = isWow and wowProjectID
+		accountInfo.gameAccountInfo.realmID = isWow and realmID
+		accountInfo.gameAccountInfo.realmDisplayName = isWow and realmName
+		accountInfo.gameAccountInfo.realmName = isWow and realmName
+		accountInfo.gameAccountInfo.areaName = isWow and zoneName
+		accountInfo.gameAccountInfo.className = isWow and class
+		accountInfo.gameAccountInfo.characterLevel = isWow and level
+		accountInfo.gameAccountInfo.raceName = isWow and race
 
 		return accountInfo
 	end
