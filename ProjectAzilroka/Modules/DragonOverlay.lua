@@ -82,7 +82,7 @@ function DO:GetOptions()
 	DragonOverlay.args.General.args.Textures = PA.ACH:Group(PA.ACL['Preview'], nil, -5)
 	DragonOverlay.args.General.args.Textures.inline = true
 
-	for Option, Name in pairs({ ClassIconPoints = PA.ACL['Class Icon Points'], DragonPoints = PA.ACL['Dragon Points'] }) do
+	for Option, Name in next, { ClassIconPoints = PA.ACL['Class Icon Points'], DragonPoints = PA.ACL['Dragon Points'] } do
 		DragonOverlay.args.General.args[Option] = PA.ACH:Group(Name, nil, nil, nil, function(info) return DO.db[Option][info[#info]] end, function(info, value) DO.db[Option][info[#info]] = value DO:SetOverlay() end)
 		DragonOverlay.args.General.args[Option].inline = true
 		DragonOverlay.args.General.args[Option].args.point = PA.ACH:Select(PA.ACL['Anchor Point'], nil, 1, PA.AllPoints)
@@ -101,8 +101,8 @@ function DO:GetOptions()
 			tinsert(UnitFrameParents, _G.ElvUF_Parent)
 		end
 
-		for _, Parent in pairs(UnitFrameParents) do
-			for _, UnitFrame in pairs({Parent:GetChildren()}) do
+		for _, Parent in next, UnitFrameParents do
+			for _, UnitFrame in next, {Parent:GetChildren()} do
 				if _G.SecureButton_GetUnit(UnitFrame) == 'target' then
 					DragonOverlay.args.General.args[Option].args.relativeTo.values[UnitFrame:GetName()] = UnitFrame:GetName()
 				end

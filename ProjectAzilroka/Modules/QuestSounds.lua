@@ -53,7 +53,7 @@ end
 function QS:CheckQuest()
 	if not QS.QuestID then return end
 
-	if C_QuestLog.ReadyForTurnIn(QS.QuestID) then
+	if PA.Retail and C_QuestLog.ReadyForTurnIn(QS.QuestID) then
 		QS:ResetSoundPlayback()
 		if QS.db.UseSoundID then
 			QS:PlaySoundFile(QS.db.QuestCompleteID)
