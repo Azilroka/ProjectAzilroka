@@ -73,6 +73,7 @@ SMB.GenericIgnore = {
 	'poiMinimap',
 	'GuildMap3Mini',
 	'LibRockConfig-1.0_MinimapButton',
+	'MinimapLayerFrame', -- Nova World Buffs
 	'NauticusMiniIcon',
 	'WestPointer',
 	'Cork',
