@@ -104,7 +104,7 @@ SMB.UnrulyButtons = {
 	'RecipeRadar_MinimapButton',
 }
 
-local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetFrameStrata', 'SetFrameLevel' }
+local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
 
 local RemoveTextureID = {
 	[136430] = true,
