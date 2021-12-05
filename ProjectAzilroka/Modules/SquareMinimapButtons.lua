@@ -556,6 +556,7 @@ function SMB:Update()
 			PA:SetTemplate(Button)
 
 			Button:SetParent(SMB.Bar)
+			Button:SetIgnoreParentScale(false)
 			Button:ClearAllPoints()
 			Button:SetPoint(Anchor, SMB.Bar, Anchor, DirMult * (Spacing + ((Size + Spacing) * (AnchorX - 1))), (- Spacing - ((Size + Spacing) * (AnchorY - 1))))
 			Button:SetSize(Size, Size)
