@@ -6,7 +6,7 @@ PA.SRF, _G.SunsongRanchFarmer = SRF, SRF
 
 SRF.Title = PA.ACL['|cFF16C3F2Sunsong|r |cFFFFFFFFRanch Farmer|r']
 SRF.Description = PA.ACL['A farm tool for Sunsong Ranch.']
-SRF.Authors = 'Azilroka    Nihilistzsche'
+SRF.Authors = 'Azilroka'
 SRF.isEnabled = false
 
 local _G = _G

@@ -4,7 +4,7 @@ PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
 SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
 SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
-SMB.Authors = 'Azilroka    Nihilistzsche    Sinaris    Omega    Durc'
+SMB.Authors = 'Azilroka    Sinaris    Omega    Durc'
 SMB.isEnabled = false
 
 local _G = _G
@@ -206,7 +206,7 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
-		_G.MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0)	end)
+		_G.MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
 		_G.MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
 		_G.MiniMapMailFrame:EnableMouse(false)
 

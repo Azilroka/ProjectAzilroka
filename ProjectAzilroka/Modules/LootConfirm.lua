@@ -6,7 +6,7 @@ PA.LC, _G.LootConfirm = LC, LC
 
 LC.Title = PA.ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
 LC.Description = PA.ACL['Confirms Loot for Solo/Groups (Need/Greed)']
-LC.Authors = 'Azilroka     NihilisticPandemonium'
+LC.Authors = 'Azilroka'
 LC.isEnabled = false
 
 local tonumber = tonumber

@@ -5,7 +5,7 @@ PA.AR = AR
 
 AR.Title = '|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'
 AR.Description = 'Reminder for Buffs / Debuffs'
-AR.Authors = 'Azilroka    Nihilistzsche'
+AR.Authors = 'Azilroka'
 AR.isEnabled = false
 
 local _G = _G

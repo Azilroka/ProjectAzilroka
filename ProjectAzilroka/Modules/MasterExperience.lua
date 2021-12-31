@@ -3,7 +3,7 @@ local MXP = PA:NewModule('MasterXP', 'AceTimer-3.0', 'AceEvent-3.0')
 
 MXP.Title = PA.ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
 MXP.Description = PA.ACL['Shows Experience Bars for Party / Battle.net Friends']
-MXP.Authors = 'Azilroka     Nihilistzsche'
+MXP.Authors = 'Azilroka'
 MXP.isEnabled = false
 PA.MXP, _G.MasterExperience = MXP, MXP
 
