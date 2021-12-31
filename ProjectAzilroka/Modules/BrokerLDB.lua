@@ -186,7 +186,7 @@ function BLDB:New(_, Name, Object)
 	Frame.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 	Frame.Text:SetPoint('CENTER', Frame)
 
-	Frame.Icon = Frame.IconBackdrop:CreateTexture(nil, 'ARTWORK')
+	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 	Frame.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 	PA:CreateBackdrop(Frame.Icon)
 
