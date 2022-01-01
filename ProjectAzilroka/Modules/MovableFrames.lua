@@ -137,10 +137,6 @@ function MF:MakeMovable(name)
 		_G.AchievementFrameHeader:EnableMouse(false)
 	end
 
-	if (PA.Classic or PA.BCC) and name == 'WorldMapFrame' then
-		_G.SetUIPanelAttribute(_G.WorldMapFrame, 'maximizePoint', nil)
-	end
-
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:RegisterForDrag('LeftButton')
