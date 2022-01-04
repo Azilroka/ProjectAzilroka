@@ -51,6 +51,10 @@ EFL.Icons = {
 		W3 = { Name = PA.ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
 		LAZR = { Name = PA.ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
 		ZEUS = { Name = PA.ACL['Call of Duty Cold War'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
+		WLBY = { Name = PA.ACL['Crash Bandicoot 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_CRASH4), Launcher = MediaPath..'GameIcons/Launcher/CB4' },
+		OSI = { Name = PA.ACL['Diablo II Resurrected'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
+		FORE = { Name = PA.ACL['Call of Duty Vanguard'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
+		RTRO = { Name = PA.ACL['Arcade Collection'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' }
 	},
 	Status = {
 		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
