@@ -55,10 +55,8 @@ EFL.Icons = {
 		OSI = { Name = PA.ACL['Diablo II Resurrected'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
 		FORE = { Name = PA.ACL['Call of Duty Vanguard'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
 		RTRO = { Name = PA.ACL['Arcade Collection'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
-
-		-- Proper Icon & Color Missing yet
-		ANBS = { Name = PA.ACL['Diablo Immortal'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/D3' },
-		GRY = { Name = PA.ACL['Warcraft Arclight Rumble'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
+		ANBS = { Name = PA.ACL['Diablo Immortal'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/DI' },
+		GRY = { Name = PA.ACL['Warcraft Arclight Rumble'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arclight' },
 	},
 	Status = {
 		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
