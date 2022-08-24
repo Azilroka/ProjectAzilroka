@@ -70,9 +70,12 @@ end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
+local _, _, _, wowtoc = GetBuildInfo() -- TODO: Move back to Core.lua
+
 PA.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 PA.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-PA.BCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+PA.BCC = wowtoc >= 20504 and wowtoc < 30000
+PA.Wrath = wowtoc >= 30400 and wowtoc < 40000
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()

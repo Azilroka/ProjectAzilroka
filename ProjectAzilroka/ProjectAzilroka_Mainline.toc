@@ -1,7 +1,7 @@
-## Interface: 90105
+## Interface: 90207
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
-## Version: 1.81
+## Version: 1.82
 ## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 ## X-Curse-Project-ID: 311661
