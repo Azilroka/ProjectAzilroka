@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90105
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
 ## Version: 1.81
@@ -12,6 +12,8 @@ Locales\Load_Locales.xml
 
 Init.lua
 
+Libs\oUF_pbuf\oUF_pbuf.xml
+
 Cooldowns.lua
 
 Media\Media.lua
@@ -20,6 +22,7 @@ Media\Media.lua
 Modules\BrokerLDB.lua
 Modules\DragonOverlay.lua
 Modules\EnhancedFriendsList.lua
+Modules\EnhancedPetBattleUI.lua
 Modules\EnhancedShadows.lua
 Modules\FasterLoot.lua
 Modules\iFilger.lua
@@ -30,7 +33,11 @@ Modules\MovableFrames.lua
 Modules\OzCooldowns.lua
 Modules\QuestSounds.lua
 Modules\Reminder.lua
+Modules\ReputationReward.lua
 Modules\SquareMinimapButtons.lua
 Modules\stAddonManager.lua
+Modules\SunsongRanchFarmer.lua
 Modules\TargetSounds.lua
 
+Modules\TorghastBuffs.xml
+Modules\TorghastBuffs.lua

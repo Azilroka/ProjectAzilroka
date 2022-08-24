@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 30400
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka
 ## Version: 1.81
@@ -33,4 +33,3 @@ Modules\Reminder.lua
 Modules\SquareMinimapButtons.lua
 Modules\stAddonManager.lua
 Modules\TargetSounds.lua
-
