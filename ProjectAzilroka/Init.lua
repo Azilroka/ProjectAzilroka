@@ -70,12 +70,10 @@ end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
-local _, _, _, wowtoc = GetBuildInfo() -- TODO: Move back to Core.lua
-
 PA.Retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 PA.Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-PA.BCC = wowtoc >= 20504 and wowtoc < 30000
-PA.Wrath = wowtoc >= 30400 and wowtoc < 40000
+PA.TBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+PA.Wrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
@@ -432,6 +430,21 @@ PA.Defaults = {
 }
 
 PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
+PA.Options.args.Version = PA.ACH:Group('Version', nil, -1)
+
+do
+	local order = 1
+	local function SendRecieve(_, event, prefix, message, _, sender)
+		if prefix == 'ELVUI_VERSIONCHK' then
+			PA.Options.args.Version.args[sender] = PA.ACH:Description(format('%s - %s', sender, message), order + 1)
+			order = order + 1
+		end
+	end
+
+	local f = CreateFrame('Frame')
+	f:RegisterEvent('CHAT_MSG_ADDON')
+	f:SetScript('OnEvent', SendRecieve)
+end
 
 function PA:GetOptions()
 	if _G.ElvUI then

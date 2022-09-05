@@ -10,6 +10,7 @@ PA.MXP, _G.MasterExperience = MXP, MXP
 local _G = _G
 local min, max, format = min, max, format
 local tostring, tonumber = tostring, tonumber
+local wipe = wipe
 local strsplit = strsplit
 
 local CreateFrame = CreateFrame
@@ -187,7 +188,7 @@ end
 
 function MXP:Bar_OnEnter()
 	if MXP.db.MouseOver then
-		UIFrameFadeIn(self, 0.4, self:GetAlpha(), 1)
+		_G.UIFrameFadeIn(self, 0.4, self:GetAlpha(), 1)
 	end
 
 	if self.Info.atMaxLevel or self.Info.xpDisabled then return end
@@ -214,10 +215,10 @@ end
 
 function MXP:Bar_OnLeave()
 	if MXP.db.MouseOver then
-		UIFrameFadeIn(self, 0.4, self:GetAlpha(), 0)
+		_G.UIFrameFadeIn(self, 0.4, self:GetAlpha(), 0)
 	end
 
-	GameTooltip_Hide(self)
+	_G.GameTooltip_Hide(self)
 end
 
 function MXP:GetBarPoints(barIndex)
@@ -286,10 +287,22 @@ end
 function MXP:QUEST_LOG_UPDATE()
 	QuestLogXP, ZoneQuestXP, CompletedQuestXP = 0, 0, 0
 
-	for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-		local info = C_QuestLog.GetInfo(i)
-		if info and not info.isHidden then
-			MXP:CheckQuests(C_QuestLog.GetQuestIDForLogIndex(i), info.isOnMap)
+	if PA.Retail then
+		for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+			local info = C_QuestLog.GetInfo(i)
+			if info and not info.isHidden then
+				MXP:CheckQuests(C_QuestLog.GetQuestIDForLogIndex(i), info.isOnMap)
+			end
+		end
+	else
+		for i = 1, GetNumQuestLogEntries() do
+			local name, _, _, isHeader, _, isCompleted, _, questID = GetQuestLogTitle(i)
+			local experience = GetQuestLogRewardXP(questID)
+
+			QuestLogXP = QuestLogXP + experience
+			if isCompleted then
+				CompletedQuestXP = CompletedQuestXP + experience
+			end
 		end
 	end
 
@@ -354,7 +367,7 @@ function MXP:UpdateAllBars()
 end
 
 function MXP:BattleNetUpdate(_, friendIndex)
-	if MXP.isBNConnected and friendIndex then
+	if C_BattleNet and MXP.isBNConnected and friendIndex then
 		local hideBar = true
 		local friendInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
 		for gameIndex = 1, C_BattleNet.GetFriendNumGameAccounts(friendIndex) do
@@ -410,7 +423,7 @@ end
 function MXP:HandleBNET()
 	wipe(MXP.BNFriends)
 
-	if MXP.isBNConnected then
+	if MXP.isBNConnected and C_BattleNet then
 		MXP:BattleTag()
 		local _, numBNetOnline = BNGetNumFriends()
 		for friendIndex = 1, numBNetOnline do
