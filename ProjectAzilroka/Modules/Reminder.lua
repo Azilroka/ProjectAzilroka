@@ -3,8 +3,8 @@ local AR = PA:NewModule('AuraReminder', 'AceEvent-3.0', 'AceTimer-3.0')
 
 PA.AR = AR
 
-AR.Title = '|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'
-AR.Description = 'Reminder for Buffs / Debuffs'
+AR.Title = PA.ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r']
+AR.Description = PA.ACL['Reminder for Buffs / Debuffs']
 AR.Authors = 'Azilroka'
 AR.isEnabled = false
 

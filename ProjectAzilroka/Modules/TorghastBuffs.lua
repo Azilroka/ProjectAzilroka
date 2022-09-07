@@ -3,8 +3,8 @@ local TB = PA:NewModule('TorghastBuffs', 'AceEvent-3.0')
 local LSM = PA.LSM
 PA.TB = TB
 
-TB.Title = '|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'
-TB.Description = 'Torghast Buffs'
+TB.Title = PA.ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r']
+TB.Description = PA.ACL['Torghast Buffs']
 TB.Authors = 'Azilroka'
 TB.isEnabled = false
 

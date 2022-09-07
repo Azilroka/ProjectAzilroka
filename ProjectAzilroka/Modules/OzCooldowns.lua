@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.OzCD = OzCD
 
-OzCD.Title = '|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'
-OzCD.Description = 'Minimalistic Cooldowns'
+OzCD.Title = PA.ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r']
+OzCD.Description = PA.ACL['Minimalistic Cooldowns']
 OzCD.Authors = 'Azilroka    Nimaear'
 OzCD.isEnabled = false
 

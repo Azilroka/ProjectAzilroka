@@ -92,7 +92,7 @@ ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'] = true
 ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = true
 ACL['Auras for your mouseover target'] = "Auren für Dein Mouseover Ziel"
 ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
-ACL['Minimalistic Cooldowns'] = "Minimalistische CAbklingzeiten"
+ACL['Minimalistic Cooldowns'] = "Minimalistische Abklingzeiten"
 
 -- Cooldown Text
 ACL["COOLDOWN_DESC"] = "Abklingzeiten Einstellungen anpassen."

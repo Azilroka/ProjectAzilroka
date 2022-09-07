@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local IF = PA:NewModule('iFilger', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.iFilger = IF
 
-IF.Title = '|cFF16C3F2i|r|cFFFFFFFFFilger|r'
-IF.Description = 'Minimalistic Auras / Buffs / Procs / Cooldowns'
+IF.Title = PA.ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r']
+IF.Description = PA.ACL['Minimalistic Auras / Buffs / Procs / Cooldowns']
 IF.Authors = 'Azilroka    Nils Ruesch    Ildyria'
 
 IF.isEnabled = false

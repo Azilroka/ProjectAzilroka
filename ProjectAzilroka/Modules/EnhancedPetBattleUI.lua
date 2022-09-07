@@ -5,7 +5,7 @@ end
 
 local EPB = PA:NewModule("EnhancedPetBattleUI", "AceEvent-3.0")
 
-EPB.Title = "|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"
+EPB.Title = PA.ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"]
 EPB.Description = ""
 EPB.Authors = "Azilroka"
 EPB.isEnabled = false
