@@ -241,3 +241,22 @@ ACL['Global'] = '全局'
 -- Mouseover Auras
 ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = '|cFF16C3F2悬停|r|cFFFFFFFF光环|r'
 ACL['Auras for your mouseover target'] = '鼠标指向目标显示光环'
+
+-- Torghast Buffs
+ACL["Index"] = true
+ACL["Name"] = true
+ACL['Masque Support'] = true
+ACL["Set the size of the individual auras."] = true
+ACL["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."] = true
+ACL["Wrap After"] = true
+ACL["Begin a new row or column after this many auras."] = true
+ACL["Max Wraps"] = true
+ACL["Limit the number of rows or columns."] = true
+ACL["Horizontal Spacing"] = true
+ACL["Vertical Spacing"] = true
+ACL["Sort Method"] = true
+ACL["Defines how the group is sorted."] = true
+ACL["Sort Direction"] = true
+ACL["Defines the sort order of the selected sort method."] = true
+ACL["Ascending"] = true
+ACL["Descending"] = true

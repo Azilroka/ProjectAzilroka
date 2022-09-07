@@ -4,26 +4,51 @@ if not ACL then return end
 
 -- Misc
 ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true
-ACL['Authors:'] = true
-ACL['Blizzard'] = true
 ACL['Controls AddOns in this package'] = true
 ACL["Frame doesn't exist: "] = true
-ACL['General'] = true
-ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
+ACL["%s and then %s"] = true
+ACL['Up'] = true
+ACL['Down'] = true
+ACL['Left'] = true
+ACL['Right'] = true
+ACL["This setting requires that you reload your User Interface."] = true
+ACL['BACKGROUND'] = true
+ACL['LOW'] = true
+ACL['MEDIUM'] = true
+ACL['HIGH'] = true
+ACL['DIALOG'] = true
+ACL['FULLSCREEN'] = true
+ACL['FULLSCREEN_DIALOG'] = true
+ACL['TOOLTIP'] = true
 
 -- Apps/Games
+ACL['App'] = true
+ACL['Call of Duty 4'] = true
+ACL['Call of Duty Cold War'] = true
+ACL['Call of Duty Modern Warfare'] = true
+ACL['Call of Duty Modern Warfare 2'] = true
+ACL['Destiny 2'] = true
 ACL['Diablo 3'] = true
 ACL['Hearthstone'] = true
+ACL['Hero of the Storm'] = true
 ACL['Starcraft'] = true
 ACL['Starcraft 2'] = true
-ACL['App'] = true
 ACL['Mobile'] = true
-ACL['Hero of the Storm'] = true
 ACL['Overwatch'] = true
-ACL['Destiny 2'] = true
+
+-- Misc
+ACL['Authors:'] = true
+ACL['Blizzard'] = true
+ACL['Default'] = true
+ACL['Enable'] = true
+ACL['Font Size'] = true
+ACL['General'] = true
 
 -- AddOns
 ACL['AddOns'] = true
+ACL["Cooldown Text"] = true
+ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
+ACL['Provides a Custom DataBroker Bar'] = true
 ACL['BigButtons'] = true
 ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r'] = true
 ACL['A farm tool for Sunsong Ranch.'] = true
@@ -62,6 +87,47 @@ ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'] = true
 ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'] = true
 ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = true
 ACL['Audio for Target Sounds.'] = true
+ACL['Torghast Buffs'] = true
+ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'] = true
+ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = true
+ACL['Auras for your mouseover target'] = true
+ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
+ACL['Minimalistic Cooldowns'] = true
+
+-- Cooldown Text
+ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
+ACL["Reverse Toggle"] = true
+ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = true
+ACL["Force Hide Blizzard Text"] = true
+ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."] = true
+ACL["Text Threshold"] = true
+ACL["This will override the global cooldown settings."] = true
+ACL["MM:SS Threshold"] = true
+ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."] = true
+ACL["HH:MM Threshold"] = true
+ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."] = true
+ACL["Fonts"] = true
+ACL["Color Override"] = true
+ACL["Low Threshold"] = true
+ACL["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"] = true
+ACL["Threshold Colors"] = true
+ACL["Expiring"] = true
+ACL["Color when the text is about to expire"] = true
+ACL["Seconds"] = true
+ACL["Color when the text is in the seconds format."] = true
+ACL["Minutes"] = "분 단위 색상"
+ACL["Color when the text is in the minutes format."] = true
+ACL["Hours"] = true
+ACL["Color when the text is in the hours format."] = true
+ACL["HH:MM"] = true
+ACL["MM:SS"] = true
+ACL["Time Indicator Colors"] = true
+ACL["Use Indicator Color"] = true
+ACL["Days"] = true
+ACL["Color when the text is in the days format."] = true
+ACL["COLORS"] = true
+ACL["Display cooldown text on anything with the cooldown spiral."] = true
+ACL["Global"] = true
 
 -- BigButtons
 ACL['Drop Farm Tools'] = true
@@ -69,6 +135,7 @@ ACL['Farm Tool Size'] = true
 ACL['Seed Size'] = true
 
 -- BrokerLDB
+ACL['Font Settings'] = true
 ACL['MouseOver'] = true
 ACL['Panel Height'] = true
 ACL['Panel Width'] = true
@@ -92,6 +159,8 @@ ACL['Relative Point'] = true
 ACL['World Boss'] = true
 ACL['X Offset'] = true
 ACL['Y Offset'] = true
+ACL['Dragons'] = true
+ACL['Preview'] = true
 
 -- Enhanced Friends List
 ACL['Name Font'] = true
@@ -131,23 +200,137 @@ ACL['Auto-roll based on a given level'] = true
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
 ACL['Level to start auto-rolling from'] = true
 
+-- MasterExperience
+ACL["Disabled"] = true
+ACL["Max Level"] = true
+ACL['Lvl'] = true
+ACL["Experience"] = true
+ACL["XP:"] = true
+ACL["Remaining:"] = true
+ACL["Bars"] = true
+ACL['Quest'] = true
+ACL["Quest Log XP:"] = true
+ACL['Rested'] = true
+ACL["Rested:"] = true
+ACL['Party'] = true
+ACL['BattleNet'] = true
+ACL['Width'] = true
+ACL['Height'] = true
+ACL["Colors"] = true
+ACL['Color By Class'] = true
+
+-- Mouseover Auras
+ACL['Spacing'] = true
+
 -- MovableFrames
 ACL['Permanent Moving'] = true
 ACL['Reset Moving'] = true
 
+-- OzCooldowns
+ACL["My %s will be off cooldown in %s"] = true
+ACL['Sort by Current Duration'] = true
+ACL['Suppress Duration Threshold'] = true
+ACL['Duration in Seconds'] = true
+ACL['Ignore Duration Threshold'] = true
+ACL['Update Speed'] = true
+ACL['Icons'] = true
+ACL['Vertical'] = true
+ACL['Tooltips'] = true
+ACL['Announce on Click'] = true
+ACL['Spacing'] = true
+ACL['Stacks/Charges Font'] = true
+ACL['Stacks/Charges Font Size'] = true
+ACL['Stacks/Charges Font Flag'] = true
+ACL['Status Bar'] = true
+ACL['Enabled'] = true
+ACL['Texture'] = true
+ACL['Gradient'] = true
+ACL['Texture Color'] = true
+
+-- QuestSounds
+ACL['Sound by LSM'] = true
+ACL['Sound by SoundID'] = true
+ACL['Use Sound ID'] = true
+ACL['Quest Complete Sound ID'] = true
+ACL['Quest Complete'] = true
+ACL['Objective Complete Sound ID'] = true
+ACL['Objective Complete'] = true
+ACL['Objective Progress Sound ID'] = true
+ACL['Objective Progress'] = true
+ACL['Throttle'] = true
+
+-- Reminder(AuraReminder) - 버프 알리 
+ACL['Sound'] = true
+ACL['Sound that will play when you have a warning icon displayed.'] = true
+ACL['Select Group'] = true
+ACL['Select Filter'] = true
+ACL['None'] = true
+ACL['Filter Control'] = true
+ACL['New Filter Name'] = true
+ACL['New Filter Type'] = true
+ACL['Spell'] = true
+ACL['Weapon'] = true
+ACL['Cooldown'] = true
+ACL['Add Filter'] = true
+ACL['Remove Filter'] = true
+ACL['Filter Type'] = true
+ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'] = true
+ACL['Conditions'] = true
+ACL['Inside Raid/Party'] = true
+ACL['Inside BG/Arena'] = true
+ACL['Combat'] = true
+ACL['Filter Conditions'] = true
+ACL['Level Requirement'] = true
+ACL['Level requirement for the icon to be able to display. 0 for disabled.'] = true
+ACL['Personal Buffs'] = true
+ACL['Only check if the buff is coming from you.'] = true
+ACL['Reverse Check'] = true
+ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'] = true
+ACL['Strict Filter'] = true
+ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'] = true
+ACL['Disable Sound'] = true
+ACL['Cooldown Conditions'] = true
+ACL['Spell ID'] = true
+ACL['Show On Cooldown'] = true
+ACL['Cooldown Alpha'] = true
+ACL['Spells'] = true
+ACL['New ID'] = true
+ACL['Remove ID'] = true
+ACL['Negate Spells'] = true
+ACL['Any'] = true
+ACL['Role'] = true
+ACL['You must be a certain role for the icon to appear.'] = true
+ACL['Tank'] = true
+ACL['Damage'] = true
+ACL['Healer'] = true
+ACL['Talent Tree'] = true
+ACL['You must be using a certain talent tree for the icon to show.'] = true
+ACL['Tree Exception'] = true
+ACL['Set a talent tree to not follow the reverse check.'] = true
+ACL['Class'] = true
+
+-- Reputation Reward
+ACL['Show All Reputation'] = true
+
 -- SquareMinimapButtons
-ACL['Bar MouseOver'] = true
+ACL['Square Minimap Buttons'] = true
 ACL['Bar Backdrop'] = true
-ACL['Buttons Per Row'] = true
+ACL['Bar MouseOver'] = true
 ACL['Button Spacing'] = true
+ACL['Buttons Per Row'] = true
+ACL['Blizzard'] = true
 ACL['Enable Bar'] = true
 ACL['Hide Garrison'] = true
 ACL['Icon Size'] = true
 ACL['Minimap Buttons / Bar'] = true
 ACL['Move Garrison Icon'] = true
+ACL['Move Game Time Frame'] = true
 ACL['Move Mail Icon'] = true
 ACL['Move Tracker Icon'] = true
 ACL['Move Queue Status Icon'] = true
+ACL['Reverse Direction'] = true
+ACL['Shadows'] = true
+ACL['Visibility'] = true
 
 -- stAddOnManager
 ACL['# Shown AddOns'] = true
@@ -177,3 +360,22 @@ ACL['Texture'] = true
 ACL['There is already a profile named %s. Do you want to overwrite it?'] = true
 ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'] = true
 ACL['Update'] = true
+
+-- Torghast Buffs
+ACL["Index"] = true
+ACL["Name"] = true
+ACL['Masque Support'] = true
+ACL["Set the size of the individual auras."] = true
+ACL["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."] = true
+ACL["Wrap After"] = true
+ACL["Begin a new row or column after this many auras."] = true
+ACL["Max Wraps"] = true
+ACL["Limit the number of rows or columns."] = true
+ACL["Horizontal Spacing"] = true
+ACL["Vertical Spacing"] = true
+ACL["Sort Method"] = true
+ACL["Defines how the group is sorted."] = true
+ACL["Sort Direction"] = true
+ACL["Defines the sort order of the selected sort method."] = true
+ACL["Ascending"] = true
+ACL["Descending"] = true

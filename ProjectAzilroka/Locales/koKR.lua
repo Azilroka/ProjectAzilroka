@@ -301,6 +301,7 @@ ACL['Objective Complete Sound ID'] = '목표 완료 사운드 ID'
 ACL['Objective Complete'] = '목표 완료 사운드'
 ACL['Objective Progress Sound ID'] = '목표 진행률 사운드 ID'
 ACL['Objective Progress'] = '목표 진행률 사운드'
+ACL['Throttle'] = true
 
 -- Reminder(AuraReminder) - 버프 알리 
 ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
