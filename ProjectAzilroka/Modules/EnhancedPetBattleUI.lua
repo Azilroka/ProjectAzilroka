@@ -3,11 +3,11 @@ if PA.Classic then
 	return
 end
 
-local EPB = PA:NewModule("EnhancedPetBattleUI", "AceEvent-3.0")
+local EPB = PA:NewModule('EnhancedPetBattleUI', "AceEvent-3.0")
 
-EPB.Title = PA.ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"]
-EPB.Description = ""
-EPB.Authors = "Azilroka"
+EPB.Title = PA.ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r']
+EPB.Description = PA.ACL['An enhanced UI for pet battles']
+EPB.Authors = 'Azilroka'
 EPB.isEnabled = false
 
 _G.EPB = EPB
@@ -1320,32 +1320,32 @@ function EPB:GetOptions()
 			General = {
 				order = 2,
 				type = "group",
-				name = "General",
+				name = PA.ACL["General"],
 				inline = true,
 				args = {
 					HideBlizzard = {
 						order = 1,
 						type = "toggle",
-						name = "Hide Blizzard",
-						desc = "Hide the Blizzard Pet Frames during battles"
+						name = PA.ACL["Hide Blizzard"],
+						desc = PA.ACL["Hide the Blizzard Pet Frames during battles"]
 					},
 					GrowUp = {
 						order = 2,
 						type = "toggle",
-						name = "Grow the frames upwards",
-						desc = "Grow the frames from bottom for first pet upwards"
+						name = PA.ACL["Grow the frames upwards"],
+						desc = PA.ACL["Grow the frames from bottom for first pet upwards"]
 					},
 					TeamAurasOnBottom = {
 						order = 3,
 						type = "toggle",
-						name = "Team Aura On Bottom",
-						desc = "Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"
+						name = PA.ACL["Team Aura On Bottom"],
+						desc = PA.ACL["Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"]
 					},
 					PetTrackerIcon = {
 						order = 4,
 						type = "toggle",
-						name = "Use PetTracker Icon",
-						desc = "Use PetTracker Icon instead of Breed ID",
+						name = PA.ACL["Use PetTracker Icon"],
+						desc = PA.ACL["Use PetTracker Icon instead of Breed ID"],
 						disabled = function()
 							return not IsAddOnLoaded("PetTracker")
 						end
@@ -1353,8 +1353,8 @@ function EPB:GetOptions()
 					EnhanceTooltip = {
 						order = 5,
 						type = "toggle",
-						name = "Enhance Tooltip",
-						desc = "Add More Detailed Info if BreedInfo is available.",
+						name = PA.ACL["Enhance Tooltip"],
+						desc = PA.ACL["Add More Detailed Info if BreedInfo is available."],
 						disabled = function()
 							return not BattlePetBreedID
 						end
@@ -1362,8 +1362,8 @@ function EPB:GetOptions()
 					LevelBreakdown = {
 						order = 6,
 						type = "toggle",
-						name = "Level Breakdown",
-						desc = "Add Pet Level Breakdown if BreedInfo is available.",
+						name = PA.ACL["Level Breakdown"],
+						desc = PA.ACL["Add Pet Level Breakdown if BreedInfo is available."],
 						disabled = function()
 							return not (EPB.db["EnhanceTooltip"] and BattlePetBreedID)
 						end
@@ -1371,8 +1371,8 @@ function EPB:GetOptions()
 					UseoUF = {
 						order = 7,
 						type = "toggle",
-						name = "Use oUF for the pet frames",
-						desc = "Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system.",
+						name = PA.ACL["Use oUF for the pet frames"],
+						desc = PA.ACL["Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system."],
 						disabled = function()
 							return not PA.oUF
 						end,
@@ -1384,8 +1384,8 @@ function EPB:GetOptions()
 					["3DPortrait"] = {
 						order = 8,
 						type = "toggle",
-						name = "3D Portraits",
-						desc = "Use the 3D pet model instead of a texture for the pet icons",
+						name = PA.ACL["3D Portraits"],
+						desc = PA.ACL["Use the 3D pet model instead of a texture for the pet icons"],
 						disabled = function()
 							return EPB.db.UseoUF
 						end
@@ -1393,16 +1393,16 @@ function EPB:GetOptions()
 					healthThreshold = {
 						order = 9,
 						type = 'range',
-						name = "Health Threshold",
-						desc = "When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar.",
+						name = PA.ACL["Health Threshold"],
+						desc = PA.ACL["When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar."],
 						isPercent = true,
 						min = 0, max = 1, step = 0.01,
 					},
 					wildHealthThreshold = {
 						order = 10,
 						type = 'range',
-						name = "Wild Health Threshold",
-						desc = "When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar.",
+						name = PA.ACL["Wild Health Threshold"],
+						desc = PA.ACL["When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar."],
 						isPercent = true,
 						min = 0, max = 1, step = 0.01,
 					},
@@ -1410,19 +1410,19 @@ function EPB:GetOptions()
 						type = "select",
 						dialogControl = "LSM30_Statusbar",
 						order = 13,
-						name = "StatusBar Texture",
+						name = PA.ACL["StatusBar Texture"],
 						values = PA.LSM:HashTable("statusbar")
 					},
 					Font = {
 						type = "select",
 						dialogControl = "LSM30_Font",
 						order = 14,
-						name = "Font",
+						name = PA.ACL["Font"],
 						values = PA.LSM:HashTable("font")
 					},
 					FontSize = {
 						order = 15,
-						name = "Font Size",
+						name = PA.ACL["Font Size"],
 						type = "range",
 						min = 8,
 						max = 24,
@@ -1431,7 +1431,7 @@ function EPB:GetOptions()
 					FontFlag = PA.ACH:FontFlags(PA.ACL["Font Flag"], nil, 16),
 					TextOffset = {
 						order = 17,
-						name = "Health/Experience Text Offset",
+						name = PA.ACL["Health/Experience Text Offset"],
 						type = "range",
 						min = -10,
 						max = 10,
@@ -1440,42 +1440,42 @@ function EPB:GetOptions()
 					nameFormat = {
 						type = "input",
 						width = "full",
-						name = "Name Format",
+						name = PA.ACL["Name Format"],
 						order = 18,
 						disabled = function() return not EPB.db.UseoUF end
 					},
 					healthFormat = {
 						type = "input",
 						width = "full",
-						name = "Health Format",
+						name = PA.ACL["Health Format"],
 						order = 19,
 						disabled = function() return not EPB.db.UseoUF end
 					},
 					xpFormat = {
 						type = "input",
 						width = "full",
-						name = "Experience Format",
+						name = PA.ACL["Experience Format"],
 						order = 20,
 						disabled = function() return not EPB.db.UseoUF end
 					},
 					powerFormat = {
 						type = "input",
 						width = "full",
-						name = "Power Format",
+						name = PA.ACL["Power Format"],
 						order = 21,
 						disabled = function() return not EPB.db.UseoUF end
 					},
 					speedFormat = {
 						type = "input",
 						width = "full",
-						name = "Speed Format",
+						name = PA.ACL["Speed Format"],
 						order = 22,
 						disabled = function() return not EPB.db.UseoUF end
 					},
 					breedFormat = {
 						type = "input",
 						width = "full",
-						name = "Breed Format",
+						name = PA.ACL["Breed Format"],
 						order = 23,
 						disabled = function() return not EPB.db.UseoUF end
 					},

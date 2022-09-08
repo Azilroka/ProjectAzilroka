@@ -97,6 +97,9 @@ ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
 ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
 ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = true
+ACL['Enhanced Pet Battle UI'] = true
+ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = true
+ACL['An enhanced UI for pet battles'] = true
 
 -- Cooldown Text
 ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
@@ -193,6 +196,38 @@ ACL['Show Status Background'] = true
 ACL['Show Status Highlight'] = true
 ACL['Icon Settings'] = true
 ACL['Game Icon Pack'] = true
+
+-- Enhanced Pet Battle UI
+ACL["3D Portraits"] = true
+ACL["Add More Detailed Info if BreedInfo is available."] = true
+ACL["Add Pet Level Breakdown if BreedInfo is available."] = true
+ACL["Additional options for pet battles: Enhanced tooltips, portraits, fonts and more"] = true
+ACL["Breed Format"] = true
+ACL["Enhance Tooltip"] = true
+ACL["Experience Format"] = true
+ACL["Font Flag"] = true
+ACL["Grow the frames upwards"] = true
+ACL["Grow the frames from bottom for first pet upwards"] = true
+ACL["Health Format"] = true
+ACL["Health/Experience Text Offset"] = true
+ACL["Health Threshold"] = true
+ACL["Hide Blizzard"] = true
+ACL["Hide the Blizzard Pet Frames during battles"] = true
+ACL["Level Breakdown"] = true
+ACL["Name Format"] = true
+ACL["Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"] = true
+ACL["Power Format"] = true
+ACL["Speed Format"] = true
+ACL["StatusBar Texture"] = true
+ACL["Team Aura On Bottom"] = true
+ACL["Use oUF for the pet frames"] = true
+ACL["Use PetTracker Icon"] = true
+ACL["Use PetTracker Icon instead of Breed ID"] = true
+ACL["Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system."] = true
+ACL["Use the 3D pet model instead of a texture for the pet icons"] = true
+ACL["When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar."] = true
+ACL["Wild Health Threshold"] = true
+ACL["When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar."] = true
 
 -- Enhanced Shadows
 ACL['Color by Class'] = true

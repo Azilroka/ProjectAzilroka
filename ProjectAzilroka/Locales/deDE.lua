@@ -100,6 +100,9 @@ ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = "Zeigt Ehrfahrungleisten für Gruppen/ Battle.net Freunde"
 ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
 ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = "Minimalistische Auren / Stärkungszauber / Procs / Abklingzeiten"
+ACL['Enhanced Pet Battle UI'] = true
+ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = true
+ACL['An enhanced UI for pet battles'] = "Ein erweitertes und besseres UI für den Haustierkampf"
 
 -- Cooldown Text
 ACL["Reverse Toggle"] = "Umkehrtaste"
@@ -195,6 +198,38 @@ ACL['Show Status Background'] = "Zeige Status Hintergrund"
 ACL['Show Status Highlight'] = "Zeige Status Hintergrundleuchten"
 ACL['Icon Settings'] = "Symboleinstellungen"
 ACL['Game Icon Pack'] = "Spiele Symbolpaket"
+
+-- Enhanced Pet Battle UI
+ACL["3D Portraits"] = true
+ACL["Add More Detailed Info if BreedInfo is available."] = "Füge weitere detaillierte Informationen hinzu, wenn Rasseninfo verfügbar ist."
+ACL["Add Pet Level Breakdown if BreedInfo is available."] = "Aufschlüsselung der Begleiterstufe hinzufügen, wenn Rasseninfo verfügbar ist."
+ACL["Additional options for pet battles: Enhanced tooltips, portraits, fonts and more"] = "Zusätzliche Optionen für Haustierkämpfe: Verbesserte Tooltips, Porträts, Schriftarten und mehr"
+ACL["Breed Format"] = "Rasseformat"
+ACL["Enhance Tooltip"] = "Tooltip verbessern"
+ACL["Experience Format"] = "Erfahrungsformat"
+ACL["Font Flag"] = "Schriftumrandung"
+ACL["Grow the frames upwards"] = "Die Fenster nach oben wachsen lassen"
+ACL["Grow the frames from bottom for first pet upwards"] = "Ziehe die Rahmen von unten für das erste Haustier nach oben"
+ACL["Health Format"] = "Gesundheitsformat"
+ACL["Health/Experience Text Offset"] = "Gesundheits- / Erfahrungstext Versatz"
+ACL["Health Threshold"] = "Gesundheitsschwelle"
+ACL["Hide Blizzard"] = "Verstecke Blizzard"
+ACL["Hide the Blizzard Pet Frames during battles"] = "Blizzard Begleiterfenster während Kämpfen ausblenden"
+ACL["Level Breakdown"] = "Level Aufschlüsselung"
+ACL["Name Format"] = "Namensformat"
+ACL["Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"] = "Platziere Teamauren auf der Unterseite des zuletzt angezeigten Haustiers (oder oben, wenn Aufwärts wachsen ausgewählt ist)"
+ACL["Power Format"] = "Kraftformat"
+ACL["Speed Format"] = "Geschwindigskeitsformat"
+ACL["StatusBar Texture"] = "Statusleisten Textur"
+ACL["Team Aura On Bottom"] = "Teamauren auf der Unterseite"
+ACL["Use oUF for the pet frames"] = "Verwende oUF für die Haustierfenster"
+ACL["Use PetTracker Icon"] = "PetTracker Symbol verwenden"
+ACL["Use PetTracker Icon instead of Breed ID"] = "Verwende das PetTracker Symbol anstelle der Rassen ID"
+ACL["Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system."] = "Verwende die neue PBUF Bibliothek von Nihilistzsche, die in ProjectAzilroka enthalten ist, um neue Tierfenster mit dem oUF Einheitsfenster Vorlagensystem zu erstellen."
+ACL["Use the 3D pet model instead of a texture for the pet icons"] = "Verwenden Sie das 3D-Haustiermodell anstelle einer Textur für die Haustiersymbole"
+ACL["When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar."] = "Wenn die aktuelle Gesundheit eines Haustiers in Deinem Wildtierführer nach einem Trainerkampf unter diesem Prozentsatz liegt, zeige den Wiederbelebungsbalken an."
+ACL["Wild Health Threshold"] = "Wilde Gesundheitsschwelle"
+ACL["When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar."] = "Wenn die aktuelle Gesundheit eines Haustiers in Deinem Wildtierführer nach einem wilden Haustierkampf unter diesem Prozentsatz liegt, zeige die Wiederbelebungsleiste an."
 
 -- Enhanced Shadows
 ACL['Color by Class'] = "Klassenfarbe"

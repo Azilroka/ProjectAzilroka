@@ -162,7 +162,9 @@ ACL['Icon Settings'] = true
 ACL['Game Icon Pack'] = true
 
 -- Enhanced Pet Battle UI - 향상된 팻 배틀 UI
-ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
+ACL['Enhanced Pet Battle UI'] = true
+ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
+ACL['An enhanced UI for pet battles'] = true
 ACL["3D Portraits"] = "3D 초상화"
 ACL["Add More Detailed Info if BreedInfo is available."] = "번식 정보가 있으면 더 자세한 정보를 추가하십시오."
 ACL["Add Pet Level Breakdown if BreedInfo is available."] = "종 정보를 사용할 수 있는 경우 애완동물 레벨 분류를 추가합니다."
