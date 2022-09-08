@@ -199,6 +199,26 @@ ACL['Color by Class'] = true
 ACL['Shadow Color'] = true
 ACL['Size'] = true
 
+-- iFilger -
+ACL['Buffs'] = true
+ACL['Cooldowns'] = true
+ACL['ItemCooldowns'] = true
+ACL['Procs'] = true
+ACL['Enhancements'] = true
+ACL['RaidDebuffs'] = true
+ACL['TargetDebuffs'] = true
+ACL['FocusBuffs'] = true
+ACL['FocusDebuffs'] = true
+ACL['Number Per Row'] = true
+ACL['Growth Direction'] = true
+ACL['Filter by List'] = true
+ACL['Stack Count'] = true
+ACL['StatusBar'] = true
+ACL['Follow Cooldown Text Color'] = true
+ACL['Follow Cooldown Text Colors (Expiring / Seconds)'] = true
+ACL['Font Flag'] = true
+ACL['Filters'] = true
+
 -- Loot Confirm
 ACL['Auto Confirm'] = true
 ACL['Automatically click OK on BOP items'] = true

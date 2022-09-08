@@ -190,6 +190,26 @@ ACL['Color by Class'] = "根据职业染色"
 ACL['Shadow Color'] = "阴影颜色"
 ACL['Size'] = "大小"
 
+-- iFilger -
+ACL['Buffs'] = true
+ACL['Cooldowns'] = true
+ACL['ItemCooldowns'] = true
+ACL['Procs'] = true
+ACL['Enhancements'] = true
+ACL['RaidDebuffs'] = true
+ACL['TargetDebuffs'] = true
+ACL['FocusBuffs'] = true
+ACL['FocusDebuffs'] = true
+ACL['Number Per Row'] = true
+ACL['Growth Direction'] = true
+ACL['Filter by List'] = true
+ACL['Stack Count'] = true
+ACL['StatusBar'] = true
+ACL['Follow Cooldown Text Color'] = true
+ACL['Follow Cooldown Text Colors (Expiring / Seconds)'] = true
+ACL['Font Flag'] = true
+ACL['Filters'] = true
+
 -- Loot Confirm
 ACL['Auto Confirm'] = "自动确认"
 ACL['Automatically click OK on BOP items'] = "当拾取【拾取绑定】物品时自动点击确定"

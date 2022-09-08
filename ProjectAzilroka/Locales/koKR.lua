@@ -226,7 +226,8 @@ ACL['Stack Count'] = '중첩 표시'
 ACL['StatusBar'] = '상태표시 바'
 ACL['Follow Cooldown Text Color'] = '재사용 대기시간 문자 색상 따르기'
 ACL['Follow Cooldown Text Colors (Expiring / Seconds)'] = '재사용 대기시간 문자색 따르기(만료 시간/초)'
-ACL['Font Flags'] = '글꼴 외곽선'
+ACL['Font Flag'] = '글꼴 외곽선'
+ACL['Filters'] = true
 
 -- Loot Confirm - 루팅 관련 자동화기능
 ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = '|cFF16C3F2루팅|r |cFFFFFFFF설정|r'

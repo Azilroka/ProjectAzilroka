@@ -200,6 +200,26 @@ ACL['Color by Class'] = "Klassenfarbe"
 ACL['Shadow Color'] = "Schattenfarbe"
 ACL['Size'] = "Größe"
 
+-- iFilger -
+ACL['Buffs'] = "Stärkungszauber"
+ACL['Cooldowns'] = "Abklingzeiten"
+ACL['ItemCooldowns'] = "Gegenstands Abklingzeiten"
+ACL['Procs'] = true
+ACL['Enhancements'] = "Verbesserungen"
+ACL['RaidDebuffs'] = "Raidschwächungszauber"
+ACL['TargetDebuffs'] = "Zielschwächungszauber"
+ACL['FocusBuffs'] = "Fokusstärkungszauber"
+ACL['FocusDebuffs'] = "Fokus Schwächungszauber"
+ACL['Number Per Row'] = "Anzahl per Zeile"
+ACL['Growth Direction'] = "Wachstumsrichtung"
+ACL['Filter by List'] = "Filter nach Liste"
+ACL['Stack Count'] = "Stapelzähler"
+ACL['StatusBar'] = "Statusleiste"
+ACL['Follow Cooldown Text Color'] = "Folge der Abklingzeit Textfarbe"
+ACL['Follow Cooldown Text Colors (Expiring / Seconds)'] = "Folge den Abklingzeit Textfarben (Ablauf / Sekunden)"
+ACL['Font Flag'] = "Schriftumrandung"
+ACL['Filters'] = "Filter"
+
 -- Loot Confirm
 ACL['Auto Confirm'] = "Auto bestätigen"
 ACL['Automatically click OK on BOP items'] = "Klickt automatisch OK auf BOP Gegenstände"
