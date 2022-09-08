@@ -47,7 +47,7 @@ ACL['General'] = "Allgemein"
 -- AddOns
 ACL['AddOns'] = true
 ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
-ACL['Reminder for Buffs / Debuffs'] = true
+ACL['Reminder for Buffs / Debuffs'] = "Erinnerung für Stärkungs- / Schwächungszauber"
 ACL['Cooldown Text'] = true
 ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
 ACL['Adjust Cooldown Settings.'] = "Anpassen der Abklingzeiten Einstellungen."
@@ -97,6 +97,8 @@ ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
 ACL['Minimalistic Cooldowns'] = "Minimalistische Abklingzeiten"
 ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = "Zeigt Ehrfahrungleisten für Gruppen/ Battle.net Freunde"
+ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
+ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = "Minimalistische Auren / Stärkungszauber / Procs / Abklingzeiten"
 
 -- Cooldown Text
 ACL["Reverse Toggle"] = "Umkehrtaste"

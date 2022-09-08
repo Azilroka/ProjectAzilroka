@@ -89,6 +89,8 @@ ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = "|cFF16C3F2目标|r|cFFFFFFFF音�
 ACL['Audio for Target Sounds.'] = "选择目标时的音效"
 ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
+ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
+ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = true
 
 -- Cooldown Text
 ACL['Display cooldown text on anything with the cooldown spiral.'] = '显示技能冷却时间'

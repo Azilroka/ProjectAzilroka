@@ -97,6 +97,8 @@ ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
 ACL['Minimalistic Cooldowns'] = true
 ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
+ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
+ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = true
 
 -- Cooldown Text
 ACL["Reverse Toggle"] = true
