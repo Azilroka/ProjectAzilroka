@@ -62,8 +62,9 @@ ACL['Show Icon'] = '아이콘 표시'
 ACL['Show Text'] = '문자 표시'
 
 -- Cooldown Text - 버프/디버프 알람
-ACL["Cooldown Text"] = true
-ACL["COOLDOWN_DESC"] = "[재사용 대기시간] 설정을 조정합니다."
+ACL['Cooldown Text'] = true
+ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
+ACL['Adjust Cooldown Settings.'] = "[재사용 대기시간] 설정을 조정합니다."
 ACL["Reverse Toggle"] = "반대로 보여줌"
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = "설정내용이 있으면 안보이고, 없을대 화면에 보여줌"
 ACL["Force Hide Blizzard Text"] = "블리자드 문자 강제 숨김"

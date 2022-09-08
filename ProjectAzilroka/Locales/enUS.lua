@@ -46,9 +46,11 @@ ACL['General'] = true
 
 -- AddOns
 ACL['AddOns'] = true
-ACL["Cooldown Text"] = true
+ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
+ACL['Reminder for Buffs / Debuffs'] = true
+ACL['Cooldown Text'] = true
 ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
-ACL['Provides a Custom DataBroker Bar'] = true
+ACL['Adjust Cooldown Settings.'] = true
 ACL['BigButtons'] = true
 ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r'] = true
 ACL['A farm tool for Sunsong Ranch.'] = true
@@ -97,7 +99,6 @@ ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
 
 -- Cooldown Text
-ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
 ACL["Reverse Toggle"] = true
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = true
 ACL["Force Hide Blizzard Text"] = true

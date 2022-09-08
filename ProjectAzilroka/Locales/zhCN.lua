@@ -46,6 +46,9 @@ ACL['General'] = "一般"
 
 -- AddOns
 ACL['AddOns'] = "功能"
+ACL['Cooldown Text'] = true
+ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = "|cFF16C3F2冷却|r|cFFFFFFFF文字|r"
+ACL['Adjust Cooldown Settings.'] = "调整冷却设置."
 ACL['BigButtons'] = "农场辅助按钮"
 ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r'] = "|cFF16C3F2农场|r|cFFFFFFFF辅助按钮|r"
 ACL['A farm tool for Sunsong Ranch.'] = "日歌农场辅助工具"
@@ -88,8 +91,6 @@ ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
 
 -- Cooldown Text
-ACL["COOLDOWN_DESC"] = "调整冷却设置."
-ACL['Cooldown Text'] = '|cFF16C3F2冷却|r|cFFFFFFFF文字|r'
 ACL['Display cooldown text on anything with the cooldown spiral.'] = '显示技能冷却时间'
 ACL['Reverse Toggle'] = '反向启用'
 ACL['Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled.'] = '反向启用将在全局冷却关闭时在此模块启用冷却文字, 全局冷却启用时此模块关闭冷却文字'

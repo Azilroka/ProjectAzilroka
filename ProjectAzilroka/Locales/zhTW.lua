@@ -46,9 +46,9 @@ ACL['General'] = true
 
 -- AddOns
 ACL['AddOns'] = true
-ACL["Cooldown Text"] = true
+ACL['Cooldown Text'] = true
 ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
-ACL['Provides a Custom DataBroker Bar'] = true
+ACL['Adjust Cooldown Settings.'] = true
 ACL['BigButtons'] = true
 ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r'] = true
 ACL['A farm tool for Sunsong Ranch.'] = true

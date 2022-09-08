@@ -46,9 +46,11 @@ ACL['General'] = "Allgemein"
 
 -- AddOns
 ACL['AddOns'] = true
+ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
+ACL['Reminder for Buffs / Debuffs'] = true
 ACL['Cooldown Text'] = true
 ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
-ACL['Provides a Custom DataBroker Bar'] = "Bietet Einstellungen für Cooldowns"
+ACL['Adjust Cooldown Settings.'] = "Anpassen der Abklingzeiten Einstellungen."
 ACL['BigButtons'] = true
 ACL['|cFF16C3F2Big|r|cFFFFFFFFButtons|r'] = true
 ACL['A farm tool for Sunsong Ranch.'] = "Ein Farmtool für die Sunsong Farm"
@@ -97,7 +99,6 @@ ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = "Zeigt Ehrfahrungleisten für Gruppen/ Battle.net Freunde"
 
 -- Cooldown Text
-ACL["COOLDOWN_DESC"] = "Abklingzeiten Einstellungen anpassen."
 ACL["Reverse Toggle"] = "Umkehrtaste"
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = "Umkehrtaste aktiviert Abklingzeittext für dieses Modul, wenn die globale Einstellung deaktiviert ist, und deaktiviert sie, wenn die globale Einstellung aktiviert ist."
 ACL["Force Hide Blizzard Text"] = "Blizzard Text ausblenden erzwingen"
@@ -105,9 +106,9 @@ ACL["This option will force hide Blizzard's cooldown text if it is enabled at [I
 ACL["Text Threshold"] = "Textschwelle"
 ACL["This will override the global cooldown settings."] = "Dies wird die globalen Abklingzeiten Einstellungen außer Kraft setzen."
 ACL["MM:SS Threshold"] = "MM:SS Schwelle"
-ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."] = true
+ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."] = "Schwellenwert (in Sekunden), bevor Text im MM:SS-Format angezeigt wird. Auf -1 setzen, um nie zu diesem Format zu wechseln."
 ACL["HH:MM Threshold"] = "HH:MM Schwelle"
-ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."] = true
+ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."] = "Schwellenwert (in Minuten), bevor Text im HH:MM-Format angezeigt wird. Auf -1 setzen, um nie zu diesem Format zu wechseln."
 ACL["Fonts"] = "Schriftarten"
 ACL["Color Override"] = "Farbüberschreibung"
 ACL["Low Threshold"] = "Niedrigste Schwelle"
@@ -116,19 +117,19 @@ ACL["Threshold Colors"] = "Schwellenfarben"
 ACL["Expiring"] = "Auslaufend"
 ACL["Color when the text is about to expire"] = "Farbe, wenn der Text abläuft"
 ACL["Seconds"] = "Sekunden"
-ACL["Color when the text is in the seconds format."] = true
+ACL["Color when the text is in the seconds format."] = "Farbe, wenn der Text im Sekundenformat vorliegt."
 ACL["Minutes"] = "Minuten"
-ACL["Color when the text is in the minutes format."] = true
+ACL["Color when the text is in the minutes format."] = "Farbe, wenn der Text im Minutenformat vorliegt."
 ACL["Hours"] = "Stunden"
-ACL["Color when the text is in the hours format."] = true
+ACL["Color when the text is in the hours format."] = "Farbe, wenn der Text im Stundenformat vorliegt."
 ACL["HH:MM"] = true
 ACL["MM:SS"] = true
-ACL["Time Indicator Colors"] = true
-ACL["Use Indicator Color"] = true
+ACL["Time Indicator Colors"] = "Farben der Zeitanzeige"
+ACL["Use Indicator Color"] = "Indikatorfarbe verwenden"
 ACL["Days"] = "Tage"
-ACL["Color when the text is in the days format."] = true
+ACL["Color when the text is in the days format."] = "Farbe, wenn der Text im Tagesformat vorliegt."
 ACL["COLORS"] = "Farben"
-ACL["Display cooldown text on anything with the cooldown spiral."] = true
+ACL["Display cooldown text on anything with the cooldown spiral."] = "Zeige Abklingzeitentext auf allem mit der Abklingzeitspirale an."
 ACL["Global"] = true
 
 -- BigButtons
