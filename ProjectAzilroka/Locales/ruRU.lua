@@ -69,7 +69,7 @@ ACL['Faster Loot'] = true
 ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r'] = true
 ACL['Increases auto loot speed near instantaneous.'] = true
 ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'] = true
-ACL['Manage Firends List with Groups'] = true
+ACL['Manage Friends List with Groups'] = true
 ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = true
 ACL['Confirms Loot for Solo/Groups (Need/Greed)'] = true
 ACL['MovableFrames'] = true
@@ -93,6 +93,8 @@ ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = true
 ACL['Auras for your mouseover target'] = true
 ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
 ACL['Minimalistic Cooldowns'] = true
+ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
+ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
 
 -- Cooldown Text
 ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
@@ -183,6 +185,12 @@ ACL['Game Icon Preview'] = true
 ACL['Show Level'] = true
 ACL['Status Icon Preview'] = true
 ACL[' Icon'] = true
+ACL['Name Settings'] = true
+ACL['Info Settings'] = true
+ACL['Show Status Background'] = true
+ACL['Show Status Highlight'] = true
+ACL['Icon Settings'] = true
+ACL['Game Icon Pack'] = true
 
 -- Enhanced Shadows
 ACL['Color by Class'] = true
@@ -204,7 +212,7 @@ ACL['Level to start auto-rolling from'] = true
 ACL["Disabled"] = true
 ACL["Max Level"] = true
 ACL['Lvl'] = true
-ACL["Experience"] = true
+ACL['Experience'] = true
 ACL["XP:"] = true
 ACL["Remaining:"] = true
 ACL["Bars"] = true
@@ -216,7 +224,7 @@ ACL['Party'] = true
 ACL['BattleNet'] = true
 ACL['Width'] = true
 ACL['Height'] = true
-ACL["Colors"] = true
+ACL['Colors'] = true
 ACL['Color By Class'] = true
 
 -- Mouseover Auras
@@ -384,3 +392,4 @@ ACL["Sort Direction"] = true
 ACL["Defines the sort order of the selected sort method."] = true
 ACL["Ascending"] = true
 ACL["Descending"] = true
+ACL["Growth Direction"] = true

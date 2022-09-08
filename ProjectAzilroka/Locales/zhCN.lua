@@ -66,7 +66,7 @@ ACL['Faster Loot'] = "快速拾取"
 ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r'] = "|cFF16C3F2快速|r|cFFFFFFFF拾取|r"
 ACL['Increases auto loot speed near instantaneous.'] = "加速自动拾取速度"
 ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'] = "|cFF16C3F2好友|r|cFFFFFFFF分组|r"
-ACL['Manage Firends List with Groups'] = "分组管理好友"
+ACL['Manage Friends List with Groups'] = "分组管理好友"
 ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = "|cFF16C3F2拾取|r|cFFFFFFFF确认|r"
 ACL['Confirms Loot for Solo/Groups (Need/Greed)'] = "自动确认拾取 (需求 / 贪婪)"
 ACL['MovableFrames'] = "窗口移动"
@@ -84,6 +84,8 @@ ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'] = "|cFF16C3F2插件|r|cFFFFFFFF管
 ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'] = "轻量级插件管理器"
 ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = "|cFF16C3F2目标|r|cFFFFFFFF音效|r"
 ACL['Audio for Target Sounds.'] = "选择目标时的音效"
+ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
+ACL['Shows Experience Bars for Party / Battle.net Friends'] = true
 
 -- Cooldown Text
 ACL["COOLDOWN_DESC"] = "调整冷却设置."
@@ -173,6 +175,12 @@ ACL['Game Icon Preview'] = "游戏图标预览"
 ACL['Show Level'] = "显示等级"
 ACL['Status Icon Preview'] = "状态图标预览"
 ACL[' Icon'] = " 图标"
+ACL['Name Settings'] = true
+ACL['Info Settings'] = true
+ACL['Show Status Background'] = true
+ACL['Show Status Highlight'] = true
+ACL['Icon Settings'] = true
+ACL['Game Icon Pack'] = true
 
 -- Enhanced Shadows
 ACL['Color by Class'] = "根据职业染色"
@@ -194,7 +202,7 @@ ACL['Level to start auto-rolling from'] = true
 ACL["Disabled"] = true
 ACL["Max Level"] = true
 ACL['Lvl'] = true
-ACL["Experience"] = true
+ACL['Experience'] = true
 ACL["XP:"] = true
 ACL["Remaining:"] = true
 ACL["Bars"] = true
@@ -206,7 +214,7 @@ ACL['Party'] = true
 ACL['BattleNet'] = true
 ACL['Width'] = true
 ACL['Height'] = true
-ACL["Colors"] = true
+ACL['Colors'] = true
 ACL['Color By Class'] = true
 
 -- Mouseover Auras
@@ -381,3 +389,4 @@ ACL["Sort Direction"] = true
 ACL["Defines the sort order of the selected sort method."] = true
 ACL["Ascending"] = true
 ACL["Descending"] = true
+ACL["Growth Direction"] = true

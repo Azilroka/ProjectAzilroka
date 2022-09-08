@@ -69,7 +69,7 @@ ACL['Faster Loot'] = true
 ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r'] = true
 ACL['Increases auto loot speed near instantaneous.'] = "Erhöht die automatische Beute Lootgeschwindigkeit nahezu augenblicklich."
 ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r'] = true
-ACL['Manage Firends List with Groups'] = "Verwalte die Freundesliste mit Gruppen"
+ACL['Manage Friends List with Groups'] = "Verwalte die Freundesliste mit Gruppen"
 ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = true
 ACL['Confirms Loot for Solo/Groups (Need/Greed)'] = "Bestätigt Beute für Solo/Gruppen (Bedarf/Gier)"
 ACL['MovableFrames'] = true
@@ -93,6 +93,8 @@ ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = true
 ACL['Auras for your mouseover target'] = "Auren für Dein Mouseover Ziel"
 ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
 ACL['Minimalistic Cooldowns'] = "Minimalistische Abklingzeiten"
+ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = true
+ACL['Shows Experience Bars for Party / Battle.net Friends'] = "Zeigt Ehrfahrungleisten für Gruppen/ Battle.net Freunde"
 
 -- Cooldown Text
 ACL["COOLDOWN_DESC"] = "Abklingzeiten Einstellungen anpassen."
@@ -131,8 +133,8 @@ ACL["Global"] = true
 
 -- BigButtons
 ACL['Drop Farm Tools'] = "Werkzeuge fallen lassen"
-ACL['Farm Tool Size'] = "Werkzeug Größe"
-ACL['Seed Size'] = "Samen Größe"
+ACL['Farm Tool Size'] = "Werkzeuggröße"
+ACL['Seed Size'] = "Samengröße"
 
 -- BrokerLDB
 ACL['Font Settings'] = 'Schrifteinstellungen'
@@ -183,6 +185,12 @@ ACL['Game Icon Preview'] = "Spielsymbol Vorschau"
 ACL['Status Icon Preview'] = "Statussymbol Vorschau"
 ACL['Show Level'] = "Zeige Level"
 ACL[' Icon'] = " Symbol"
+ACL['Name Settings'] = "Nameneinstellungen"
+ACL['Info Settings'] = "Infoeinstellungen"
+ACL['Show Status Background'] = "Zeige Status Hintergrund"
+ACL['Show Status Highlight'] = "Zeige Status Hintergrundleuchten"
+ACL['Icon Settings'] = "Symboleinstellungen"
+ACL['Game Icon Pack'] = "Spiele Symbolpaket"
 
 -- Enhanced Shadows
 ACL['Color by Class'] = "Klassenfarbe"
@@ -204,7 +212,7 @@ ACL['Level to start auto-rolling from'] = "Level von dem Auto-Rollen gestartet w
 ACL["Disabled"] = "Deaktiviert"
 ACL["Max Level"] = true
 ACL['Lvl'] = true
-ACL["Experience"] = "Erfahrung"
+ACL['Experience'] = "Erfahrung"
 ACL["XP:"] = true
 ACL["Remaining:"] = "Verbleibend:"
 ACL["Bars"] = "Leisten"
@@ -216,7 +224,7 @@ ACL['Party'] = "Gruppe"
 ACL['BattleNet'] = true
 ACL['Width'] = "Breite"
 ACL['Height'] = "Höhe"
-ACL["Colors"] = "Farben"
+ACL['Colors'] = "Farben"
 ACL['Color By Class'] = "Klassenfarben"
 
 -- Mouseover Auras
@@ -315,20 +323,25 @@ ACL['Set a talent tree to not follow the reverse check.'] = "Richte einen Talent
 ACL['Class'] = "Klasse"
 
 -- Reputation Reward
-ACL['Show All Reputation'] = "Zeige alle Rufe"
+ACL['Show All Reputation'] = "Alle Rufe anzeigen"
 
 -- SquareMinimapButtons
+ACL['Square Minimap Buttons'] = true
+ACL['Bar Backdrop'] = "Leistenhintergrund"
 ACL['Bar MouseOver'] = "Leiste MouseOver"
 ACL['Buttons Per Row'] = "Tasten pro Reihe"
 ACL['Button Spacing'] = "Tasten Abstand"
 ACL['Enable Bar'] = "Aktiviere Leiste"
 ACL['Hide Garrison'] = "Verstecke Garnision"
-ACL['Icon Size'] = "Icon Größe"
+ACL['Icon Size'] = "Symbolgröße"
 ACL['Minimap Buttons / Bar'] = "Minikarte Tasten / Leiste"
-ACL['Move Garrison Icon'] = "Garnision Icon bewegen"
-ACL['Move Mail Icon'] = "Post Icon bewegen"
-ACL['Move Tracker Icon'] = "Verflogen Icon bewegen"
-ACL['Move Queue Status Icon'] = "LFG Icon bewegen"
+ACL['Move Garrison Icon'] = "Garnision Symbol bewegen"
+ACL['Move Mail Icon'] = "Post Symbol bewegen"
+ACL['Move Tracker Icon'] = "Verflogen Symbol bewegen"
+ACL['Move Queue Status Icon'] = "LFG Symbol bewegen"
+ACL['Reverse Direction'] = "Rückwärtsrichtung"
+ACL['Shadows'] = "Schatten"
+ACL['Visibility'] = "Sichtbarkeit"
 
 -- stAddOnManager
 ACL['# Shown AddOns'] = "# angezeigte AddOns"
@@ -365,9 +378,9 @@ ACL["Name"] = true
 ACL['Masque Support'] = "Masque Unterstützung"
 ACL["Set the size of the individual auras."] = "Stelle die Größe der einzelnen Auren ein."
 ACL["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."] = "Die Richtung, in die die Auren wachsen werden, und dann die Richtung, in die sie wachsen, nachdem sie das Wrap nach Limit erreicht haben."
-ACL["Wrap After"] = "Wrap danach"
+ACL["Wrap After"] = "Neue Reihe/Spalte beginnen"
 ACL["Begin a new row or column after this many auras."] = "Beginne nach so vielen Auren eine neue Reihe oder Spalte."
-ACL["Max Wraps"] = "Max Wraps"
+ACL["Max Wraps"] = "Max Leisten"
 ACL["Limit the number of rows or columns."] = "Begrenze die Anzahl der Zeilen oder Spalten."
 ACL["Horizontal Spacing"] = "Horizontaler Abstand"
 ACL["Vertical Spacing"] = "Vertikaler Abstand"
@@ -377,3 +390,4 @@ ACL["Sort Direction"] = "Sortierrichtung"
 ACL["Defines the sort order of the selected sort method."] = "Definiert die Sortierreihenfolge der ausgewählten Sortiermethode."
 ACL["Ascending"] = "Aufsteigend"
 ACL["Descending"] = "Absteigend"
+ACL["Growth Direction"] = "Wachstumsrichtung"

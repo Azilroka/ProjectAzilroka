@@ -153,6 +153,12 @@ ACL['Game Icon Preview'] = '게임 아이콘 미리보기'
 ACL['Show Level'] = '레벨 표시'
 ACL['Status Icon Preview'] = '내상태 아이콘 미리보기'
 ACL[' Icon'] = ' 아이콘'
+ACL['Name Settings'] = true
+ACL['Info Settings'] = true
+ACL['Show Status Background'] = true
+ACL['Show Status Highlight'] = true
+ACL['Icon Settings'] = true
+ACL['Game Icon Pack'] = true
 
 -- Enhanced Pet Battle UI - 향상된 팻 배틀 UI
 ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
@@ -239,7 +245,7 @@ ACL['Shows Experience Bars for Party / Battle.net Friends'] = '파티 /Battle.ne
 ACL["Disabled"] = "사용안함"
 ACL["Max Level"] = "최대 레벨"
 ACL['Lvl'] = '레벨1'
-ACL["Experience"] = "경험치"
+ACL['Experience'] = "경험치"
 ACL["XP:"] = true
 ACL["Remaining:"] = "남은 시간 :"
 ACL["Bars"] = "바"
@@ -251,7 +257,7 @@ ACL['Party'] = '파티'
 ACL['BattleNet'] = '배틀넷'
 ACL['Width'] = '너비'
 ACL['Height'] = '높이'
-ACL["Colors"] = "색상"
+ACL['Colors'] = "색상"
 ACL['Color By Class'] = '직업 색상'
 
 -- Mouseover Auras - 마우스 오버시 버프 상황 표시
@@ -443,3 +449,4 @@ ACL["Sort Direction"] = "정렬 방향"
 ACL["Defines the sort order of the selected sort method."] = "선택한 정렬 방법의 정렬 순서를 정의합니다."
 ACL["Ascending"] = "오름차순"
 ACL["Descending"] = "내림차순"
+ACL["Growth Direction"] = true
