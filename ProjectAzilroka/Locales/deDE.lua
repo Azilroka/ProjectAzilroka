@@ -91,6 +91,7 @@ ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = true
 ACL['Audio for Target Sounds.'] = "Ton bei ausgewählten Zielen."
 ACL['Torghast Buffs'] = true
 ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'] = true
+ACL['Torghast Buffs'] = "Anzeige aller Torghast Stärkungszauber"
 ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = true
 ACL['Auras for your mouseover target'] = "Auren für Dein Mouseover Ziel"
 ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
