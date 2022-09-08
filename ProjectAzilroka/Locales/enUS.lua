@@ -135,6 +135,13 @@ ACL['Level to start auto-rolling from'] = true
 ACL['Permanent Moving'] = true
 ACL['Reset Moving'] = true
 
+-- QuestSounds
+ACL['Ambience'] = true
+ACL['Channel'] = true
+ACL['Dialog'] = true
+ACL['Master'] = true
+ACL['SFX'] = true
+
 -- SquareMinimapButtons
 ACL['Bar MouseOver'] = true
 ACL['Bar Backdrop'] = true
