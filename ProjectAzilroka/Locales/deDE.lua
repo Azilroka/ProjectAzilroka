@@ -258,6 +258,11 @@ ACL['Objective Complete'] = "Ziel Komplett"
 ACL['Objective Progress Sound ID'] = "Ziel Vortschritt SoundID"
 ACL['Objective Progress'] = "Ziel Vortschritt"
 ACL['Throttle'] = "Drosseln"
+ACL['Ambience'] = "Ambiente"
+ACL['Channel'] = "Kanal"
+ACL['Dialog'] = true
+ACL['Master'] = true
+ACL['SFX'] = true
 
 -- Reminder(AuraReminder)
 ACL['Sound'] = "Ton"

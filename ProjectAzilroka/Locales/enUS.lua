@@ -258,8 +258,13 @@ ACL['Objective Complete'] = true
 ACL['Objective Progress Sound ID'] = true
 ACL['Objective Progress'] = true
 ACL['Throttle'] = true
+ACL['Ambience'] = true
+ACL['Channel'] = true
+ACL['Dialog'] = true
+ACL['Master'] = true
+ACL['SFX'] = true
 
--- Reminder(AuraReminder) - 버프 알리 
+-- Reminder(AuraReminder)
 ACL['Sound'] = true
 ACL['Sound that will play when you have a warning icon displayed.'] = true
 ACL['Select Group'] = true

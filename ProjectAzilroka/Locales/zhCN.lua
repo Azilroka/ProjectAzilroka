@@ -4,22 +4,45 @@ if not ACL then return end
 
 -- Misc
 ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你设置的一个选项将只对这个角色生效，改变这个设置需要重载界面"
-ACL['Authors:'] = "作者: "
-ACL['Blizzard'] = "暴雪"
 ACL['Controls AddOns in this package'] = "控制这个插件的功能"
 ACL["Frame doesn't exist: "] = "框体不存在"
-ACL['General'] = "一般"
+ACL["%s and then %s"] = true
+ACL['Up'] = true
+ACL['Down'] = true
+ACL['Left'] = true
+ACL['Right'] = true
+ACL["This setting requires that you reload your User Interface."] = true
+ACL['BACKGROUND'] = true
+ACL['LOW'] = true
+ACL['MEDIUM'] = true
+ACL['HIGH'] = true
+ACL['DIALOG'] = true
+ACL['FULLSCREEN'] = true
+ACL['FULLSCREEN_DIALOG'] = true
+ACL['TOOLTIP'] = true
 
 -- Apps/Games
+ACL['App'] = true
+ACL['Call of Duty 4'] = true
+ACL['Call of Duty Cold War'] = true
+ACL['Call of Duty Modern Warfare'] = true
+ACL['Call of Duty Modern Warfare 2'] = true
+ACL['Destiny 2'] = "命运 2"
 ACL['Diablo 3'] = "暗黑破坏神 3"
 ACL['Hearthstone'] = "炉石传说"
+ACL['Hero of the Storm'] = "风暴英雄"
 ACL['Starcraft'] = "星际争霸"
 ACL['Starcraft 2'] = "星际争霸 2"
-ACL['App'] = true
 ACL['Mobile'] = "移动设备"
-ACL['Hero of the Storm'] = "风暴英雄"
 ACL['Overwatch'] = "守望先锋"
-ACL['Destiny 2'] = "命运 2"
+
+-- Misc
+ACL['Authors:'] = "作者: "
+ACL['Blizzard'] = "暴雪"
+ACL['Default'] = true
+ACL['Enable'] = true
+ACL['Font Size'] = true
+ACL['General'] = "一般"
 
 -- AddOns
 ACL['AddOns'] = "功能"
@@ -61,6 +84,43 @@ ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'] = "|cFF16C3F2插件|r|cFFFFFFFF管
 ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'] = "轻量级插件管理器"
 ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = "|cFF16C3F2目标|r|cFFFFFFFF音效|r"
 ACL['Audio for Target Sounds.'] = "选择目标时的音效"
+
+-- Cooldown Text
+ACL["COOLDOWN_DESC"] = "调整冷却设置."
+ACL['Cooldown Text'] = '|cFF16C3F2冷却|r|cFFFFFFFF文字|r'
+ACL['Display cooldown text on anything with the cooldown spiral.'] = '显示技能冷却时间'
+ACL['Reverse Toggle'] = '反向启用'
+ACL['Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled.'] = '反向启用将在全局冷却关闭时在此模块启用冷却文字, 全局冷却启用时此模块关闭冷却文字'
+ACL['Force Hide Blizzard Text'] = '强制隐藏暴雪冷却文字'
+ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."] = '这个选项将强制隐藏系统设置中的暴雪冷却文字'
+ACL['Text Threshold'] = '文字阈值'
+ACL['This will override the global cooldown settings.'] = '这个选项将覆盖全局冷却设置'
+ACL['MM:SS Threshold'] = '分:秒 阈值'
+ACL['Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format.'] = '小于此选项(秒)的冷却将显示为 分:秒 格式, 设置为-1时为禁用此阈值'
+ACL['HH:MM Threshold'] = '时:分 阈值'
+ACL['Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format.'] = '小于此选项(分)的冷却将显示为 时:分 格式, 设置为-1时为禁用此阈值'
+ACL['Color Override'] = '颜色覆盖'
+ACL['Low Threshold'] = '阈值时间'
+ACL['Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red'] = '小于此选项(秒)的冷却数字将会变为红色并显示为小数模式, 设置为-1时为禁用此阈值'
+ACL['Threshold Colors'] = '阈值颜色'
+ACL['Expiring'] = '即将冷却完毕'
+ACL['Color when the text is about to expire'] = '即将冷却完毕的数字颜色'
+ACL['Seconds'] = '秒'
+ACL['Color when the text is in the seconds format.'] = '以秒显示的文字颜色'
+ACL['Minutes'] = '分'
+ACL['Color when the text is in the minutes format.'] = '以分显示的文字颜色'
+ACL['Hours'] = '时'
+ACL['Color when the text is in the hours format.'] = '以小时显示的文字颜色'
+ACL['Days'] = '天'
+ACL['Color when the text is in the days format.'] = '以天显示的文字颜色'
+ACL['MM:SS'] = '分:秒'
+ACL['HH:MM'] = '时:分'
+ACL['Time Indicator Colors'] = '时间指示器颜色'
+ACL['Use Indicator Color'] = '使用指示器颜色'
+ACL['Fonts'] = '字体'
+ACL['Text Font Size'] = '字体大小'
+ACL['COLORS'] = '颜色'
+ACL['Global'] = '全局'
 
 -- BigButtons
 ACL['Drop Farm Tools'] = "丢弃农场工具"
@@ -130,9 +190,129 @@ ACL['Auto-roll based on a given level'] = true
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
 ACL['Level to start auto-rolling from'] = true
 
+-- MasterExperience
+ACL["Disabled"] = true
+ACL["Max Level"] = true
+ACL['Lvl'] = true
+ACL["Experience"] = true
+ACL["XP:"] = true
+ACL["Remaining:"] = true
+ACL["Bars"] = true
+ACL['Quest'] = true
+ACL["Quest Log XP:"] = true
+ACL['Rested'] = true
+ACL["Rested:"] = true
+ACL['Party'] = true
+ACL['BattleNet'] = true
+ACL['Width'] = true
+ACL['Height'] = true
+ACL["Colors"] = true
+ACL['Color By Class'] = true
+
+-- Mouseover Auras
+ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = '|cFF16C3F2悬停|r|cFFFFFFFF光环|r'
+ACL['Auras for your mouseover target'] = '鼠标指向目标显示光环'
+ACL['Spacing'] = true
+
 -- MovableFrames
 ACL['Permanent Moving'] = "永久移动"
 ACL['Reset Moving'] = "重置位置"
+
+-- OzCooldowns
+ACL['Enable'] = '启用'
+ACL['Enabled'] = '启用'
+ACL['Main Options'] = '主要选项'
+ACL['Masque Support'] = '支持 Masque 皮肤'
+ACL['Sort by Current Duration'] = '按当前剩余排序'
+ACL['Suppress Duration Threshold'] = '显示时间阈值'
+ACL['Ignore Duration Threshold'] = '忽略时间阈值'
+ACL['Duration in Seconds'] = '单位秒'
+ACL['Buff Timer'] = '增益计时'
+ACL['Update Speed'] = '更新速度'
+ACL['Icons'] = '图标'
+ACL['Vertical'] = '垂直'
+ACL['Tooltips'] = '鼠标提示'
+ACL['Announce on Click'] = '点击通告'
+ACL['Spacing'] = '间隔'
+ACL['Stacks/Charges Font'] = '堆叠/充能字体'
+ACL['Stacks/Charges Font Size'] = '堆叠/充能字体大小'
+ACL['Stacks/Charges Font Flag'] = '堆叠/充能字体轮廓'
+ACL['Status Bar'] = '状态条'
+ACL['Gradient'] = '渐变'
+ACL['Texture Color'] = '材质颜色'
+ACL['Spell ID: '] = '法术ID: '
+ACL['My %s will be off cooldown in %s'] = '法术 %s 将在 %s 后就绪'
+
+
+-- QuestSounds
+ACL['Sound by LSM'] = true
+ACL['Sound by SoundID'] = true
+ACL['Use Sound ID'] = true
+ACL['Quest Complete Sound ID'] = true
+ACL['Quest Complete'] = true
+ACL['Objective Complete Sound ID'] = true
+ACL['Objective Complete'] = true
+ACL['Objective Progress Sound ID'] = true
+ACL['Objective Progress'] = true
+ACL['Throttle'] = true
+ACL['Ambience'] = true
+ACL['Channel'] = true
+ACL['Dialog'] = true
+ACL['Master'] = true
+ACL['SFX'] = true
+
+-- Reminder(AuraReminder)
+ACL['Sound'] = true
+ACL['Sound that will play when you have a warning icon displayed.'] = true
+ACL['Select Group'] = true
+ACL['Select Filter'] = true
+ACL['None'] = true
+ACL['Filter Control'] = true
+ACL['New Filter Name'] = true
+ACL['New Filter Type'] = true
+ACL['Spell'] = true
+ACL['Weapon'] = true
+ACL['Cooldown'] = true
+ACL['Add Filter'] = true
+ACL['Remove Filter'] = true
+ACL['Filter Type'] = true
+ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'] = true
+ACL['Conditions'] = true
+ACL['Inside Raid/Party'] = true
+ACL['Inside BG/Arena'] = true
+ACL['Combat'] = true
+ACL['Filter Conditions'] = true
+ACL['Level Requirement'] = true
+ACL['Level requirement for the icon to be able to display. 0 for disabled.'] = true
+ACL['Personal Buffs'] = true
+ACL['Only check if the buff is coming from you.'] = true
+ACL['Reverse Check'] = true
+ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'] = true
+ACL['Strict Filter'] = true
+ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'] = true
+ACL['Disable Sound'] = true
+ACL['Cooldown Conditions'] = true
+ACL['Spell ID'] = true
+ACL['Show On Cooldown'] = true
+ACL['Cooldown Alpha'] = true
+ACL['Spells'] = true
+ACL['New ID'] = true
+ACL['Remove ID'] = true
+ACL['Negate Spells'] = true
+ACL['Any'] = true
+ACL['Role'] = true
+ACL['You must be a certain role for the icon to appear.'] = true
+ACL['Tank'] = true
+ACL['Damage'] = true
+ACL['Healer'] = true
+ACL['Talent Tree'] = true
+ACL['You must be using a certain talent tree for the icon to show.'] = true
+ACL['Tree Exception'] = true
+ACL['Set a talent tree to not follow the reverse check.'] = true
+ACL['Class'] = true
+
+-- Reputation Reward
+ACL['Show All Reputation'] = true
 
 -- SquareMinimapButtons
 ACL['Bar MouseOver'] = "鼠标划过显示"
@@ -146,6 +326,13 @@ ACL['Move Garrison Icon'] = "收纳要塞图标"
 ACL['Move Mail Icon'] = "收纳邮件图标"
 ACL['Move Tracker Icon'] = "收纳追踪图标"
 ACL['Move Queue Status Icon'] = "收纳任务状态图标"
+ACL['Square Minimap Buttons'] = true
+ACL['Bar Backdrop'] = true
+ACL['Blizzard'] = true
+ACL['Move Game Time Frame'] = true
+ACL['Reverse Direction'] = true
+ACL['Shadows'] = true
+ACL['Visibility'] = true
 
 -- stAddOnManager
 ACL['# Shown AddOns'] = "# 显示插件"
@@ -175,72 +362,6 @@ ACL['Texture'] = "材质"
 ACL['There is already a profile named %s. Do you want to overwrite it?'] = "已有名为 %s 的方案, 是否覆盖?"
 ACL['This will attempt to enable all the "Required" AddOns for the selected AddOn.'] = "这将启用所有所选插件所依赖的插件"
 ACL['Update'] = "更新"
-
--- OzCooldowns
-ACL['Enable'] = '启用'
-ACL['Enabled'] = '启用'
-ACL['Main Options'] = '主要选项'
-ACL['Masque Support'] = '支持 Masque 皮肤'
-ACL['Sort by Current Duration'] = '按当前剩余排序'
-ACL['Suppress Duration Threshold'] = '显示时间阈值'
-ACL['Ignore Duration Threshold'] = '忽略时间阈值'
-ACL['Duration in Seconds'] = '单位秒'
-ACL['Buff Timer'] = '增益计时'
-ACL['Update Speed'] = '更新速度'
-ACL['Icons'] = '图标'
-ACL['Vertical'] = '垂直'
-ACL['Tooltips'] = '鼠标提示'
-ACL['Announce on Click'] = '点击通告'
-ACL['Spacing'] = '间隔'
-ACL['Stacks/Charges Font'] = '堆叠/充能字体'
-ACL['Stacks/Charges Font Size'] = '堆叠/充能字体大小'
-ACL['Stacks/Charges Font Flag'] = '堆叠/充能字体轮廓'
-ACL['Status Bar'] = '状态条'
-ACL['Gradient'] = '渐变'
-ACL['Texture Color'] = '材质颜色'
-ACL['Spell ID: '] = '法术ID: '
-ACL['My %s will be off cooldown in %s'] = '法术 %s 将在 %s 后就绪'
-
--- Cooldown Text
-ACL["COOLDOWN_DESC"] = "调整冷却设置."
-ACL['Cooldown Text'] = '|cFF16C3F2冷却|r|cFFFFFFFF文字|r'
-ACL['Display cooldown text on anything with the cooldown spiral.'] = '显示技能冷却时间'
-ACL['Reverse Toggle'] = '反向启用'
-ACL['Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled.'] = '反向启用将在全局冷却关闭时在此模块启用冷却文字, 全局冷却启用时此模块关闭冷却文字'
-ACL['Force Hide Blizzard Text'] = '强制隐藏暴雪冷却文字'
-ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."] = '这个选项将强制隐藏系统设置中的暴雪冷却文字'
-ACL['Text Threshold'] = '文字阈值'
-ACL['This will override the global cooldown settings.'] = '这个选项将覆盖全局冷却设置'
-ACL['MM:SS Threshold'] = '分:秒 阈值'
-ACL['Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format.'] = '小于此选项(秒)的冷却将显示为 分:秒 格式, 设置为-1时为禁用此阈值'
-ACL['HH:MM Threshold'] = '时:分 阈值'
-ACL['Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format.'] = '小于此选项(分)的冷却将显示为 时:分 格式, 设置为-1时为禁用此阈值'
-ACL['Color Override'] = '颜色覆盖'
-ACL['Low Threshold'] = '阈值时间'
-ACL['Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red'] = '小于此选项(秒)的冷却数字将会变为红色并显示为小数模式, 设置为-1时为禁用此阈值'
-ACL['Threshold Colors'] = '阈值颜色'
-ACL['Expiring'] = '即将冷却完毕'
-ACL['Color when the text is about to expire'] = '即将冷却完毕的数字颜色'
-ACL['Seconds'] = '秒'
-ACL['Color when the text is in the seconds format.'] = '以秒显示的文字颜色'
-ACL['Minutes'] = '分'
-ACL['Color when the text is in the minutes format.'] = '以分显示的文字颜色'
-ACL['Hours'] = '时'
-ACL['Color when the text is in the hours format.'] = '以小时显示的文字颜色'
-ACL['Days'] = '天'
-ACL['Color when the text is in the days format.'] = '以天显示的文字颜色'
-ACL['MM:SS'] = '分:秒'
-ACL['HH:MM'] = '时:分'
-ACL['Time Indicator Colors'] = '时间指示器颜色'
-ACL['Use Indicator Color'] = '使用指示器颜色'
-ACL['Fonts'] = '字体'
-ACL['Text Font Size'] = '字体大小'
-ACL['COLORS'] = '颜色'
-ACL['Global'] = '全局'
-
--- Mouseover Auras
-ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = '|cFF16C3F2悬停|r|cFFFFFFFF光环|r'
-ACL['Auras for your mouseover target'] = '鼠标指向目标显示光环'
 
 -- Torghast Buffs
 ACL["Index"] = true

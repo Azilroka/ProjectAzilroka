@@ -42,9 +42,9 @@ function QS:PlaySoundFile(file)
 	QS.IsPlaying = true
 
 	if QS.db.UseSoundID then
-		PlaySound(tonumber(file))
+		PlaySound(tonumber(file), QS.db.Channel)
 	else
-		PlaySoundFile(PA.LSM:Fetch('sound', file))
+		PlaySoundFile(PA.LSM:Fetch('sound', file), QS.db.Channel)
 	end
 
 	QS:ScheduleTimer('ResetSoundPlayback', QS.db.Throttle)
@@ -144,6 +144,7 @@ function QS:GetOptions()
 	QuestSounds.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
 	QuestSounds.args.General.inline = true
 	QuestSounds.args.General.args.Throttle = PA.ACH:Range(PA.ACL['Throttle'], nil, nil, { min = 1, max = 30, step = 1})
+	QuestSounds.args.General.args.Channel = PA.ACH:Select(PA.ACL['Channel'], nil, nil, {Master = PA.ACL['Master'], SFX = PA.ACL['SFX'], Ambience = PA.ACL['Ambience'], Dialog = PA.ACL['Dialog']})
 
 	QuestSounds.args.General.args.LSM = PA.ACH:Group(PA.ACL['Sound by LSM'], nil, 1, nil, nil, nil, function() return QS.db.UseSoundID end)
 	QuestSounds.args.General.args.LSM.args.QuestComplete = PA.ACH:SharedMediaSound(PA.ACL['Quest Complete'], nil, 1)
@@ -168,6 +169,7 @@ function QS:BuildProfile()
 	PA.Defaults.profile.QuestSounds = {
 		Enable = true,
 		Throttle = 3,
+		Channel = 'SFX',
 		QuestComplete = 'Peon Quest Complete',
 		ObjectiveComplete = 'Peon Objective Complete',
 		ObjectiveProgress = 'Peon Objective Progress',

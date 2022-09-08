@@ -1,5 +1,5 @@
--- Taiwanese localization file for zhTW.
-local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'zhTW')
+-- Italien localization file for itIT
+local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'itIT', true, true)
 if not ACL then return end
 
 -- Misc
@@ -264,7 +264,7 @@ ACL['Dialog'] = true
 ACL['Master'] = true
 ACL['SFX'] = true
 
--- Reminder(AuraReminder) - 버프 알리 
+-- Reminder(AuraReminder)
 ACL['Sound'] = true
 ACL['Sound that will play when you have a warning icon displayed.'] = true
 ACL['Select Group'] = true
