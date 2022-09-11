@@ -3,7 +3,7 @@ local FG = PA:NewModule('FriendGroups', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook
 _G.FriendGroups= FG
 
 FG.Title = PA.ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
-FG.Description = PA.ACL['Manage Firends List with Groups']
+FG.Description = PA.ACL['Manage Friends List with Groups']
 FG.Authors = 'Azilroka'
 FG.Credits = 'Mikeprod    frankkkkk'
 

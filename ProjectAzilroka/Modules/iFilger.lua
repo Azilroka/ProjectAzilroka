@@ -2,8 +2,8 @@ local PA = _G.ProjectAzilroka
 local IF = PA:NewModule('iFilger', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.iFilger = IF
 
-IF.Title = '|cFF16C3F2i|r|cFFFFFFFFFilger|r'
-IF.Description = 'Minimalistic Auras / Buffs / Procs / Cooldowns'
+IF.Title = PA.ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r']
+IF.Description = PA.ACL['Minimalistic Auras / Buffs / Procs / Cooldowns']
 IF.Authors = 'Azilroka    Nils Ruesch    Ildyria'
 
 IF.isEnabled = false
@@ -861,7 +861,7 @@ function IF:GetOptions()
 		iFilger.args[Name].args.StatusBarGroup.args.StatusBarTextureColor = PA.ACH:Color(PA.ACL['Texture Color'], nil, 6, nil, nil, function(info) return unpack(IF.db[Name][info[#info]]) end, function(info, r, g, b, a) IF.db[Name][info[#info]] = { r, g, b, a} end)
 		iFilger.args[Name].args.StatusBarGroup.args.StatusBarFont = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 7)
 		iFilger.args[Name].args.StatusBarGroup.args.StatusBarFontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 8, { min = 8, max = 18, step = 1 })
-		iFilger.args[Name].args.StatusBarGroup.args.StatusBarFontFlag = PA.ACH:FontFlags(PA.ACL['Font Flags'], nil, 9)
+		iFilger.args[Name].args.StatusBarGroup.args.StatusBarFontFlag = PA.ACH:FontFlags(PA.ACL['Font Flag'], nil, 9)
 		iFilger.args[Name].args.StatusBarGroup.args.StatusBarDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 10, { UP = 'Up', DOWN = 'Down' })
 
 		iFilger.args[Name].args.StatusBarGroup.args.StatusBarName = PA.ACH:Group(PA.ACL['Name'], nil, 11)

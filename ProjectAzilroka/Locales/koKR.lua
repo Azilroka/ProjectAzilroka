@@ -62,8 +62,9 @@ ACL['Show Icon'] = '아이콘 표시'
 ACL['Show Text'] = '문자 표시'
 
 -- Cooldown Text - 버프/디버프 알람
-ACL["Cooldown Text"] = true
-ACL["COOLDOWN_DESC"] = "[재사용 대기시간] 설정을 조정합니다."
+ACL['Cooldown Text'] = true
+ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
+ACL['Adjust Cooldown Settings.'] = "[재사용 대기시간] 설정을 조정합니다."
 ACL["Reverse Toggle"] = "반대로 보여줌"
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = "설정내용이 있으면 안보이고, 없을대 화면에 보여줌"
 ACL["Force Hide Blizzard Text"] = "블리자드 문자 강제 숨김"
@@ -153,9 +154,17 @@ ACL['Game Icon Preview'] = '게임 아이콘 미리보기'
 ACL['Show Level'] = '레벨 표시'
 ACL['Status Icon Preview'] = '내상태 아이콘 미리보기'
 ACL[' Icon'] = ' 아이콘'
+ACL['Name Settings'] = true
+ACL['Info Settings'] = true
+ACL['Show Status Background'] = true
+ACL['Show Status Highlight'] = true
+ACL['Icon Settings'] = true
+ACL['Game Icon Pack'] = true
 
 -- Enhanced Pet Battle UI - 향상된 팻 배틀 UI
-ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
+ACL['Enhanced Pet Battle UI'] = true
+ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
+ACL['An enhanced UI for pet battles'] = true
 ACL["3D Portraits"] = "3D 초상화"
 ACL["Add More Detailed Info if BreedInfo is available."] = "번식 정보가 있으면 더 자세한 정보를 추가하십시오."
 ACL["Add Pet Level Breakdown if BreedInfo is available."] = "종 정보를 사용할 수 있는 경우 애완동물 레벨 분류를 추가합니다."
@@ -219,7 +228,8 @@ ACL['Stack Count'] = '중첩 표시'
 ACL['StatusBar'] = '상태표시 바'
 ACL['Follow Cooldown Text Color'] = '재사용 대기시간 문자 색상 따르기'
 ACL['Follow Cooldown Text Colors (Expiring / Seconds)'] = '재사용 대기시간 문자색 따르기(만료 시간/초)'
-ACL['Font Flags'] = '글꼴 외곽선'
+ACL['Font Flag'] = '글꼴 외곽선'
+ACL['Filters'] = true
 
 -- Loot Confirm - 루팅 관련 자동화기능
 ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = '|cFF16C3F2루팅|r |cFFFFFFFF설정|r'
@@ -239,7 +249,7 @@ ACL['Shows Experience Bars for Party / Battle.net Friends'] = '파티 /Battle.ne
 ACL["Disabled"] = "사용안함"
 ACL["Max Level"] = "최대 레벨"
 ACL['Lvl'] = '레벨1'
-ACL["Experience"] = "경험치"
+ACL['Experience'] = "경험치"
 ACL["XP:"] = true
 ACL["Remaining:"] = "남은 시간 :"
 ACL["Bars"] = "바"
@@ -251,7 +261,7 @@ ACL['Party'] = '파티'
 ACL['BattleNet'] = '배틀넷'
 ACL['Width'] = '너비'
 ACL['Height'] = '높이'
-ACL["Colors"] = "색상"
+ACL['Colors'] = "색상"
 ACL['Color By Class'] = '직업 색상'
 
 -- Mouseover Auras - 마우스 오버시 버프 상황 표시
@@ -301,6 +311,12 @@ ACL['Objective Complete Sound ID'] = '목표 완료 사운드 ID'
 ACL['Objective Complete'] = '목표 완료 사운드'
 ACL['Objective Progress Sound ID'] = '목표 진행률 사운드 ID'
 ACL['Objective Progress'] = '목표 진행률 사운드'
+ACL['Throttle'] = true
+ACL['Ambience'] = true
+ACL['Channel'] = true
+ACL['Dialog'] = true
+ACL['Master'] = true
+ACL['SFX'] = true
 
 -- Reminder(AuraReminder) - 버프 알리 
 ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
@@ -437,3 +453,4 @@ ACL["Sort Direction"] = "정렬 방향"
 ACL["Defines the sort order of the selected sort method."] = "선택한 정렬 방법의 정렬 순서를 정의합니다."
 ACL["Ascending"] = "오름차순"
 ACL["Descending"] = "내림차순"
+ACL["Growth Direction"] = true

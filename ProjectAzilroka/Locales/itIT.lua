@@ -1,5 +1,5 @@
--- English localization file for enUS and enGB.
-local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'enUS', true, true)
+-- Italien localization file for itIT
+local ACL = LibStub('AceLocale-3.0'):NewLocale('ProjectAzilroka', 'itIT', true, true)
 if not ACL then return end
 
 -- Misc
@@ -46,8 +46,6 @@ ACL['General'] = true
 
 -- AddOns
 ACL['AddOns'] = true
-ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
-ACL['Reminder for Buffs / Debuffs'] = true
 ACL['Cooldown Text'] = true
 ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
 ACL['Adjust Cooldown Settings.'] = true
@@ -104,6 +102,7 @@ ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = true
 ACL['An enhanced UI for pet battles'] = true
 
 -- Cooldown Text
+ACL["COOLDOWN_DESC"] = "Adjust Cooldown Settings."
 ACL["Reverse Toggle"] = true
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = true
 ACL["Force Hide Blizzard Text"] = true
@@ -199,7 +198,6 @@ ACL['Icon Settings'] = true
 ACL['Game Icon Pack'] = true
 
 -- Enhanced Pet Battle UI
-ACL["|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r"] = true
 ACL["3D Portraits"] = true
 ACL["Add More Detailed Info if BreedInfo is available."] = true
 ACL["Add Pet Level Breakdown if BreedInfo is available."] = true

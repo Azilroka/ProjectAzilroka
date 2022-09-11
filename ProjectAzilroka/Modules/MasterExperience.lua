@@ -491,10 +491,10 @@ function MXP:GetOptions()
 	MasterExperience.args.General.args.SizeGroup.args.Width = PA.ACH:Range(PA.ACL['Width'], nil, 1, { min = 1, max = 512, step = 1 })
 	MasterExperience.args.General.args.SizeGroup.args.Height = PA.ACH:Range(PA.ACL['Height'], nil, 2, { min = 1, max = 64, step = 1 })
 
-	MasterExperience.args.General.args.Colors = PA.ACH:Group(PA.ACL["Colors"], nil, -1, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateCurrentBars() end)
+	MasterExperience.args.General.args.Colors = PA.ACH:Group(PA.ACL['Colors'], nil, -1, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateCurrentBars() end)
 	MasterExperience.args.General.args.Colors.args.ColorByClass = PA.ACH:Toggle(PA.ACL['Color By Class'], nil, 0, nil, nil, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
-	MasterExperience.args.General.args.Colors.args.Experience = PA.ACH:Color('Experience', nil, 1, true)
-	MasterExperience.args.General.args.Colors.args.Rested = PA.ACH:Color('Rested', nil, 2, true)
+	MasterExperience.args.General.args.Colors.args.Experience = PA.ACH:Color(ACL['Experience'], nil, 1, true)
+	MasterExperience.args.General.args.Colors.args.Rested = PA.ACH:Color(ACL['Rested'], nil, 2, true)
 	MasterExperience.args.General.args.Colors.args.Quest = PA.ACH:Color('Quest', nil, 3, true)
 
 	MasterExperience.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)

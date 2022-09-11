@@ -462,8 +462,8 @@ local function group(order, db, label)
 	end
 end
 
-PA.Options.args.Cooldown = PA.ACH:Group(PA.ACL["Cooldown Text"], nil, 2, 'tab', function(info) return PA.db.Cooldown[info[#info]] end, function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end)
-PA.Options.args.Cooldown.args.intro = PA.ACH:Description(PA.ACL["COOLDOWN_DESC"], 0)
+PA.Options.args.Cooldown = PA.ACH:Group(PA.ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'], nil, 2, 'tab', function(info) return PA.db.Cooldown[info[#info]] end, function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end)
+PA.Options.args.Cooldown.args.intro = PA.ACH:Description(PA.ACL['Adjust Cooldown Settings.'], 0)
 PA.Options.args.Cooldown.args.Enable = PA.ACH:Toggle(PA.ACL["Enable"], PA.ACL["Display cooldown text on anything with the cooldown spiral."], 1)
 
 group(5,  'global',     PA.ACL["Global"])
