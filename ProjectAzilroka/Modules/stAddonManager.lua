@@ -583,7 +583,7 @@ function stAM:UpdateAddonList()
 		for i, AddOn in ipairs(stAM.AddOnInfo) do
 			local name, title, authors = AddOn.Name, AddOn.Title, AddOn.Authors
 
-			if strfind(strlower(name), query) or strfind(strlower(title), query) or (authors and strfind(strlower(authors), query)) then
+			if strfind(strlower(name), query, nil, true) or strfind(strlower(title), query, nil, true) or (authors and strfind(strlower(authors), query, nil, true)) then
 				tinsert(stAM.Frame.Search.AddOns, i)
 			end
 		end
