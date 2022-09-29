@@ -6,6 +6,7 @@ local _G = _G
 local pairs = pairs
 local tinsert = tinsert
 local tremove = tremove
+local strfind, strlower, strlen = strfind, strlower, strlen
 
 local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
@@ -16,12 +17,14 @@ BLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
 BLDB.Authors = 'Azilroka'
 BLDB.isEnabled = false
 
-function BLDB:TextUpdate(_, Name, _, Data)
-	BLDB.PluginObjects[Name]:SetText(Data)
-end
+function BLDB:TextUpdate(_, name, _, value)
+	local naText = strfind(strlower(value or ''), 'n/a', nil, true)
 
-function BLDB:ValueUpdate(_, Name, _, Data, Object)
-	BLDB.PluginObjects[Name]:SetFormattedText('%s %s', Data, Object.suffix)
+	if not value or (strlen(value) >= 3) or (value == name) or naText then
+		BLDB.PluginObjects[name]:SetText((not naText and value) or name)
+	else
+		BLDB.PluginObjects[name]:SetFormattedText('%s: %s', name, value)
+	end
 end
 
 function BLDB:AnimateSlide(frame, x, y, duration)
@@ -161,73 +164,67 @@ function BLDB:RemoveBlacklistFrame(frame)
 	BLDB:Update()
 end
 
-function BLDB:New(_, Name, Object)
-	if _G['BLDB_'..Name] then return end
+function BLDB:New(_, name, object)
+	if _G['BLDB_'..name] then return end
 	for _, v in pairs(BLDB.Ignore) do
-		if Name == v then return end
+		if name == v then return end
 	end
 
-	local Frame = CreateFrame('Frame', 'BLDB_'..Name, BLDB.Frame)
-	Frame:Hide()
-	Frame.pluginName = Name
-	Frame.pluginObject = Object
+	local button = CreateFrame('Button', 'BLDB_'..name, BLDB.Frame)
+	button:Hide()
+	button.pluginName = name
+	button.pluginObject = object
 
-	Frame:SetFrameStrata('BACKGROUND')
-	Frame:SetFrameLevel(3)
-	PA:SetTemplate(Frame, 'Transparent')
-	BLDB:AnimateSlide(Frame, -150, 0, 1)
-	Frame:SetHeight(BLDB.db['PanelHeight'])
-	Frame:SetWidth(BLDB.db['PanelWidth'])
-	Frame.Enabled = true
-	tinsert(BLDB.Buttons, Frame)
-	tinsert(BLDB.Whitelist, Frame)
+	button:SetFrameStrata('BACKGROUND')
+	button:SetFrameLevel(3)
+	PA:SetTemplate(button, 'Transparent')
+	BLDB:AnimateSlide(button, -150, 0, 1)
+	button:SetHeight(BLDB.db['PanelHeight'])
+	button:SetWidth(BLDB.db['PanelWidth'])
+	button.Enabled = true
+	tinsert(BLDB.Buttons, button)
+	tinsert(BLDB.Whitelist, button)
 
-	Frame.Text = Frame:CreateFontString(nil, 'OVERLAY')
-	Frame.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
-	Frame.Text:SetPoint('CENTER', Frame)
+	button.Text = button:CreateFontString(nil, 'OVERLAY')
+	button.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
+	button.Text:SetPoint('CENTER', button)
 
-	Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
-	Frame.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-	PA:CreateBackdrop(Frame.Icon)
+	button.Icon = button:CreateTexture(nil, 'ARTWORK')
+	button.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	PA:CreateBackdrop(button.Icon)
 
-	BLDB.PluginObjects[Name] = Frame.Text
+	BLDB.PluginObjects[name] = button.Text
 
-	BLDB:TextUpdate(nil, Name, nil, Object.text or Object.label or Name)
-	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..Name..'_text', 'TextUpdate')
-	if Object.suffix then
-		BLDB:ValueUpdate(nil, Name, nil, Object.value or Name, Object)
-		PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..Name..'_value', 'ValueUpdate')
-	end
+	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name..'_text', 'TextUpdate')
+	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name..'_value', 'TextUpdate')
 
-	Frame:SetScript('OnEnter', function(s)
+	button:SetScript('OnEnter', function(s)
 		if s.anim:IsPlaying() then return end
 		if s.pluginObject.OnTooltipShow then
 			GameTooltip:SetOwner(s, 'ANCHOR_RIGHT' , 2, -(BLDB.db['PanelHeight']))
-			PA:SetTemplate(GameTooltip, 'Transparent')
 			GameTooltip:ClearLines()
 			s.pluginObject.OnTooltipShow(GameTooltip, s)
 			GameTooltip:Show()
 		elseif s.pluginObject.OnEnter then
-			PA:SetTemplate(GameTooltip, 'Transparent')
 			s.pluginObject.OnEnter(s)
 		end
 	end)
-	Frame:SetScript('OnLeave', function(s)
+	button:SetScript('OnLeave', function(s)
 		GameTooltip:Hide()
 		if s.pluginObject.OnLeave then
 			s.pluginObject.OnLeave(s)
 		end
 	end)
-	Frame:SetScript('OnMouseUp', function(s, btn)
+	button:SetScript('OnClick', function(s, btn)
 		if s.anim:IsPlaying() then return end
 		if s.pluginObject.OnClick then
 			s.pluginObject.OnClick(s, btn)
 		end
 	end)
-	Frame:SetScript('OnUpdate', function(s) s.Icon:SetTexture(Object.icon) end)
-	tinsert(BLDB.EasyMenu, { text = 'Show '..Name, checked = function() return Frame.Enabled end, func = function() if Frame.Enabled then BLDB:AddBlacklistFrame(Frame) else BLDB:RemoveBlacklistFrame(Frame) end BLDB:Update() end } )
+	button:SetScript('OnUpdate', function(s) s.Icon:SetTexture(object.icon) end)
+	tinsert(BLDB.EasyMenu, { text = 'Show '..name, checked = function() return button.Enabled end, func = function() if button.Enabled then BLDB:AddBlacklistFrame(button) else BLDB:RemoveBlacklistFrame(button) end BLDB:Update() end } )
 
-	if Object.OnCreate then Object.OnCreate(Object, Frame) end
+	if object.OnCreate then object.OnCreate(object, button) end
 end
 
 function BLDB:GetOptions()

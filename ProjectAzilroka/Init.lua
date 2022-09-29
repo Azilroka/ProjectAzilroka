@@ -251,9 +251,9 @@ function PA:SetTemplate(frame)
 			frame:SetTemplate('Transparent', true)
 		else
 			frame:SetBackdrop({ bgFile = PA.Solid, edgeFile = PA.Solid, edgeSize = 1 })
+			frame:SetBackdropColor(.08, .08, .08, .8)
+			frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 		end
-		frame:SetBackdropColor(.08, .08, .08, .8)
-		frame:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 	end
 end
 
@@ -261,10 +261,20 @@ function PA:CreateBackdrop(frame)
 	if PA.AddOnSkins then
 		_G.AddOnSkins[1]:CreateBackdrop(frame)
 	else
-		frame.Backdrop = CreateFrame('Frame', nil, frame)
-		frame.Backdrop:SetFrameLevel(frame:GetFrameLevel() - 1)
-		PA:SetOutside(frame.Backdrop, frame)
-		PA:SetTemplate(frame.Backdrop)
+		local Parent = frame.IsObjectType and frame:IsObjectType('Texture') and frame:GetParent() or frame
+
+		local Backdrop = CreateFrame('Frame', nil, Parent)
+		if not Backdrop.SetBackdrop then _G.Mixin(Backdrop, _G.BackdropTemplateMixin) end
+		if (Parent:GetFrameLevel() - 1) >= 0 then
+			Backdrop:SetFrameLevel(Parent:GetFrameLevel() - 1)
+		else
+			Backdrop:SetFrameLevel(0)
+		end
+
+		PA:SetOutside(Backdrop, frame)
+		PA:SetTemplate(Backdrop)
+
+		frame.Backdrop = Backdrop
 	end
 end
 
