@@ -55,6 +55,7 @@ OzCD.SpellList = {}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
 local COOLDOWN_MIN_DURATION = .1
+local SpellOptions = {}
 
 -- Simpy Magic
 local t = {}
@@ -419,18 +420,18 @@ function OzCD:SPELLS_CHANGED()
 		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
 
 		PA:AddKeysToTable(OzCD.db.SpellCDs, OzCD.SpellList)
-
-		PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 	end
+
+	PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 end
 
 function OzCD:GenerateSpellOptions()
-	local SpellOptions = {}
-
 	for SpellID, SpellName in pairs(OzCD.db.SpellCDs) do
 		local Name, _, Icon = GetSpellInfo(SpellID)
-		if Name then
-			SpellOptions[tostring(SpellID)] = {
+		local tblID = tostring(SpellID)
+
+		if Name and not SpellOptions[tblID] then
+			SpellOptions[tblID] = {
 				type = 'toggle',
 				image = Icon,
 				imageCoords = PA.TexCoords,
