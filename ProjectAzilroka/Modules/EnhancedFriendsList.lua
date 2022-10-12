@@ -96,23 +96,24 @@ function EFL:UpdateFriends(button)
 		local info = _G.C_FriendList.GetFriendInfoByIndex(button.id)
 		if info.connected then
 			local name, level, class = info.name, info.level, info.className
-			local classcolor = PA:ClassColorCode(class)
+			local classTag, color, diff = PA:GetClassName(class), PA:ClassColorCode(class), 'FFFFE519'
 			status = info.dnd and 'DND' or info.afk and 'AFK' or 'Online'
 			if EFL.db.ShowLevel then
 				if EFL.db.DiffLevel then
-					local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
-					nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class, LEVEL, WrapTextInColorCode(level, diff))
-				else
-					nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class, LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+					local diffColor = GetQuestDifficultyColor(level)
+					diff = level ~= 0 and format('FF%02x%02x%02x', diffColor.r * 255, diffColor.g * 255, diffColor.b * 255) or 'FFFFFFFF'
 				end
+				nameText = format('%s |cFFFFFFFF(|r%s - %s %s|cFFFFFFFF)|r', WrapTextInColorCode(name, color), class, LEVEL, WrapTextInColorCode(level, diff))
 			else
-				nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', WrapTextInColorCode(name, classcolor), class)
+				nameText = format('%s |cFFFFFFFF(|r%s|cFFFFFFFF)|r', WrapTextInColorCode(name, color), class)
 			end
 			infoText = info.area
 
-			button.gameIcon:Show()
-			button.gameIcon:SetTexture('Interface/WorldStateFrame/Icons-Classes')
-			button.gameIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[PA:GetClassName(class)]))
+			if classTag then
+				button.gameIcon:Show()
+				button.gameIcon:SetTexture('Interface/WorldStateFrame/Icons-Classes')
+				button.gameIcon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classTag]))
+			end
 		else
 			nameText = info.name
 		end
@@ -123,7 +124,7 @@ function EFL:UpdateFriends(button)
 			nameText = info.accountName
 			infoText = info.gameAccountInfo.richPresence
 			if info.gameAccountInfo.isOnline then
-				local client = info.gameAccountInfo.clientProgram
+				local client, diff = info.gameAccountInfo.clientProgram, 'FFFFE519'
 				status = info.isDND and 'DND' or info.isAFK and 'AFK' or 'Online'
 
 				if client == _G.BNET_CLIENT_WOW then
@@ -133,18 +134,17 @@ function EFL:UpdateFriends(button)
 					if characterName then
 						if EFL.db.ShowLevel then
 							if EFL.db.DiffLevel then
-								local diff = level ~= 0 and format('FF%02x%02x%02x', GetQuestDifficultyColor(level).r * 255, GetQuestDifficultyColor(level).g * 255, GetQuestDifficultyColor(level).b * 255) or 'FFFFFFFF'
-								nameText = format('%s (%s - %s %s)', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
-							else
-								nameText = format('%s (%s - %s %s)', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, 'FFFFE519'))
+								local diffColor = GetQuestDifficultyColor(level)
+								diff = level ~= 0 and format('FF%02x%02x%02x', diffColor.r * 255, diffColor.g * 255, diffColor.b * 255) or 'FFFFFFFF'
 							end
+							nameText = format('%s (%s - %s %s)', nameText, WrapTextInColorCode(characterName, classcolor), LEVEL, WrapTextInColorCode(level, diff))
 						else
 							nameText = format('%s (%s)', nameText, WrapTextInColorCode(characterName, classcolor))
 						end
 					end
 
 					if info.gameAccountInfo.wowProjectID == _G.WOW_PROJECT_CLASSIC and info.gameAccountInfo.realmDisplayName ~= PA.MyRealm then
-						infoText = format('%s - %s', info.gameAccountInfo.areaName or UNKNOWN, infoText)
+						infoText = format('%s - %s', info.gameAccountInfo.areaName or _G.UNKNOWN, infoText)
 					elseif info.gameAccountInfo.realmDisplayName == PA.MyRealm then
 						infoText = info.gameAccountInfo.areaName
 					end
@@ -168,11 +168,7 @@ function EFL:UpdateFriends(button)
 		end
 	end
 
-	if button.summonButton:IsShown() then
-		button.gameIcon:SetPoint('TOPRIGHT', -50, -2)
-	else
-		button.gameIcon:SetPoint('TOPRIGHT', -21, -2)
-	end
+	button.gameIcon:SetPoint('TOPRIGHT', button.summonButton:IsShown() and -50 or -21, -2)
 
 	if nameText then button.name:SetText(nameText) end
 	if infoText then button.info:SetText(infoText) end
