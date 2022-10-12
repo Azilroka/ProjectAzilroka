@@ -1,6 +1,6 @@
 [submodule "ProjectAzilroka/Libs/Ace3"]
 	path = ProjectAzilroka/Libs/Ace3
-	url = https://github.com/Azilroka/Ace3
+	url = https://github.com/WoWUIDev/Ace3
 [submodule "ProjectAzilroka/Libs/LibDataBroker-1.1"]
 	path = ProjectAzilroka/Libs/LibDataBroker-1.1
 	url = https://repos.wowace.com/wow/libdatabroker-1-1
