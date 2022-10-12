@@ -173,8 +173,7 @@ function PA:GetClassName(class)
 end
 
 function PA:Color(name)
-	local color = '|cFF16C3F2%s|r'
-	return (color):format(name)
+	return format('|cFF16C3F2%s|r', name)
 end
 
 function PA:Print(...)
