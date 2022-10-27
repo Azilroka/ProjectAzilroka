@@ -1383,53 +1383,119 @@ function UpdateNewAction(self)
 	end
 end
 
--- Hook UpdateFlyout so we can use the blizzy templates
-hooksecurefunc("ActionButton_UpdateFlyout", function(self, ...)
-	if ButtonRegistry[self] then
-		UpdateFlyout(self)
-	end
-end)
 
-function UpdateFlyout(self)
-	-- disabled FlyoutBorder/BorderShadow, those are not handled by LBF and look terrible
-	self.FlyoutBorder:Hide()
-	self.FlyoutBorderShadow:Hide()
-	if self._state_type == "action" then
-		-- based on ActionButton_UpdateFlyout in ActionButton.lua
-		local actionType = GetActionInfo(self._state_action)
-		if actionType == "flyout" then
-			-- Update border and determine arrow position
-			local arrowDistance
-			if (SpellFlyout and SpellFlyout:IsShown() and SpellFlyout:GetParent() == self) or GetMouseFocus() == self then
-				arrowDistance = 5
-			else
-				arrowDistance = 2
-			end
-
-			-- Update arrow
-			self.FlyoutArrow:Show()
-			self.FlyoutArrow:ClearAllPoints()
-			local direction = self:GetAttribute("flyoutDirection")
-			if direction == "LEFT" then
-				self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
-				SetClampedTextureRotation(self.FlyoutArrow, 270)
-			elseif direction == "RIGHT" then
-				self.FlyoutArrow:SetPoint("RIGHT", self, "RIGHT", arrowDistance, 0)
-				SetClampedTextureRotation(self.FlyoutArrow, 90)
-			elseif direction == "DOWN" then
-				self.FlyoutArrow:SetPoint("BOTTOM", self, "BOTTOM", 0, -arrowDistance)
-				SetClampedTextureRotation(self.FlyoutArrow, 180)
-			else
-				self.FlyoutArrow:SetPoint("TOP", self, "TOP", 0, arrowDistance)
-				SetClampedTextureRotation(self.FlyoutArrow, 0)
-			end
-
-			-- return here, otherwise flyout is hidden
-			return
+if ActionButton_UpdateFlyout then
+	-- Hook UpdateFlyout so we can use the blizzy templates
+	hooksecurefunc("ActionButton_UpdateFlyout", function(self, ...)
+		if ButtonRegistry[self] then
+			UpdateFlyout(self)
 		end
+	end)
+
+	function UpdateFlyout(self)
+		-- disabled FlyoutBorder/BorderShadow, those are not handled by LBF and look terrible
+		self.FlyoutBorder:Hide()
+		self.FlyoutBorderShadow:Hide()
+		if self._state_type == "action" then
+			-- based on ActionButton_UpdateFlyout in ActionButton.lua
+			local actionType = GetActionInfo(self._state_action)
+			if actionType == "flyout" then
+				-- Update border and determine arrow position
+				local arrowDistance
+				if (SpellFlyout and SpellFlyout:IsShown() and SpellFlyout:GetParent() == self) or GetMouseFocus() == self then
+					arrowDistance = 5
+				else
+					arrowDistance = 2
+				end
+
+				-- Update arrow
+				self.FlyoutArrow:Show()
+				self.FlyoutArrow:ClearAllPoints()
+				local direction = self:GetAttribute("flyoutDirection")
+				if direction == "LEFT" then
+					self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
+					SetClampedTextureRotation(self.FlyoutArrow, 270)
+				elseif direction == "RIGHT" then
+					self.FlyoutArrow:SetPoint("RIGHT", self, "RIGHT", arrowDistance, 0)
+					SetClampedTextureRotation(self.FlyoutArrow, 90)
+				elseif direction == "DOWN" then
+					self.FlyoutArrow:SetPoint("BOTTOM", self, "BOTTOM", 0, -arrowDistance)
+					SetClampedTextureRotation(self.FlyoutArrow, 180)
+				else
+					self.FlyoutArrow:SetPoint("TOP", self, "TOP", 0, arrowDistance)
+					SetClampedTextureRotation(self.FlyoutArrow, 0)
+				end
+
+				-- return here, otherwise flyout is hidden
+				return
+			end
+		end
+		self.FlyoutArrow:Hide()
 	end
-	self.FlyoutArrow:Hide()
+else
+	function UpdateFlyout(self, isButtonDownOverride)
+		self.FlyoutBorderShadow:Hide()
+		if self._state_type == "action" then
+			-- based on ActionButton_UpdateFlyout in ActionButton.lua
+			local actionType = GetActionInfo(self._state_action)
+			if actionType == "flyout" then
+				local isMouseOverButton =  GetMouseFocus() == self;
+
+				local isButtonDown
+				if (isButtonDownOverride ~= nil) then
+					isButtonDown = isButtonDownOverride
+				else
+					isButtonDown = self:GetButtonState() == "PUSHED"
+				end
+
+				local flyoutArrowTexture = self.FlyoutArrowContainer.FlyoutArrowNormal
+
+				if (isButtonDown) then
+					flyoutArrowTexture = self.FlyoutArrowContainer.FlyoutArrowPushed
+
+					self.FlyoutArrowContainer.FlyoutArrowNormal:Hide()
+					self.FlyoutArrowContainer.FlyoutArrowHighlight:Hide()
+				elseif (isMouseOverButton) then
+					flyoutArrowTexture = self.FlyoutArrowContainer.FlyoutArrowHighlight
+
+					self.FlyoutArrowContainer.FlyoutArrowNormal:Hide()
+					self.FlyoutArrowContainer.FlyoutArrowPushed:Hide()
+				else
+					self.FlyoutArrowContainer.FlyoutArrowHighlight:Hide()
+					self.FlyoutArrowContainer.FlyoutArrowPushed:Hide()
+				end
+
+				local isFlyoutShown = SpellFlyout and SpellFlyout:IsShown() and SpellFlyout:GetParent() == self
+				local arrowDistance = isFlyoutShown and 1 or 4
+
+				-- Update arrow
+				self.FlyoutArrowContainer:Show()
+				flyoutArrowTexture:Show()
+				flyoutArrowTexture:ClearAllPoints()
+
+				local direction = self:GetAttribute("flyoutDirection")
+				if direction == "LEFT" then
+					SetClampedTextureRotation(flyoutArrowTexture, isFlyoutShown and 90 or 270)
+					flyoutArrowTexture:SetPoint("LEFT", self, "LEFT", -arrowDistance, 0)
+				elseif direction == "RIGHT" then
+					SetClampedTextureRotation(flyoutArrowTexture, isFlyoutShown and 270 or 90)
+					flyoutArrowTexture:SetPoint("RIGHT", self, "RIGHT", arrowDistance, 0)
+				elseif direction == "DOWN" then
+					SetClampedTextureRotation(flyoutArrowTexture, isFlyoutShown and 0 or 180)
+					flyoutArrowTexture:SetPoint("BOTTOM", self, "BOTTOM", 0, -arrowDistance)
+				else
+					SetClampedTextureRotation(flyoutArrowTexture, isFlyoutShown and 180 or 0)
+					flyoutArrowTexture:SetPoint("TOP", self, "TOP", 0, arrowDistance)
+				end
+
+				-- return here, otherwise flyout is hidden
+				return
+			end
+		end
+		self.FlyoutArrowContainer:Hide()
+	end
 end
+Generic.UpdateFlyout = UpdateFlyout
 
 function UpdateRangeTimer()
 	rangeTimer = -1
