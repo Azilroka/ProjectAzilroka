@@ -118,7 +118,7 @@ PA.GrowthDirection = {
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
-PA.NUI = PA:IsAddOnEnabled('ElvUI_NihilistUI', PA.MyName)
+PA.NUI = PA:IsAddOnEnabled('ElvUI_NihilistzscheUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
