@@ -93,15 +93,15 @@ function EFL:CreateTexture(button, type, layer)
 	button.efl[type] = {}
 
 	button.efl[type].Left = button:CreateTexture(nil, layer)
-	button.efl[type].Left:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Left:SetHeight(32)
 	button.efl[type].Left:SetPoint("LEFT", button, "CENTER")
+	button.efl[type].Left:SetPoint("TOPLEFT", button, "TOPLEFT")
 	button.efl[type].Left:SetTexture('Interface/Buttons/WHITE8X8')
 
 	button.efl[type].Right = button:CreateTexture(nil, layer)
-	button.efl[type].Right:SetWidth(button:GetWidth() / 2)
 	button.efl[type].Right:SetHeight(32)
 	button.efl[type].Right:SetPoint("RIGHT", button, "CENTER")
+	button.efl[type].Right:SetPoint("TOPRIGHT", button, "TOPRIGHT")
 	button.efl[type].Right:SetTexture('Interface/Buttons/WHITE8X8')
 end
 
