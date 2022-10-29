@@ -52,7 +52,7 @@ function DO:SetOverlay()
 	if _G[DO.db[Points]['relativeTo']] then
 		DO.frame:ClearAllPoints()
 		DO.frame:SetPoint(DO.db[Points]['point'], _G[DO.db[Points]['relativeTo']].Health, DO.db[Points]['relativePoint'], DO.db[Points]['xOffset'], DO.db[Points]['yOffset'])
-		DO.frame:SetParent(DO.db[Points]['relativeTo'])
+		DO.frame:SetParent(_G[DO.db[Points]['relativeTo']])
 		DO.frame:SetFrameStrata(DO.db['Strata'])
 		DO.frame:SetFrameLevel(DO.db['Level'])
 	end
@@ -98,7 +98,7 @@ function DO:GetOptions()
 		end
 
 		if PA.ElvUI then
-			tinsert(UnitFrameParents, _G.ElvUF_Parent)
+			tinsert(UnitFrameParents, _G.ElvUFParent)
 		end
 
 		for _, Parent in next, UnitFrameParents do
