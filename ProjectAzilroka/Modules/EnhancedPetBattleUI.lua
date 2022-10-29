@@ -18,8 +18,8 @@ local floor, min, max = _G.floor, _G.min, _G.max
 local ceil, round = _G.format, EPB.round
 
 local CreateAtlasMarkup = _G.CreateAtlasMarkup
-local LE_BATTLE_PET_ALLY = _G.LE_BATTLE_PET_ALLY
-local LE_BATTLE_PET_ENEMY = _G.LE_BATTLE_PET_ENEMY
+local LE_BATTLE_PET_ALLY = _G.Enum.BattlePetOwner.Ally
+local LE_BATTLE_PET_ENEMY = _G.Enum.BattlePetOwner.Enemy
 
 local UIParent = _G.UIParent
 local CreateFrame = _G.CreateFrame

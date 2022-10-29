@@ -266,7 +266,7 @@ for textFormat in pairs(styles) do
 	oUF.Tags.Events[format("pbuf:xp:%s", tagTextFormat)] = xpEvents
 	oUF.Tags.Methods[format("pbuf:xp:%s", tagTextFormat)] = function()
 		local petInfo = _FRAME.pbouf_petinfo
-		if not petInfo or petInfo.petOwner == LE_BATTLE_PET_ENEMY then
+		if not petInfo or petInfo.petOwner == Enum.BattlePetOwner.Enemy then
 			return ""
 		end
 		local xp, maxXP = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)
@@ -281,7 +281,7 @@ for textFormat in pairs(styles) do
 	oUF.Tags.Events[format("pbuf:xp:%s-nostatus", tagTextFormat)] = xpEvents
 	oUF.Tags.Methods[format("pbuf:xp:%s-nostatus", tagTextFormat)] = function()
 		local petInfo = _FRAME.pbouf_petinfo
-		if not petInfo or petInfo.petOwner == LE_BATTLE_PET_ENEMY then
+		if not petInfo or petInfo.petOwner == Enum.BattlePetOwner.Enemy then
 			return ""
 		end
 		local xp, maxXP = C_PetBattles.GetXP(petInfo.petOwner, petInfo.petIndex)

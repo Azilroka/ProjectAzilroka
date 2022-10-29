@@ -13,7 +13,7 @@ local function Update(self, event, unit)
 	local element = self.PBSpeed
 	element:SetTexture([[Interface\PetBattles\PetBattle-StatIcons]])
 	local l, r, t, b
-	if petInfo.petOwner == _G.LE_BATTLE_PET_ALLY then
+	if petInfo.petOwner == _G.Enum.BattlePetOwner.Ally then
 		l, r, t, b = 0, 0.5, 0.5, 1
 	else
 		l, r, t, b = 0.5, 0, 0.5, 1
