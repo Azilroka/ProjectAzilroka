@@ -49,8 +49,8 @@ SMB.IgnoreButton = {
 	'BattlefieldMinimap',
 	'ButtonCollectFrame',
 	'GameTimeFrame',
-	'QueueStatusMinimapButton',
-	'GarrisonLandingPageMinimapButton',
+	'QueueStatusButton',
+	'ExpansionLandingPageMinimapButton',
 	'MiniMapMailFrame',
 	'MiniMapTracking',
 	'MinimapZoomIn',
@@ -191,7 +191,7 @@ function SMB:HandleBlizzardButtons()
 	if not SMB.db.BarEnabled then return end
 	local Size = SMB.db.IconSize
 
-	if SMB.db.MoveMail and not _G.MiniMapMailFrame.SMB then
+	if SMB.db.MoveMail and not _G.MinimapCluster.MailFrame.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
 		Frame:SetSize(Size, Size)
 		PA:SetTemplate(Frame)
@@ -220,108 +220,108 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
-		_G.MiniMapMailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
-		_G.MiniMapMailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
-		_G.MiniMapMailFrame:EnableMouse(false)
+		_G.MinimapCluster.MailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
+		_G.MinimapCluster.MailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
+		_G.MinimapCluster.MailFrame:EnableMouse(false)
 
-		if _G.MiniMapMailFrame:IsShown() then
+		if _G.MinimapCluster.MailFrame:IsShown() then
 			Frame.Icon:SetVertexColor(0, 1, 0)
 		end
 
 		-- Hide Icon & Border
 		_G.MiniMapMailIcon:Hide()
-		_G.MiniMapMailBorder:Hide()
+		--_G.MiniMapMailBorder:Hide()
 
 		if SMB.db.Shadows then
 			PA:CreateShadow(Frame)
 		end
 
-		_G.MiniMapMailFrame.SMB = true
+		_G.MinimapCluster.MailFrame.SMB = true	
 		tinsert(SMB.Buttons, Frame)
 	end
 
 	if PA.Retail then
 		if SMB.db.HideGarrison then
-			_G.GarrisonLandingPageMinimapButton:UnregisterAllEvents()
-			_G.GarrisonLandingPageMinimapButton:SetParent(SMB.Hider)
-			_G.GarrisonLandingPageMinimapButton:Hide()
-		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.GarrisonLandingPageMinimapButton.SMB then
-			Mixin(GarrisonLandingPageMinimapButton, BackdropTemplateMixin)
-			_G.GarrisonLandingPageMinimapButton:SetParent(Minimap)
-			_G.GarrisonLandingPageMinimapButton_OnLoad(_G.GarrisonLandingPageMinimapButton)
-			_G.GarrisonLandingPageMinimapButton_UpdateIcon(_G.GarrisonLandingPageMinimapButton)
-			_G.GarrisonLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
-			_G.GarrisonLandingPageMinimapButton:Show()
-			_G.GarrisonLandingPageMinimapButton:SetScale(1)
-			_G.GarrisonLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
-			_G.GarrisonLandingPageMinimapButton:SetScript('OnEnter', function(s)
+			_G.ExpansionLandingPageMinimapButton:UnregisterAllEvents()
+			_G.ExpansionLandingPageMinimapButton:SetParent(SMB.Hider)
+			_G.ExpansionLandingPageMinimapButton:Hide()
+		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.ExpansionLandingPageMinimapButton.SMB then
+			Mixin(ExpansionLandingPageMinimapButton, BackdropTemplateMixin)
+			_G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
+			_G.ExpansionLandingPageMinimapButton:OnLoad(_G.ExpansionLandingPageMinimapButton)
+			_G.ExpansionLandingPageMinimapButton:UpdateIcon(_G.ExpansionLandingPageMinimapButton)
+			_G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
+			_G.ExpansionLandingPageMinimapButton:Show()
+			_G.ExpansionLandingPageMinimapButton:SetScale(1)
+			_G.ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
+			_G.ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(s)
 				s:SetBackdropBorderColor(unpack(PA.ClassColor))
 				if SMB.Bar:IsShown() then
 					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 				end
 			end)
-			_G.GarrisonLandingPageMinimapButton:SetScript('OnLeave', function(s)
+			_G.ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(s)
 				PA:SetTemplate(s)
 				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
 					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 				end
 			end)
 
-			_G.GarrisonLandingPageMinimapButton.SMB = true
+			_G.ExpansionLandingPageMinimapButton.SMB = true
 
 			if SMB.db.Shadows then
-				PA:CreateShadow(_G.GarrisonLandingPageMinimapButton)
+				PA:CreateShadow(_G.ExpansionLandingPageMinimapButton)
 			end
 
-			tinsert(SMB.Buttons, _G.GarrisonLandingPageMinimapButton)
+			tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
 		end
 
-		if SMB.db.MoveTracker and not _G.MiniMapTrackingButton.SMB then
-			_G.MiniMapTracking.Show = nil
+		if SMB.db.MoveTracker and not _G.MinimapCluster.Tracking.Button.SMB then
+			--_G.MinimapCluster.Tracking.Show = nil
 
-			_G.MiniMapTracking:Show()
-			PA:SetTemplate(_G.MiniMapTracking)
+			_G.MinimapCluster.Tracking.Button:Show()
+			PA:SetTemplate(_G.MinimapCluster.Tracking.Button)
 
-			_G.MiniMapTracking:SetParent(SMB.Bar)
-			_G.MiniMapTracking:SetSize(Size, Size)
+			_G.MinimapCluster.Tracking.Button:SetParent(SMB.Bar)
+			_G.MinimapCluster.Tracking.Button:SetSize(Size, Size)
 
-			_G.MiniMapTrackingIcon:ClearAllPoints()
-			_G.MiniMapTrackingIcon:SetPoint('CENTER')
+			--_G.MinimapCluster.Tracking.Icon:ClearAllPoints()
+			--_G.MinimapCluster.Tracking.Icon:SetPoint('CENTER')
 
-			_G.MiniMapTrackingBackground:SetAlpha(0)
-			_G.MiniMapTrackingIconOverlay:SetAlpha(0)
-			_G.MiniMapTrackingButton:SetAlpha(0)
+			_G.MinimapCluster.Tracking.Background:SetAlpha(0)
+			--_G.MinimapCluster.Tracking.IconOverlay:SetAlpha(0)
+			_G.MinimapCluster.Tracking.Button:SetAlpha(0)
 
-			_G.MiniMapTrackingButton:SetParent(_G.MinimapTracking)
-			_G.MiniMapTrackingButton:ClearAllPoints()
-			_G.MiniMapTrackingButton:SetAllPoints(_G.MiniMapTracking)
+			_G.MinimapCluster.Tracking.Button:SetParent(_G.MinimapCluster.Tracking)
+			_G.MinimapCluster.Tracking.Button:ClearAllPoints()
+			_G.MinimapCluster.Tracking.Button:SetAllPoints(_G.MinimapCluster.Tracking)
 
-			_G.MiniMapTrackingButton:SetScript('OnMouseDown', nil)
-			_G.MiniMapTrackingButton:SetScript('OnMouseUp', nil)
+			_G.MinimapCluster.Tracking.Button:SetScript('OnMouseDown', nil)
+			_G.MinimapCluster.Tracking.Button:SetScript('OnMouseUp', nil)
 
-			_G.MiniMapTrackingButton:HookScript('OnEnter', function()
-				_G.MiniMapTracking:SetBackdropBorderColor(unpack(PA.ClassColor))
+			_G.MinimapCluster.Tracking.Button:HookScript('OnEnter', function()
+				_G.MinimapCluster.Tracking.Button:SetBackdropBorderColor(unpack(PA.ClassColor))
 				if SMB.Bar:IsShown() then
 					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 				end
 			end)
-			_G.MiniMapTrackingButton:HookScript('OnLeave', function()
-				PA:SetTemplate(_G.MiniMapTracking)
+			_G.MinimapCluster.Tracking.Button:HookScript('OnLeave', function()
+				PA:SetTemplate(_G.MinimapCluster.Tracking.Button)
 				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
 					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 				end
 			end)
 
-			_G.MiniMapTrackingButton.SMB = true
+			_G.MinimapCluster.Tracking.Button.SMB = true
 
 			if SMB.db.Shadows then
-				PA:CreateShadow(_G.MiniMapTracking)
+				PA:CreateShadow(_G.MinimapCluster.Tracking.Button)
 			end
 
-			tinsert(SMB.Buttons, _G.MiniMapTracking)
+			tinsert(SMB.Buttons, _G.MinimapCluster.Tracking.Button)
 		end
 
-		if SMB.db["MoveQueue"] and not _G.QueueStatusMinimapButton.SMB then
+		if SMB.db["MoveQueue"] and not _G.QueueStatusButton.SMB then
 			local Frame = CreateFrame('Frame', 'SMB_QueueFrame', SMB.Bar)
 			PA:SetTemplate(Frame)
 			Frame:SetSize(Size, Size)
@@ -351,18 +351,18 @@ function SMB:HandleBlizzardButtons()
 				end
 			end)
 
-			_G.QueueStatusMinimapButton:SetParent(SMB.Bar)
-			_G.QueueStatusMinimapButton:SetFrameLevel(Frame:GetFrameLevel() + 2)
-			_G.QueueStatusMinimapButton:ClearAllPoints()
-			_G.QueueStatusMinimapButton:SetPoint("CENTER", Frame, "CENTER", 0, 0)
+			_G.QueueStatusButton:SetParent(SMB.Bar)
+			_G.QueueStatusButton:SetFrameLevel(Frame:GetFrameLevel() + 2)
+			_G.QueueStatusButton:ClearAllPoints()
+			_G.QueueStatusButton:SetPoint("CENTER", Frame, "CENTER", 0, 0)
 
-			_G.QueueStatusMinimapButton:SetHighlightTexture(nil)
+			--d_G.QueueStatusButton:SetHighlightTexture(nil)
 
-			_G.QueueStatusMinimapButton:HookScript('OnShow', function() Frame:EnableMouse(false) end)
-			_G.QueueStatusMinimapButton:HookScript('PostClick', _G.QueueStatusMinimapButton_OnLeave)
-			_G.QueueStatusMinimapButton:HookScript('OnHide', function() Frame:EnableMouse(true) end)
+			_G.QueueStatusButton:HookScript('OnShow', function() Frame:EnableMouse(false) end)
+			_G.QueueStatusButton:HookScript('PostClick', _G.QueueStatusButton.OnLeave)
+			_G.QueueStatusButton:HookScript('OnHide', function() Frame:EnableMouse(true) end)
 
-			_G.QueueStatusMinimapButton.SMB = true
+			_G.QueueStatusButton.SMB = true
 
 			if SMB.db.Shadows then
 				PA:CreateShadow(Frame)
