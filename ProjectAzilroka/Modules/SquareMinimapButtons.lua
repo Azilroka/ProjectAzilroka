@@ -190,8 +190,9 @@ end
 function SMB:HandleBlizzardButtons()
 	if not SMB.db.BarEnabled then return end
 	local Size = SMB.db.IconSize
+	local MailFrameVersion = PA.Retail and _G.MinimapCluster.MailFrame or _G.MiniMapMailFrame
 
-	if SMB.db.MoveMail and not _G.MinimapCluster.MailFrame.SMB then
+	if SMB.db.MoveMail and not MailFrameVersion.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
 		Frame:SetSize(Size, Size)
 		PA:SetTemplate(Frame)
@@ -220,11 +221,11 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
-		_G.MinimapCluster.MailFrame:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
-		_G.MinimapCluster.MailFrame:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
-		_G.MinimapCluster.MailFrame:EnableMouse(false)
+		MailFrameVersion:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
+		MailFrameVersion:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
+		MailFrameVersion:EnableMouse(false)
 
-		if _G.MinimapCluster.MailFrame:IsShown() then
+		if MailFrameVersion:IsShown() then
 			Frame.Icon:SetVertexColor(0, 1, 0)
 		end
 
@@ -236,7 +237,7 @@ function SMB:HandleBlizzardButtons()
 			PA:CreateShadow(Frame)
 		end
 
-		_G.MinimapCluster.MailFrame.SMB = true	
+		MailFrameVersion = true
 		tinsert(SMB.Buttons, Frame)
 	end
 
