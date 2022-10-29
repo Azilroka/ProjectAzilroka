@@ -14,7 +14,7 @@ local unpack = unpack
 local time = time
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
-local BNet_GetClientTexture = BNet_GetClientTexture
+local BNet_GetClientEmbeddedAtlas = BNet_GetClientEmbeddedAtlas
 local GetQuestDifficultyColor = GetQuestDifficultyColor
 local WrapTextInColorCode = WrapTextInColorCode
 local _G = _G
@@ -35,28 +35,28 @@ local LEVEL = LEVEL
 
 EFL.Icons = {
 	Game = {
-		Alliance = { Name = _G.FACTION_ALLIANCE, Order = 1, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Alliance' },
-		Horde = { Name = _G.FACTION_HORDE, Order = 2, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Horde' },
-		Neutral = { Name = _G.FACTION_STANDING_LABEL4, Order = 3, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/WoW' },
-		App = { Name = PA.ACL['App'], Order = 4, Color = '82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
-		BSAp = { Name = PA.ACL['Mobile'], Order = 5, Color = '82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/Mobile' },
-		D3 = { Name = PA.ACL['Diablo 3'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D3), Launcher = MediaPath..'GameIcons/Launcher/D3' },
-		WTCG = { Name = PA.ACL['Hearthstone'], Color = 'FFB100', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WTCG), Launcher = MediaPath..'GameIcons/Launcher/Hearthstone' },
-		S1 = { Name = PA.ACL['Starcraft'], Color = 'C495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC), Launcher = MediaPath..'GameIcons/Launcher/SC' },
-		S2 = { Name = PA.ACL['Starcraft 2'], Color = 'C495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC2), Launcher = MediaPath..'GameIcons/Launcher/SC2' },
-		Hero = { Name = PA.ACL['Hero of the Storm'], Color = '00CCFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_HEROES), Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
-		Pro = { Name = PA.ACL['Overwatch'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_OVERWATCH), Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
-		VIPR = { Name = PA.ACL['Call of Duty 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
-		ODIN = { Name = PA.ACL['Call of Duty Modern Warfare'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW), Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
-		W3 = { Name = PA.ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
-		LAZR = { Name = PA.ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
-		ZEUS = { Name = PA.ACL['Call of Duty Cold War'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
-		WLBY = { Name = PA.ACL['Crash Bandicoot 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_CRASH4), Launcher = MediaPath..'GameIcons/Launcher/CB4' },
-		OSI = { Name = PA.ACL['Diablo II Resurrected'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
-		FORE = { Name = PA.ACL['Call of Duty Vanguard'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
-		RTRO = { Name = PA.ACL['Arcade Collection'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
-		ANBS = { Name = PA.ACL['Diablo Immortal'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/DI' },
-		GRY = { Name = PA.ACL['Warcraft Arclight Rumble'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arclight' },
+		Alliance = { Name = _G.FACTION_ALLIANCE, Order = 1, Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Alliance' },
+		Horde = { Name = _G.FACTION_HORDE, Order = 2, Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Horde' },
+		Neutral = { Name = _G.FACTION_STANDING_LABEL4, Order = 3, Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/WoW' },
+		App = { Name = PA.ACL['App'], Order = 4, Color = '82C5FF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
+		BSAp = { Name = PA.ACL['Mobile'], Order = 5, Color = '82C5FF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/Mobile' },
+		D3 = { Name = PA.ACL['Diablo 3'], Color = 'C41F3B', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_D3), Launcher = MediaPath..'GameIcons/Launcher/D3' },
+		WTCG = { Name = PA.ACL['Hearthstone'], Color = 'FFB100', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_WTCG), Launcher = MediaPath..'GameIcons/Launcher/Hearthstone' },
+		S1 = { Name = PA.ACL['Starcraft'], Color = 'C495DD', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_SC), Launcher = MediaPath..'GameIcons/Launcher/SC' },
+		S2 = { Name = PA.ACL['Starcraft 2'], Color = 'C495DD', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_SC2), Launcher = MediaPath..'GameIcons/Launcher/SC2' },
+		Hero = { Name = PA.ACL['Hero of the Storm'], Color = '00CCFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_HEROES), Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
+		Pro = { Name = PA.ACL['Overwatch'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_OVERWATCH), Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
+		VIPR = { Name = PA.ACL['Call of Duty 4'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_COD), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
+		ODIN = { Name = PA.ACL['Call of Duty Modern Warfare'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_COD_MW), Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
+		W3 = { Name = PA.ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
+		LAZR = { Name = PA.ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
+		ZEUS = { Name = PA.ACL['Call of Duty Cold War'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
+		WLBY = { Name = PA.ACL['Crash Bandicoot 4'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_CRASH4), Launcher = MediaPath..'GameIcons/Launcher/CB4' },
+		OSI = { Name = PA.ACL['Diablo II Resurrected'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
+		FORE = { Name = PA.ACL['Call of Duty Vanguard'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
+		RTRO = { Name = PA.ACL['Arcade Collection'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
+		ANBS = { Name = PA.ACL['Diablo Immortal'], Color = 'C41F3B', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/DI' },
+		GRY = { Name = PA.ACL['Warcraft Arclight Rumble'], Color = 'FFFFFF', Default = BNet_GetClientEmbeddedAtlas(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arclight' },
 	},
 	Status = {
 		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
@@ -177,8 +177,8 @@ function EFL:UpdateFriends(button)
 	if EFL.db.ShowStatusBackground then
 		EFL:CreateTexture(button, 'background', 'BACKGROUND')
 
-		button.efl.background.Left:SetGradientAlpha("Horizontal", r, g, b, .15, r, g, b, 0)
-		button.efl.background.Right:SetGradientAlpha("Horizontal", r, g, b, .0, r, g, b, .15)
+		button.efl.background.Left:SetGradient("Horizontal", CreateColor(r, g, b, .15), CreateColor(r, g, b, 0))
+		button.efl.background.Right:SetGradient("Horizontal", CreateColor(r, g, b, .0), CreateColor(r, g, b, .15))
 
 		button.background:Hide()
 	end
@@ -186,8 +186,8 @@ function EFL:UpdateFriends(button)
 	if EFL.db.ShowStatusHighlight then
 		EFL:CreateTexture(button, 'highlight', 'HIGHLIGHT')
 
-		button.efl.highlight.Left:SetGradientAlpha("Horizontal", r, g, b, .25, r, g, b, 0)
-		button.efl.highlight.Right:SetGradientAlpha("Horizontal", r, g, b, .0, r, g, b, .25)
+		button.efl.highlight.Left:SetGradient("Horizontal", CreateColor(r, g, b, .25), CreateColor(r, g, b, 0))
+		button.efl.highlight.Right:SetGradient("Horizontal", CreateColor(r, g, b, .0), CreateColor(r, g, b, .25))
 
 		button.highlight:SetVertexColor(0, 0, 0, 0)
 	end
