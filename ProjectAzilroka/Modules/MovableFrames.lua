@@ -134,7 +134,7 @@ function MF:MakeMovable(name)
 	end
 
 	if name == 'AchievementFrame' then
-		_G.AchievementFrameHeader:EnableMouse(false)
+		(_G.AchievementFrameHeader or _G.AchievementFrame.Header):EnableMouse(false)
 	end
 
 	frame:EnableMouse(true)
