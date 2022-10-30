@@ -88,7 +88,7 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 			end
 
 			if(button.icon) then button.icon:SetTexture(texture) end
-			if(button.count) then button.count:SetText(count > 1 and count) end
+			if(button.count) then button.count:SetText(count > 1 and count or '') end
 
 			button:SetSize(MA.db.Size, MA.db.Size)
 			button:SetID(index)
