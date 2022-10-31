@@ -455,7 +455,7 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
 
 			button.Texture:SetTexture(texture)
-			button.Stacks:SetText(count > 1 and count)
+			button.Stacks:SetText(count > 1 and count or "")
 			button.StatusBar.Name:SetText(name)
 
 			button:SetID(index)
