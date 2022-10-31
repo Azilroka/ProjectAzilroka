@@ -116,7 +116,7 @@ local function updateIcon(element, petOwner, petIndex, index, offset, isDebuff, 
 			button.icon:SetTexture(icon)
 		end
 		if (button.turnsRemaining) then
-			button.turnsRemaining:SetText(turnsRemaining > 0 and turnsRemaining)
+			button.turnsRemaining:SetText(turnsRemaining > 0 and turnsRemaining or "")
 		end
 
 		local size = element.size or 16
