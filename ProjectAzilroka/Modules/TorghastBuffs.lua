@@ -81,12 +81,13 @@ function TB:UpdateAura(button, index)
 	local colorIndex = atlas and (strfind(atlas, 'purple') and 4 or strfind(atlas, 'blue') and 3 or strfind(atlas, 'green') and 2)
 
 	if colorIndex then
-		button:SetBackdropBorderColor(GetItemQualityColor(colorIndex))
+		local r, g, b = GetItemQualityColor(colorIndex)
+		button:SetBackdropBorderColor(r, g, b)
 	else
 		PA:SetTemplate(button)
 	end
 
-	button.count:SetText(count > 1 and count)
+	button.count:SetText(count > 1 and counti or "")
 	button.texture:SetTexture(texture)
 end
 
