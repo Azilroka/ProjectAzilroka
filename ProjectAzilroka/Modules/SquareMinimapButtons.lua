@@ -79,6 +79,7 @@ SMB.GenericIgnore = {
 	'Cork',
 	'DugisArrowMinimapPoint',
 	'QuestieFrame',
+	'TTMinimapButton',
 }
 
 SMB.PartialIgnore = { 'Node', 'Pin', 'POI' }
@@ -381,37 +382,37 @@ function SMB:HandleBlizzardButtons()
 			PA:SetTemplate(_G.GameTimeFrame)
 			_G.GameTimeTexture:SetTexture('')
 
-			_G.GameTimeFrame.DayTimeIndicator = _G.GameTimeFrame:CreateTexture(nil, "BACKGROUND", nil, 1)
-			_G.GameTimeFrame.DayTimeIndicator:SetTexture("Interface/Minimap/HumanUITile-TimeIndicator", true)
-			PA:SetInside(_G.GameTimeFrame.DayTimeIndicator)
+			--_G.GameTimeFrame.DayTimeIndicator = _G.GameTimeFrame:CreateTexture(nil, "BACKGROUND", nil, 1)
+			--_G.GameTimeFrame.DayTimeIndicator:SetTexture("Interface/Minimap/HumanUITile-TimeIndicator", true)
+			--PA:SetInside(_G.GameTimeFrame.DayTimeIndicator)
 
-			_G.GameTimeFrame:SetSize(Size, Size)
+			--_G.GameTimeFrame:SetSize(Size, Size)
 
-			_G.GameTimeFrame.timeOfDay = 0
-			local function OnUpdate(s, elapsed)
-				s.elapsed = (s.elapsed or 1) + elapsed
-				if s.elapsed > 1 then
-					local hour, minute = _G.GetGameTime()
-					local time = hour * 60 + minute
-					if time ~= s.timeOfDay then
-						offset = PX_PER_STEP * floor(time / STEP)
+			--_G.GameTimeFrame.timeOfDay = 0
+			--local function OnUpdate(s, elapsed)
+			--	s.elapsed = (s.elapsed or 1) + elapsed
+			--	if s.elapsed > 1 then
+			--		local hour, minute = _G.GetGameTime()
+			--		local time = hour * 60 + minute
+			--		if time ~= s.timeOfDay then
+			--			offset = PX_PER_STEP * floor(time / STEP)
 
-						l = 0.25 + offset -- 64 / 256
-						if l >= 1.25 then l = 0.25 end
+			--			l = 0.25 + offset -- 64 / 256
+			--			if l >= 1.25 then l = 0.25 end
 
-						r = 0.75 + offset -- 192 / 256
-						if r >= 1.75 then r = 0.75 end
+			--			r = 0.75 + offset -- 192 / 256
+			--			if r >= 1.75 then r = 0.75 end
 
-						s.DayTimeIndicator:SetTexCoord(l, r, 0, 1)
+			--			s.DayTimeIndicator:SetTexCoord(l, r, 0, 1)
 
-						s.timeOfDay = time
-					end
+			--			s.timeOfDay = time
+			--		end
 
-					s.elapsed = 0
-				end
-			end
+			--		s.elapsed = 0
+			--	end
+			--end
 
-			_G.GameTimeFrame:SetScript("OnUpdate", OnUpdate)
+			--_G.GameTimeFrame:SetScript("OnUpdate", OnUpdate)
 			_G.GameTimeFrame.SMB = true
 			tinsert(SMB.Buttons, _G.GameTimeFrame)
 		end
