@@ -1685,6 +1685,7 @@ function EPB:CreateExtraActionButton(name)
 	local Color = _G.RAID_CLASS_COLORS[select(2, _G.UnitClass("player"))]
 
 	local Button = CreateFrame("Button", "EPB" .. name .. "Button", self.holder, "SecureActionButtonTemplate, ActionButtonTemplate")
+	Button:RegisterForClicks('AnyUp', 'AnyDown')
 	Button:SetSize(50, 50)
 	PA:SetTemplate(Button)
 	Button.BorderColor = {Button:GetBackdropBorderColor()}
