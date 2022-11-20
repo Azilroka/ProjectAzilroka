@@ -125,7 +125,7 @@ PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
 -- Setup oUF for pbuf
 local function GetoUF()
-	local key = PA.ElvUI and "ElvUI" or PA.Tukui and "Tukui"
+	local key = PA.ElvUI and "ElvUI_Libraries" or PA.Tukui and "Tukui"
 	if not key then return end
 	return _G[_G.GetAddOnMetadata(key, 'X-oUF')]
 end
