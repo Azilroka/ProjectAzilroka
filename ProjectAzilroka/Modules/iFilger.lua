@@ -31,9 +31,9 @@ local unpack = unpack
 local wipe = wipe
 
 local CopyTable = CopyTable
-local GetContainerItemCooldown = GetContainerItemCooldown
-local GetContainerItemID = GetContainerItemID
-local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemCooldown = (C_Container and C_Container.GetContainerItemCooldown) or GetContainerItemCooldown
+local GetContainerItemID = (C_Container and C_Container.GetContainerItemID) or GetContainerItemID
+local GetContainerNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
 local GetFlyoutInfo = GetFlyoutInfo
 local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 local GetInventoryItemCooldown = GetInventoryItemCooldown
