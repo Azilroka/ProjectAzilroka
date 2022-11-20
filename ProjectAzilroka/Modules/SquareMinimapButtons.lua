@@ -80,6 +80,7 @@ SMB.GenericIgnore = {
 	'DugisArrowMinimapPoint',
 	'QuestieFrame',
 	'TTMinimapButton',
+	'SL_MinimapDifficultyFrame', -- S&L Instance Indicator
 }
 
 SMB.PartialIgnore = { 'Node', 'Pin', 'POI' }
