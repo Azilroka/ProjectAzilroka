@@ -1,6 +1,6 @@
 ## Interface: 11403
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
-## Author: Azilroka
+## Author: Azilroka, Nihilistzsche
 ## Version: 1.84
 ## OptionalDeps: Masque, Tukui, ElvUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
