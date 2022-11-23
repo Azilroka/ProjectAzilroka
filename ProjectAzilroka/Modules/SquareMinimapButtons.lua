@@ -502,7 +502,6 @@ function SMB:SkinMinimapButton(button)
 	tinsert(SMB.Buttons, button)
 end
 
-SMB.ButtonCounts = {}
 
 function SMB:GrabMinimapButtons(forceUpdate)
 	if (InCombatLockdown() or C_PetBattles and C_PetBattles.IsInBattle()) then return end
@@ -516,20 +515,16 @@ function SMB:GrabMinimapButtons(forceUpdate)
 	local UpdateBar = forceUpdate
 	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
 		local NumChildren = Frame:GetNumChildren()
-		if NumChildren > (SMB.ButtonCounts[Frame] or 0) then
-			for i = 1, NumChildren do
-				local object = select(i, Frame:GetChildren())
-				if object then
-					local name = object.GetName and object:GetName()
-					local width = object.GetWidth and object:GetWidth()
-					if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
-						SMB:SkinMinimapButton(object)
-					end
+		for i = 1, NumChildren do
+			local object = select(i, Frame:GetChildren())
+			if object then
+				local name = object.GetName and object:GetName()
+				local width = object.GetWidth and object:GetWidth()
+				if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
+					SMB:SkinMinimapButton(object)
+                    UpdateBar = true
 				end
 			end
-
-			SMB.ButtonCounts[Frame] = NumChildren
-			UpdateBar = true
 		end
 	end
 
@@ -679,7 +674,6 @@ function SMB:UpdateSettings()
 end
 
 function SMB:PLAYER_ENTERING_WORLD()
-	wipe(SMB.ButtonCounts)
 	SMB:GrabMinimapButtons(true)
 end
 
