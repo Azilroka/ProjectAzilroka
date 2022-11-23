@@ -522,7 +522,7 @@ function SMB:GrabMinimapButtons(forceUpdate)
 				local width = object.GetWidth and object:GetWidth()
 				if name and width > 15 and width < 60 and (object:IsObjectType('Button') or object:IsObjectType('Frame')) then
 					SMB:SkinMinimapButton(object)
-                    UpdateBar = true
+					UpdateBar = true
 				end
 			end
 		end
