@@ -41,6 +41,7 @@ local UIParent = UIParent
 local GameTooltip = GameTooltip
 
 local IsShiftKeyDown = IsShiftKeyDown
+local MAX_BUTTONS = 50
 
 _G.StaticPopupDialogs.STADDONMANAGER_OVERWRITEPROFILE = {
 	button1 = PA.ACL['Overwrite'],
@@ -295,7 +296,7 @@ function stAM:BuildFrame()
 		OnScroll()
 	end)
 
-	for i = 1, 30 do
+	for i = 1, MAX_BUTTONS do
 		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
 		CheckButton:Hide()
 		PA:SetTemplate(CheckButton)
@@ -464,7 +465,7 @@ function stAM:InitProfiles()
 
 	ProfileMenu.Buttons = {}
 
-	for i = 1, 30 do
+	for i = 1, MAX_BUTTONS do
 		local Pullout = CreateFrame('Frame', nil, ProfileMenu)
 		Pullout:SetWidth(210)
 		Pullout:SetHeight(stAM.db.ButtonHeight)
@@ -545,7 +546,7 @@ function stAM:UpdateProfiles()
 
 	local PreviousButton
 	for i, Button in ipairs(ProfileMenu.Buttons) do
-		local isShown = i <= min(#stAM.Profiles, 30)
+		local isShown = i <= min(#stAM.Profiles, MAX_BUTTONS)
 		if isShown then
 			Button.Load.Text:SetText(stAM.Profiles[i])
 		end
@@ -562,7 +563,7 @@ function stAM:UpdateProfiles()
 		PreviousButton = Button
 	end
 
-	ProfileMenu:SetHeight((min(#stAM.Profiles, 30) + 2) * (stAM.db.ButtonHeight + 5) + 15)
+	ProfileMenu:SetHeight((min(#stAM.Profiles, MAX_BUTTONS) + 2) * (stAM.db.ButtonHeight + 5) + 15)
 end
 
 function stAM:ToggleProfiles()
@@ -678,7 +679,7 @@ function stAM:GetOptions()
 	stAddonManager.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
 	stAddonManager.args.General.inline = true
 
-	stAddonManager.args.General.args.NumAddOns = PA.ACH:Range(PA.ACL['# Shown AddOns'], nil, 1, { min = 3, max = 30, step = 1 })
+	stAddonManager.args.General.args.NumAddOns = PA.ACH:Range(PA.ACL['# Shown AddOns'], nil, 1, { min = 3, max = MAX_BUTTONS, step = 1 })
 	stAddonManager.args.General.args.FrameWidth = PA.ACH:Range(PA.ACL['Frame Width'], nil, 2, { min = 250, max = 2048, step = 2 })
 	stAddonManager.args.General.args.ButtonHeight = PA.ACH:Range(PA.ACL['Button Height'], nil, 3, { min = 3, max = 30, step = 1 })
 	stAddonManager.args.General.args.ButtonWidth = PA.ACH:Range(PA.ACL['Button Width'], nil, 4, { min = 3, max = 30, step = 1 })
