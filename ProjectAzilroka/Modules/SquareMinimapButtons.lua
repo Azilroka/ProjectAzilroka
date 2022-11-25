@@ -239,7 +239,7 @@ function SMB:HandleBlizzardButtons()
 			PA:CreateShadow(Frame)
 		end
 
-		MailFrameVersion = true
+		MailFrameVersion.SMB = true
 		tinsert(SMB.Buttons, Frame)
 	end
 
