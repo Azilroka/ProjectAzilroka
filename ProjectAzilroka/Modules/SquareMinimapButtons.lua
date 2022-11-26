@@ -251,8 +251,6 @@ function SMB:HandleBlizzardButtons()
 		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.ExpansionLandingPageMinimapButton.SMB then
 			Mixin(ExpansionLandingPageMinimapButton, BackdropTemplateMixin)
 			_G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
-			_G.ExpansionLandingPageMinimapButton:OnLoad(_G.ExpansionLandingPageMinimapButton)
-			_G.ExpansionLandingPageMinimapButton:UpdateIcon(_G.ExpansionLandingPageMinimapButton)
 			_G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
 			_G.ExpansionLandingPageMinimapButton:Show()
 			_G.ExpansionLandingPageMinimapButton:SetScale(1)
