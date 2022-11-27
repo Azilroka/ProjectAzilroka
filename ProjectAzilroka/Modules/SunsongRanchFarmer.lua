@@ -21,9 +21,9 @@ local GetSubZoneText = GetSubZoneText
 local GetItemCount = GetItemCount
 local InCombatLockdown = InCombatLockdown
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
-local GetContainerNumSlots = GetContainerNumSlots
-local GetContainerItemID = GetContainerItemID
-local PickupContainerItem = PickupContainerItem
+local GetContainerNumSlots = C_Container.GetContainerNumSlots
+local GetContainerItemID = C_Container.GetContainerItemID
+local PickupContainerItem = C_Container.PickupContainerItem
 local DeleteCursorItem = DeleteCursorItem
 
 local CreateFrame = CreateFrame
