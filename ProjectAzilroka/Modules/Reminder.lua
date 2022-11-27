@@ -22,6 +22,7 @@ local wipe = wipe
 
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
+local IsSpellKnown = IsSpellKnown
 local IsUsableSpell = IsUsableSpell
 local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
@@ -180,11 +181,15 @@ function AR:Reminder_Update()
 						if db.filterType == 'SPELL' then
 							local hasBuff, hasDebuff = AR:FindPlayerAura(db.spellGroup, db.personal), AR:FindPlayerAura(db.spellGroup, nil, 'HARMFUL')
 							local negate = AR:FindPlayerAura(db.negateGroup, db.personal)
-
+							local skip = false
 							if not (negate or hasBuff or hasDebuff) then
 								for buff, value in pairs(db.spellGroup) do
 									if value then
 										local usable = IsUsableSpell(buff);
+										if db.strictFilter then
+											usable = usable and IsSpellKnown(buff);
+											skip = not usable;
+										end
 										if usable and AR:IsSpellOnCooldown(buff) then
 											break
 										end
@@ -197,7 +202,7 @@ function AR:Reminder_Update()
 									end
 								end
 
-								Button:SetShown((((not hasBuff) and (not hasDebuff)) and not db.reverseCheck) or (reverseCheck and db.reverseCheck and ((hasBuff or hasDebuff) or ((not hasBuff) and (not hasDebuff)))))
+								Button:SetShown(not skip and (((not hasBuff) and (not hasDebuff)) and not db.reverseCheck) or (reverseCheck and db.reverseCheck and ((hasBuff or hasDebuff) or ((not hasBuff) and (not hasDebuff)))))
 							end
 						end
 
