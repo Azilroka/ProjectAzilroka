@@ -22,7 +22,7 @@ local wipe = wipe
 
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
-local IsSpellKnown = IsSpellKnown
+local IsSpellKnownOrOverridesKnown = IsSpellKnownOrOverridesKnown
 local IsUsableSpell = IsUsableSpell
 local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
@@ -187,7 +187,7 @@ function AR:Reminder_Update()
 									if value then
 										local usable = IsUsableSpell(buff);
 										if db.strictFilter then
-											usable = usable and IsSpellKnown(buff);
+											usable = usable and IsSpellKnownOrOverridesKnown(buff);
 											skip = not usable;
 										end
 										if usable and AR:IsSpellOnCooldown(buff) then
