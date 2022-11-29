@@ -50,7 +50,6 @@ end
 OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
-OzCD.IsChargeCooldown = {}
 OzCD.SpellList = {}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
@@ -153,10 +152,14 @@ function OzCD:UpdateActiveCooldowns()
 
 			local Start, Duration, CurrentDuration, Charges
 
-			if OzCD.IsChargeCooldown[SpellID] then
-				Charges, _, Start, Duration = GetSpellCharges(SpellID)
-			else
-				Start, Duration = GetSpellCooldown(SpellID)
+			do
+				local start, duration = GetSpellCooldown(SpellID)
+				local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(SpellID)
+				if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
+					Charges, Start, Duration = charges, chargeStart, chargeDuration
+				else
+					Start, Duration = start, duration
+				end
 			end
 
 			CurrentDuration = (Start + Duration - GetTime())
@@ -187,19 +190,18 @@ function OzCD:UpdateActiveCooldowns()
 end
 
 function OzCD:UpdateDelayedCooldowns()
-	local Start, Duration, Enable, CurrentDuration, Charges, _
-
 	for SpellID in pairs(OzCD.DelayCooldowns) do
-		Start, Duration, Enable = GetSpellCooldown(SpellID)
+		local Start, Duration, Enable
 
-		if OzCD.IsChargeCooldown[SpellID] then
-			Charges, _, Start, Duration = GetSpellCharges(SpellID)
-			if Charges then
-				Start, Duration = Start, Duration
+		do
+			Start, Duration, Enable = GetSpellCooldown(SpellID)
+			local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(SpellID)
+			if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
+				Start, Duration = chargeStart, chargeDuration
 			end
 		end
 
-		CurrentDuration = (Start + Duration - GetTime())
+		local CurrentDuration = (Start + Duration - GetTime())
 
 		if Enable and CurrentDuration then
 			if (CurrentDuration < OzCD.db.SuppressDuration) and (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
@@ -379,24 +381,15 @@ function OzCD:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
 end
 
 function OzCD:SPELL_UPDATE_COOLDOWN()
-	local Start, Duration, Enable, Charges, _, ChargeStart, ChargeDuration, CurrentDuration
-
 	for SpellID in pairs(OzCD.Cooldowns) do
-		Start, Duration, Enable = GetSpellCooldown(SpellID)
+		local Charges, MaxCharges, ChargeStart, ChargeDuration = GetSpellCharges(SpellID)
+		local Start, Duration, Enable = GetSpellCooldown(SpellID)
 
-		if OzCD.IsChargeCooldown[SpellID] ~= false then
-			Charges, _, ChargeStart, ChargeDuration = GetSpellCharges(SpellID)
-
-			if OzCD.IsChargeCooldown[SpellID] == nil then
-				OzCD.IsChargeCooldown[SpellID] = Charges and true or false
-			end
-
-			if Charges then
-				Start, Duration = ChargeStart, ChargeDuration
-			end
+		if ( Charges and MaxCharges and MaxCharges > 1 and Charges < MaxCharges ) then
+			Start, Duration = ChargeStart, ChargeDuration
 		end
 
-		CurrentDuration = (Start + Duration - GetTime())
+		local CurrentDuration = (Start + Duration - GetTime())
 
 		if Enable and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
 			if (CurrentDuration >= OzCD.db.SuppressDuration) or OzCD.HasCDDelay[SpellID] then

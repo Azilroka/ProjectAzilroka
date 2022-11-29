@@ -76,7 +76,7 @@ SRF.Seeds = {
 
 SRF.Quests = {
 	--Tillers counsil
-	[31945] = { 80591, 84783}, -- Gina, Scallion
+	[31945] = {80591, 84783}, -- Gina, Scallion
 	[31946] = {80590, 84782}, -- Mung-Mung, Juicycrunch Carrot
 	[31947] = {79102, 80809}, -- Farmer Fung, Green Cabbage
 	[31949] = {89326, 89847}, -- Nana, Witchberry
@@ -154,13 +154,35 @@ function SRF:Update()
 	SRF.Bar:SetSize(NumShown * (50 + (PA.ElvUI and _G.ElvUI[1].PixelMode and 1 or 3)), 50)
 end
 
+function SRF:SetButtonTexture(button, texture)
+	button:SetNormalTexture(texture)
+	button:SetPushedTexture(texture)
+	button:SetDisabledTexture(texture)
+	button:SetHighlightTexture(texture)
+
+	local Normal, Pushed, Disabled, Highlight = button:GetNormalTexture(), button:GetPushedTexture(), button:GetDisabledTexture(), button:GetHighlightTexture()
+
+	local left, right, top, bottom = unpack(PA.TexCoords)
+	Normal:SetTexCoord(left, right, top, bottom)
+	Normal:SetVertexColor(.9, .9, .9)
+	PA:SetInside(Normal, button)
+
+	Pushed:SetTexCoord(left, right, top, bottom)
+	PA:SetInside(Pushed, button)
+
+	Disabled:SetTexCoord(left, right, top, bottom)
+	PA:SetInside(Disabled, button)
+	Disabled:SetDesaturated(true)
+
+	Highlight:SetTexCoord(left, right, top, bottom)
+	PA:SetInside(Highlight, button)
+
+	PA:CreateShadow(button)
+end
+
 function SRF:InSeedZone()
 	local SubZone = GetSubZoneText()
-	if SubZone == SRF.Ranch or SubZone == SRF.Market then
-		return true
-	else
-		return false
-	end
+	return SubZone == SRF.Ranch or SubZone == SRF.Market
 end
 
 function SRF:InFarmZone()
@@ -177,16 +199,8 @@ function SRF:CreateBigButton(ItemID)
 	Button:SetAttribute('item', GetItemInfo(ItemID))
 	Button.ItemID = ItemID
 
-	Button.icon:SetTexture(select(5, GetItemInfoInstant(ItemID)))
-	Button.icon:SetTexCoord(unpack(PA.TexCoords))
-	PA:SetInside(Button.icon)
-	Button.icon:SetDrawLayer('ARTWORK')
-
-	Button:SetNormalTexture('')
-	Button:SetPushedTexture('')
-	Button:SetHighlightTexture('')
-
-	PA:CreateShadow(Button)
+	local texture = select(5, GetItemInfoInstant(ItemID))
+	SRF:SetButtonTexture(Button, texture)
 
 	for _, event in pairs(SRF.Events) do
 		Button:RegisterEvent(event)
@@ -227,15 +241,8 @@ function SRF:CreateSeedButton(ItemID)
 	Button:SetAttribute('item', GetItemInfo(ItemID))
 	Button.ItemID = ItemID
 
-	Button.icon:SetTexture(select(5, GetItemInfoInstant(ItemID)))
-	Button.icon:SetTexCoord(unpack(PA.TexCoords))
-	Button.icon:SetPoint('TOPLEFT', 1, -1)
-	Button.icon:SetPoint('BOTTOMRIGHT', -1, 1)
-	Button.icon:SetDrawLayer('ARTWORK')
-
-	Button:SetNormalTexture('')
-	Button:SetPushedTexture('')
-	Button:SetHighlightTexture('')
+	local texture = select(5, GetItemInfoInstant(ItemID))
+	SRF:SetButtonTexture(Button, texture)
 
 	Button:HookScript('OnEnter', function(button)
 		_G.GameTooltip:SetOwner(button, 'ANCHOR_TOPRIGHT', 2, 4)
@@ -252,9 +259,8 @@ function SRF:CreateSeedButton(ItemID)
 				button:SetAttribute('item', GetItemInfo(button.ItemID))
 			end
 			local Count = GetItemCount(button.ItemID)
-			button:EnableMouse(Count > 0)
+			button:SetEnabled(Count > 0)
 			button.Count:SetText(Count > 0 and Count or '')
-			button.icon:SetDesaturated(Count == 0)
 			button:UnregisterEvent('PLAYER_REGEN_ENABLED')
 		else
 			button:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -341,7 +347,7 @@ function SRF:Initialize()
 	Bar:SetPoint('TOP', _G.UIParent, 'TOP', 0, -250)
 	Bar.Buttons = {}
 
-	Bar.SeedsFrame = CreateFrame('Frame', 'SunsongRanchFarmerSeedBar', _G.UIParent)
+	Bar.SeedsFrame = CreateFrame('Frame', 'SunsongRanchFarmerSeedBar', _G.UIParent, "SecureHandlerStateTemplate")
 	Bar.SeedsFrame:SetFrameStrata('MEDIUM')
 	Bar.SeedsFrame:SetFrameLevel(0)
 	Bar.SeedsFrame:SetSize(344, 72)
