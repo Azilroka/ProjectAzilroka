@@ -11,7 +11,7 @@ local UnitExists = UnitExists
 local UnitIsEnemy = UnitIsEnemy
 local UnitIsFriend = UnitIsFriend
 
-local IsReplacingUnit = IsReplacingUnit
+local IsReplacingUnit = IsReplacingUnit or C_PlayerInteractionManager.IsReplacingUnit
 local PlaySound = PlaySound
 
 function TS:PLAYER_TARGET_CHANGED()
