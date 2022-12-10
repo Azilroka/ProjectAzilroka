@@ -94,6 +94,7 @@ local AddOnFrames = {
 	Blizzard_TrainerUI = { 'ClassTrainerFrame' },
 	Blizzard_VoidStorageUI = { 'VoidStorageFrame' },
 	Blizzard_WeeklyRewards = { 'WeeklyRewardsFrame' },
+	Blizzard_ProfessionsCustomerOrders = { 'ProfessionsCustomerOrdersFrame' },
 }
 
 function MF:OnDragStart(frame)
