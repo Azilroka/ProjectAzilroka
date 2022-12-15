@@ -2,7 +2,7 @@
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka, Nihilistzsche
 ## Version: 1.86
-## OptionalDeps: Masque, Tukui, ElvUI
+## OptionalDeps: Masque, Tukui, ElvUI, SpartanUI
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 ## X-Curse-Project-ID: 311661
 ## X-Wago-ID: baNDy46o

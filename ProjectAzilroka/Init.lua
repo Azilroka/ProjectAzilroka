@@ -121,11 +121,12 @@ PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
 PA.NUI = PA:IsAddOnEnabled('ElvUI_NihilistzscheUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
 PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
+PA.SpartanUI = PA:IsAddOnEnabled('SpartanUI', PA.MyName)
 PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
 -- Setup oUF for pbuf
 local function GetoUF()
-	local key = PA.ElvUI and "ElvUI_Libraries" or PA.Tukui and "Tukui"
+	local key = PA.ElvUI and "ElvUI_Libraries" or PA.Tukui and "Tukui" or PA.SpartanUI and "SpartanUI"
 	if not key then return end
 	return _G[_G.GetAddOnMetadata(key, 'X-oUF')]
 end
