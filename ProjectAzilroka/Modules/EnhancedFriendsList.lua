@@ -73,7 +73,7 @@ for name, info in next, EFL.Icons.Status do
 end
 
 function EFL:SetGradientColor(button, color1, color2)
-	if PA.Retail then
+	if PA.Retail or PA.Wrath then
 		button.Left:SetGradient("Horizontal", color1, color2)
 		button.Right:SetGradient("Horizontal", color2, color1)
 	else
