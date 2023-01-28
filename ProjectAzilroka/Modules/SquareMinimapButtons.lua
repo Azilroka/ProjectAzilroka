@@ -43,67 +43,28 @@ local MinimapMailFrameUpdate = MinimapMailFrameUpdate
 SMB.Buttons = {}
 
 SMB.IgnoreButton = {
-	'HelpOpenWebTicketButton',
-	'MiniMapVoiceChatFrame',
-	'TimeManagerClockButton',
 	'BattlefieldMinimap',
 	'ButtonCollectFrame',
-	'GameTimeFrame',
-	'QueueStatusButton',
+	'ElvUI_MinimapHolder',
 	'ExpansionLandingPageMinimapButton',
+	'GameTimeFrame',
+	'HelpOpenWebTicketButton',
+	'HelpOpenTicketButton',
+	'InstanceDifficultyFrame',
+	'MinimapBackdrop',
 	'MiniMapMailFrame',
+	'MinimapPanel',
 	'MiniMapTracking',
+	'MiniMapVoiceChatFrame',
 	'MinimapZoomIn',
 	'MinimapZoomOut',
-	'TukuiMinimapZone',
-	'TukuiMinimapCoord',
+	'QueueStatusButton',
 	'RecipeRadarMinimapButtonFrame',
-	'InstanceDifficultyFrame',
-}
-
-SMB.GenericIgnore = {
-	'Archy',
-	'GatherMatePin',
-	'GatherNote',
-	'GuildInstance',
-	'HandyNotesPin',
-	'MiniMap',
-	'Spy_MapNoteList_mini',
-	'ZGVMarker',
-	'poiMinimap',
-	'GuildMap3Mini',
-	'LibRockConfig-1.0_MinimapButton',
-	'MinimapLayerFrame', -- Nova World Buffs
-	'NauticusMiniIcon',
-	'WestPointer',
-	'Cork',
-	'DugisArrowMinimapPoint',
-	'QuestieFrame',
-	'TTMinimapButton',
-	'SL_MinimapDifficultyFrame', -- S&L Instance Indicator
-}
-
-SMB.PartialIgnore = { 'Node', 'Pin', 'POI' }
-
-SMB.OverrideTexture = {
-	BagSync_MinimapButton = 'Interface/AddOns/BagSync/media/icon',
-	DBMMinimapButton = 'Interface/Icons/INV_Helmet_87',
-	SmartBuff_MiniMapButton = 'Interface/Icons/Spell_Nature_Purge',
-	VendomaticButtonFrame = 'Interface/Icons/INV_Misc_Rabbit_2',
-	OutfitterMinimapButton = '',
-	RecipeRadar_MinimapButton = 'Interface/Icons/INV_Scroll_03',
-	GameTimeFrame = ''
-}
-
-SMB.DoNotCrop = {
-	ZygorGuidesViewerMapIcon = true,
-	ItemRackMinimapFrame = true,
-	Narci_MinimapButton = true,
-}
-
-SMB.UnrulyButtons = {
-	'WIM3MinimapButton',
-	'RecipeRadar_MinimapButton',
+	'SexyMapCustomBackdrop',
+	'SexyMapPingFrame',
+	'TimeManagerClockButton',
+	'TukuiMinimapCoord',
+	'TukuiMinimapZone',
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
@@ -430,14 +391,6 @@ function SMB:SkinMinimapButton(button)
 
 	if tContains(SMB.IgnoreButton, name) then return end
 
-	for _, genericIgnore in next, SMB.GenericIgnore do
-		if strsub(name, 1, strlen(genericIgnore)) == genericIgnore then return end
-	end
-
-	for _, partialIgnore in next, SMB.PartialIgnore do
-		if strmatch(name, partialIgnore) then return end
-	end
-
 	for _, frames in next, { button, button:GetChildren() } do
 		for _, region in next, { frames:GetRegions() } do
 			if region.IsObjectType and region:IsObjectType('Texture') then
@@ -450,15 +403,12 @@ function SMB:SkinMinimapButton(button)
 					region:SetTexture()
 					region:SetAlpha(0)
 				else
-					if SMB.OverrideTexture[name] then
-						region:SetTexture(SMB.OverrideTexture[name])
-					end
-
 					region:ClearAllPoints()
 					region:SetDrawLayer('ARTWORK')
 					PA:SetInside(region)
 
-					if not SMB.DoNotCrop[name] and not button.ignoreCrop then
+					local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = region:GetTexCoord()
+					if ULx == 0 and ULy == 0 and LLx == 0 and LLy == 1 and URx == 1 and URy == 0 and LRx == 1 and LRy == 1 then
 						region:SetTexCoord(unpack(PA.TexCoords))
 						button:HookScript('OnLeave', function() region:SetTexCoord(unpack(PA.TexCoords)) end)
 					end
@@ -504,21 +454,14 @@ end
 function SMB:GrabMinimapButtons(forceUpdate)
 	if (InCombatLockdown() or C_PetBattles and C_PetBattles.IsInBattle()) then return end
 
-	for _, Button in pairs(SMB.UnrulyButtons) do
-		if _G[Button] then
-			_G[Button]:SetParent(Minimap)
-		end
-	end
-
 	local UpdateBar = forceUpdate
-	for _, Frame in pairs({ Minimap, _G.MinimapBackdrop, _G.MinimapCluster }) do
-		for _, child in pairs({ Frame:GetChildren() }) do
-			local name = child.GetName and child:GetName()
-			local width = child.GetWidth and child:GetWidth()
-			if name and width > 15 and width < 60 and (child:IsObjectType('Button') or child:IsObjectType('Frame')) then
-				SMB:SkinMinimapButton(child)
-				UpdateBar = true
-			end
+
+	for _, btn in ipairs({Minimap:GetChildren()}) do
+		local name = btn.GetName and btn:GetName() or btn.name
+
+		if not (SMB.IgnoreButton[btn] or btn.uiMapID or btn.waypoint or (btn.data and btn.data.UiMapID) or (not name) or (name and strmatch(name, "^QuestieFrame"))) then
+			SMB:SkinMinimapButton(btn)
+			UpdateBar = true
 		end
 	end
 
