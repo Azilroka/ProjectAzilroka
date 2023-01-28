@@ -20,18 +20,8 @@ local InCombatLockdown = InCombatLockdown
 local C_PetBattles = C_PetBattles
 local Minimap = Minimap
 
-local rad = math.rad
-local cos = math.cos
-local sin = math.sin
-local sqrt = math.sqrt
-local max = math.max
-local min = math.min
-local deg = math.deg
-local atan2 = math.atan2
-
 local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
-local GetCursorPosition = GetCursorPosition
 local HasNewMail = HasNewMail
 local MinimapMailFrameUpdate = MinimapMailFrameUpdate
 
@@ -64,21 +54,8 @@ SMB.IgnoreButton = {
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
 
-local RemoveTextureID = {
-	[136430] = true,
-	[136467] = true,
-	[136477] = true,
-	[136468] = true,
-	[130924] = true,
-}
-
-local RemoveTextureFile = {
-	'interface/characterframe',
-	'border',
-	'background',
-	'alphamask',
-	'highlight'
-}
+local RemoveTextureID = { [136430] = true, [136467] = true, [136477] = true, [136468] = true, [130924] = true }
+local RemoveTextureFile = { 'interface/characterframe', 'border', 'background', 'alphamask', 'highlight' }
 
 function SMB:RemoveTexture(texture)
 	if type(texture) == 'string' then
@@ -113,36 +90,6 @@ end
 function SMB:ToggleBar_FrameStrataLevel(value)
 	if SMB.Bar.SetFixedFrameStrata then SMB.Bar:SetFixedFrameStrata(value) end
 	if SMB.Bar.SetFixedFrameLevel then SMB.Bar:SetFixedFrameLevel(value) end
-end
-
-function SMB:OnUpdate()
-	local mx, my = Minimap:GetCenter()
-	local px, py = GetCursorPosition()
-	local scale = Minimap:GetEffectiveScale()
-
-	px, py = px / scale, py / scale
-
-	local pos = deg(atan2(py - my, px - mx)) % 360
-	local angle = rad(pos or 225)
-	local x, y = cos(angle), sin(angle)
-	local w = (Minimap:GetWidth() + SMB.db.IconSize) / 2
-	local h = (Minimap:GetHeight() + SMB.db.IconSize) / 2
-	local diagRadiusW = sqrt(2*(w)^2)-10
-	local diagRadiusH = sqrt(2*(h)^2)-10
-
-	x = max(-w, min(x*diagRadiusW, w))
-	y = max(-h, min(y*diagRadiusH, h))
-
-	self:ClearAllPoints()
-	self:SetPoint("CENTER", Minimap, "CENTER", x, y)
-end
-
-function SMB:OnDragStart()
-	self:SetScript("OnUpdate", SMB.OnUpdate)
-end
-
-function SMB:OnDragStop()
-	self:SetScript("OnUpdate", nil)
 end
 
 function SMB:HandleBlizzardButtons()
@@ -391,9 +338,6 @@ function SMB:SkinMinimapButton(button)
 		end
 	end
 
-	--Button:SetScript('OnDragStart', SMB.OnDragStart)
-	--Button:SetScript('OnDragStop', SMB.OnDragStop)
-
 	button:HookScript('OnEnter', function()
 		if SMB.Bar:IsShown() then
 			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
@@ -472,7 +416,6 @@ function SMB:Update()
 			Button:SetFrameLevel(SMB.db.Level + 1)
 			Button:SetScript('OnDragStart', nil)
 			Button:SetScript('OnDragStop', nil)
-			--Button:SetScript('OnEvent', nil)
 
 			SMB:LockButton(Button)
 
