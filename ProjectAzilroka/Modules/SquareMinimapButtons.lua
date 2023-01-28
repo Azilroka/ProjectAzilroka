@@ -8,18 +8,13 @@ SMB.Authors = 'Azilroka    Sinaris    Omega    Durc'
 SMB.isEnabled = false
 
 local _G = _G
-local strsub = strsub
-local strlen = strlen
 local strfind = strfind
 local strmatch = strmatch
 local strlower = strlower
 local tinsert = tinsert
 local pairs = pairs
 local unpack = unpack
-local select = select
-local tContains = tContains
 local tostring = tostring
-local floor = floor
 
 local InCombatLockdown = InCombatLockdown
 local C_PetBattles = C_PetBattles
@@ -43,28 +38,28 @@ local MinimapMailFrameUpdate = MinimapMailFrameUpdate
 SMB.Buttons = {}
 
 SMB.IgnoreButton = {
-	'BattlefieldMinimap',
-	'ButtonCollectFrame',
-	'ElvUI_MinimapHolder',
-	'ExpansionLandingPageMinimapButton',
-	'GameTimeFrame',
-	'HelpOpenWebTicketButton',
-	'HelpOpenTicketButton',
-	'InstanceDifficultyFrame',
-	'MinimapBackdrop',
-	'MiniMapMailFrame',
-	'MinimapPanel',
-	'MiniMapTracking',
-	'MiniMapVoiceChatFrame',
-	'MinimapZoomIn',
-	'MinimapZoomOut',
-	'QueueStatusButton',
-	'RecipeRadarMinimapButtonFrame',
-	'SexyMapCustomBackdrop',
-	'SexyMapPingFrame',
-	'TimeManagerClockButton',
-	'TukuiMinimapCoord',
-	'TukuiMinimapZone',
+	BattlefieldMinimap = true,
+	ButtonCollectFrame = true,
+	ElvUI_MinimapHolder = true,
+	ExpansionLandingPageMinimapButton = true,
+	GameTimeFrame = true,
+	HelpOpenWebTicketButton = true,
+	HelpOpenTicketButton = true,
+	InstanceDifficultyFrame = true,
+	MinimapBackdrop = true,
+	MiniMapMailFrame = true,
+	MinimapPanel = true,
+	MiniMapTracking = true,
+	MiniMapVoiceChatFrame = true,
+	MinimapZoomIn = true,
+	MinimapZoomOut = true,
+	QueueStatusButton = true,
+	RecipeRadarMinimapButtonFrame = true,
+	SexyMapCustomBackdrop = true,
+	SexyMapPingFrame = true,
+	TimeManagerClockButton = true,
+	TukuiMinimapCoord = true,
+	TukuiMinimapZone = true,
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
@@ -335,44 +330,9 @@ function SMB:HandleBlizzardButtons()
 	else
 		-- MiniMapTrackingFrame
 		if SMB.db.MoveGameTimeFrame and not _G.GameTimeFrame.SMB then
-			local STEP = 5.625 -- 256 * 5.625 = 1440M = 24H
-			local PX_PER_STEP = 0.00390625 -- 1 / 256
-			local l, r, offset
-
 			PA:SetTemplate(_G.GameTimeFrame)
 			_G.GameTimeTexture:SetTexture('')
 
-			--_G.GameTimeFrame.DayTimeIndicator = _G.GameTimeFrame:CreateTexture(nil, "BACKGROUND", nil, 1)
-			--_G.GameTimeFrame.DayTimeIndicator:SetTexture("Interface/Minimap/HumanUITile-TimeIndicator", true)
-			--PA:SetInside(_G.GameTimeFrame.DayTimeIndicator)
-
-			--_G.GameTimeFrame:SetSize(Size, Size)
-
-			--_G.GameTimeFrame.timeOfDay = 0
-			--local function OnUpdate(s, elapsed)
-			--	s.elapsed = (s.elapsed or 1) + elapsed
-			--	if s.elapsed > 1 then
-			--		local hour, minute = _G.GetGameTime()
-			--		local time = hour * 60 + minute
-			--		if time ~= s.timeOfDay then
-			--			offset = PX_PER_STEP * floor(time / STEP)
-
-			--			l = 0.25 + offset -- 64 / 256
-			--			if l >= 1.25 then l = 0.25 end
-
-			--			r = 0.75 + offset -- 192 / 256
-			--			if r >= 1.75 then r = 0.75 end
-
-			--			s.DayTimeIndicator:SetTexCoord(l, r, 0, 1)
-
-			--			s.timeOfDay = time
-			--		end
-
-			--		s.elapsed = 0
-			--	end
-			--end
-
-			--_G.GameTimeFrame:SetScript("OnUpdate", OnUpdate)
 			_G.GameTimeFrame.SMB = true
 			tinsert(SMB.Buttons, _G.GameTimeFrame)
 		end
@@ -389,7 +349,7 @@ function SMB:SkinMinimapButton(button)
 	local name = button.GetName and button:GetName()
 	if not name then return end
 
-	if tContains(SMB.IgnoreButton, name) then return end
+	if SMB.IgnoreButton[name] then return end
 
 	for _, frames in next, { button, button:GetChildren() } do
 		for _, region in next, { frames:GetRegions() } do
