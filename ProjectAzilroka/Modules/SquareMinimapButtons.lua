@@ -194,7 +194,7 @@ function SMB:HandleBlizzardButtons()
 	local Size = SMB.db.IconSize
 	local MailFrameVersion = PA.Retail and _G.MinimapCluster.MailFrame or _G.MiniMapMailFrame
 
-	if SMB.db.MoveMail and not MailFrameVersion.SMB then
+	if SMB.db.MoveMail and MailFrameVersion and not MailFrameVersion.SMB then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
 		Frame:SetSize(Size, Size)
 		PA:SetTemplate(Frame)
