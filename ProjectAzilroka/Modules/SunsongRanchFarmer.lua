@@ -367,26 +367,21 @@ function SRF:Initialize()
 		Bar.SeedsFrame:RegisterEvent(event)
 	end
 
+	Bar:SetScript('OnShow', function(frame) UIFrameFadeIn(frame, 0.5, 0, 1) end)
 	Bar:SetScript('OnEvent', function(frame)
 		if not InCombatLockdown() then
-			if SRF:InFarmZone() then
-				frame:Show()
-				UIFrameFadeIn(frame, 0.5, 0, 1)
-			else
+			local shown = SRF:InFarmZone()
+			frame:SetShown(shown)
+			if not shown then
 				SRF:DropTools()
-				frame:Hide()
 			end
 		end
 	end)
 
+	Bar.SeedsFrame:SetScript('OnShow', function(frame) UIFrameFadeIn(frame, 0.5, 0, 1) end)
 	Bar.SeedsFrame:SetScript('OnEvent', function(frame)
 		if not InCombatLockdown() then
-			if SRF:InSeedZone() then
-				frame:Show()
-				UIFrameFadeIn(frame, 0.5, 0, 1)
-			else
-				frame:Hide()
-			end
+			frame:SetShown(SRF:InSeedZone())
 		end
 	end)
 
