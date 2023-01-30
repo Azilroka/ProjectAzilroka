@@ -359,7 +359,7 @@ function SMB:GrabMinimapButtons(forceUpdate)
 		if not (not name or -- don't want unnamed ones
 			SMB.IgnoreButton[name] or -- Ignored by default
 			btn.isSkinned or -- Skinned buttons
-			btn.uiMapID or -- HereBeDragons
+			btn.uiMapID or -- HereBeDragons | HandyNotes
 			btn.waypoint or -- Zygor
 			(btn.data and btn.data.UiMapID) or (name and strmatch(name, "^QuestieFrame"))) or -- Questie
 			(btn.point and btn.point.uid)  -- TomTom
