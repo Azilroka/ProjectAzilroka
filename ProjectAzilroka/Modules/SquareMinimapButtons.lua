@@ -50,6 +50,7 @@ SMB.IgnoreButton = {
 	TimeManagerClockButton = true,
 	TukuiMinimapCoord = true,
 	TukuiMinimapZone = true,
+	SL_MinimapDifficultyFrame = true, -- S&L Instance Indicator
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
