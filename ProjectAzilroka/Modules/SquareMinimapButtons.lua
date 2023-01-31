@@ -51,6 +51,7 @@ SMB.IgnoreButton = {
 	TukuiMinimapCoord = true,
 	TukuiMinimapZone = true,
 	SL_MinimapDifficultyFrame = true, -- S&L Instance Indicator
+	QuestieFrameGroup = true -- Questie
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
@@ -357,14 +358,16 @@ function SMB:GrabMinimapButtons(forceUpdate)
 	for _, btn in ipairs({Minimap:GetChildren()}) do
 		local name = btn.GetName and btn:GetName() or btn.name
 
-		if not (not name or -- don't want unnamed ones
+		if not (
 			SMB.IgnoreButton[name] or -- Ignored by default
 			btn.isSkinned or -- Skinned buttons
 			btn.uiMapID or -- HereBeDragons | HandyNotes
 			(btn.waypoint or btn.isZygorWaypoint) or -- Zygor
-			(btn.title and btn.x and btn.y) or -- GatherMate2
-			(btn.data and btn.data.UiMapID) or (name and strmatch(name, "^QuestieFrame"))) or -- Questie
-			(btn.point and btn.point.uid)  -- TomTom
+			(btn.nodeID or btn.title and btn.x and btn.y) or -- GatherMate2
+			(btn.data and btn.data.UiMapID) or (name and strmatch(name, "^QuestieFrame")) or -- Questie
+			(btn.uid or btn.point and btn.point.uid) or -- TomTom
+			not name and not btn.icon -- don't want unnamed ones
+			)
 		then
 			SMB:SkinMinimapButton(btn)
 			UpdateBar = true
