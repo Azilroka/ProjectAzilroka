@@ -51,6 +51,7 @@ SMB.IgnoreButton = {
 	TukuiMinimapCoord = true,
 	TukuiMinimapZone = true,
 	SL_MinimapDifficultyFrame = true, -- S&L Instance Indicator
+	SLECoordsHolder = true,
 	QuestieFrameGroup = true -- Questie
 }
 
