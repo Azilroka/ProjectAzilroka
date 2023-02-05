@@ -17,19 +17,4 @@ Cooldowns.lua
 Media\Media.lua
 
 # Modules
-Modules\BrokerLDB.lua
-Modules\DragonOverlay.lua
-Modules\EnhancedFriendsList.lua
-Modules\EnhancedShadows.lua
-Modules\FasterLoot.lua
-Modules\iFilger.lua
-Modules\LootConfirm.lua
-Modules\MasterExperience.lua
-Modules\MouseoverAuras.lua
-Modules\MovableFrames.lua
-Modules\OzCooldowns.lua
-Modules\QuestSounds.lua
-Modules\Reminder.lua
-Modules\SquareMinimapButtons.lua
-Modules\stAddonManager.lua
-Modules\TargetSounds.lua
+Modules\Load_TBC.xml

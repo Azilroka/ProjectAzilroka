@@ -19,25 +19,4 @@ Cooldowns.lua
 Media\Media.lua
 
 # Modules
-Modules\BrokerLDB.lua
-Modules\DragonOverlay.lua
-Modules\EnhancedFriendsList.lua
-Modules\EnhancedPetBattleUI.lua
-Modules\EnhancedShadows.lua
-Modules\FasterLoot.lua
-Modules\iFilger.lua
-Modules\LootConfirm.lua
-Modules\MasterExperience.lua
-Modules\MouseoverAuras.lua
-Modules\MovableFrames.lua
-Modules\OzCooldowns.lua
-Modules\QuestSounds.lua
-Modules\Reminder.lua
-Modules\ReputationReward.lua
-Modules\SquareMinimapButtons.lua
-Modules\stAddonManager.lua
-Modules\SunsongRanchFarmer.lua
-Modules\TargetSounds.lua
-
-Modules\TorghastBuffs.xml
-Modules\TorghastBuffs.lua
+Modules\Load_Mainline.xml
