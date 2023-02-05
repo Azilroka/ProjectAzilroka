@@ -359,7 +359,7 @@ function SMB:GrabMinimapButtons(forceUpdate)
 	for _, btn in ipairs({Minimap:GetChildren()}) do
 		local name = btn.GetName and btn:GetName() or btn.name
 
-		if not (btn:IsObjectType('Frame') or -- Don't want frames only buttons
+		if not (not btn:IsObjectType('Frame') or -- Don't want frames only buttons
 			SMB.IgnoreButton[name] or -- Ignored by default
 			btn.isSkinned or -- Skinned buttons
 			btn.uiMapID or -- HereBeDragons | HandyNotes
