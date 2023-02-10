@@ -426,6 +426,18 @@ function stAM:NewAddOnProfile(name, overwrite)
 	stAM:UpdateProfiles()
 end
 
+function stAM:LoadProfile(name)
+	if not IsShiftKeyDown() then
+		DisableAllAddOns(stAM.SelectedCharacter)
+	end
+
+	for _, AddOn in pairs(_G.stAddonManagerProfilesDB[name]) do
+		EnableAddOn(AddOn, stAM.SelectedCharacter)
+	end
+
+	stAM:UpdateAddonList()
+end
+
 function stAM:InitProfiles()
 	local ProfileMenu = CreateFrame('Frame', 'stAMProfileMenu', stAM.Frame)
 	ProfileMenu:SetPoint('TOPLEFT', stAM.Frame, 'TOPRIGHT', 3, 0)
@@ -505,14 +517,7 @@ function stAM:InitProfiles()
 				end
 				_G.StaticPopup_Show('STADDONMANAGER_RENAMEPROFILE')
 			else
-				if not IsShiftKeyDown() then
-					DisableAllAddOns(stAM.SelectedCharacter)
-				end
-				for _, AddOn in pairs(_G.stAddonManagerProfilesDB[Pullout.Name]) do
-					EnableAddOn(AddOn, stAM.SelectedCharacter)
-				end
-
-				stAM:UpdateAddonList()
+				stAM:LoadProfile(Pullout.Name)
 			end
 		end)
 
