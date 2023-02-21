@@ -264,20 +264,20 @@ function PA:CreateBackdrop(frame)
 	if PA.AddOnSkins then
 		_G.AddOnSkins[1]:CreateBackdrop(frame)
 	else
-		local Parent = frame.IsObjectType and frame:IsObjectType('Texture') and frame:GetParent() or frame
+		local parent = frame.IsObjectType and frame:IsObjectType('Texture') and frame:GetParent() or frame
 
-		local Backdrop = CreateFrame('Frame', nil, Parent)
-		if not Backdrop.SetBackdrop then _G.Mixin(Backdrop, _G.BackdropTemplateMixin) end
-		if (Parent:GetFrameLevel() - 1) >= 0 then
-			Backdrop:SetFrameLevel(Parent:GetFrameLevel() - 1)
+		local backdrop = CreateFrame('Frame', nil, parent)
+		if not backdrop.SetBackdrop then _G.Mixin(backdrop, _G.BackdropTemplateMixin) end
+		if (parent:GetFrameLevel() - 1) >= 0 then
+			backdrop:SetFrameLevel(parent:GetFrameLevel() - 1)
 		else
-			Backdrop:SetFrameLevel(0)
+			backdrop:SetFrameLevel(0)
 		end
 
-		PA:SetOutside(Backdrop, frame)
-		PA:SetTemplate(Backdrop)
+		PA:SetOutside(backdrop, frame)
+		PA:SetTemplate(backdrop)
 
-		frame.Backdrop = Backdrop
+		frame.backdrop = backdrop
 	end
 end
 
@@ -309,8 +309,6 @@ end
 function PA:SetInside(obj, anchor, xOffset, yOffset, anchor2)
 	xOffset, yOffset, anchor = xOffset or 1, yOffset or 1, anchor or obj:GetParent()
 
-	assert(anchor)
-
 	if obj:GetPoint() then obj:ClearAllPoints() end
 	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', xOffset, -yOffset)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
@@ -318,8 +316,6 @@ end
 
 function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 	xOffset, yOffset, anchor = xOffset or 1, yOffset or 1, anchor or obj:GetParent()
-
-	assert(anchor)
 
 	if obj:GetPoint() then obj:ClearAllPoints() end
 	obj:SetPoint('TOPLEFT', anchor, 'TOPLEFT', -xOffset, yOffset)

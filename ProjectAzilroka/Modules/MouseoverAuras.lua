@@ -95,9 +95,9 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 			button:Show()
 
 			if isDebuff then
-				button.Backdrop:SetBackdropBorderColor(1, 0, 0)
+				button.backdrop:SetBackdropBorderColor(1, 0, 0)
 			else
-				button.Backdrop:SetBackdropBorderColor(0, 0, 0)
+				button.backdrop:SetBackdropBorderColor(0, 0, 0)
 			end
 
 			return VISIBLE

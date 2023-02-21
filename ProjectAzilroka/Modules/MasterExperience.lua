@@ -1,8 +1,9 @@
 local PA = _G.ProjectAzilroka
 local MXP = PA:NewModule('MasterXP', 'AceTimer-3.0', 'AceEvent-3.0')
+local L = PA.ACL
 
-MXP.Title = PA.ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
-MXP.Description = PA.ACL['Shows Experience Bars for Party / Battle.net Friends']
+MXP.Title = L['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
+MXP.Description = L['Shows Experience Bars for Party / Battle.net Friends']
 MXP.Authors = 'Azilroka'
 MXP.isEnabled = false
 PA.MXP, _G.MasterExperience = MXP, MXP
@@ -110,7 +111,7 @@ function MXP:UpdateBar(barID, infoString)
 		bar:SetValue(1)
 
 		if displayString ~= 'NONE' then
-			displayString = info.xpDisabled and PA.ACL["Disabled"] or PA.ACL["Max Level"]
+			displayString = info.xpDisabled and L["Disabled"] or L["Max Level"]
 		end
 	else
 		bar:SetMinMaxValues(0, info.XPToLevel)
@@ -164,7 +165,7 @@ function MXP:UpdateBar(barID, infoString)
 			end
 		end
 
-		displayString = format('%s %s - %s', PA.ACL['Lvl'], info.level, displayString)
+		displayString = format('%s %s - %s', L['Lvl'], info.level, displayString)
 
 		bar.Rested:SetShown(isRested)
 		bar.Quest:SetShown(hasQuestXP)
@@ -196,18 +197,18 @@ function MXP:Bar_OnEnter()
 	_G.GameTooltip:ClearLines()
 	_G.GameTooltip:SetOwner(self, 'ANCHOR_CURSOR', 0, -4)
 
-	_G.GameTooltip:AddLine(format("%s's %s", MXP.BNFriends[self.Info.name] and MXP.BNFriends[self.Info.name].accountName or self.Info.name, PA.ACL["Experience"]))
+	_G.GameTooltip:AddLine(format("%s's %s", MXP.BNFriends[self.Info.name] and MXP.BNFriends[self.Info.name].accountName or self.Info.name, L["Experience"]))
 	_G.GameTooltip:AddLine(' ')
 
-	_G.GameTooltip:AddDoubleLine(PA.ACL["XP:"], format(' %d / %d (%.2f%%)', self.Info.CurrentXP, self.Info.XPToLevel, self.Info.PercentXP), 1, 1, 1)
-	_G.GameTooltip:AddDoubleLine(PA.ACL["Remaining:"], format(' %s (%.2f%% - %d '..PA.ACL["Bars"]..')', self.Info.RemainXP, self.Info.RemainTotal, self.Info.RemainBars), 1, 1, 1)
+	_G.GameTooltip:AddDoubleLine(L["XP:"], format(' %d / %d (%.2f%%)', self.Info.CurrentXP, self.Info.XPToLevel, self.Info.PercentXP), 1, 1, 1)
+	_G.GameTooltip:AddDoubleLine(L["Remaining:"], format(' %s (%.2f%% - %d '..L["Bars"]..')', self.Info.RemainXP, self.Info.RemainTotal, self.Info.RemainBars), 1, 1, 1)
 
 	if self.Info.QuestLogXP and self.Info.QuestLogXP > 0 then
-		_G.GameTooltip:AddDoubleLine(PA.ACL["Quest Log XP:"], format('+%d (%.2f%%)', self.Info.QuestLogXP, self.Info.QuestPercent), 1, 1, 1)
+		_G.GameTooltip:AddDoubleLine(L["Quest Log XP:"], format('+%d (%.2f%%)', self.Info.QuestLogXP, self.Info.QuestPercent), 1, 1, 1)
 	end
 
 	if self.Info.RestedXP and self.Info.RestedXP > 0 then
-		_G.GameTooltip:AddDoubleLine(PA.ACL["Rested:"], format('+%d (%.2f%%)', self.Info.RestedXP, self.Info.PercentRested), 1, 1, 1)
+		_G.GameTooltip:AddDoubleLine(L["Rested:"], format('+%d (%.2f%%)', self.Info.RestedXP, self.Info.PercentRested), 1, 1, 1)
 	end
 
 	_G.GameTooltip:Show()
@@ -472,32 +473,32 @@ function MXP:GetOptions()
 	PA.Options.args.MasterExperience = MasterExperience
 
 	MasterExperience.args.Description = PA.ACH:Description(MXP.Description, 0)
-	MasterExperience.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value if not MXP.isEnabled then MXP:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	MasterExperience.args.Enable = PA.ACH:Toggle(L['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value if not MXP.isEnabled then MXP:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	MasterExperience.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
+	MasterExperience.args.General = PA.ACH:Group(L['General'], nil, 2, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
 	MasterExperience.args.General.inline = true
-	MasterExperience.args.General.args.Party = PA.ACH:Toggle(PA.ACL['Party'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
-	MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(PA.ACL['BattleNet'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
-	MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 2)
-	MasterExperience.args.General.args.GrowthDirection = PA.ACH:Select(PA.ACL['Growth Direction'], nil, 3, { UP = 'Up', DOWN = 'Down' })
+	MasterExperience.args.General.args.Party = PA.ACH:Toggle(L['Party'], nil, 0, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	MasterExperience.args.General.args.BattleNet = PA.ACH:Toggle(L['BattleNet'], nil, 1, nil, nil, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateAllBars() end)
+	MasterExperience.args.General.args.MouseOver = PA.ACH:Toggle(L['MouseOver'], nil, 2)
+	MasterExperience.args.General.args.GrowthDirection = PA.ACH:Select(L['Growth Direction'], nil, 3, { UP = 'Up', DOWN = 'Down' })
 
-	MasterExperience.args.General.args.FontGroup = PA.ACH:Group(PA.ACL['Font'], nil, 3)
+	MasterExperience.args.General.args.FontGroup = PA.ACH:Group(L['Font'], nil, 3)
 	MasterExperience.args.General.args.FontGroup.inline = true
-	MasterExperience.args.General.args.FontGroup.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
-	MasterExperience.args.General.args.FontGroup.args.FontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
-	MasterExperience.args.General.args.FontGroup.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
+	MasterExperience.args.General.args.FontGroup.args.Font = PA.ACH:SharedMediaFont(L['Font'], nil, 1)
+	MasterExperience.args.General.args.FontGroup.args.FontSize = PA.ACH:Range(L['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
+	MasterExperience.args.General.args.FontGroup.args.FontFlag = PA.ACH:FontFlags(L['Font Outline'], nil, 3)
 
-	MasterExperience.args.General.args.SizeGroup = PA.ACH:Group(PA.ACL['Size'], nil, -2, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
-	MasterExperience.args.General.args.SizeGroup.args.Width = PA.ACH:Range(PA.ACL['Width'], nil, 1, { min = 1, max = 512, step = 1 })
-	MasterExperience.args.General.args.SizeGroup.args.Height = PA.ACH:Range(PA.ACL['Height'], nil, 2, { min = 1, max = 64, step = 1 })
+	MasterExperience.args.General.args.SizeGroup = PA.ACH:Group(L['Size'], nil, -2, nil, nil, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
+	MasterExperience.args.General.args.SizeGroup.args.Width = PA.ACH:Range(L['Width'], nil, 1, { min = 1, max = 512, step = 1 })
+	MasterExperience.args.General.args.SizeGroup.args.Height = PA.ACH:Range(L['Height'], nil, 2, { min = 1, max = 64, step = 1 })
 
-	MasterExperience.args.General.args.Colors = PA.ACH:Group(PA.ACL['Colors'], nil, -1, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateCurrentBars() end)
-	MasterExperience.args.General.args.Colors.args.ColorByClass = PA.ACH:Toggle(PA.ACL['Color By Class'], nil, 0, nil, nil, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
-	MasterExperience.args.General.args.Colors.args.Experience = PA.ACH:Color(ACL['Experience'], nil, 1, true)
-	MasterExperience.args.General.args.Colors.args.Rested = PA.ACH:Color(ACL['Rested'], nil, 2, true)
+	MasterExperience.args.General.args.Colors = PA.ACH:Group(L['Colors'], nil, -1, nil, function(info) local t = MXP.db.Colors[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b, a) local t = MXP.db.Colors[info[#info]] t.r, t.g, t.b, t.a = r, g, b, a MXP:UpdateCurrentBars() end)
+	MasterExperience.args.General.args.Colors.args.ColorByClass = PA.ACH:Toggle(L['Color By Class'], nil, 0, nil, nil, nil, function(info) return MXP.db[info[#info]] end, function(info, value) MXP.db[info[#info]] = value MXP:UpdateCurrentBars() end)
+	MasterExperience.args.General.args.Colors.args.Experience = PA.ACH:Color(L['Experience'], nil, 1, true)
+	MasterExperience.args.General.args.Colors.args.Rested = PA.ACH:Color(L['Rested'], nil, 2, true)
 	MasterExperience.args.General.args.Colors.args.Quest = PA.ACH:Color('Quest', nil, 3, true)
 
-	MasterExperience.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
+	MasterExperience.args.AuthorHeader = PA.ACH:Header(L['Authors:'], -2)
 	MasterExperience.args.Authors = PA.ACH:Description(MXP.Authors, -1, 'large')
 end
 

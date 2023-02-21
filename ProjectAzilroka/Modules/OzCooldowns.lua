@@ -114,7 +114,6 @@ function OzCD:ScanSpellBook(bookType, numSpells, offset)
 					end
 				end
 			end
-		elseif skillType == 'FUTURESPELL' then
 		elseif not skillType then
 			break
 		end
@@ -243,10 +242,15 @@ function OzCD:CreateCooldown(index)
 	Frame.StatusBar:SetSize(OzCD.db.Size, 4)
 	Frame.StatusBar:SetScript('OnUpdate', function(s)
 		if (Frame.CurrentDuration and Frame.CurrentDuration > 0) then
-			local Normalized = Frame.CurrentDuration / Frame.Duration
-			s:SetValue(Normalized)
+			local normalized = Frame.CurrentDuration / Frame.Duration
+			if normalized == 0 then
+				normalized = 0
+			elseif normalized == 1 then
+				normalized = 1
+			end
+			s:SetValue(normalized)
 			if OzCD.db.StatusBarGradient then
-				s:SetStatusBarColor(1 - Normalized, Normalized, 0)
+				s:SetStatusBarColor(1 - normalized, normalized, 0)
 			end
 		end
 	end)
