@@ -25,8 +25,8 @@ function MA:CreateAuraIcon(index)
 	local button = CreateFrame('Button', MA.Holder:GetName()..'Button'..index, MA.Holder)
 	button:EnableMouse(false)
 
-	button.cd = CreateFrame('Cooldown', '$parentCooldown', button, 'CooldownFrameTemplate')
-	button.cd:SetAllPoints()
+	button.cooldown = CreateFrame('Cooldown', '$parentCooldown', button, 'CooldownFrameTemplate')
+	button.cooldown:SetAllPoints()
 
 	button.icon = button:CreateTexture(nil, 'ARTWORK')
 	button.icon:SetAllPoints()
@@ -34,14 +34,14 @@ function MA:CreateAuraIcon(index)
 
 	button.countFrame = CreateFrame('Frame', nil, button)
 	button.countFrame:SetAllPoints(button)
-	button.countFrame:SetFrameLevel(button.cd:GetFrameLevel() + 1)
+	button.countFrame:SetFrameLevel(button.cooldown:GetFrameLevel() + 1)
 
 	button.count = button.countFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
 	button.count:SetPoint('BOTTOMRIGHT', button.countFrame, 'BOTTOMRIGHT', -1, 0)
 
 	PA:CreateBackdrop(button)
 	PA:CreateShadow(button)
-	PA:RegisterCooldown(button.cd)
+	PA:RegisterCooldown(button.cooldown)
 
 	tinsert(MA.Holder, button)
 
@@ -78,13 +78,9 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 		local show = MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,timeMod, effect1, effect2, effect3)
 
 		if show then
-			if button.cd then
-				if (duration and duration > 0) then
-					button.cd:SetCooldown(expiration - duration, duration)
-					button.cd:Show()
-				else
-					button.cd:Hide()
-				end
+			if button.cooldown then
+				button.cooldown:SetShown(duration and duration > 0)
+				button.cooldown:SetCooldown(expiration - duration, duration)
 			end
 
 			if(button.icon) then button.icon:SetTexture(texture) end
@@ -94,10 +90,8 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 			button:SetID(index)
 			button:Show()
 
-			if isDebuff then
-				button.backdrop:SetBackdropBorderColor(1, 0, 0)
-			else
-				button.backdrop:SetBackdropBorderColor(0, 0, 0)
+			if button.backdrop then
+				button.backdrop:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
 			end
 
 			return VISIBLE
@@ -216,7 +210,7 @@ end
 
 function MA:BuildProfile()
 	PA.Defaults.profile.MouseoverAuras = {
-		Enable = true,
+		Enable = false,
 		Size = 16,
 		Spacing = 1,
 		cooldown = CopyTable(PA.Defaults.profile.Cooldown),
