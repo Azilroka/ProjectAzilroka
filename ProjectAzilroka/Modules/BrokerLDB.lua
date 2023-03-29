@@ -193,10 +193,9 @@ function BLDB:New(_, name, object)
 	button.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 	PA:CreateBackdrop(button.Icon)
 
-	BLDB.PluginObjects[name] = button.Text
+	BLDB.PluginObjects[name] = button
 
-	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name..'_text', 'TextUpdate')
-	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name..'_value', 'TextUpdate')
+	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name, 'TextUpdate')
 
 	button:SetScript('OnEnter', function(s)
 		if s.anim:IsPlaying() then return end
