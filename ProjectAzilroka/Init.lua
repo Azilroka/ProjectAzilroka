@@ -16,7 +16,7 @@ local print = print
 local format = format
 local strsplit, strmatch, strlen, strsub = strsplit, strmatch, strlen, strsub
 
-local GetAddOnMetadata = GetAddOnMetadata
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local GetAddOnEnableState = GetAddOnEnableState
 local UnitName = UnitName
 local UnitClass = UnitClass

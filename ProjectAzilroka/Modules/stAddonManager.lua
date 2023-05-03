@@ -32,7 +32,7 @@ local GetAddOnDependencies = GetAddOnDependencies
 local GetAddOnOptionalDependencies = GetAddOnOptionalDependencies
 local DisableAddOn = DisableAddOn
 local EnableAddOn = EnableAddOn
-local GetAddOnMetadata = GetAddOnMetadata
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local DisableAllAddOns = DisableAllAddOns
 local EnableAllAddOns = EnableAllAddOns
 
