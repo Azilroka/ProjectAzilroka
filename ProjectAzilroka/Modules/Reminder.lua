@@ -28,7 +28,6 @@ local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitLevel = UnitLevel
-local UnitInVehicle = UnitInVehicle
 local GetInventoryItemID = GetInventoryItemID
 local GetWeaponEnchantInfo = GetWeaponEnchantInfo
 local GetInventoryItemTexture = GetInventoryItemTexture
@@ -37,7 +36,7 @@ local GetSpecialization = GetSpecialization
 local GetSpecializationRole = GetSpecializationRole
 local GetSpecializationInfo = GetSpecializationInfo
 local GetItemInfoInstant = GetItemInfoInstant
-
+local UnitInVehicle = UnitInVehicle or function () return false end
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
 
 local CreateFrame = CreateFrame
