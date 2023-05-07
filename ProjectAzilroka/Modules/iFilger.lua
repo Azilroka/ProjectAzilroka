@@ -462,9 +462,9 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 			button:Show()
 
 			if isDebuff then
-				button.Backdrop:SetBackdropBorderColor(1, 0, 0)
+				button.backdrop:SetBackdropBorderColor(1, 0, 0)
 			else
-				button.Backdrop:SetBackdropBorderColor(0, 0, 0)
+				button.backdrop:SetBackdropBorderColor(0, 0, 0)
 			end
 
 			return VISIBLE
