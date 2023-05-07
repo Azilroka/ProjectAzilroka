@@ -669,9 +669,9 @@ function IF:CreateAuraIcon(element)
 	Frame.StatusBar.Time:SetJustifyH('RIGHT')
 
 	PA:CreateBackdrop(Frame)
-	PA:CreateShadow(Frame.Backdrop)
+	PA:CreateShadow(Frame.backdrop)
 	PA:CreateBackdrop(Frame.StatusBar, 'Default')
-	PA:CreateShadow(Frame.StatusBar.Backdrop)
+	PA:CreateShadow(Frame.StatusBar.backdrop)
 
 	Frame.StatusBar:SetShown(element.db.StatusBar)
 	Frame.StatusBar.Name:SetShown(element.db.StatusBarNameEnabled)
