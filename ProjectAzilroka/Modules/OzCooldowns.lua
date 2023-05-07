@@ -262,9 +262,9 @@ function OzCD:CreateCooldown(index)
 		OzCD.MasqueGroup:ReSkin()
 	else
 		PA:CreateBackdrop(Frame)
-		PA:CreateShadow(Frame.Backdrop)
+		PA:CreateShadow(Frame.backdrop)
 		PA:CreateBackdrop(Frame.StatusBar, 'Default')
-		PA:CreateShadow(Frame.StatusBar.Backdrop)
+		PA:CreateShadow(Frame.StatusBar.backdrop)
 	end
 
 	if not (PA.ElvUI or PA.Tukui) then
