@@ -364,6 +364,7 @@ function SMB:GrabMinimapButtons(forceUpdate)
 			btn.isSkinned or -- Skinned buttons
 			btn.uiMapID or -- HereBeDragons | HandyNotes
 			btn.arrow or -- HandyNotes | TomCat Tours
+			btn.texture or -- HandyNotes
 			(btn.waypoint or btn.isZygorWaypoint) or -- Zygor
 			(btn.nodeID or btn.title and btn.x and btn.y) or -- GatherMate2
 			(btn.data and btn.data.UiMapID) or (name and strmatch(name, "^QuestieFrame")) or -- Questie
