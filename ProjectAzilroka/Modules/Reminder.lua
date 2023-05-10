@@ -140,7 +140,7 @@ function AR:FilterCheck(db, isReverse)
 end
 
 function AR:Reminder_Update()
-	if UnitIsDeadOrGhost('player') or UnitInVehicle('player') then return end
+	if UnitIsDeadOrGhost('player') or (not PA.Classic and UnitInVehicle('player')) then return end
 
 	for _, button in ipairs(AR.CreatedReminders) do
 		button:Hide()
