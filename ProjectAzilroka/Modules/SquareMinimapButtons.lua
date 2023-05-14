@@ -362,9 +362,8 @@ function SMB:GrabMinimapButtons(forceUpdate)
 		if not (not btn:IsObjectType('Button') or -- Don't want frames only buttons
 			SMB.IgnoreButton[name] or -- Ignored by default
 			btn.isSkinned or -- Skinned buttons
-			btn.uiMapID or -- HereBeDragons | HandyNotes
+			btn.uiMapID or btn.minimap or btn.acquired or -- HereBeDragons | HandyNotes
 			btn.arrow or -- HandyNotes | TomCat Tours
-			btn.texture or -- HandyNotes
 			(btn.waypoint or btn.isZygorWaypoint) or -- Zygor
 			(btn.nodeID or btn.title and btn.x and btn.y) or -- GatherMate2
 			(btn.data and btn.data.UiMapID) or (name and strmatch(name, "^QuestieFrame")) or -- Questie
