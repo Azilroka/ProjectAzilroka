@@ -7,6 +7,8 @@ MF.Description = PA.ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 MF.isEnabled = false
 
+MF.alteredFrames = {}
+
 local next = next
 
 local _G = _G
@@ -145,11 +147,12 @@ function MF:MakeMovable(name)
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:RegisterForDrag('LeftButton')
-	frame:SetClampedToScreen(true)
+	frame:SetClampedToScreen(MF.db.ClampedToScreen)
 
 	MF:HookScript(frame, 'OnDragStart', 'OnDragStart')
 	MF:HookScript(frame, 'OnDragStop', 'OnDragStop')
 
+	MF.alteredFrames[frame] = true
 	-- frame:EnableMouseWheel(true)
 	-- MF:SecureHookScript(Frame, 'OnMouseWheel', 'OnMouseWheel')
 end
@@ -162,17 +165,24 @@ function MF:ADDON_LOADED(_, addon)
 	end
 end
 
+function MF:Update()
+	for frame in next, MF.alteredFrames do
+		frame:SetClampedToScreen(MF.db.ClampedToScreen)
+	end
+end
+
 function MF:GetOptions()
 	PA.Options.args.MovableFrames = PA.ACH:Group(MF.Title, MF.Description, nil, nil, function(info) return MF.db[info[#info]] end, function(info, value) MF.db[info[#info]] = value MF:Update() end)
 	PA.Options.args.MovableFrames.args.Header = PA.ACH:Description(MF.Description, 0)
-	PA.Options.args.MovableFrames.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.MovableFrames.args.Enable = PA.ACH:Toggle(PA.ACL["Enable"], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.MovableFrames.args.ClampedToScreen = PA.ACH:Toggle(PA.ACL["Clamp to Screen"], nil, 1)
 
 	PA.Options.args.MovableFrames.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
 	PA.Options.args.MovableFrames.args.Authors = PA.ACH:Description(MF.Authors, -1, 'large')
 end
 
 function MF:BuildProfile()
-	PA.Defaults.profile.MovableFrames = { Enable = true }
+	PA.Defaults.profile.MovableFrames = { Enable = true, ClampedToScreen = true }
 end
 
 function MF:UpdateSettings()
