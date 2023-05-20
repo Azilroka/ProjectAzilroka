@@ -381,6 +381,14 @@ function SMB:GrabMinimapButtons(forceUpdate)
 	end
 end
 
+function SMB:OnDragStart()
+	SMB.Bar:StartMoving()
+end
+
+function SMB:OnDragStop()
+	SMB.Bar:StopMovingOrSizing()
+end
+
 function SMB:Update()
 	if not SMB.db.BarEnabled or not SMB.db.Enable then return end
 
@@ -421,8 +429,8 @@ function SMB:Update()
 			Button:SetScale(1)
 			Button:SetFrameStrata(SMB.db.Strata)
 			Button:SetFrameLevel(SMB.db.Level + 1)
-			Button:SetScript('OnDragStart', nil)
-			Button:SetScript('OnDragStop', nil)
+			Button:SetScript('OnDragStart', (not (PA.ElvUI or PA.Tukui) and SMB.OnDragStart or nil))
+			Button:SetScript('OnDragStop', (not (PA.ElvUI or PA.Tukui) and SMB.OnDragStop or nil))
 
 			SMB:LockButton(Button)
 
@@ -555,6 +563,8 @@ function SMB:Initialize()
 		_G.Tukui[1]['Movers']:RegisterFrame(SMB.Bar)
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(SMB.Bar, 'SquareMinimapButtonBarMover', 'SquareMinimapButtonBar Anchor', nil, nil, nil, 'ALL,GENERAL')
+	else
+		SMB.Bar:RegisterForDrag('LeftButton')
 	end
 
 	SMB:RegisterEvent("PLAYER_ENTERING_WORLD")
