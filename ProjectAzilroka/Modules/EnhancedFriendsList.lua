@@ -74,13 +74,8 @@ for name, info in next, EFL.Icons.Status do
 end
 
 function EFL:SetGradientColor(button, color1, color2)
-	if PA.Retail or PA.Wrath then
-		button.Left:SetGradient("Horizontal", color1, color2)
-		button.Right:SetGradient("Horizontal", color2, color1)
-	else
-		button.Left:SetGradientAlpha("Horizontal", color1.r, color1.g, color1.b, color1.a, color2.r, color2.g, color2.b, color2.a)
-		button.Right:SetGradientAlpha("Horizontal", color2.r, color2.g, color2.b, color2.a, color1.r, color1.g, color1.b, color1.a)
-	end
+	button.Left:SetGradient("Horizontal", color1, color2)
+	button.Right:SetGradient("Horizontal", color2, color1)
 end
 
 function EFL:CreateTexture(button, type, layer)
