@@ -183,49 +183,49 @@ function SMB:HandleBlizzardButtons()
 			tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
 		end
 
-		if SMB.db.MoveTracker and not _G.MinimapCluster.Tracking.Button.SMB then
-			--_G.MinimapCluster.Tracking.Show = nil
+		if SMB.db.MoveTracker and not _G.MinimapCluster.TrackingFrame.Button.SMB then
+			--_G.MinimapCluster.TrackingFrame.Show = nil
 
-			_G.MinimapCluster.Tracking.Button:Show()
-			PA:SetTemplate(_G.MinimapCluster.Tracking.Button)
+			_G.MinimapCluster.TrackingFrame.Button:Show()
+			PA:SetTemplate(_G.MinimapCluster.TrackingFrame.Button)
 
-			_G.MinimapCluster.Tracking.Button:SetParent(SMB.Bar)
-			_G.MinimapCluster.Tracking.Button:SetSize(Size, Size)
+			_G.MinimapCluster.TrackingFrame.Button:SetParent(SMB.Bar)
+			_G.MinimapCluster.TrackingFrame.Button:SetSize(Size, Size)
 
-			--_G.MinimapCluster.Tracking.Icon:ClearAllPoints()
-			--_G.MinimapCluster.Tracking.Icon:SetPoint('CENTER')
+			--_G.MinimapCluster.TrackingFrame.Icon:ClearAllPoints()
+			--_G.MinimapCluster.TrackingFrame.Icon:SetPoint('CENTER')
 
-			_G.MinimapCluster.Tracking.Background:SetAlpha(0)
-			--_G.MinimapCluster.Tracking.IconOverlay:SetAlpha(0)
-			_G.MinimapCluster.Tracking.Button:SetAlpha(0)
+			_G.MinimapCluster.TrackingFrame.Background:SetAlpha(0)
+			--_G.MinimapCluster.TrackingFrame.IconOverlay:SetAlpha(0)
+			_G.MinimapCluster.TrackingFrame.Button:SetAlpha(0)
 
-			_G.MinimapCluster.Tracking.Button:SetParent(_G.MinimapCluster.Tracking)
-			_G.MinimapCluster.Tracking.Button:ClearAllPoints()
-			_G.MinimapCluster.Tracking.Button:SetAllPoints(_G.MinimapCluster.Tracking)
+			_G.MinimapCluster.TrackingFrame.Button:SetParent(_G.MinimapCluster.TrackingFrame)
+			_G.MinimapCluster.TrackingFrame.Button:ClearAllPoints()
+			_G.MinimapCluster.TrackingFrame.Button:SetAllPoints(_G.MinimapCluster.TrackingFrame)
 
-			_G.MinimapCluster.Tracking.Button:SetScript('OnMouseDown', nil)
-			_G.MinimapCluster.Tracking.Button:SetScript('OnMouseUp', nil)
+			_G.MinimapCluster.TrackingFrame.Button:SetScript('OnMouseDown', nil)
+			_G.MinimapCluster.TrackingFrame.Button:SetScript('OnMouseUp', nil)
 
-			_G.MinimapCluster.Tracking.Button:HookScript('OnEnter', function()
-				_G.MinimapCluster.Tracking.Button:SetBackdropBorderColor(unpack(PA.ClassColor))
+			_G.MinimapCluster.TrackingFrame.Button:HookScript('OnEnter', function()
+				_G.MinimapCluster.TrackingFrame.Button:SetBackdropBorderColor(unpack(PA.ClassColor))
 				if SMB.Bar:IsShown() then
 					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 				end
 			end)
-			_G.MinimapCluster.Tracking.Button:HookScript('OnLeave', function()
-				PA:SetTemplate(_G.MinimapCluster.Tracking.Button)
+			_G.MinimapCluster.TrackingFrame.Button:HookScript('OnLeave', function()
+				PA:SetTemplate(_G.MinimapCluster.TrackingFrame.Button)
 				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
 					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
 				end
 			end)
 
-			_G.MinimapCluster.Tracking.Button.SMB = true
+			_G.MinimapCluster.TrackingFrame.Button.SMB = true
 
 			if SMB.db.Shadows then
-				PA:CreateShadow(_G.MinimapCluster.Tracking.Button)
+				PA:CreateShadow(_G.MinimapCluster.TrackingFrame.Button)
 			end
 
-			tinsert(SMB.Buttons, _G.MinimapCluster.Tracking.Button)
+			tinsert(SMB.Buttons, _G.MinimapCluster.TrackingFrame.Button)
 		end
 
 		if SMB.db["MoveQueue"] and not _G.QueueStatusButton.SMB then
