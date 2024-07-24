@@ -95,202 +95,250 @@ function SMB:ToggleBar_FrameStrataLevel(value)
 	if SMB.Bar.SetFixedFrameLevel then SMB.Bar:SetFixedFrameLevel(value) end
 end
 
+function SMB:UpdateTrackingFrame(attempts)
+    -- Set a maximum number of attempts to prevent infinite retry loop
+    attempts = attempts or 0
+    local maxAttempts = 10
+
+    -- Check if TrackingFrame and its Button exist
+    if _G.MinimapCluster and _G.MinimapCluster.TrackingFrame and _G.MinimapCluster.TrackingFrame.Button then
+        local trackingButton = _G.MinimapCluster.TrackingFrame.Button
+
+        if not trackingButton.SMB then
+            trackingButton:Show()
+            PA:SetTemplate(trackingButton)
+
+            trackingButton:SetParent(SMB.Bar)
+            trackingButton:SetSize(SMB.db.IconSize, SMB.db.IconSize)
+            trackingButton.Background:SetAlpha(0)
+            trackingButton:SetAlpha(0)
+            trackingButton:SetParent(_G.MinimapCluster.TrackingFrame)
+            trackingButton:ClearAllPoints()
+            trackingButton:SetAllPoints(_G.MinimapCluster.TrackingFrame)
+            trackingButton:SetScript('OnMouseDown', nil)
+            trackingButton:SetScript('OnMouseUp', nil)
+
+            trackingButton:HookScript('OnEnter', function()
+                trackingButton:SetBackdropBorderColor(unpack(PA.ClassColor))
+                if SMB.Bar:IsShown() then
+                    UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+                end
+            end)
+            trackingButton:HookScript('OnLeave', function()
+                PA:SetTemplate(trackingButton)
+                if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+                    UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+                end
+            end)
+
+            trackingButton.SMB = true
+
+            if SMB.db.Shadows then
+                PA:CreateShadow(trackingButton)
+            end
+
+            tinsert(SMB.Buttons, trackingButton)
+            print("Tracking button successfully added.")
+        end
+    else
+        -- Retry after a short delay if the TrackingFrame is not yet available, up to maxAttempts
+        if attempts < maxAttempts then
+            print("Tracking button not available, retrying... Attempt: " .. attempts + 1)
+            C_Timer.After(1, function() SMB:UpdateTrackingFrame(attempts + 1) end)
+        else
+            print("Failed to add tracking button after " .. maxAttempts .. " attempts.")
+        end
+    end
+end
+
 function SMB:HandleBlizzardButtons()
-	if not SMB.db.BarEnabled then return end
-	local Size = SMB.db.IconSize
-	local MailFrameVersion = PA.Retail and _G.MinimapCluster.MailFrame or _G.MiniMapMailFrame
+    if not SMB.db.BarEnabled then return end
+    local Size = SMB.db.IconSize
+    local MailFrameVersion = PA.Retail and _G.MinimapCluster.MailFrame or _G.MiniMapMailFrame
 
-	if SMB.db.MoveMail and MailFrameVersion and not MailFrameVersion.SMB then
-		local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
-		Frame:SetSize(Size, Size)
-		PA:SetTemplate(Frame)
-		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
-		Frame.Icon:SetPoint('CENTER')
-		Frame.Icon:SetSize(18, 18)
-		Frame.Icon:SetTexture(_G.MiniMapMailIcon:GetTexture())
-		Frame:EnableMouse(true)
-		Frame:HookScript('OnEnter', function(s)
-			if HasNewMail() then
-				GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT")
-				if GameTooltip:IsOwned(s) then
-					MinimapMailFrameUpdate()
-				end
-			end
-			s:SetBackdropBorderColor(unpack(PA.ClassColor))
-			if SMB.Bar:IsShown() then
-				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
-			end
-		end)
-		Frame:HookScript('OnLeave', function(s)
-			GameTooltip:Hide()
-			PA:SetTemplate(s)
-			if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
-				UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
-			end
-		end)
+    if SMB.db.MoveMail and MailFrameVersion and not MailFrameVersion.SMB then
+        local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
+        Frame:SetSize(Size, Size)
+        PA:SetTemplate(Frame)
+        Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
+        Frame.Icon:SetPoint('CENTER')
+        Frame.Icon:SetSize(18, 18)
+        Frame.Icon:SetTexture(_G.MiniMapMailIcon:GetTexture())
+        Frame:EnableMouse(true)
+        Frame:HookScript('OnEnter', function(s)
+            if HasNewMail() then
+                GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT")
+                if GameTooltip:IsOwned(s) then
+                    MinimapMailFrameUpdate()
+                end
+            end
+            s:SetBackdropBorderColor(unpack(PA.ClassColor))
+            if SMB.Bar:IsShown() then
+                UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+            end
+        end)
+        Frame:HookScript('OnLeave', function(s)
+            GameTooltip:Hide()
+            PA:SetTemplate(s)
+            if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+                UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+            end
+        end)
 
-		MailFrameVersion:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
-		MailFrameVersion:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
-		MailFrameVersion:EnableMouse(false)
+        MailFrameVersion:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
+        MailFrameVersion:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
+        MailFrameVersion:EnableMouse(false)
 
-		if MailFrameVersion:IsShown() then
-			Frame.Icon:SetVertexColor(0, 1, 0)
-		end
+        if MailFrameVersion:IsShown() then
+            Frame.Icon:SetVertexColor(0, 1, 0)
+        end
 
-		-- Hide Icon & Border
-		_G.MiniMapMailIcon:Hide()
-		--_G.MiniMapMailBorder:Hide()
+        _G.MiniMapMailIcon:Hide()
 
-		if SMB.db.Shadows then
-			PA:CreateShadow(Frame)
-		end
+        if SMB.db.Shadows then
+            PA:CreateShadow(Frame)
+        end
 
-		MailFrameVersion.SMB = true
-		tinsert(SMB.Buttons, Frame)
-	end
+        MailFrameVersion.SMB = true
+        tinsert(SMB.Buttons, Frame)
+    end
 
-	if PA.Retail then
-		if SMB.db.HideGarrison then
-			_G.ExpansionLandingPageMinimapButton:UnregisterAllEvents()
-			_G.ExpansionLandingPageMinimapButton:SetParent(SMB.Hider)
-			_G.ExpansionLandingPageMinimapButton:Hide()
-		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.ExpansionLandingPageMinimapButton.SMB then
-			Mixin(ExpansionLandingPageMinimapButton, BackdropTemplateMixin)
-			_G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
-			_G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
-			_G.ExpansionLandingPageMinimapButton:Show()
-			_G.ExpansionLandingPageMinimapButton:SetScale(1)
-			_G.ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
-			_G.ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(s)
-				s:SetBackdropBorderColor(unpack(PA.ClassColor))
-				if SMB.Bar:IsShown() then
-					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
-				end
-			end)
-			_G.ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(s)
-				PA:SetTemplate(s)
-				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
-					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
-				end
-			end)
+    if PA.Retail then
+        if SMB.db.HideGarrison then
+            _G.ExpansionLandingPageMinimapButton:UnregisterAllEvents()
+            _G.ExpansionLandingPageMinimapButton:SetParent(SMB.Hider)
+            _G.ExpansionLandingPageMinimapButton:Hide()
+        elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.ExpansionLandingPageMinimapButton.SMB then
+            Mixin(ExpansionLandingPageMinimapButton, BackdropTemplateMixin)
+            _G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
+            _G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
+            _G.ExpansionLandingPageMinimapButton:Show()
+            _G.ExpansionLandingPageMinimapButton:SetScale(1)
+            _G.ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
+            _G.ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(s)
+                s:SetBackdropBorderColor(unpack(PA.ClassColor))
+                if SMB.Bar:IsShown() then
+                    UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+                end
+            end)
+            _G.ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(s)
+                PA:SetTemplate(s)
+                if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+                    UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+                end
+            end)
 
-			_G.ExpansionLandingPageMinimapButton.SMB = true
+            _G.ExpansionLandingPageMinimapButton.SMB = true
 
-			if SMB.db.Shadows then
-				PA:CreateShadow(_G.ExpansionLandingPageMinimapButton)
-			end
+            if SMB.db.Shadows then
+                PA:CreateShadow(_G.ExpansionLandingPageMinimapButton)
+            end
 
-			tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
-		end
+            tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
+        end
 
-		if SMB.db.MoveTracker and not _G.MinimapCluster.TrackingFrame.Button.SMB then
-			--_G.MinimapCluster.TrackingFrame.Show = nil
+        if SMB.db.MoveTracker then
+            -- Initial call to set up the TrackingFrame
+            SMB:UpdateTrackingFrame()
+        end
 
-			_G.MinimapCluster.TrackingFrame.Button:Show()
-			PA:SetTemplate(_G.MinimapCluster.TrackingFrame.Button)
+        if SMB.db.MoveQueue and not _G.QueueStatusButton.SMB then
+            local Frame = CreateFrame('Frame', 'SMB_QueueFrame', SMB.Bar)
+            PA:SetTemplate(Frame)
+            Frame:SetSize(Size, Size)
+            Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
+            Frame.Icon:SetSize(Size, Size)
+            Frame.Icon:SetPoint('CENTER')
+            Frame.Icon:SetTexture('Interface/LFGFrame/LFG-Eye')
+            Frame.Icon:SetTexCoord(0, 64 / 512, 0, 64 / 256)
+            Frame:SetScript('OnMouseDown', function()
+                if _G.PVEFrame:IsShown() then
+                    _G.HideUIPanel(_G.PVEFrame)
+                else
+                    _G.ShowUIPanel(_G.PVEFrame)
+                    _G.GroupFinderFrame_ShowGroupFrame()
+                end
+            end)
+            Frame:HookScript('OnEnter', function(s)
+                s:SetBackdropBorderColor(unpack(PA.ClassColor))
+                if SMB.Bar:IsShown() then
+                    UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+                end
+            end)
+            Frame:HookScript('OnLeave', function(s)
+                PA:SetTemplate(s)
+                if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+                    UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+                end
+            end)
 
-			_G.MinimapCluster.TrackingFrame.Button:SetParent(SMB.Bar)
-			_G.MinimapCluster.TrackingFrame.Button:SetSize(Size, Size)
+            _G.QueueStatusButton:SetParent(SMB.Bar)
+            _G.QueueStatusButton:SetFrameLevel(Frame:GetFrameLevel() + 2)
+            _G.QueueStatusButton:ClearAllPoints()
+            _G.QueueStatusButton:SetPoint("CENTER", Frame, "CENTER", 0, 0)
 
-			--_G.MinimapCluster.TrackingFrame.Icon:ClearAllPoints()
-			--_G.MinimapCluster.TrackingFrame.Icon:SetPoint('CENTER')
+            _G.QueueStatusButton:HookScript('OnShow', function() Frame:EnableMouse(false) end)
+            _G.QueueStatusButton:HookScript('PostClick', _G.QueueStatusButton.OnLeave)
+            _G.QueueStatusButton:HookScript('OnHide', function() Frame:EnableMouse(true) end)
 
-			_G.MinimapCluster.TrackingFrame.Background:SetAlpha(0)
-			--_G.MinimapCluster.TrackingFrame.IconOverlay:SetAlpha(0)
-			_G.MinimapCluster.TrackingFrame.Button:SetAlpha(0)
+            _G.QueueStatusButton.SMB = true
 
-			_G.MinimapCluster.TrackingFrame.Button:SetParent(_G.MinimapCluster.TrackingFrame)
-			_G.MinimapCluster.TrackingFrame.Button:ClearAllPoints()
-			_G.MinimapCluster.TrackingFrame.Button:SetAllPoints(_G.MinimapCluster.TrackingFrame)
+            if SMB.db.Shadows then
+                PA:CreateShadow(Frame)
+            end
 
-			_G.MinimapCluster.TrackingFrame.Button:SetScript('OnMouseDown', nil)
-			_G.MinimapCluster.TrackingFrame.Button:SetScript('OnMouseUp', nil)
+            tinsert(SMB.Buttons, Frame)
+        end
+    else
+        if SMB.db.MoveGameTimeFrame and not _G.GameTimeFrame.SMB then
+            PA:SetTemplate(_G.GameTimeFrame)
+            _G.GameTimeFrame:SetParent(SMB.Bar)
+            _G.GameTimeFrame:SetSize(Size, Size)
+            _G.GameTimeFrame:SetHitRectInsets(0, 0, 0, 0)
+            _G.GameTimeFrame:SetScript('OnMouseUp', nil)
+            _G.GameTimeFrame:HookScript('OnEnter', function(s)
+                s:SetBackdropBorderColor(unpack(PA.ClassColor))
+                if SMB.Bar:IsShown() then
+                    UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+                end
+            end)
+            _G.GameTimeFrame:HookScript('OnLeave', function(s)
+                PA:SetTemplate(s)
+                if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+                    UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+                end
+            end)
 
-			_G.MinimapCluster.TrackingFrame.Button:HookScript('OnEnter', function()
-				_G.MinimapCluster.TrackingFrame.Button:SetBackdropBorderColor(unpack(PA.ClassColor))
-				if SMB.Bar:IsShown() then
-					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
-				end
-			end)
-			_G.MinimapCluster.TrackingFrame.Button:HookScript('OnLeave', function()
-				PA:SetTemplate(_G.MinimapCluster.TrackingFrame.Button)
-				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
-					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
-				end
-			end)
+            _G.GameTimeFrame.SMB = true
 
-			_G.MinimapCluster.TrackingFrame.Button.SMB = true
+            if SMB.db.Shadows then
+                PA:CreateShadow(_G.GameTimeFrame)
+            end
 
-			if SMB.db.Shadows then
-				PA:CreateShadow(_G.MinimapCluster.TrackingFrame.Button)
-			end
+            tinsert(SMB.Buttons, _G.GameTimeFrame)
+        end
 
-			tinsert(SMB.Buttons, _G.MinimapCluster.TrackingFrame.Button)
-		end
+        if SMB.db.MoveTracking and _G.MiniMapTrackingFrame and not _G.MiniMapTrackingFrame.SMB then
+            PA:SetTemplate(_G.MiniMapTrackingButton)
 
-		if SMB.db["MoveQueue"] and not _G.QueueStatusButton.SMB then
-			local Frame = CreateFrame('Frame', 'SMB_QueueFrame', SMB.Bar)
-			PA:SetTemplate(Frame)
-			Frame:SetSize(Size, Size)
-			Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
-			Frame.Icon:SetSize(Size, Size)
-			Frame.Icon:SetPoint('CENTER')
-			Frame.Icon:SetTexture('Interface/LFGFrame/LFG-Eye')
-			Frame.Icon:SetTexCoord(0, 64 / 512, 0, 64 / 256)
-			Frame:SetScript('OnMouseDown', function()
-				if _G.PVEFrame:IsShown() then
-					_G.HideUIPanel(_G.PVEFrame)
-				else
-					_G.ShowUIPanel(_G.PVEFrame)
-					_G.GroupFinderFrame_ShowGroupFrame()
-				end
-			end)
-			Frame:HookScript('OnEnter', function(s)
-				s:SetBackdropBorderColor(unpack(PA.ClassColor))
-				if SMB.Bar:IsShown() then
-					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
-				end
-			end)
-			Frame:HookScript('OnLeave', function(s)
-				PA:SetTemplate(s)
-				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
-					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
-				end
-			end)
+            _G.MiniMapTrackingBackground:Hide()
+            _G.MiniMapTrackingButton:SetParent(SMB.Bar)
+            _G.MiniMapTrackingButton:ClearAllPoints()
+            _G.MiniMapTrackingButton:SetAllPoints(_G.MiniMapTrackingFrame)
 
-			_G.QueueStatusButton:SetParent(SMB.Bar)
-			_G.QueueStatusButton:SetFrameLevel(Frame:GetFrameLevel() + 2)
-			_G.QueueStatusButton:ClearAllPoints()
-			_G.QueueStatusButton:SetPoint("CENTER", Frame, "CENTER", 0, 0)
+            _G.MiniMapTrackingIcon:SetDrawLayer('OVERLAY', 7)
+            _G.MiniMapTrackingIcon:SetTexCoord(unpack(PA.TexCoords))
+            _G.MiniMapTrackingIcon:SetInside()
 
-			--d_G.QueueStatusButton:SetHighlightTexture(nil)
+            _G.MiniMapTrackingFrame.SMB = true
 
-			_G.QueueStatusButton:HookScript('OnShow', function() Frame:EnableMouse(false) end)
-			_G.QueueStatusButton:HookScript('PostClick', _G.QueueStatusButton.OnLeave)
-			_G.QueueStatusButton:HookScript('OnHide', function() Frame:EnableMouse(true) end)
+            if SMB.db.Shadows then
+                PA:CreateShadow(_G.MiniMapTrackingButton)
+            end
 
-			_G.QueueStatusButton.SMB = true
-
-			if SMB.db.Shadows then
-				PA:CreateShadow(Frame)
-			end
-
-			tinsert(SMB.Buttons, Frame)
-		end
-	else
-		-- MiniMapTrackingFrame
-		if SMB.db.MoveGameTimeFrame and not _G.GameTimeFrame.SMB then
-			PA:SetTemplate(_G.GameTimeFrame)
-			_G.GameTimeTexture:SetTexture('')
-
-			_G.GameTimeFrame.SMB = true
-			tinsert(SMB.Buttons, _G.GameTimeFrame)
-		end
-	end
-
-	if not InCombatLockdown() then
-		SMB:Update()
-	end
+            tinsert(SMB.Buttons, _G.MiniMapTrackingFrame)
+        end
+    end
 end
 
 function SMB:SkinMinimapButton(button)
