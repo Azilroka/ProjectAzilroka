@@ -87,6 +87,12 @@ local function strtrim(str)
 	return gsub(str, '^%s*(.-)%s*$', '%1')
 end
 
+function stAM:OpenPanel()
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	_G.HideUIPanel(_G.GameMenuFrame)
+	ShowUIPanel(stAM.Frame)
+end
+
 function stAM:BuildFrame()
 	local Frame = CreateFrame('Frame', 'stAMFrame', UIParent)
 	local Close = CreateFrame('Button', 'stAMCloseButton', Frame)
@@ -403,7 +409,16 @@ function stAM:BuildFrame()
 
 	tinsert(_G.UISpecialFrames, stAM.Frame:GetName())
 
-	_G.GameMenuButtonAddons:SetScript('OnClick', function() stAM.Frame:Show() _G.HideUIPanel(_G.GameMenuFrame) end)
+	if _G.GameMenuButtonAddons then
+		_G.GameMenuButtonAddons:SetScript('OnClick', stAM.OpenPanel)
+	else
+		-- Game menu buttons are no longer persistent. Must be hooked every time the game menu is opened.
+		hooksecurefunc(GameMenuFrame, 'Layout', function(self)
+			if GameMenuFrame.MenuButtons.AddOns then
+				GameMenuFrame.MenuButtons.AddOns:SetScript("OnClick", stAM.OpenPanel)
+			end
+		end)
+	end
 end
 
 function stAM:NewAddOnProfile(name, overwrite)
