@@ -11,6 +11,7 @@ Libs\Load_Libs.xml
 Locales\Load_Locales.xml
 
 Init.lua
+Templates.xml
 
 Libs\oUF_pbuf\oUF_pbuf.xml
 

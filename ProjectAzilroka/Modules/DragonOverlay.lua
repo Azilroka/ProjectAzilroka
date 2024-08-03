@@ -142,34 +142,19 @@ function DO:BuildProfile()
 		FlipDragon = false,
 		ClassIconPoints = {
 			point = 'CENTER',
-			relativeTo = 'oUF_Target',
+			relativeTo = PA.Tukui and 'oUF_TukuiTarget' or PA.ElvUI and 'ElvUF_Target' or PA.NUI and 'NihilistUF_Target' or 'oUF_Target',
 			relativePoint = 'TOP',
 			xOffset = 0,
 			yOffset = 5,
 		},
 		DragonPoints = {
 			point = 'CENTER',
-			relativeTo = 'oUF_Target',
+			relativeTo = PA.Tukui and 'oUF_TukuiTarget' or PA.ElvUI and 'ElvUF_Target' or PA.NUI and 'NihilistUF_Target' or 'oUF_Target',
 			relativePoint = 'TOP',
 			xOffset = 0,
 			yOffset = 5,
 		},
 	}
-
-	for _, Option in pairs({ 'ClassIconPoints', 'DragonPoints' }) do
-		if PA.Tukui then
-			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'oUF_TukuiTarget'
-		end
-		if PA.ElvUI then
-			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'ElvUF_Target'
-		end
-		if PA.NUI then
-			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'NihilistUF_Target'
-		end
-		if PA.AzilUI then
-			PA.Defaults.profile.DragonOverlay[Option].relativeTo = 'oUF_AzilUITarget'
-		end
-	end
 end
 
 function DO:UpdateSettings()

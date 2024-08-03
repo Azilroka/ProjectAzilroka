@@ -88,9 +88,9 @@ local function strtrim(str)
 end
 
 function stAM:OpenPanel()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	_G.PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
 	_G.HideUIPanel(_G.GameMenuFrame)
-	ShowUIPanel(stAM.Frame)
+	_G.ShowUIPanel(stAM.Frame)
 end
 
 function stAM:BuildFrame()
@@ -413,8 +413,8 @@ function stAM:BuildFrame()
 		_G.GameMenuButtonAddons:SetScript('OnClick', stAM.OpenPanel)
 	else
 		-- Game menu buttons are no longer persistent. Must be hooked every time the game menu is opened.
-		hooksecurefunc(GameMenuFrame, 'Layout', function(self)
-			if GameMenuFrame.MenuButtons.AddOns then
+		hooksecurefunc(GameMenuFrame, 'Layout', function()
+			if GameMenuFrame.MenuButtons.AddOns and not InCombatLockdown() then
 				GameMenuFrame.MenuButtons.AddOns:SetScript("OnClick", stAM.OpenPanel)
 			end
 		end)

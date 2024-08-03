@@ -16,7 +16,5 @@
 	<Script file = "SquareMinimapButtons.lua" />
 	<Script file = "stAddonManager.lua" />
 	<Script file = "TargetSounds.lua" />
-
-	<Include file = "Modules\TorghastBuffs.xml" />
 	<Script file = "Modules\TorghastBuffs.lua" />
 </Ui>
