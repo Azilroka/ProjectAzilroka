@@ -192,6 +192,7 @@ end
 function SRF:CreateBigButton(ItemID)
 	local Button = CreateFrame('Button', nil, SRF.Bar, 'SecureActionButtonTemplate, ActionButtonTemplate')
 	Button:Hide()
+	Buttons:RegisterForClicks('AnyDown')
 	PA:SetTemplate(Button)
 	Button:SetSize(50, 50)
 	Button:SetFrameLevel(1)
@@ -288,21 +289,6 @@ function SRF:CreateSeedButton(ItemID)
 	tinsert(SRF.Bar.SeedsFrame.Buttons, Button)
 end
 
-function SRF:DropTools()
-	if not SRF:InSeedZone() and SRF.db.DropTools then
-		for _, ItemID in pairs(SRF.Tools) do
-			for container = 0, NUM_BAG_SLOTS do
-				for slot = 1, GetContainerNumSlots(container) do
-					if ItemID == GetContainerItemID(container, slot) then
-						PickupContainerItem(container, slot)
-						DeleteCursorItem()
-					end
-				end
-			end
-		end
-	end
-end
-
 function SRF:GetOptions()
 	local SunsongRanchFarmer = PA.ACH:Group(SRF.Title, SRF.Description, nil, nil, function(info) return SRF.db[info[#info]] end)
 	PA.Options.args.SunsongRanchFarmer = SunsongRanchFarmer
@@ -312,7 +298,6 @@ function SRF:GetOptions()
 
 	SunsongRanchFarmer.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) SRF.db[info[#info]] = value SRF:Update() end)
 	SunsongRanchFarmer.args.General.inline = true
-	SunsongRanchFarmer.args.General.args.DropTools = PA.ACH:Toggle(PA.ACL['Drop Farm Tools'], nil, 1)
 	SunsongRanchFarmer.args.General.args.ToolSize = PA.ACH:Range(PA.ACL['Farm Tool Size'], nil, 2, { min = 16, max = 64, step = 1 })
 	SunsongRanchFarmer.args.General.args.SeedSize = PA.ACH:Range(PA.ACL['Seed Size'], nil, 3, { min = 16, max = 64, step = 1 })
 
