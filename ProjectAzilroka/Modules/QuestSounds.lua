@@ -179,7 +179,7 @@ function QS:Initialize()
 	local popup = KT and KT.db.profile.soundQuest or PA:IsAddOnEnabled('QuestGuruSounds', PA.MyName)
 
 	if popup then
-		_G.StaticPopupDialogs.PROJECTAZILROKA.text = format('%s and QuestSounds will make double sounds. Which one do you want to disable? %s', KT and 'Kaliels Tracker' or 'QuestGuru Sounds', KT and or '|n|n(This does not disable Kaliels Tracker)')
+		_G.StaticPopupDialogs.PROJECTAZILROKA.text = format('%s and QuestSounds will make double sounds. Which one do you want to disable? %s', KT and 'Kaliels Tracker' or 'QuestGuru Sounds', KT and '|n|n(This does not disable Kaliels Tracker)' or '')
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button1 = KT and 'KT Quest Sound' or 'QuestGuru Sounds'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.button2 = 'Quest Sounds'
 		_G.StaticPopupDialogs.PROJECTAZILROKA.OnAccept = function()
