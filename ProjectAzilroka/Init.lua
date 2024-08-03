@@ -322,64 +322,8 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
-local accountInfo = { gameAccountInfo = {} }
 function PA:GetBattleNetInfo(friendIndex)
-	if not PA.Classic then
-		accountInfo = _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
-
-		return accountInfo
-	else
-		local bnetIDAccount, accountName, battleTag, isBattleTag, _, bnetIDGameAccount, _, isOnline, lastOnline, isBnetAFK, isBnetDND, messageText, noteText, _, messageTime, _, isReferAFriend, canSummonFriend, isFavorite = BNGetFriendInfo(friendIndex)
-
-		if not bnetIDGameAccount then return end
-
-		local hasFocus, characterName, client, realmName, realmID, faction, race, class, guild, zoneName, level, gameText, broadcastText, broadcastTime, _, toonID, _, isGameAFK, isGameBusy, guid, wowProjectID, mobile  = BNGetGameAccountInfo(bnetIDGameAccount)
-
-		accountInfo.bnetAccountID = bnetIDAccount
-		accountInfo.accountName = accountName
-		accountInfo.battleTag = battleTag
-		accountInfo.isBattleTagFriend = isBattleTag
-		accountInfo.isDND = isBnetDND
-		accountInfo.isAFK = isBnetAFK
-		accountInfo.isFriend = true
-		accountInfo.isFavorite = isFavorite
-		accountInfo.note = noteText
-		accountInfo.rafLinkType = 0
-		accountInfo.appearOffline = false
-		accountInfo.customMessage = messageText
-		accountInfo.lastOnlineTime = lastOnline
-		accountInfo.customMessageTime = messageTime
-
-		accountInfo.gameAccountInfo.clientProgram = client or "App"
-		accountInfo.gameAccountInfo.richPresence = gameText ~= '' and gameText or PA.ACL["Mobile"]
-		accountInfo.gameAccountInfo.gameAccountID = bnetIDGameAccount
-		accountInfo.gameAccountInfo.isOnline = isOnline
-		accountInfo.gameAccountInfo.isGameAFK = isGameAFK
-		accountInfo.gameAccountInfo.isGameBusy = isGameBusy
-		accountInfo.gameAccountInfo.isWowMobile = mobile
-		accountInfo.gameAccountInfo.hasFocus = hasFocus
-		accountInfo.gameAccountInfo.canSummon = canSummonFriend
-
-		if wowProjectID == _G.WOW_PROJECT_MAINLINE then
-			zoneName, realmName = strsplit("-", gameText)
-		end
-
-		local isWow = client == _G.BNET_CLIENT_WOW
-
-		accountInfo.gameAccountInfo.characterName = isWow and characterName
-		accountInfo.gameAccountInfo.factionName = isWow and faction ~= '' and faction
-		accountInfo.gameAccountInfo.playerGuid = isWow and guid
-		accountInfo.gameAccountInfo.wowProjectID = isWow and wowProjectID
-		accountInfo.gameAccountInfo.realmID = isWow and realmID
-		accountInfo.gameAccountInfo.realmDisplayName = isWow and realmName
-		accountInfo.gameAccountInfo.realmName = isWow and realmName
-		accountInfo.gameAccountInfo.areaName = isWow and zoneName
-		accountInfo.gameAccountInfo.className = isWow and class
-		accountInfo.gameAccountInfo.characterLevel = isWow and level
-		accountInfo.gameAccountInfo.raceName = isWow and race
-
-		return accountInfo
-	end
+	return _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
 end
 
 _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
