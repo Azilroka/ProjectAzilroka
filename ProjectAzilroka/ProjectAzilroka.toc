@@ -11,7 +11,6 @@ Libs\Load_Libs.xml
 Locales\Load_Locales.xml
 
 Init.lua
-Templates.xml
 
 Libs\oUF_pbuf\oUF_pbuf.xml
 
@@ -21,3 +20,4 @@ Media\Media.lua
 
 # Modules
 Modules\Load_Mainline.xml
+Templates.xml

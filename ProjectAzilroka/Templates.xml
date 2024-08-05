@@ -1,4 +1,4 @@
-<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+<Ui>
 	<Button name='TorghastBuffsTemplate' inherits='SecureActionButtonTemplate, BackdropTemplate' virtual='true' framelevel='4'>
 		<!-- framelevel 4 for Masque support -->
 		<Size x='26' y='26'/>
@@ -18,7 +18,6 @@
 		</Scripts>
 	</Button>
 
-	<!-- Theres gotta be a better way to do this.. -->
 	<Button name='TorghastBuffsTemplate16' inherits='TorghastBuffsTemplate' virtual='true'><Size x='16' y='16'/></Button>
 	<Button name='TorghastBuffsTemplate18' inherits='TorghastBuffsTemplate' virtual='true'><Size x='18' y='18'/></Button>
 	<Button name='TorghastBuffsTemplate20' inherits='TorghastBuffsTemplate' virtual='true'><Size x='20' y='20'/></Button>
@@ -42,4 +41,43 @@
 	<Button name='TorghastBuffsTemplate56' inherits='TorghastBuffsTemplate' virtual='true'><Size x='56' y='56'/></Button>
 	<Button name='TorghastBuffsTemplate58' inherits='TorghastBuffsTemplate' virtual='true'><Size x='58' y='58'/></Button>
 	<Button name='TorghastBuffsTemplate60' inherits='TorghastBuffsTemplate' virtual='true'><Size x='60' y='60'/></Button>
+
+	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' virtual='true' framelevel='4'>
+		<Size x='22' y='18'/>
+		<Layers>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<Texture parentKey='Icon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang'>
+					<Size x='32' y='32'/>
+					<Anchors>
+						<Anchor point='CENTER' relativePoint='RIGHT' x='10' y='0' />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH="LEFT">
+					<Anchors>
+						<Anchor point='TOP' relativeKey='$parent'/>
+						<Anchor point='BOTTOM' relativeKey='$parent'/>
+						<Anchor point='LEFT' relativeKey="$parent.Icon" relativePoint='RIGHT' x='10' y='0'/>
+						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='CENTER'/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline' justifyH="LEFT">
+					<Anchors>
+						<Anchor point='TOP' relativeKey='$parent'/>
+						<Anchor point='BOTTOM' relativeKey='$parent'/>
+						<Anchor point='LEFT' relativeKey='$parent.Text' relativePoint='RIGHT' x='0' y='0'/>
+						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='RIGHT' x='-10'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad method ='OnLoad'/>
+			<OnClick method ='OnClick'/>
+			<OnEnter method ='OnEnter'/>
+			<OnLeave method ='OnLeave'/>
+		</Scripts>
+	</CheckButton>
 </Ui>

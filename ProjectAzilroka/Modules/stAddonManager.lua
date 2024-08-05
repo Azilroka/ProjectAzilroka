@@ -26,15 +26,15 @@ local concat = table.concat
 local select = select
 local gsub = gsub
 
-local GetNumAddOns = GetNumAddOns
-local GetAddOnInfo = GetAddOnInfo
-local GetAddOnDependencies = GetAddOnDependencies
-local GetAddOnOptionalDependencies = GetAddOnOptionalDependencies
-local DisableAddOn = DisableAddOn
-local EnableAddOn = EnableAddOn
-local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-local DisableAllAddOns = DisableAllAddOns
-local EnableAllAddOns = EnableAllAddOns
+local GetNumAddOns = C_AddOns.GetNumAddOns
+local GetAddOnInfo = C_AddOns.GetAddOnInfo
+local GetAddOnDependencies = C_AddOns.GetAddOnDependencies
+local GetAddOnOptionalDependencies = C_AddOns.GetAddOnOptionalDependencies
+local DisableAddOn = C_AddOns.DisableAddOn
+local EnableAddOn = C_AddOns.EnableAddOn
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
+local DisableAllAddOns = C_AddOns.DisableAllAddOns
+local EnableAllAddOns = C_AddOns.EnableAllAddOns
 
 local CreateFrame = CreateFrame
 local UIParent = UIParent
@@ -82,6 +82,56 @@ _G.StaticPopupDialogs.STADDONMANAGER_DELETECONFIRMATION = {
 	enterClicksFirstButton = 1,
 	hideOnEscape = 1,
 }
+
+stAMCheckButtonMixin = {}
+
+function stAMCheckButtonMixin:OnLoad()
+	PA:SetTemplate(self)
+end
+
+function stAMCheckButtonMixin:OnClick()
+	if self.name then
+		if PA:IsAddOnEnabled(self.name, stAM.SelectedCharacter) then
+			DisableAddOn(self.name, stAM.SelectedCharacter)
+		else
+			EnableAddOn(self.name, stAM.SelectedCharacter)
+			if stAM.db.EnableRequiredAddons and self.required then
+				for _, AddOn in pairs(self.required) do
+					EnableAddOn(AddOn)
+				end
+			end
+		end
+		stAM:UpdateAddonList()
+	end
+end
+
+function stAMCheckButtonMixin:OnEnter()
+	GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
+	GameTooltip:ClearLines()
+	GameTooltip:AddDoubleLine('AddOn:', self.title, 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddDoubleLine(PA.ACL['Authors:'], self.authors, 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddDoubleLine(PA.ACL['Version:'], self.version, 1, 1, 1, 1, 1, 1)
+	if self.notes ~= nil then
+		GameTooltip:AddDoubleLine('Notes:', self.notes, 1, 1, 1, 1, 1, 1)
+	end
+	if self.required or self.optional then
+		GameTooltip:AddLine(' ')
+		if self.required then
+			GameTooltip:AddDoubleLine('Required Dependencies:', concat(self.required, ', '), 1, 1, 1, 1, 1, 1)
+		end
+		if self.optional then
+			GameTooltip:AddDoubleLine('Optional Dependencies:', concat(self.optional, ', '), 1, 1, 1, 1, 1, 1)
+		end
+	end
+	GameTooltip:Show()
+
+	self:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
+end
+
+function stAMCheckButtonMixin:OnLeave()
+	PA:SetTemplate(self)
+	GameTooltip:Hide()
+end
 
 local function strtrim(str)
 	return gsub(str, '^%s*(.-)%s*$', '%1')
@@ -224,7 +274,7 @@ function stAM:BuildFrame()
 	PA:SetTemplate(CharacterSelect)
 	CharacterSelect:SetScript('OnEnter', function() CharacterSelect:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
 	CharacterSelect:SetScript('OnLeave', function() PA:SetTemplate(CharacterSelect) end)
-	CharacterSelect:SetScript('OnClick', function() _G.EasyMenu(stAM.Menu, CharacterSelect.DropDown, CharacterSelect, 0, 38 + (stAM.MenuOffset * 16), 'MENU', 5) end)
+	CharacterSelect:SetScript('OnClick', function() PA:EasyMenu(stAM.Menu, CharacterSelect.DropDown, CharacterSelect, 0, 38 + (stAM.MenuOffset * 16), 'MENU', 5) end)
 	CharacterSelect.Text = CharacterSelect:CreateFontString(nil, 'OVERLAY')
 	CharacterSelect.Text:SetFont(font, 12, fontFlag)
 	CharacterSelect.Text:SetText(PA.ACL['Character Select'])
@@ -303,91 +353,18 @@ function stAM:BuildFrame()
 	end)
 
 	for i = 1, MAX_BUTTONS do
-		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns)
-		CheckButton:Hide()
-		PA:SetTemplate(CheckButton)
+		local CheckButton = CreateFrame('CheckButton', 'stAMCheckButton_'..i, AddOns, 'stAMCheckButton')
 		CheckButton:SetSize(Width, Height)
 		CheckButton:SetPoint(unpack(i == 1 and {'TOPLEFT', AddOns, 'TOPLEFT', 10, -10} or {'TOP', AddOns.Buttons[i-1], 'BOTTOM', 0, -5}))
-		CheckButton:SetScript('OnClick', function()
-			if CheckButton.name then
-				if PA:IsAddOnEnabled(CheckButton.name, stAM.SelectedCharacter) then
-					DisableAddOn(CheckButton.name, stAM.SelectedCharacter)
-				else
-					EnableAddOn(CheckButton.name, stAM.SelectedCharacter)
-					if stAM.db.EnableRequiredAddons and CheckButton.required then
-						for _, AddOn in pairs(CheckButton.required) do
-							EnableAddOn(AddOn)
-						end
-					end
-				end
-				stAM:UpdateAddonList()
-			end
-		end)
-		CheckButton:SetScript('OnEnter', function()
-			GameTooltip:SetOwner(CheckButton, 'ANCHOR_TOPRIGHT', 0, 4)
-			GameTooltip:ClearLines()
-			GameTooltip:AddDoubleLine('AddOn:', CheckButton.title, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine(PA.ACL['Authors:'], CheckButton.authors, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine(PA.ACL['Version:'], CheckButton.version, 1, 1, 1, 1, 1, 1)
-			if CheckButton.notes ~= nil then
-				GameTooltip:AddDoubleLine('Notes:', CheckButton.notes, 1, 1, 1, 1, 1, 1)
-			end
-			if CheckButton.required or CheckButton.optional then
-				GameTooltip:AddLine(' ')
-			end
-			if CheckButton.required then
-				GameTooltip:AddDoubleLine('Required Dependencies:', concat(CheckButton.required, ', '), 1, 1, 1, 1, 1, 1)
-			end
-			if CheckButton.optional then
-				GameTooltip:AddDoubleLine('Optional Dependencies:', concat(CheckButton.optional, ', '), 1, 1, 1, 1, 1, 1)
-			end
-			GameTooltip:Show()
-			CheckButton:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
-		end)
-		CheckButton:SetScript('OnLeave', function() PA:SetTemplate(CheckButton) GameTooltip:Hide() end)
-
-		local Checked = CheckButton:CreateTexture(nil, 'OVERLAY', nil, 1)
-		Checked:SetTexture(Texture)
+		CheckButton:SetCheckedTexture(Texture)
+		local Checked = CheckButton:GetCheckedTexture()
 		Checked:SetVertexColor(unpack(Color))
 		PA:SetInside(Checked, CheckButton)
 
-		CheckButton.CheckTexture = Checked
-		CheckButton:SetCheckedTexture(Checked)
-
 		CheckButton:SetHighlightTexture('')
 
-		local Text = CheckButton:CreateFontString(nil, 'OVERLAY')
-		Text:SetFont(font, fontSize, fontFlag)
-		Text:SetText('')
-		Text:SetJustifyH('CENTER')
-		Text:ClearAllPoints()
-		Text:SetPoint('LEFT', CheckButton, 'RIGHT', 10, 0)
-		Text:SetPoint('TOP', CheckButton, 'TOP')
-		Text:SetPoint('BOTTOM', CheckButton, 'BOTTOM')
-		Text:SetPoint('RIGHT', AddOns, 'CENTER', 0, 0)
-		Text:SetJustifyH('LEFT')
-
-		CheckButton.Text = Text
-
-		local StatusText = CheckButton:CreateFontString(nil, 'OVERLAY')
-		StatusText:SetFont(font, fontSize, fontFlag)
-		StatusText:SetText('')
-		StatusText:SetJustifyH('CENTER')
-		StatusText:ClearAllPoints()
-		StatusText:SetPoint('LEFT', Text, 'RIGHT', 0, 0)
-		StatusText:SetPoint('TOP', CheckButton, 'TOP')
-		StatusText:SetPoint('BOTTOM', CheckButton, 'BOTTOM')
-		StatusText:SetPoint('RIGHT', AddOns, 'RIGHT', -10, 0)
-		StatusText:SetJustifyH('LEFT')
-
-		CheckButton.StatusText = StatusText
-
-		local Icon = CheckButton:CreateTexture(nil, 'OVERLAY')
-		Icon:SetTexture('Interface/AddOns/ProjectAzilroka/Media/Textures/QuestBang')
-		Icon:SetPoint('CENTER', CheckButton, 'RIGHT', 10, 0)
-		Icon:SetSize(32, 32)
-
-		CheckButton.Icon = Icon
+		CheckButton.Text:SetFont(font, fontSize, fontFlag)
+		CheckButton.StatusText:SetFont(font, fontSize, fontFlag)
 
 		AddOns.Buttons[i] = CheckButton
 	end
@@ -414,8 +391,12 @@ function stAM:BuildFrame()
 	else
 		-- Game menu buttons are no longer persistent. Must be hooked every time the game menu is opened.
 		hooksecurefunc(GameMenuFrame, 'Layout', function()
-			if GameMenuFrame.MenuButtons.AddOns and not InCombatLockdown() then
-				GameMenuFrame.MenuButtons.AddOns:SetScript("OnClick", stAM.OpenPanel)
+			for button in GameMenuFrame.buttonPool:EnumerateActive() do
+				local text = button:GetText()
+
+				if (text == _G["ADDONS"]) then
+					button:SetScript("OnClick", stAM.OpenPanel)
+				end
 			end
 		end)
 	end
@@ -639,7 +620,7 @@ function stAM:UpdateAddonList()
 			end
 
 			button:SetChecked(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) or PA:IsAddOnEnabled(addonIndex, stAM.SelectedCharacter))
-			button.CheckTexture:SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
+			button:GetCheckedTexture():SetVertexColor(unpack(PA:IsAddOnPartiallyEnabled(addonIndex, stAM.SelectedCharacter) and {.6, .6, .6} or stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
 			button:SetShown(i <= min(#stAM.Frame.Search.AddOns > 0 and #stAM.Frame.Search.AddOns or stAM.db.NumAddOns, stAM.db.NumAddOns))
 		else
 			button:SetShown(false)
@@ -655,17 +636,18 @@ function stAM:Update()
 	stAM.Frame.AddOns.ScrollBar:SetHeight(stAM.db.NumAddOns * (stAM.db.ButtonHeight + 5) + 11)
 
 	local font, fontSize, fontFlag = PA.LSM:Fetch('font', stAM.db.Font), stAM.db.FontSize, stAM.db.FontFlag
+	local checkTexture = PA.LSM:Fetch('statusbar', stAM.db.CheckTexture)
+	local r, g, b, a = unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)
 
 	for _, CheckButton in ipairs(stAM.Frame.AddOns.Buttons) do
 		CheckButton:SetSize(stAM.db.ButtonWidth, stAM.db.ButtonHeight)
 		CheckButton.Text:SetFont(font, fontSize, fontFlag)
 		CheckButton.StatusText:SetFont(font, fontSize, fontFlag)
-		CheckButton.CheckTexture:SetTexture(PA.LSM:Fetch('statusbar', stAM.db.CheckTexture))
-		CheckButton.CheckTexture:SetVertexColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
-		CheckButton:SetCheckedTexture(CheckButton.CheckTexture)
+		CheckButton:SetCheckedTexture(checkTexture)
+		CheckButton:GetCheckedTexture():SetVertexColor(r, g, b, a)
 	end
 
-	stAM.Frame.AddOns.ScrollBar:GetThumbTexture():SetVertexColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor))
+	stAM.Frame.AddOns.ScrollBar:GetThumbTexture():SetVertexColor(r, g, b, a)
 	stAM.Frame.Title:SetFont(font, 14, fontFlag)
 	stAM.Frame.Search:SetFont(font, 12, fontFlag)
 	stAM.Frame.Reload.Text:SetFont(font, 12, fontFlag)
@@ -749,20 +731,23 @@ function stAM:Initialize()
 
 	stAM.isEnabled = true
 
-	stAM.AddOnInfo = {}
-	stAM.Profiles = {}
+	stAM.AddOnInfo, stAM.Profiles = {}, {}
 
+	local addonCache, _ = {}
 	for i = 1, GetNumAddOns() do
 		local Name, Title, Notes = GetAddOnInfo(i)
-		local Required, Optional = nil, nil
 		local MissingAddons, DisabledAddons
+		local Required, Optional = { GetAddOnDependencies(i) }, { GetAddOnOptionalDependencies(i) }
 
-		local HasRequired, HasOptional = GetAddOnDependencies(i), GetAddOnOptionalDependencies(i)
-
-		if HasRequired then
-			Required = { HasRequired }
-			for _, addon in pairs(Required) do
-				local Reason = select(5, GetAddOnInfo(addon))
+		if not next(Required) then
+			Required = nil
+		else
+			for num, addon in pairs(Required) do
+				local Reason = addonCache[addon]
+				if not Reason then
+					_, _, _, _, Reason = GetAddOnInfo(addon)
+					addonCache[addon] = Reason
+				end
 				if Reason == 'MISSING' then
 					MissingAddons = MissingAddons or {}
 					tinsert(MissingAddons, addon)
@@ -773,14 +758,13 @@ function stAM:Initialize()
 			end
 		end
 
-		if HasOptional then
-			Optional = { HasOptional }
+--		Notes = Notes and Notes:gsub('[|n\n]', '')
+
+		if not next(Optional) then
+			Optional = nil
 		end
 
-		local Authors = GetAddOnMetadata(i, 'Author')
-		local Version = GetAddOnMetadata(i, 'Version')
-
-		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = Authors, Version = Version, Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
+		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = GetAddOnMetadata(i, 'Author'), Version = GetAddOnMetadata(i, 'Version'), Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
 	end
 
 	stAM.SelectedCharacter = PA.MyName
