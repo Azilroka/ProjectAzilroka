@@ -81,21 +81,14 @@ end
 
 function IF:Spawn(unit, name, db, filter, position)
 	local object = CreateFrame('Button', 'iFilger_'..name, PA.PetBattleFrameHider)
+	object.db, object.name, object.unit, object.filter, object.Whitelist, object.Blacklist, object.createdIcons, object.anchoredIcons = db, name, unit, filter, db.Whitelist, db.Blacklist, 0, 0
 	object:SetSize(100, 20)
 	object:SetPoint(unpack(position))
-	object.db = db
-	object.name = name
-	object.createdIcons = 0
-	object.anchoredIcons = 0
-	object.Whitelist = db.Whitelist
-	object.Blacklist = db.Blacklist
 	object:EnableMouse(false)
 	IF:CreateMover(object)
 
 	if name ~= 'Cooldowns' and name ~= 'ItemCooldowns' then
 		object:SetAttribute('unit', unit)
-		object.unit = unit
-		object.filter = filter
 		object:RegisterEvent('UNIT_AURA')
 		object:SetScript('OnEvent', function() IF:UpdateAuras(object, unit) end)
 		RegisterUnitWatch(object)
@@ -433,17 +426,11 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 	if name then
 		local position = visible + offset + 1
 		local button = element[position] or IF:CreateAuraIcon(element, position)
-
-		button.caster = caster
-		button.filter = filter
-		button.isDebuff = isDebuff
-		button.isPlayer = caster == 'player' or caster == 'vehicle'
-		button.expiration = expiration
-		button.duration = duration
-		button.spellID = spellID
-
 		local show = IF:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,timeMod, effect1, effect2, effect3)
 
+		button.caster, button.filter, button.isDebuff, button.expiration, button.duration, button.spellID, button.isPlayer = caster, filter, isDebuff, expiration, duration, spellID, caster == 'player' or caster == 'vehicle'
+
+		button:SetShown(show)
 		if show then
 			if not element.db.StatusBar then
 				if (duration and duration >= AURA_MIN_DURATION) then
@@ -452,14 +439,11 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 				button.Cooldown:SetShown(duration and duration >= AURA_MIN_DURATION)
 			end
 
-			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
-
+			button:SetID(index)
 			button.Texture:SetTexture(texture)
 			button.Stacks:SetText(count > 1 and count or "")
+			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
 			button.StatusBar.Name:SetText(name)
-
-			button:SetID(index)
-			button:Show()
 
 			if isDebuff then
 				button.backdrop:SetBackdropBorderColor(1, 0, 0)
@@ -653,7 +637,7 @@ function IF:CreateAuraIcon(element)
 						s:SetStatusBarColor(color.r, color.g, color.b)
 					end
 				end
-				self.elapsed = 0
+				s.elapsed = 0
 			end
 		end)
 	end

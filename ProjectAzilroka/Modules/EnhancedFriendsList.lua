@@ -131,7 +131,7 @@ function EFL:UpdateFriends(button)
 		end
 		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
 	elseif button.buttonType == _G.FRIENDS_BUTTON_TYPE_BNET and isBNConnected then
-		local info = PA:GetBattleNetInfo(button.id);
+		local info = _G.C_BattleNet.GetFriendAccountInfo(button.id);
 		if info then
 			nameText = info.accountName
 			infoText = info.gameAccountInfo.richPresence

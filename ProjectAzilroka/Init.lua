@@ -148,7 +148,7 @@ end
 local Color = PA:GetClassColor(PA.MyClass)
 PA.ClassColor = { Color.r, Color.g, Color.b }
 
-PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', _G.UIParent, 'GameTooltipTemplate')
+PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', UIParent, 'GameTooltipTemplate')
 PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
 
 PA.PetBattleFrameHider = CreateFrame('Frame', 'PA_PetBattleFrameHider', UIParent, 'SecureHandlerStateTemplate')
@@ -322,11 +322,21 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
-function PA:GetBattleNetInfo(friendIndex)
-	return _G.C_BattleNet.GetFriendAccountInfo(friendIndex)
-end
+-- backwards compatibility
+do 
+	-- GetMouseFocus
+	local GetMouseFocus = GetMouseFocus
+	local GetMouseFoci = GetMouseFoci
+	function PA:GetMouseFocus()
+		if GetMouseFoci then
+			local frames = GetMouseFoci()
+			return frames and frames[1]
+		else
+			return GetMouseFocus()
+		end
+	end
 
-do -- complicated backwards compatible menu
+	-- EasyMenu
 	local HandleMenuList
 	HandleMenuList = function(root, menuList, submenu, depth)
 		if submenu then root = submenu end
