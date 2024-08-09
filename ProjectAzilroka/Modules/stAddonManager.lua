@@ -596,24 +596,38 @@ function stAM:UpdateAddonList()
 		local info = stAM.AddOnInfo[addonIndex]
 
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
-			button.name, button.title, button.authors, button.version, button.notes, button.required, button.optional = info.Name, info.Title, info.Authors, info.Version, info.Notes, info.Required, info.Optional
-			button.Text:SetText(button.title)
-			button.Icon:SetShown(info.Missing or info.Disabled)
+			button.name, button.title, button.authors, button.version, button.notes, button.required, button.optional, button.icon, button.atlas = info.Name, info.Title, info.Authors, info.Version, info.Notes, info.Required, info.Optional, info.Icon, info.Atlas
+
+			button.Text:SetText(info.Title)
+
+			if info.Icon then
+				button.Icon:SetTexture(info.Icon)
+			elseif info.Atlas then
+				button.Icon:SetAtlas(info.Atlas)
+			end
+
+			button.Icon:SetShown(info.Icon or info.Atlas)
+			button.StatusIcon:SetShown(info.Missing or info.Disabled)
 			button.StatusText:SetShown(info.Missing or info.Disabled)
 
 			if info.Missing or info.Disabled then
 				if info.Missing then
-					button.Icon:SetVertexColor(.77, .12, .24)
+					button.StatusIcon:SetVertexColor(.77, .12, .24)
 					button.StatusText:SetVertexColor(.77, .12, .24)
 					button.StatusText:SetText(PA.ACL['Missing: ']..concat(info.Missing, ', '))
 				else
-					button.Icon:SetVertexColor(1, .8, .1)
+					button.StatusIcon:SetVertexColor(1, .8, .1)
 					button.StatusText:SetVertexColor(1, .8, .1)
 					button.StatusText:SetText(PA.ACL['Disabled: ']..concat(info.Disabled, ', '))
 				end
 
-				button.Text:SetPoint('LEFT', button.Icon, 'CENTER', 5, 0)
+				button.Icon:SetPoint('LEFT', button.StatusIcon, 'RIGHT', 5, 0)
+				button.Text:SetPoint('LEFT', button.Icon, 'RIGHT', 5, 0)
 				button.Text:SetPoint('RIGHT', stAM.Frame.AddOns, 'CENTER', 0, 0)
+			elseif (info.Icon or info.Atlas) then
+				button.Icon:SetPoint('LEFT', button, 'RIGHT', 5, 0)
+				button.Text:SetPoint('LEFT', button.Icon, 'RIGHT', 5, 0)
+				button.Text:SetPoint('RIGHT', stAM.Frame.AddOns, 'RIGHT', -10, 0)
 			else
 				button.Text:SetPoint('LEFT', button, 'RIGHT', 5, 0)
 				button.Text:SetPoint('RIGHT', stAM.Frame.AddOns, 'RIGHT', -10, 0)
@@ -638,9 +652,11 @@ function stAM:Update()
 	local font, fontSize, fontFlag = PA.LSM:Fetch('font', stAM.db.Font), stAM.db.FontSize, stAM.db.FontFlag
 	local checkTexture = PA.LSM:Fetch('statusbar', stAM.db.CheckTexture)
 	local r, g, b, a = unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)
+	local iconSize = stAM.db.ButtonHeight
 
 	for _, CheckButton in ipairs(stAM.Frame.AddOns.Buttons) do
 		CheckButton:SetSize(stAM.db.ButtonWidth, stAM.db.ButtonHeight)
+		CheckButton.Icon:SetSize(iconSize, iconSize)
 		CheckButton.Text:SetFont(font, fontSize, fontFlag)
 		CheckButton.StatusText:SetFont(font, fontSize, fontFlag)
 		CheckButton:SetCheckedTexture(checkTexture)
@@ -734,10 +750,12 @@ function stAM:Initialize()
 	stAM.AddOnInfo, stAM.Profiles = {}, {}
 
 	local addonCache, _ = {}
-	for i = 1, GetNumAddOns() do
-		local Name, Title, Notes = GetAddOnInfo(i)
+	for addonIndex = 1, GetNumAddOns() do
+		local Name, Title, Notes = GetAddOnInfo(addonIndex)
+		local Required, Optional = { GetAddOnDependencies(addonIndex) }, { GetAddOnOptionalDependencies(addonIndex) }
+		local iconTexture = GetAddOnMetadata(addonIndex, "IconTexture")
+		local iconAtlas = GetAddOnMetadata(addonIndex, "IconAtlas")
 		local MissingAddons, DisabledAddons
-		local Required, Optional = { GetAddOnDependencies(i) }, { GetAddOnOptionalDependencies(i) }
 
 		if not next(Required) then
 			Required = nil
@@ -764,7 +782,7 @@ function stAM:Initialize()
 			Optional = nil
 		end
 
-		stAM.AddOnInfo[i] = { Name = Name, Title = Title, Authors = GetAddOnMetadata(i, 'Author'), Version = GetAddOnMetadata(i, 'Version'), Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons }
+		stAM.AddOnInfo[addonIndex] = { Name = Name, Title = Title, Authors = GetAddOnMetadata(addonIndex, 'Author'), Version = GetAddOnMetadata(addonIndex, 'Version'), Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons, Icon = iconTexture, Atlas = iconAtlas }
 	end
 
 	stAM.SelectedCharacter = PA.MyName

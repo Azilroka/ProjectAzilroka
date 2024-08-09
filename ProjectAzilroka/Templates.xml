@@ -42,18 +42,24 @@
 	<Button name='TorghastBuffsTemplate58' inherits='TorghastBuffsTemplate' virtual='true'><Size x='58' y='58'/></Button>
 	<Button name='TorghastBuffsTemplate60' inherits='TorghastBuffsTemplate' virtual='true'><Size x='60' y='60'/></Button>
 
-	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' virtual='true' framelevel='4'>
+	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' framelevel='4'>
 		<Size x='22' y='18'/>
 		<Layers>
 			<Layer level='OVERLAY' textureSubLevel='1'>
-				<Texture parentKey='Icon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang'>
+				<Texture parentKey='StatusIcon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang'>
 					<Size x='32' y='32'/>
 					<Anchors>
 						<Anchor point='CENTER' relativePoint='RIGHT' x='10' y='0' />
 					</Anchors>
 				</Texture>
-			</Layer>
-			<Layer level='OVERLAY' textureSubLevel='1'>
+				<Texture parentKey='Icon'>
+					<Size x='32' y='32'/>
+					<Anchors>
+						<Anchor point='TOP'/>
+						<Anchor point='BOTTOM'/>
+						<Anchor point='CENTER' relativeKey='$parent.StatusIcon' relativePoint='RIGHT' x='10' y='0' />
+					</Anchors>
+				</Texture>
 				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH="LEFT">
 					<Anchors>
 						<Anchor point='TOP' relativeKey='$parent'/>
