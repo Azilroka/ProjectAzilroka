@@ -58,7 +58,7 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 		if show then
 			button.Cooldown:SetShown(duration and duration > 0)
 			button.Cooldown:SetCooldown(expiration - duration, duration)
-			button.Icon:SetTexture(texture) end
+			button.Icon:SetTexture(texture)
 			button.Count:SetText(count > 1 and count or '')
 			button.backdrop:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
 
