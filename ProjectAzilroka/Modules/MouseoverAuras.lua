@@ -76,7 +76,8 @@ end
 function MA:SetPosition()
 	if not MA.Holder then return end
 
-	local size, anchor, x, y, cols = MA.db.Size + MA.db.Spacing + 2, 'BOTTOMLEFT', 1, -1, floor(MA.Holder:GetWidth() / size + 0.5)
+	local size, anchor, x, y = MA.db.Size + MA.db.Spacing + 2, 'BOTTOMLEFT', 1, -1
+	local cols = floor(MA.Holder:GetWidth() / size + 0.5)
 
 	for i, button in ipairs(MA.Holder) do
 		if(not button) then break end
