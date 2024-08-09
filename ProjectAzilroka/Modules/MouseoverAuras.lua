@@ -28,7 +28,7 @@ function MA:CreateAuraIcon(index)
 
 	PA:CreateBackdrop(button)
 	PA:CreateShadow(button)
-	PA:RegisterCooldown(button.cooldown)
+	PA:RegisterCooldown(button.Cooldown)
 
 	MA.Holder.createdIcons = MA.Holder.createdIcons + 1
 	tinsert(MA.Holder, button)
