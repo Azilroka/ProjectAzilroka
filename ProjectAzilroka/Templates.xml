@@ -1,6 +1,26 @@
 <Ui>
-	<Button name='TorghastBuffsTemplate' inherits='SecureActionButtonTemplate, BackdropTemplate' registerForClicks="LeftButtonUp, RightButtonUp" virtual='true' framelevel='4'>
+	<Button name='TorghastBuffsTemplate' inherits='SecureActionButtonTemplate, BackdropTemplate' registerForClicks='LeftButtonUp, RightButtonUp' virtual='true' framelevel='4'>
 		<Size x='26' y='26'/>
+		<Layers>
+			<Layer level='ARTWORK' textureSubLevel='1'>
+				<Texture parentKey='texture'/>
+			</Layer>
+			<Layer level='HIGHLIGHT' textureSubLevel='1'>
+				<Texture parentKey='hightlight'>
+					<Color r='1' g='1' b='1' a='.45'/>
+				</Texture>
+			</Layer>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<FontString parentKey='count' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
+					<Anchors>
+						<Anchor point='TOP' relativeKey='$parent'/>
+						<Anchor point='BOTTOM' relativeKey='$parent'/>
+						<Anchor point='LEFT' relativeKey='$parent.Icon' relativePoint='RIGHT' x='10' y='0'/>
+						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='CENTER'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
 		<Attributes>
 			<Attribute name='type' value='cancelaura'/>
 		</Attributes>
@@ -40,17 +60,34 @@
 	<Button name='TorghastBuffsTemplate58' inherits='TorghastBuffsTemplate' virtual='true'><Size x='58' y='58'/></Button>
 	<Button name='TorghastBuffsTemplate60' inherits='TorghastBuffsTemplate' virtual='true'><Size x='60' y='60'/></Button>
 
+	<Frame name='TorghastBuffsHeaderTemplate' inherits='SecureAuraHeaderTemplate' clampedToScreen='true'>
+		<Layers>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<FontString parentKey='unitName' inherits='GameFontHighlightSmallOutline'>
+					<Anchors>
+							<Anchor point='BOTTOM' relativeKey='$parent' relativePoint='TOP'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Attributes>
+			<Attribute name='filter' value='MAW'/>
+			<Attribute name='consolidateDuration' value='-1'/>
+			<Attribute name='consolidateTo' value='0'/>
+		</Attributes>
+	</Frame>
+
 	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' framelevel='4'>
 		<Size x='22' y='18'/>
 		<Layers>
 			<Layer level='OVERLAY' textureSubLevel='1'>
-				<Texture parentKey='StatusIcon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang' hidden="true">
+				<Texture parentKey='StatusIcon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang' hidden='true'>
 					<Size x='32' y='32'/>
 					<Anchors>
 						<Anchor point='CENTER' relativePoint='RIGHT' x='10' y='0' />
 					</Anchors>
 				</Texture>
-				<Texture parentKey='Icon' hidden="true">
+				<Texture parentKey='Icon' hidden='true'>
 					<Size x='32' y='32'/>
 					<Anchors>
 						<Anchor point='TOP'/>
@@ -58,15 +95,15 @@
 						<Anchor point='CENTER' relativeKey='$parent.StatusIcon' relativePoint='RIGHT' x='10' y='0' />
 					</Anchors>
 				</Texture>
-				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH="LEFT">
+				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
 					<Anchors>
 						<Anchor point='TOP' relativeKey='$parent'/>
 						<Anchor point='BOTTOM' relativeKey='$parent'/>
-						<Anchor point='LEFT' relativeKey="$parent.Icon" relativePoint='RIGHT' x='10' y='0'/>
+						<Anchor point='LEFT' relativeKey='$parent.Icon' relativePoint='RIGHT' x='10' y='0'/>
 						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='CENTER'/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline' justifyH="LEFT" hidden="true">
+				<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline' justifyH='LEFT' hidden='true'>
 					<Anchors>
 						<Anchor point='TOP' relativeKey='$parent'/>
 						<Anchor point='BOTTOM' relativeKey='$parent'/>
@@ -88,16 +125,16 @@
 	<Button name='PA_Aura' inherits='BackdropTemplate' virtual='true' framelevel='4'>
 		<Size x='16' y='16'/>
 		<Frames>
-			<Cooldown parentKey="Cooldown" inherits="CooldownFrameTemplate" hidden="true">
+			<Cooldown parentKey='Cooldown' inherits='CooldownFrameTemplate' hidden='true'>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="5" y="-4"/>
-					<Anchor point="BOTTOMRIGHT" x="-5" y="7"/>
+					<Anchor point='TOPLEFT' x='5' y='-4'/>
+					<Anchor point='BOTTOMRIGHT' x='-5' y='7'/>
 				</Anchors>
 			</Cooldown>
 		</Frames>
 		<Layers>
 			<Layer level='ARTWORK'>
-				<Texture parentKey='Icon' hidden="true">
+				<Texture parentKey='Icon' hidden='true'>
 					<Size x='32' y='32'/>
 					<Anchors>
 						<Anchor point='TOP'/>
@@ -107,9 +144,9 @@
 				</Texture>
 			</Layer>
 			<Layer level='OVERLAY'>
-				<FontString parentKey="Count" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+				<FontString parentKey='Count' inherits='NumberFontNormal' justifyH='RIGHT' hidden='true'>
 					<Anchors>
-						<Anchor point="BOTTOMRIGHT" x="-1"/>
+						<Anchor point='BOTTOMRIGHT' x='-1'/>
 					</Anchors>
 				</FontString>
 			</Layer>

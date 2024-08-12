@@ -16,8 +16,8 @@ local print = print
 local format = format
 local strsplit, strmatch, strlen, strsub = strsplit, strmatch, strlen, strsub
 
-local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-local GetAddOnEnableState = GetAddOnEnableState
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
+local GetAddOnEnableState = C_AddOns.GetAddOnEnableState
 local UnitName = UnitName
 local UnitClass = UnitClass
 local GetRealmName = GetRealmName
@@ -89,7 +89,7 @@ function PA:IsAddOnEnabled(addon, character)
 		character = nil
 	end
 
-	return GetAddOnEnableState(character, addon) == 2
+	return GetAddOnEnableState(addon, character) == 2
 end
 
 function PA:IsAddOnPartiallyEnabled(addon, character)
@@ -97,7 +97,7 @@ function PA:IsAddOnPartiallyEnabled(addon, character)
 		character = nil
 	end
 
-	return GetAddOnEnableState(character, addon) == 1
+	return GetAddOnEnableState(addon, character) == 1
 end
 
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')

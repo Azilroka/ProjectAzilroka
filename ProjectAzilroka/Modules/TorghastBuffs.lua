@@ -12,7 +12,7 @@ _G.TorghastBuffs = TB
 
 local _G = _G
 local format = format
-local select, unpack = select, unpack
+local unpack = unpack
 local strfind = strfind
 local strmatch = strmatch
 local tinsert = tinsert
@@ -44,16 +44,10 @@ function TB:MasqueData(texture, highlight)
 end
 
 function TB:CreateIcon(button)
-	button.texture = button:CreateTexture(nil, 'ARTWORK')
 	PA:SetInside(button.texture)
-	button.texture:SetTexCoord(unpack(PA.TexCoords))
-
-	button.count = button:CreateFontString(nil, 'OVERLAY')
-
-	button.highlight = button:CreateTexture(nil, 'HIGHLIGHT')
-	button.highlight:SetColorTexture(1, 1, 1, .45)
 	PA:SetInside(button.highlight)
 
+	button.texture:SetTexCoord(unpack(PA.TexCoords))
 	button.unit = button:GetParent().unit
 
 	TB:UpdateIcon(button)
@@ -69,9 +63,8 @@ function TB:CreateIcon(button)
 end
 
 function TB:UpdateIcon(button)
-	button.count:ClearAllPoints()
-	button.count:Point('BOTTOMRIGHT', TB.db.countXOffset, TB.db.countYOffset)
-	button.count:FontTemplate(LSM:Fetch('font', TB.db.countFont), TB.db.countFontSize, TB.db.countFontOutline)
+	button.count:SetPoint('BOTTOMRIGHT', TB.db.countXOffset, TB.db.countYOffset)
+	button.count:SetFont(LSM:Fetch('font', TB.db.countFont), TB.db.countFontSize, TB.db.countFontOutline)
 end
 
 function TB:UpdateAura(button, index)
@@ -81,8 +74,7 @@ function TB:UpdateAura(button, index)
 	local colorIndex = atlas and (strfind(atlas, 'purple') and 4 or strfind(atlas, 'blue') and 3 or strfind(atlas, 'green') and 2)
 
 	if colorIndex then
-		local r, g, b = GetItemQualityColor(colorIndex)
-		button:SetBackdropBorderColor(r, g, b)
+		button:SetBackdropBorderColor(GetItemQualityColor(colorIndex))
 	else
 		PA:SetTemplate(button)
 	end
@@ -99,8 +91,6 @@ function TB:OnAttributeChanged(attribute, value)
 end
 
 function TB:UpdateHeader(header)
-	header:SetAttribute('consolidateDuration', -1)
-	header:SetAttribute('consolidateTo', 0)
 	header:SetAttribute('template', format('TorghastBuffsTemplate%d', TB.db.size))
 	header:SetAttribute('sortMethod', TB.db.sortMethod)
 	header:SetAttribute('sortDirection', TB.db.sortDir)
@@ -124,9 +114,7 @@ function TB:UpdateHeader(header)
 		header:SetAttribute('wrapYOffset', 0)
 	end
 
-	local index = 1
-	local child = select(index, header:GetChildren())
-	while child do
+	for index, child in next, {header:GetChildren()} do
 		child:Size(TB.db.size, TB.db.size)
 
 		TB:UpdateIcon(child)
@@ -135,9 +123,6 @@ function TB:UpdateHeader(header)
 		if index > (TB.db.maxWraps * TB.db.wrapAfter) and child:IsShown() then
 			child:Hide()
 		end
-
-		index = index + 1
-		child = select(index, header:GetChildren())
 	end
 
 	if TB.MasqueGroup and TB.db.Masque then
@@ -148,14 +133,9 @@ function TB:UpdateHeader(header)
 end
 
 function TB:CreateAuraHeader(unit, unitName)
-	local header = CreateFrame('Frame', 'TorghastBuffs_'..unitName, TB.Holder, 'SecureAuraHeaderTemplate')
-	header:SetClampedToScreen(true)
+	local header = CreateFrame('Frame', 'TorghastBuffs_'..unitName, TB.Holder, 'TorghastBuffsHeaderTemplate')
 	header:SetAttribute('unit', unit)
-	header:SetAttribute('filter', 'MAW')
 	header.unit = unit
-
-	header.unitName = header:CreateFontString()
-	header.unitName:SetPoint('BOTTOM', header, 'TOP')
 
 	TB:UpdateHeader(header)
 
@@ -183,7 +163,8 @@ function TB:HandleVisibility()
 
 			if UnitExists(header.unit) then
 				header.unitName:SetText(UnitName(header.unit))
-				local color = RAID_CLASS_COLORS[select(2, UnitClass(header.unit))]
+				local _, classToken = UnitClass(header.unit)
+				local color = RAID_CLASS_COLORS[classToken]
 				header.unitName:SetTextColor(color.r, color.g, color.b)
 			end
 		else
@@ -194,8 +175,6 @@ function TB:HandleVisibility()
 end
 
 function TB:GetOptions()
-	TB:UpdateSettings()
-
 	local TorghastBuffs = PA.ACH:Group(TB.Title, TB.Description, nil, nil, function(info) return TB.db[info[#info]] end, function(info, value) TB.db[info[#info]] = value TB:UpdateAllHeaders() end)
 	PA.Options.args.TorghastBuffs = TorghastBuffs
 
