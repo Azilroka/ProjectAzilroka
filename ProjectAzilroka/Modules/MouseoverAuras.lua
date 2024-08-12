@@ -26,7 +26,7 @@ function MA:CreateAuraIcon(index)
 	button:EnableMouse(false)
 	button.Icon:SetTexCoord(unpack(PA.TexCoords))
 
-	PA:CreateBackdrop(button)
+	PA:SetTemplate(button)
 	PA:CreateShadow(button)
 	PA:RegisterCooldown(button.Cooldown)
 
@@ -60,7 +60,7 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 			button.Cooldown:SetCooldown(expiration - duration, duration)
 			button.Icon:SetTexture(texture)
 			button.Count:SetText(count > 1 and count or '')
-			button.backdrop:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
+			button:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
 
 			button:SetSize(MA.db.Size, MA.db.Size)
 			button:SetID(index)

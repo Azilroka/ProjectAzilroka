@@ -1,4 +1,80 @@
 <Ui>
+	<Button name='PA_Aura' inherits='BackdropTemplate' virtual='true' framelevel='4'>
+		<Size x='16' y='16'/>
+		<Frames>
+			<Cooldown parentKey='Cooldown' inherits='CooldownFrameTemplate' hidden='true'>
+				<Anchors>
+					<Anchor point='TOPLEFT' x='1' y='-1'/>
+					<Anchor point='BOTTOMRIGHT' x='-1' y='1'/>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+		<Layers>
+			<Layer level='ARTWORK'>
+				<Texture parentKey='Icon'>
+					<Anchors>
+						<Anchor point='TOPLEFT' x='1' y='-1'/>
+						<Anchor point='BOTTOMRIGHT' x='-1' y='1'/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level='OVERLAY'>
+				<FontString parentKey='Count' inherits='NumberFontNormal' justifyH='RIGHT' hidden='true'>
+					<Anchors>
+						<Anchor point='BOTTOMRIGHT' x='-1'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<!-- stAddOnManager -->
+	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' framelevel='4'>
+		<Size x='22' y='18'/>
+		<Layers>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<Texture parentKey='StatusIcon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang' hidden='true'>
+					<Size x='32' y='32'/>
+					<Anchors>
+						<Anchor point='CENTER' relativePoint='RIGHT' x='10' y='0' />
+					</Anchors>
+				</Texture>
+				<Texture parentKey='Icon' hidden='true'>
+					<Size x='32' y='32'/>
+					<Anchors>
+						<Anchor point='TOP'/>
+						<Anchor point='BOTTOM'/>
+						<Anchor point='CENTER' relativeKey='$parent.StatusIcon' relativePoint='RIGHT' x='10' y='0' />
+					</Anchors>
+				</Texture>
+				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
+					<Anchors>
+						<Anchor point='TOP' relativeKey='$parent'/>
+						<Anchor point='BOTTOM' relativeKey='$parent'/>
+						<Anchor point='LEFT' relativeKey='$parent.Icon' relativePoint='RIGHT' x='10' y='0'/>
+						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='CENTER'/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline' justifyH='LEFT' hidden='true'>
+					<Anchors>
+						<Anchor point='TOP' relativeKey='$parent'/>
+						<Anchor point='BOTTOM' relativeKey='$parent'/>
+						<Anchor point='LEFT' relativeKey='$parent.Text' relativePoint='RIGHT' x='0' y='0'/>
+						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='RIGHT' x='-10'/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad method ='OnLoad'/>
+			<OnClick method ='OnClick'/>
+			<OnEnter method ='OnEnter'/>
+			<OnLeave method ='OnLeave'/>
+		</Scripts>
+	</CheckButton>
+
+	<!-- TorghastBuffs -->
 	<Button name='TorghastBuffsTemplate' inherits='SecureActionButtonTemplate, BackdropTemplate' registerForClicks='LeftButtonUp, RightButtonUp' virtual='true' framelevel='4'>
 		<Size x='26' y='26'/>
 		<Layers>
@@ -76,80 +152,4 @@
 			<Attribute name='consolidateTo' value='0'/>
 		</Attributes>
 	</Frame>
-
-	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' framelevel='4'>
-		<Size x='22' y='18'/>
-		<Layers>
-			<Layer level='OVERLAY' textureSubLevel='1'>
-				<Texture parentKey='StatusIcon' file='Interface\AddOns\ProjectAzilroka\Media\Textures\QuestBang' hidden='true'>
-					<Size x='32' y='32'/>
-					<Anchors>
-						<Anchor point='CENTER' relativePoint='RIGHT' x='10' y='0' />
-					</Anchors>
-				</Texture>
-				<Texture parentKey='Icon' hidden='true'>
-					<Size x='32' y='32'/>
-					<Anchors>
-						<Anchor point='TOP'/>
-						<Anchor point='BOTTOM'/>
-						<Anchor point='CENTER' relativeKey='$parent.StatusIcon' relativePoint='RIGHT' x='10' y='0' />
-					</Anchors>
-				</Texture>
-				<FontString parentKey='Text' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
-					<Anchors>
-						<Anchor point='TOP' relativeKey='$parent'/>
-						<Anchor point='BOTTOM' relativeKey='$parent'/>
-						<Anchor point='LEFT' relativeKey='$parent.Icon' relativePoint='RIGHT' x='10' y='0'/>
-						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='CENTER'/>
-					</Anchors>
-				</FontString>
-				<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline' justifyH='LEFT' hidden='true'>
-					<Anchors>
-						<Anchor point='TOP' relativeKey='$parent'/>
-						<Anchor point='BOTTOM' relativeKey='$parent'/>
-						<Anchor point='LEFT' relativeKey='$parent.Text' relativePoint='RIGHT' x='0' y='0'/>
-						<Anchor point='RIGHT' relativeKey='$parent.$parent' relativePoint='RIGHT' x='-10'/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-
-		<Scripts>
-			<OnLoad method ='OnLoad'/>
-			<OnClick method ='OnClick'/>
-			<OnEnter method ='OnEnter'/>
-			<OnLeave method ='OnLeave'/>
-		</Scripts>
-	</CheckButton>
-
-	<Button name='PA_Aura' inherits='BackdropTemplate' virtual='true' framelevel='4'>
-		<Size x='16' y='16'/>
-		<Frames>
-			<Cooldown parentKey='Cooldown' inherits='CooldownFrameTemplate' hidden='true'>
-				<Anchors>
-					<Anchor point='TOPLEFT' x='5' y='-4'/>
-					<Anchor point='BOTTOMRIGHT' x='-5' y='7'/>
-				</Anchors>
-			</Cooldown>
-		</Frames>
-		<Layers>
-			<Layer level='ARTWORK'>
-				<Texture parentKey='Icon' hidden='true'>
-					<Size x='32' y='32'/>
-					<Anchors>
-						<Anchor point='TOP'/>
-						<Anchor point='BOTTOM'/>
-						<Anchor point='CENTER' relativeKey='$parent.StatusIcon' relativePoint='RIGHT' x='10' y='0' />
-					</Anchors>
-				</Texture>
-			</Layer>
-			<Layer level='OVERLAY'>
-				<FontString parentKey='Count' inherits='NumberFontNormal' justifyH='RIGHT' hidden='true'>
-					<Anchors>
-						<Anchor point='BOTTOMRIGHT' x='-1'/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-	</Button>
 </Ui>
