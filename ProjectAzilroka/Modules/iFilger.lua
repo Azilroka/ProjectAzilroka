@@ -713,8 +713,6 @@ function IF:GenerateSpellOptions()
 end
 
 function IF:GetOptions()
-	IF:UpdateSettings()
-
 	local iFilger = PA.ACH:Group(IF.Title, IF.Description, nil, 'tab')
 	PA.Options.args.iFilger = iFilger
 

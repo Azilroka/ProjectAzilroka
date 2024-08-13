@@ -4,7 +4,7 @@ if not oUF then
 	return
 end
 
-if not _G.IsAddOnLoaded("BattlePetBreedID") then
+if not C_AddOns.IsAddOnLoaded("BattlePetBreedID") then
 	return
 end
 

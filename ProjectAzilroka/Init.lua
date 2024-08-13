@@ -125,7 +125,7 @@ PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 local function GetoUF()
 	local key = PA.ElvUI and "ElvUI_Libraries" or PA.Tukui and "Tukui" or PA.SpartanUI and "SpartanUI"
 	if not key then return end
-	return _G[_G.GetAddOnMetadata(key, 'X-oUF')]
+	return _G[GetAddOnMetadata(key, 'X-oUF')]
 end
 PA.oUF = GetoUF()
 
@@ -374,6 +374,10 @@ do
 	local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
 	local HasPetSpells = HasPetSpells or C_SpellBook.HasPetSpells
 
+	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(spellID)
+		return { startTime, duration, isEnabled, modRate = GetSpellCooldown(spellID) }
+	end
+
 	local GetSpellBookItemInfo = _G.GetSpellBookItemInfo or function(index, spellBank)
 		local info = C_SpellBook.GetSpellBookItemInfo(index, spellBank)
 		if info and not info.isPassive then
@@ -402,6 +406,7 @@ do
 
 	-- Need for modules
 	PA.GetSpellInfo = GetSpellInfo
+	PA.GetSpellCooldown = GetSpellCooldown
 
 	PA.SpellBook = { Complete = {}, Spells = {} }
 	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }

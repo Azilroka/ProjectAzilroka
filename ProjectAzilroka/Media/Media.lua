@@ -44,7 +44,7 @@ LSM:Register('font', 'Tukui Combat', Path..[[Fonts\Diediedie.ttf]])
 LSM:Register('font', 'Tukui Pixel', Path..[[Fonts\Visitor.ttf]])
 LSM:Register('font', 'Tukui UnitFrame', Path..[[Fonts\BigNoodleTitling.ttf]])
 
-if not select(4, GetAddOnInfo('ElvUI')) then
+if not C_AddOns.GetAddOnInfo('ElvUI') then
 	LSM:Register('font', 'ElvUI Alt-Combat', Path..[[Fonts\Diediedie.ttf]])
 	LSM:Register('font', 'ElvUI Alt-Font', Path..[[Fonts\ContinuumMedium.ttf]])
 	LSM:Register('font', 'ElvUI Combat', Path..[[Fonts\ActionMan.ttf]])
