@@ -21,7 +21,7 @@ local tonumber = tonumber
 local strmatch = strmatch
 
 local GetTime = GetTime
-local GetSpellInfo = GetSpellInfo
+local GetSpellInfo = PA.GetSpellInfo
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellCharges = GetSpellCharges
 local GetSpellBookItemInfo = GetSpellBookItemInfo
@@ -30,8 +30,6 @@ local GetSpellBookItemName = GetSpellBookItemName
 local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
 local SendChatMessage = SendChatMessage
-local GetFlyoutInfo = GetFlyoutInfo
-local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 
 local CopyTable = CopyTable
 local CreateFrame = CreateFrame
@@ -50,75 +48,14 @@ end
 OzCD.Cooldowns = {}
 OzCD.ActiveCooldowns = {}
 OzCD.DelayCooldowns = {}
-OzCD.SpellList = {}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
 local COOLDOWN_MIN_DURATION = .1
 local SpellOptions = {}
 
--- Simpy Magic
-local t = {}
-for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
-    t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
-end
-
 OzCD.HasCDDelay = {
 	[5384] = true
 }
-
-function OzCD:ScanTooltip(index, bookType)
-	PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
-	PA.ScanTooltip:SetSpellBookItem(index, bookType)
-	PA.ScanTooltip:Show()
-
-	for i = 2, 4 do
-		local str = _G['PAScanTooltipTextRight'..i]
-		local text = str and str:GetText()
-		if text then
-			for _, matchtext in pairs(t) do
-				if strmatch(text, matchtext) then
-					return true
-				end
-			end
-		end
-	end
-end
-
-function OzCD:ScanSpellBook(bookType, numSpells, offset)
-	offset = offset or 0
-	for index = offset + 1, offset + numSpells, 1 do
-		local skillType, special = GetSpellBookItemInfo(index, bookType)
-		if skillType == 'SPELL' or skillType == 'PETACTION' then
-			local SpellID, SpellName, Rank
-			if PA.Retail then
-				SpellID = select(2, GetSpellLink(index, bookType))
-			else
-				SpellName, Rank, SpellID = GetSpellBookItemName(index, bookType)
-				SpellName = (Rank and Rank ~= '') and format('%s %s', SpellName, Rank)
-			end
-			if SpellID and OzCD:ScanTooltip(index, bookType) then
-				OzCD.SpellList[SpellID] = SpellName or true
-			end
-		elseif skillType == 'FLYOUT' then
-			local flyoutId = special
-			local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutId)
-			if numSlots > 0 and isKnown then
-				for flyoutIndex = 1, numSlots, 1 do
-					local SpellID, overrideId = GetFlyoutSlotInfo(flyoutId, flyoutIndex)
-					if OzCD:ScanTooltip(index, bookType) then
-						if SpellID ~= overrideId then
-							OzCD.SpellList[overrideId] = true
-						else
-							OzCD.SpellList[SpellID] = true
-						end
-					end
-				end
-			end
-		elseif not skillType then
-			break
-		end
-	end
-end
 
 function OzCD:SetSize(Position)
 	Position = Position or PA:CountTable(OzCD.ActiveCooldowns)
@@ -412,12 +349,7 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 end
 
 function OzCD:SPELLS_CHANGED()
-	local numPetSpells = _G.HasPetSpells()
-	if numPetSpells then
-		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
-
-		PA:AddKeysToTable(OzCD.db.SpellCDs, OzCD.SpellList)
-	end
+ 	PA:AddKeysToTable(OzCD.db.SpellCDs, PA.SpellBook.Spells)
 
 	PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
 end
@@ -488,21 +420,6 @@ function OzCD:GetOptions()
 end
 
 function OzCD:BuildProfile()
-	-- Scan SpellBook
-	for tab = 1, _G.GetNumSpellTabs(), 1 do
-		local name, _, offset, numSpells = _G.GetSpellTabInfo(tab)
-		if name then
-			OzCD:ScanSpellBook(_G.BOOKTYPE_SPELL, numSpells, offset)
-		end
-	end
-
-	local numPetSpells = _G.HasPetSpells()
-	if numPetSpells then
-		OzCD:ScanSpellBook(_G.BOOKTYPE_PET, numPetSpells)
-	end
-
-	PA.ScanTooltip:Hide()
-
 	PA.Defaults.profile.OzCooldowns = {
 		Enable = true,
 		Announce = true,
@@ -513,7 +430,7 @@ function OzCD:BuildProfile()
 		Size = 36,
 		SortByDuration = true,
 		Spacing = 4,
-		SpellCDs = OzCD.SpellList,
+		SpellCDs = PA.SpellBook.Spells,
 		StackFont = 'Arial Narrow',
 		StackFontFlag = 'OUTLINE',
 		StackFontSize = 12,
@@ -564,7 +481,6 @@ function OzCD:Initialize()
 	OzCD:RegisterEvent('GROUP_ROSTER_UPDATE') -- Channel Distribution
 	OzCD:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED') -- For Cooldown Queue
 	OzCD:RegisterEvent('SPELL_UPDATE_COOLDOWN')	-- Process Cooldown Queue
-	OzCD:RegisterEvent('SPELLS_CHANGED') -- Process Pet Changes
 
 	OzCD:ScheduleRepeatingTimer('UpdateActiveCooldowns', OzCD.db.UpdateSpeed)
 	OzCD:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)

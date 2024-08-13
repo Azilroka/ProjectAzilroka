@@ -23,8 +23,6 @@ local UnitClass = UnitClass
 local GetRealmName = GetRealmName
 local UIParent = UIParent
 local CreateFrame = CreateFrame
-local BNGetFriendInfo = BNGetFriendInfo
-local BNGetGameAccountInfo = BNGetGameAccountInfo
 
 -- Ace Libraries
 PA.AC = LibStub('AceConfig-3.0')
@@ -120,7 +118,6 @@ PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
 PA.SLE = PA:IsAddOnEnabled('ElvUI_SLE', PA.MyName)
 PA.NUI = PA:IsAddOnEnabled('ElvUI_NihilistzscheUI', PA.MyName)
 PA.Tukui = PA:IsAddOnEnabled('Tukui', PA.MyName)
-PA.AzilUI = PA:IsAddOnEnabled('AzilUI', PA.MyName)
 PA.SpartanUI = PA:IsAddOnEnabled('SpartanUI', PA.MyName)
 PA.AddOnSkins = PA:IsAddOnEnabled('AddOnSkins', PA.MyName)
 
@@ -370,6 +367,122 @@ do
 			_G.MenuUtil.CreateContextMenu(menuFrame, function(_, root) HandleMenuList(root, menuList, nil, 1) end)
 		end
 	end
+
+	-- Spell Book 
+	local BOOKTYPE_SPELL = (Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player) or BOOKTYPE_SPELL
+	local BOOKTYPE_PET = (Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet) or BOOKTYPE_PET
+	local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
+	local HasPetSpells = HasPetSpells or C_SpellBook.HasPetSpells
+
+	local GetSpellBookItemInfo = _G.GetSpellBookItemInfo or function(index, spellBank)
+		local info = C_SpellBook.GetSpellBookItemInfo(index, spellBank)
+		if info and not info.isPassive then
+			return info.itemType, info.spellID, info.actionID
+		end
+	end
+
+	local GetSpellInfo = GetSpellInfo or function(spellID)
+		if spellID then
+			local spellInfo = C_Spell.GetSpellInfo(spellID)
+			if spellInfo then
+				return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
+			end
+		end
+		return nil
+	end
+
+	local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
+	local GetSpellTabInfo = GetSpellTabInfo or function(index)
+		local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
+		if not skillLineInfo then
+			return nil
+		end
+		return skillLineInfo.name, skillLineInfo.iconID, skillLineInfo.itemIndexOffset, skillLineInfo.numSpellBookItems, skillLineInfo.isGuild, skillLineInfo.offSpecID, skillLineInfo.shouldHide, skillLineInfo.specID
+	end
+
+	-- Need for modules
+	PA.GetSpellInfo = GetSpellInfo
+
+	PA.SpellBook = { Complete = {}, Spells = {} }
+	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }
+
+	-- Simpy Magic
+	local t = {}
+	for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
+		t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
+	end
+
+	function PA:Scan(spellID)
+		PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
+		PA.ScanTooltip:SetSpellByID(spellID)
+		PA.ScanTooltip:Show()
+
+		for i = 2, 4 do
+			local str = _G['PAScanTooltipTextRight'..i]
+			local text = str and str:GetText()
+			if text then
+				for _, matchtext in pairs(t) do
+					if strmatch(text, matchtext) then return true end
+				end
+			end
+		end
+	end
+
+	local function ScanSpellBook(bookType, numSpells, offset)
+		offset = offset or 0
+
+		for index = offset + 1, offset + numSpells, 1 do
+			local itemType, spellID, actionID = GetSpellBookItemInfo(index, bookType)
+			local flyoutID, SpellName, Rank = PA.Retail and actionID or spellID
+
+			if not PA.Retail then itemType = bookTypes[itemType] end
+
+			if itemType == 1 or itemType == 3 then
+				if not PA.Retail then
+					spellName, rank, spellID = GetSpellBookItemName(index, bookType)
+					if rank ~= '' and rank ~= nil then
+						spellName = format('%s %s', spellName, rank)
+					end
+				end
+				if spellID then
+					PA.SpellBook.Complete[spellID] = true
+					if PA:Scan(spellID) then PA.SpellBook.Spells[spellID] = spellName or true end
+				end
+			elseif itemType == 4 then
+				local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+				if numSlots > 0 then
+					for flyoutIndex = 1, numSlots, 1 do
+						local flyoutSpellID, overrideId = GetFlyoutSlotInfo(actionID, flyoutIndex)
+						spellID = overrideId or flyoutSpellID
+
+						PA.SpellBook.Complete[spellID] = true
+						if PA:Scan(spellID) then PA.SpellBook.Spells[spellID] = true end
+					end
+				end
+			end
+		end
+
+		PA.ScanTooltip:Hide()
+	end
+
+	for tab = 1, GetNumSpellTabs() do
+		local _, _, offset, numSpells = GetSpellTabInfo(tab)
+		ScanSpellBook(BOOKTYPE_SPELL, numSpells, offset)
+	end
+
+	function PA:SPELLS_CHANGED()
+		local numPetSpells = HasPetSpells()
+		if numPetSpells then
+			ScanSpellBook(BOOKTYPE_PET, numPetSpells)
+
+			-- Process Modules Event
+			for _, module in PA:IterateModules() do
+				if module.SPELLS_CHANGED then
+					PA:CallModuleFunction(module, module.SPELLS_CHANGED)
+				end
+			end
+		end
+	end
 end
 
 _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
@@ -487,13 +600,10 @@ function PA:PLAYER_LOGIN()
 	PA:UpdateCooldownSettings('all')
 
 	for _, module in PA:IterateModules() do
-		if module.GetOptions then
-			PA:CallModuleFunction(module, module.GetOptions)
-		end
-		if module.Initialize then
-			PA:CallModuleFunction(module, module.Initialize)
-		end
+		if module.GetOptions then PA:CallModuleFunction(module, module.GetOptions) end
+		if module.Initialize then PA:CallModuleFunction(module, module.Initialize) end
 	end
 end
 
 PA:RegisterEvent('PLAYER_LOGIN')
+PA:RegisterEvent('SPELLS_CHANGED')
