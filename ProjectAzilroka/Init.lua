@@ -450,17 +450,16 @@ do
 
 		for index = offset + 1, offset + numSpells do
 			local info = GetSpellBookItemInfo(index, bookType)
-			local flyoutID, spellName = PA.Retail and info.actionID or info.spellID
 
 			if (info.itemType == 1 or info.itemType == 3) and info.spellID then
-				if PA.Classic and info.subName then spellName = format('%s %s', info.name, info.subName or '') end
+				local spellName = PA.Classic and info.subName and format('%s %s', info.name, info.subName or '')
 				PA.SpellBook.Complete[info.spellID] = info
 				if scanTooltip(info.spellID) then PA.SpellBook.Spells[info.spellID] = spellName or true end
 			elseif info.itemType == 4 then
-				local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+				local _, _, numSlots, isKnown = GetFlyoutInfo(info.actionID)
 				if numSlots > 0 then
-					for flyoutIndex = 1, numSlots, 1 do
-						local flyoutSpellID, overrideId = GetFlyoutSlotInfo(flyoutID, flyoutIndex)
+					for flyoutIndex = 1, numSlots do
+						local flyoutSpellID, overrideId = GetFlyoutSlotInfo(info.actionID, flyoutIndex)
 						local spellID = overrideId or flyoutSpellID
 
 						PA.SpellBook.Complete[spellID] = GetSpellInfo(spellID)
@@ -481,7 +480,7 @@ do
 			-- Process Modules Event
 			for _, module in PA:IterateModules() do
 				if module.SPELLS_CHANGED then
-					PA:CallModuleFunction(module, module.SPELLS_CHANGED)
+					PA:ProtectedCall(module, module.SPELLS_CHANGED)
 				end
 			end
 		end
@@ -556,9 +555,7 @@ PA.Defaults = {
 PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
-	if _G.ElvUI then
-		_G.ElvUI[1].Options.args.ProjectAzilroka = PA.Options
-	end
+	if _G.ElvUI then _G.ElvUI[1].Options.args.ProjectAzilroka = PA.Options end
 end
 
 function PA:BuildProfile()
@@ -581,7 +578,7 @@ function PA:SetupProfile()
 	end
 end
 
-function PA:CallModuleFunction(module, func)
+function PA:ProtectedCall(module, func)
 	local pass, err = pcall(func, module)
 	if not pass and PA.Debug then
 		error(err)
@@ -595,10 +592,10 @@ function PA:PLAYER_LOGIN()
 	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
 
-	PA:CallModuleFunction(PA, PA.ScanSpellBook)
+	PA:ProtectedCall(PA, PA.ScanSpellBook)
 
 	for _, module in PA:IterateModules() do
-		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
+		if module.BuildProfile then PA:ProtectedCall(module, module.BuildProfile) end
 	end
 
 	PA:BuildProfile()
@@ -613,8 +610,8 @@ function PA:PLAYER_LOGIN()
 	PA:UpdateCooldownSettings('all')
 
 	for _, module in PA:IterateModules() do
-		if module.GetOptions then PA:CallModuleFunction(module, module.GetOptions) end
-		if module.Initialize then PA:CallModuleFunction(module, module.Initialize) end
+		if module.GetOptions then PA:ProtectedCall(module, module.GetOptions) end
+		if module.Initialize then PA:ProtectedCall(module, module.Initialize) end
 	end
 
 	PA:RegisterEvent('SPELLS_CHANGED')

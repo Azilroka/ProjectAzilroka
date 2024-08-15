@@ -64,13 +64,15 @@ end
 function OzCD:PLAYER_ENTERING_WORLD()
 	for SpellID in next, OzCD.db.SpellCDs do
 		local cooldownInfo = GetSpellCooldown(SpellID)
-		local currentDuration = (cooldownInfo.startTime + cooldownInfo.duration - GetTime()) or 0
+		if cooldownInfo then
+			local currentDuration = (cooldownInfo.startTime + cooldownInfo.duration - GetTime()) or 0
 
-		if cooldownInfo.isEnabled and (currentDuration > .1) and (currentDuration < OzCD.db.IgnoreDuration) then
-			if (currentDuration >= OzCD.db.SuppressDuration) then
-				OzCD.DelayCooldowns[SpellID] = Duration
-			elseif (currentDuration >= COOLDOWN_MIN_DURATION) then
-				OzCD.ActiveCooldowns[SpellID] = Duration
+			if cooldownInfo and cooldownInfo.isEnabled and (currentDuration > .1) and (currentDuration < OzCD.db.IgnoreDuration) then
+				if (currentDuration >= OzCD.db.SuppressDuration) then
+					OzCD.DelayCooldowns[SpellID] = Duration
+				elseif (currentDuration >= COOLDOWN_MIN_DURATION) then
+					OzCD.ActiveCooldowns[SpellID] = Duration
+				end
 			end
 		end
 	end
@@ -85,23 +87,25 @@ end
 function OzCD:SPELL_UPDATE_COOLDOWN()
 	for SpellID in next, OzCD.Cooldowns do
 		local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
-		local Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
+		if cooldownInfo then
+			local Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
 
-		if chargeInfo and ( chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges ) then
-			Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
-		end
-
-		local CurrentDuration = (Start + Duration - GetTime())
-
-		if cooldownInfo.isEnabled and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
-			if (CurrentDuration >= OzCD.db.SuppressDuration) or OzCD.HasCDDelay[SpellID] then
-				OzCD.DelayCooldowns[SpellID] = Duration
-			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				OzCD.ActiveCooldowns[SpellID] = Duration
+			if chargeInfo and ( chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges ) then
+				Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
 			end
-		end
 
-		OzCD.Cooldowns[SpellID] = nil
+			local CurrentDuration = (Start + Duration - GetTime())
+
+			if cooldownInfo.isEnabled and CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
+				if (CurrentDuration >= OzCD.db.SuppressDuration) or OzCD.HasCDDelay[SpellID] then
+					OzCD.DelayCooldowns[SpellID] = Duration
+				elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+					OzCD.ActiveCooldowns[SpellID] = Duration
+				end
+			end
+
+			OzCD.Cooldowns[SpellID] = nil
+		end
 	end
 
 	if OzCD.db.SortByDuration then
@@ -116,20 +120,17 @@ function OzCD:UpdateActiveCooldowns()
 
 	local Position = 0
 	for SpellID in next, OzCD.ActiveCooldowns do
-		local spellData, cooldownInfo, chargeInfo = PA.SpellBook.Complete[SpellID]
+		local spellData = PA.SpellBook.Complete[SpellID]
 
 		if spellData.name then
 			Position = Position + 1
 			local Frame, Start, Duration, Charges = OzCD:GetCooldown(Position)
+			local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
 
-			do
-				cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
-
-				if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
-					Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
-				else
-					Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
-				end
+			if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
+				Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
+			else
+				Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
 			end
 
 			local CurrentDuration = (Start + Duration - GetTime())
