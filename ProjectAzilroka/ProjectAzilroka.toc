@@ -19,5 +19,5 @@ Cooldowns.lua
 Media\Media.lua
 
 # Modules
-Modules\Load_Mainline.xml
+Load_Mainline.xml
 Templates.xml

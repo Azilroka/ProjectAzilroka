@@ -1,0 +1,20 @@
+<Ui>
+	<Script file='Modules\BrokerLDB.lua' />
+	<Script file='Modules\DragonOverlay.lua' />
+	<Script file='Modules\EnhancedFriendsList.lua' />
+	<Script file='Modules\EnhancedPetBattleUI.lua' />
+	<Script file='Modules\EnhancedShadows.lua' />
+	<Script file='Modules\FasterLoot.lua' />
+	<Script file='Modules\iFilger.lua' />
+	<Script file='Modules\LootConfirm.lua' />
+	<Script file='Modules\MasterExperience.lua' />
+	<Script file='Modules\MouseoverAuras.lua' />
+	<Script file='Modules\MovableFrames.lua' />
+	<Script file='Modules\OzCooldowns.lua' />
+	<Script file='Modules\QuestSounds.lua' />
+	<Script file='Modules\Reminder.lua' />
+	<Script file='Modules\SquareMinimapButtons.lua' />
+	<Script file='Modules\stAddonManager.lua' />
+	<Script file='Modules\TargetSounds.lua' />
+	<Script file='Modules\TorghastBuffs.lua' />
+</Ui>

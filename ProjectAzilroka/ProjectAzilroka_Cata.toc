@@ -1,4 +1,4 @@
-## Interface: 30401
+## Interface: 40400
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka, Nihilistzsche
 ## Version: 1.88
@@ -17,5 +17,5 @@ Cooldowns.lua
 Media\Media.lua
 
 # Modules
-Modules\Load_Wrath.xml
+Load_Cata.xml
 Templates.xml
