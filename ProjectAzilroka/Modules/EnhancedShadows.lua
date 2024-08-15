@@ -94,8 +94,6 @@ function ES:UpdateSettings()
 end
 
 function ES:Initialize()
-	ES:UpdateSettings()
-
 	if PA.SLE or PA.NUI or ES.db.Enable ~= true then
 		return
 	end

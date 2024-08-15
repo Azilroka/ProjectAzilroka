@@ -527,8 +527,6 @@ function MXP:UpdateSettings()
 end
 
 function MXP:Initialize()
-	MXP:UpdateSettings()
-
 	if MXP.db.Enable ~= true then
 		return
 	end

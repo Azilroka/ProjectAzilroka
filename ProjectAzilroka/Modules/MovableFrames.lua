@@ -190,8 +190,6 @@ function MF:UpdateSettings()
 end
 
 function MF:Initialize()
-	MF:UpdateSettings()
-
 	if MF.db.Enable ~= true then
 		return
 	end

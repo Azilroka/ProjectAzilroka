@@ -48,8 +48,6 @@ function TS:UpdateSettings()
 end
 
 function TS:Initialize()
-	TS:UpdateSettings()
-
 	if TS.db.Enable ~= true then
 		return
 	end

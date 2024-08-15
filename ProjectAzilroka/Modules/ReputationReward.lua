@@ -236,8 +236,6 @@ function RR:UpdateSettings()
 end
 
 function RR:Initialize()
-	RR:UpdateSettings()
-
 	if RR.db.Enable ~= true then
 		return
 	end

@@ -68,7 +68,7 @@ function TB:UpdateIcon(button)
 end
 
 function TB:UpdateAura(button, index)
-	local name, texture, count, _, _, _, _, _, _, spellID = UnitAura(button.unit, index, 'MAW')
+	local name, texture, count, _, _, _, _, _, _, spellID = PA:GetAuraData(button.unit, index, 'MAW')
 
 	local atlas = _G.C_Spell.GetMawPowerBorderAtlasBySpellID(spellID)
 	local colorIndex = atlas and (strfind(atlas, 'purple') and 4 or strfind(atlas, 'blue') and 3 or strfind(atlas, 'green') and 2)
@@ -79,7 +79,7 @@ function TB:UpdateAura(button, index)
 		PA:SetTemplate(button)
 	end
 
-	button.count:SetText(count > 1 and counti or "")
+	button.count:SetText(count > 1 and count or "")
 	button.texture:SetTexture(texture)
 end
 
@@ -119,7 +119,6 @@ function TB:UpdateHeader(header)
 
 		TB:UpdateIcon(child)
 
-		-- Blizzard bug fix, icons arent being hidden when you reduce the amount of maximum buttons
 		if index > (TB.db.maxWraps * TB.db.wrapAfter) and child:IsShown() then
 			child:Hide()
 		end
@@ -223,8 +222,6 @@ function TB:UpdateSettings()
 end
 
 function TB:Initialize()
-	TB:UpdateSettings()
-
 	if TB.db.Enable ~= true then
 		return
 	end

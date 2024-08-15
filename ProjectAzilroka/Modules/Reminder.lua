@@ -750,9 +750,11 @@ function AR:BuildProfile()
 	DefaultFilters = CopyTable(PA.Defaults.profile.AuraReminder.Filters)
 end
 
-function AR:Initialize()
+function AR:UpdateSettings()
 	AR.db = PA.db.AuraReminder
+end
 
+function AR:Initialize()
 	if AR.db.Enable ~= true then
 		return
 	end

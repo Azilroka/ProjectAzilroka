@@ -314,8 +314,6 @@ function SRF:UpdateSettings()
 end
 
 function SRF:Initialize()
-	SRF:UpdateSettings()
-
 	if SRF.db.Enable ~= true then
 		return
 	end

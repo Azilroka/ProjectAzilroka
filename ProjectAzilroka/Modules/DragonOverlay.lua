@@ -162,8 +162,6 @@ function DO:UpdateSettings()
 end
 
 function DO:Initialize()
-	DO:UpdateSettings()
-
 	if DO.db.Enable ~= true then
 		return
 	end

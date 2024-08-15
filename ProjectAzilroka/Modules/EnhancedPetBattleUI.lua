@@ -1530,8 +1530,6 @@ function EPB:UpdateSettings()
 end
 
 function EPB:Initialize()
-	EPB:UpdateSettings()
-
 	if EPB.db.Enable ~= true then
 		return
 	end

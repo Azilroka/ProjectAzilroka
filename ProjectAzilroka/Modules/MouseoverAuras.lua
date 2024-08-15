@@ -21,9 +21,12 @@ local UnitExists = UnitExists
 local VISIBLE = 1
 local HIDDEN = 0
 
-function MA:CreateAuraIcon(index)
-	local button = CreateFrame('Button', 'MouseoverAurasHolderButton'..index, MA.Holder, 'PA_Aura')
-	button:EnableMouse(false)
+function MA:GetAuraIcon(index)
+	if MA.Holder[position] then
+		return MA.Holder[position]
+	end
+
+	local button = CreateFrame('Button', 'MouseoverAurasHolderButton'..index, MA.Holder, 'PA_AuraTemplate')
 	button.Icon:SetTexCoord(unpack(PA.TexCoords))
 
 	PA:SetTemplate(button)
@@ -37,33 +40,28 @@ end
 
 function MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
 	local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
-
-	if (isPlayer) and (duration ~= 0) then
-		return true
-	else
-		return false
-	end
+	return isPlayer and (duration ~= 0)
 end
 
 function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
-	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = UnitAura(unit, index, filter)
+	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA:GetAuraData(unit, index, filter)
 
 	if name then
 		local position = visible + offset + 1
-		local button = MA.Holder[position] or MA:CreateAuraIcon(position)
+		local button = MA:GetAuraIcon(position)
 		local show = MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3)
 		button.caster, button.filter, button.isDebuff, button.isPlayer = caster, filter, isDebuff, caster == 'player' or caster == 'vehicle'
 
 		if show then
+			button:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
+			button:SetSize(MA.db.Size, MA.db.Size)
+			button:SetID(index)
+			button:SetShown(show)
+
 			button.Cooldown:SetShown(duration and duration > 0)
 			button.Cooldown:SetCooldown(expiration - duration, duration)
 			button.Icon:SetTexture(texture)
 			button.Count:SetText(count > 1 and count or '')
-			button:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
-
-			button:SetSize(MA.db.Size, MA.db.Size)
-			button:SetID(index)
-			button:SetShown(show)
 
 			return VISIBLE
 		end
@@ -88,7 +86,8 @@ function MA:SetPosition()
 end
 
 function MA:FilterIcons(unit, filter, limit, isDebuff, offset)
-	if (not offset) then offset = 0 end
+	offset = offset or 0
+
 	local index, visible, hidden = 1, 0, 0
 
 	for index = 1, limit do
@@ -145,12 +144,9 @@ function MA:Update(elapsed)
 end
 
 function MA:UPDATE_MOUSEOVER_UNIT()
-	if (UnitExists('mouseover')) then
-		MA.Holder:Show()
-		MA:UpdateAuras('mouseover')
-	else
-		MA.Holder:Hide()
-	end
+	local unitExists = UnitExists('mouseover')
+	MA.Holder:SetShown(unitExists)
+	if unitExists then MA:UpdateAuras('mouseover') end
 end
 
 function MA:GetOptions()
@@ -184,8 +180,6 @@ function MA:UpdateSettings()
 end
 
 function MA:Initialize()
-	MA:UpdateSettings()
-
 	if MA.db.Enable ~= true then
 		return
 	end

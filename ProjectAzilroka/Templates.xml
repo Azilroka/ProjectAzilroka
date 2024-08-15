@@ -1,5 +1,5 @@
 <Ui>
-	<Button name='PA_Aura' inherits='BackdropTemplate' virtual='true' framelevel='4'>
+	<Button name='PA_AuraTemplate' inherits='BackdropTemplate' virtual='true' framelevel='4' >
 		<Size x='16' y='16'/>
 		<Frames>
 			<Cooldown parentKey='Cooldown' inherits='CooldownFrameTemplate' hidden='true'>
@@ -8,6 +8,11 @@
 					<Anchor point='BOTTOMRIGHT' x='-1' y='1'/>
 				</Anchors>
 			</Cooldown>
+			<StatusBar parentKey='StatusBar' hidden='true'>
+				<Anchors>
+					<Anchor point='TOP' relativePoint='BOTTOM' x='0' y='-1'/>
+				</Anchors>
+			</StatusBar>
 		</Frames>
 		<Layers>
 			<Layer level='ARTWORK'>

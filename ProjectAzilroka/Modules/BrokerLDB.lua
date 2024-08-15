@@ -271,8 +271,6 @@ function BLDB:UpdateSettings()
 end
 
 function BLDB:Initialize()
-	BLDB:UpdateSettings()
-
 	if BLDB.db.Enable ~= true then
 		return
 	end

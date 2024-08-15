@@ -794,8 +794,6 @@ function IF:UpdateSettings()
 end
 
 function IF:Initialize()
-	IF:UpdateSettings()
-
 	if IF.db.Enable ~= true then
 		return
 	end

@@ -996,9 +996,11 @@ function FG:BuildProfile()
 	}
 end
 
-function FG:Initialize()
+function FG:UpdateSettings()
 	FG.db = PA.db.FriendGroups
+end
 
+function FG:Initialize()
 	if FG.db.Enable ~= true then
 		return
 	end

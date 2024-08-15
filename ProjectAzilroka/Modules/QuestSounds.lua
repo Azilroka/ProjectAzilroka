@@ -168,9 +168,11 @@ function QS:BuildProfile()
 	}
 end
 
-function QS:Initialize()
+function QS:UpdateSettings()
 	QS.db = PA.db.QuestSounds
+end
 
+function QS:Initialize()
 	if QS.db.Enable ~= true then
 		return
 	end

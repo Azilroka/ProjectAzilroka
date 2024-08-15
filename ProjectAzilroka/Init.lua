@@ -320,7 +320,20 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 end
 
 -- backwards compatibility
-do 
+do
+	-- Unit Aura
+	local GetAuraDataByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
+	local UnpackAuraData = AuraUtil and AuraUtil.UnpackAuraData
+	local UnitAura = UnitAura
+
+	function PA:GetAuraData(unitToken, index, filter)
+		if PA.Retail then
+			return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
+		else
+			return UnitAura(unitToken, index, filter)
+		end
+	end
+
 	-- GetMouseFocus
 	local GetMouseFocus = GetMouseFocus
 	local GetMouseFoci = GetMouseFoci
@@ -371,45 +384,44 @@ do
 	-- Spell Book 
 	local BOOKTYPE_SPELL = (Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player) or BOOKTYPE_SPELL
 	local BOOKTYPE_PET = (Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet) or BOOKTYPE_PET
-	local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
-	local HasPetSpells = HasPetSpells or C_SpellBook.HasPetSpells
+	local GetSpellBookItemName = C_SpellBook.GetSpellBookItemName or GetSpellBookItemName
+	local HasPetSpells = C_SpellBook.HasPetSpells or HasPetSpells
 
-	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(spellID)
-		return { startTime, duration, isEnabled, modRate = GetSpellCooldown(spellID) }
+	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(info, bookType)
+		local startTime, duration, isEnabled, modRate = GetSpellCooldown(info, bookType)
+		return { startTime = startTime, duration = duration, isEnabled = isEnabled, modRate = modRate }
 	end
 
-	local GetSpellBookItemInfo = _G.GetSpellBookItemInfo or function(index, spellBank)
-		local info = C_SpellBook.GetSpellBookItemInfo(index, spellBank)
-		if info and not info.isPassive then
-			return info.itemType, info.spellID, info.actionID
-		end
+	local GetSpellCharges = C_Spell.GetSpellCharges or function(index, bookType)
+		local currentCharges, maxCharges, cooldownStart, cooldownDuration, chargeModRate = GetSpellCharges(info, bookType)
+		return { currentCharges	= currentCharges, maxCharges = maxCharges, cooldownStartTime = cooldownStart, cooldownDuration = cooldownDuration, chargeModRate = chargeModRate }
 	end
 
-	local GetSpellInfo = GetSpellInfo or function(spellID)
-		if spellID then
-			local spellInfo = C_Spell.GetSpellInfo(spellID)
-			if spellInfo then
-				return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
-			end
-		end
-		return nil
+	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }
+	local GetSpellBookItemInfo = C_SpellBook.GetSpellBookItemInfo or function(index, bookType)
+		local spellType, id = GetSpellBookItemInfo(index, bookType)
+		local _, spellSubName = GetSpellBookItemName(index, bookType)
+		local name, _, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(index, bookType)
+		return { actionID = id, spellID = spellID, itemType = bookTypes[spellType], name = name, subName = spellSubName or '', iconID = icon, isPassive = false, isOffSpec = false, skillLineIndex = index }
 	end
 
-	local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
-	local GetSpellTabInfo = GetSpellTabInfo or function(index)
-		local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
-		if not skillLineInfo then
-			return nil
-		end
-		return skillLineInfo.name, skillLineInfo.iconID, skillLineInfo.itemIndexOffset, skillLineInfo.numSpellBookItems, skillLineInfo.isGuild, skillLineInfo.offSpecID, skillLineInfo.shouldHide, skillLineInfo.specID
+	local GetSpellInfo = C_Spell.GetSpellInfo or function(index, bookType)
+		local name, _, iconID, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(index, bookType)
+		return { name = name, iconID = iconID, castTime = castTime, minRange = minRange, maxRange = maxRange, spellID = spellID, originalIcon = originalIcon }
+	end
+
+	local GetNumSpellBookSkillLines = C_SpellBook.GetNumSpellBookSkillLines or GetNumSpellTabs
+	local GetSpellBookSkillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo or function(index)
+		local name, texture, offset, numSlots, isGuild, offspecID = GetSpellTabInfo(index)
+		return { name = name, iconID = texture, itemIndexOffset = offset, numSpellBookItems = numSlots, isGuild = isGuild, offSpecID = offspecID, shouldHide = false, specID = false }
 	end
 
 	-- Need for modules
 	PA.GetSpellInfo = GetSpellInfo
 	PA.GetSpellCooldown = GetSpellCooldown
+	PA.GetSpellCharges = GetSpellCharges
 
 	PA.SpellBook = { Complete = {}, Spells = {} }
-	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }
 
 	-- Simpy Magic
 	local t = {}
@@ -417,7 +429,7 @@ do
 		t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 	end
 
-	function PA:Scan(spellID)
+	local function scanTooltip(spellID)
 		PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
 		PA.ScanTooltip:SetSpellByID(spellID)
 		PA.ScanTooltip:Show()
@@ -426,7 +438,7 @@ do
 			local str = _G['PAScanTooltipTextRight'..i]
 			local text = str and str:GetText()
 			if text then
-				for _, matchtext in pairs(t) do
+				for _, matchtext in next, t do
 					if strmatch(text, matchtext) then return true end
 				end
 			end
@@ -436,43 +448,29 @@ do
 	local function ScanSpellBook(bookType, numSpells, offset)
 		offset = offset or 0
 
-		for index = offset + 1, offset + numSpells, 1 do
-			local itemType, spellID, actionID = GetSpellBookItemInfo(index, bookType)
-			local flyoutID, SpellName, Rank = PA.Retail and actionID or spellID
+		for index = offset + 1, offset + numSpells do
+			local info = GetSpellBookItemInfo(index, bookType)
+			local flyoutID, spellName = PA.Retail and info.actionID or info.spellID
 
-			if not PA.Retail then itemType = bookTypes[itemType] end
-
-			if itemType == 1 or itemType == 3 then
-				if not PA.Retail then
-					spellName, rank, spellID = GetSpellBookItemName(index, bookType)
-					if rank ~= '' and rank ~= nil then
-						spellName = format('%s %s', spellName, rank)
-					end
-				end
-				if spellID then
-					PA.SpellBook.Complete[spellID] = true
-					if PA:Scan(spellID) then PA.SpellBook.Spells[spellID] = spellName or true end
-				end
-			elseif itemType == 4 then
+			if info.itemType == 1 or info.itemType == 3 then
+				if not PA.Retail and info.subName then spellName = format('%s %s', info.name, info.subName) end
+				PA.SpellBook.Complete[info.spellID] = info
+				if scanTooltip(info.spellID) then PA.SpellBook.Spells[info.spellID] = spellName or true end
+			elseif info.itemType == 4 then
 				local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
 				if numSlots > 0 then
 					for flyoutIndex = 1, numSlots, 1 do
-						local flyoutSpellID, overrideId = GetFlyoutSlotInfo(actionID, flyoutIndex)
-						spellID = overrideId or flyoutSpellID
+						local flyoutSpellID, overrideId = GetFlyoutSlotInfo(flyoutID, flyoutIndex)
+						local spellID = overrideId or flyoutSpellID
 
-						PA.SpellBook.Complete[spellID] = true
-						if PA:Scan(spellID) then PA.SpellBook.Spells[spellID] = true end
+						PA.SpellBook.Complete[spellID] = GetSpellInfo(spellID)
+						if scanTooltip(spellID) then PA.SpellBook.Spells[spellID] = true end
 					end
 				end
 			end
 		end
 
 		PA.ScanTooltip:Hide()
-	end
-
-	for tab = 1, GetNumSpellTabs() do
-		local _, _, offset, numSpells = GetSpellTabInfo(tab)
-		ScanSpellBook(BOOKTYPE_SPELL, numSpells, offset)
 	end
 
 	function PA:SPELLS_CHANGED()
@@ -487,6 +485,15 @@ do
 				end
 			end
 		end
+	end
+
+	function PA:ScanSpellBook()
+		for tab = 1, GetNumSpellBookSkillLines() do
+			local info = GetSpellBookSkillLineInfo(tab)
+			ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
+		end
+
+		PA:SPELLS_CHANGED()
 	end
 end
 
@@ -563,7 +570,7 @@ function PA:BuildProfile()
 	PA.Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
 	PA.Options.args.profiles.order = -2
 
-	PA.db = PA.data.profile
+	PA:SetupProfile()
 end
 
 function PA:SetupProfile()
@@ -586,8 +593,9 @@ function PA:PLAYER_LOGIN()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
-
 	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
+
+	PA:ScanSpellBook()
 
 	for _, module in PA:IterateModules() do
 		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
@@ -608,7 +616,8 @@ function PA:PLAYER_LOGIN()
 		if module.GetOptions then PA:CallModuleFunction(module, module.GetOptions) end
 		if module.Initialize then PA:CallModuleFunction(module, module.Initialize) end
 	end
+
+	PA:RegisterEvent('SPELLS_CHANGED')
 end
 
 PA:RegisterEvent('PLAYER_LOGIN')
-PA:RegisterEvent('SPELLS_CHANGED')

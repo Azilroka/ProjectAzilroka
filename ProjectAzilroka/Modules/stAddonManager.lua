@@ -739,8 +739,6 @@ function stAM:UpdateSettings()
 end
 
 function stAM:Initialize()
-	stAM:UpdateSettings()
-
 	if stAM.db.Enable ~= true then
 		return
 	end
