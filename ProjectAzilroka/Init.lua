@@ -388,7 +388,12 @@ do
 	local HasPetSpells = C_SpellBook.HasPetSpells or HasPetSpells
 
 	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(info, bookType)
-		local startTime, duration, isEnabled, modRate = GetSpellCooldown(info, bookType)
+		local startTime, duration, isEnabled, modRate
+		if bookType then
+			startTime, duration, isEnabled, modRate = _G.GetSpellCooldown(info, bookType)
+		else
+			startTime, duration, isEnabled, modRate = _G.GetSpellCooldown(info)
+		end
 		return { startTime = startTime, duration = duration, isEnabled = isEnabled, modRate = modRate }
 	end
 
