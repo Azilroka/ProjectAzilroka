@@ -595,7 +595,7 @@ function PA:PLAYER_LOGIN()
 	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
 	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
 
-	PA:ScanSpellBook()
+	PA:CallModuleFunction(PA, PA.ScanSpellBook)
 
 	for _, module in PA:IterateModules() do
 		if module.BuildProfile then PA:CallModuleFunction(module, module.BuildProfile) end
