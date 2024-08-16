@@ -606,7 +606,6 @@ function PA:PLAYER_LOGIN()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
 	PA.Libs.EP = LibStub('LibElvUIPlugin-1.0', true)
-	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
 
 	PA:ProtectedCall(PA, PA.ScanSpellBook)
 
