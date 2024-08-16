@@ -477,20 +477,31 @@ do
 		PA.ScanTooltip:Hide()
 	end
 
+	local isScanning = false
+
+	local function resetScan()
+		isScanning = false
+	end
+
 	function PA:ScanSpellBook()
-		for tab = 1, GetNumSpellBookSkillLines() do
-			local info = GetSpellBookSkillLineInfo(tab)
-			ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
-		end
+		if not isScanning then -- prevent duplicate fires
+			isScanning = true
+			for tab = 1, GetNumSpellBookSkillLines() do
+				local info = GetSpellBookSkillLineInfo(tab)
+				ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
+			end
 
-		local numPetSpells = HasPetSpells()
-		if numPetSpells then
-			ScanSpellBook(BOOKTYPE_PET, numPetSpells)
-		end
+			local numPetSpells = HasPetSpells()
+			if numPetSpells then
+				ScanSpellBook(BOOKTYPE_PET, numPetSpells)
+			end
 
-		-- Process Modules Event
-		for _, module in PA:IterateModules() do
-			if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
+			-- Process Modules Event
+			for _, module in PA:IterateModules() do
+				if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
+			end
+
+			PA:ScheduleTimer(resetScan, 1)
 		end
 	end
 end
