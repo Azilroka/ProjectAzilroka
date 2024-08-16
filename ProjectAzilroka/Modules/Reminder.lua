@@ -1,10 +1,10 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local AR = PA:NewModule('AuraReminder', 'AceEvent-3.0', 'AceTimer-3.0')
 
 PA.AR = AR
 
-AR.Title = PA.ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r']
-AR.Description = PA.ACL['Reminder for Buffs / Debuffs']
+AR.Title = ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r']
+AR.Description = ACL['Reminder for Buffs / Debuffs']
 AR.Authors = 'Azilroka'
 AR.isEnabled = false
 
@@ -239,7 +239,7 @@ function AR:PlaySoundFile()
 
 	AR.IsPlaying = true
 
-	PlaySoundFile(PA.LSM:Fetch('sound', AR.db.Sound))
+	PlaySoundFile(PA.Libs.LSM:Fetch('sound', AR.db.Sound))
 
 	AR:ScheduleTimer('ResetSoundPlayback', 10)
 end
@@ -323,7 +323,7 @@ end
 local addGroupTemplate = { name = '', template = ''}
 
 function AR:GetOptions()
-	local AuraReminder = PA.ACH:Group(AR.Title, nil, nil, 'tree', function(info) return AR.db[info[#info]] end, function(info, value) AR.db[info[#info]] = value end)
+	local AuraReminder = ACH:Group(AR.Title, nil, nil, 'tree', function(info) return AR.db[info[#info]] end, function(info, value) AR.db[info[#info]] = value end)
 	PA.Options.args.AuraReminder = AuraReminder
 
 	AuraReminder.args = {
@@ -335,7 +335,7 @@ function AR:GetOptions()
 			Enable = {
 				order = 1,
 				type = 'toggle',
-				name = PA.ACL['Enable'],
+				name = ACL['Enable'],
 				set = function(info, value)
 					AR.db[info[#info]] = value
 					if (not AR.isEnabled) then
@@ -348,14 +348,14 @@ function AR:GetOptions()
 			Sound = {
 				order = 2,
 				type = 'select', dialogControl = 'LSM30_Sound',
-				name = PA.ACL['Sound'],
-				desc = PA.ACL['Sound that will play when you have a warning icon displayed.'],
-				values = PA.LSM:HashTable('sound'),
+				name = ACL['Sound'],
+				desc = ACL['Sound that will play when you have a warning icon displayed.'],
+				values = PA.Libs.LSM:HashTable('sound'),
 			},
 			selectGroup = {
 				order = 3,
 				type = 'select',
-				name = PA.ACL['Select Group'],
+				name = ACL['Select Group'],
 				get = function()
 					if selectedGroup == 'Global' then
 						return selectedGroup
@@ -376,7 +376,7 @@ function AR:GetOptions()
 			selectFilter = {
 				order = 4,
 				type = 'select',
-				name = PA.ACL['Select Filter'],
+				name = ACL['Select Filter'],
 				get = function() return selectedFilter ~= '' and selectedFilter or '' end,
 				set = function(_, value)
 					selectedFilter = value ~= '' and value or nil
@@ -389,7 +389,7 @@ function AR:GetOptions()
 						filters[filter] = filter
 					end
 					if not next(filters) then
-						filters[''] = PA.ACL['None']
+						filters[''] = ACL['None']
 					end
 					return filters
 				end,
@@ -397,13 +397,13 @@ function AR:GetOptions()
 			filterControl = {
 				order = 5,
 				type = 'group',
-				name = PA.ACL['Filter Control'],
+				name = ACL['Filter Control'],
 				inline = true,
 				args = {
 					addFilter = {
 						order = 1,
 						type = 'input',
-						name = PA.ACL['New Filter Name'],
+						name = ACL['New Filter Name'],
 						get = function() return addGroupTemplate.name end,
 						set = function(_, value)
 							if AR.db.Filters[selectedGroup][value] then return end
@@ -413,7 +413,7 @@ function AR:GetOptions()
 					addFilterTemplate = {
 						order = 2,
 						type = 'select',
-						name = PA.ACL['New Filter Type'],
+						name = ACL['New Filter Type'],
 						get = function() return addGroupTemplate.template end,
 						set = function(_, value)
 							if AR.db.Filters[selectedGroup][value] then
@@ -423,10 +423,10 @@ function AR:GetOptions()
 						end,
 						values = function()
 							wipe(filterTypeList)
-							filterTypeList.SPELL = PA.ACL['Spell']
+							filterTypeList.SPELL = ACL['Spell']
 							if selectedGroup ~= 'Global' then
-								filterTypeList.WEAPON = PA.ACL['Weapon']
-								filterTypeList.COOLDOWN = PA.ACL['Cooldown']
+								filterTypeList.WEAPON = ACL['Weapon']
+								filterTypeList.COOLDOWN = ACL['Cooldown']
 							end
 							return filterTypeList
 						end,
@@ -434,7 +434,7 @@ function AR:GetOptions()
 					addFilterButton = {
 						type = 'execute',
 						order = 3,
-						name = PA.ACL['Add Filter'],
+						name = ACL['Add Filter'],
 						hidden = function() return addGroupTemplate.name == '' or addGroupTemplate.template == '' end,
 						func = function()
 							AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template }
@@ -455,9 +455,9 @@ function AR:GetOptions()
 					deleteGroup = {
 						order = 5,
 						type = 'select',
-						name = PA.ACL['Remove Filter'],
+						name = ACL['Remove Filter'],
 						get = function() return '' end,
-						confirm = function(_, value) return PA.ACL['Remove Filter']..' - '..value end,
+						confirm = function(_, value) return ACL['Remove Filter']..' - '..value end,
 						set = function(_, value)
 							selectedFilter = nil
 							if DefaultFilters[selectedGroup][value] then
@@ -472,7 +472,7 @@ function AR:GetOptions()
 								filters[filter] = filter
 							end
 							if not next(filters) then
-								filters[''] = PA.ACL['None']
+								filters[''] = ACL['None']
 							end
 							return filters
 						end,
@@ -491,19 +491,19 @@ function AR:GetOptions()
 					enable = {
 						order = 1,
 						type = 'toggle',
-						name = PA.ACL['Enable'],
+						name = ACL['Enable'],
 					},
 					filterType = {
 						order = 2,
 						type = 'select',
-						name = PA.ACL['Filter Type'],
-						desc = PA.ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'],
+						name = ACL['Filter Type'],
+						desc = ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'],
 						values = function()
 							wipe(filterTypeList)
-							filterTypeList.SPELL = PA.ACL['Spell']
+							filterTypeList.SPELL = ACL['Spell']
 							if selectedGroup ~= 'Global' then
-								filterTypeList.WEAPON = PA.ACL['Weapon']
-								filterTypeList.COOLDOWN = PA.ACL['Cooldown']
+								filterTypeList.WEAPON = ACL['Weapon']
+								filterTypeList.COOLDOWN = ACL['Cooldown']
 							end
 							return filterTypeList
 						end,
@@ -511,71 +511,71 @@ function AR:GetOptions()
 					xOffset = {
 						order = 3,
 						type = 'range',
-						name = PA.ACL['X Offset'],
+						name = ACL['X Offset'],
 						min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1,
 					},
 					yOffset = {
 						order = 4,
 						type = 'range',
-						name = PA.ACL['Y Offset'],
+						name = ACL['Y Offset'],
 						min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1,
 					},
 					size = {
 						order = 5,
 						type = 'range',
-						name = PA.ACL['Size'],
+						name = ACL['Size'],
 						min = 0, max = 128, step = 1,
 					},
 					conditions = {
 						order = 10,
 						type = 'multiselect',
-						name = PA.ACL['Conditions'],
+						name = ACL['Conditions'],
 						get = function(_, key) return AR.db.Filters[selectedGroup][selectedFilter][key] end,
 						set = function(_, key, value) AR.db.Filters[selectedGroup][selectedFilter][key] = value end,
 						values = {
-							instance = PA.ACL['Inside Raid/Party'],
-							pvp = PA.ACL['Inside BG/Arena'],
-							combat = PA.ACL['Combat'],
+							instance = ACL['Inside Raid/Party'],
+							pvp = ACL['Inside BG/Arena'],
+							combat = ACL['Combat'],
 						},
 					},
 					filterConditions = {
 						order = 11,
 						type = 'group',
-						name = PA.ACL['Filter Conditions'],
+						name = ACL['Filter Conditions'],
 						inline = true,
 						args = {
 							level = {
 								order = 4,
 								type = 'range',
-								name = PA.ACL['Level Requirement'],
-								desc = PA.ACL['Level requirement for the icon to be able to display. 0 for disabled.'],
+								name = ACL['Level Requirement'],
+								desc = ACL['Level requirement for the icon to be able to display. 0 for disabled.'],
 								min = 0, max = MAX_PLAYER_LEVEL, step = 1,
 							},
 							personal = {
 								order = 5,
 								type = 'toggle',
-								name = PA.ACL['Personal Buffs'],
-								desc = PA.ACL['Only check if the buff is coming from you.'],
+								name = ACL['Personal Buffs'],
+								desc = ACL['Only check if the buff is coming from you.'],
 								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 							},
 							reverseCheck = {
 								order = 6,
 								type = 'toggle',
-								name = PA.ACL['Reverse Check'],
-								desc = PA.ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'],
+								name = ACL['Reverse Check'],
+								desc = ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'],
 								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
 							},
 							strictFilter = {
 								order = 7,
 								type = 'toggle',
-								name = PA.ACL['Strict Filter'],
-								desc = PA.ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'],
+								name = ACL['Strict Filter'],
+								desc = ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'],
 								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end,
 							},
 							disableSound = {
 								order = 8,
 								type = 'toggle',
-								name = PA.ACL['Disable Sound'],
+								name = ACL['Disable Sound'],
 								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end,
 							},
 						},
@@ -583,7 +583,7 @@ function AR:GetOptions()
 					cooldownConditions = {
 						order = 12,
 						type = 'group',
-						name = PA.ACL['Cooldown Conditions'],
+						name = ACL['Cooldown Conditions'],
 						inline = true,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'COOLDOWN' or selectedGroup == 'Global' end,
 						args = {
@@ -601,7 +601,7 @@ function AR:GetOptions()
 							cooldownSpellID = {
 								order = 1,
 								type = 'input',
-								name = PA.ACL['Spell ID'],
+								name = ACL['Spell ID'],
 								get = function(info) return tostring(AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or '') end,
 								set = function(info, value)
 									value = tonumber(value)
@@ -613,12 +613,12 @@ function AR:GetOptions()
 							onCooldown = {
 								order = 2,
 								type = 'toggle',
-								name = PA.ACL['Show On Cooldown'],
+								name = ACL['Show On Cooldown'],
 							},
 							cooldownAlpha = {
 								order = 3,
 								type = 'range',
-								name = PA.ACL['Cooldown Alpha'],
+								name = ACL['Cooldown Alpha'],
 								min = 0, max = 1, step = 0.1,
 								hidden = function() return not AR.db.Filters[selectedGroup][selectedFilter].onCooldown end,
 							},
@@ -627,7 +627,7 @@ function AR:GetOptions()
 					spellGroup = {
 						order = 13,
 						type = 'group',
-						name = PA.ACL['Spells'],
+						name = ACL['Spells'],
 						inline = true,
 						get = function() AR:UpdateFilterGroup('spellGroup') return '' end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
@@ -635,7 +635,7 @@ function AR:GetOptions()
 							AddSpell = {
 								order = 0,
 								type = 'input',
-								name = PA.ACL['New ID'],
+								name = ACL['New ID'],
 								set = function(_, value)
 									value = tonumber(value)
 									if not value then return end
@@ -648,7 +648,7 @@ function AR:GetOptions()
 							RemoveSpell = {
 								order = 1,
 								type = 'select',
-								name = PA.ACL['Remove ID'],
+								name = ACL['Remove ID'],
 								get = function() return '' end,
 								set = function(_, value)
 									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = nil;
@@ -665,13 +665,13 @@ function AR:GetOptions()
 									return spellList
 								end,
 							},
-							spacer = PA.ACH:Spacer(2)
+							spacer = ACH:Spacer(2)
 						},
 					},
 					negateGroup = {
 						order = 14,
 						type = 'group',
-						name = PA.ACL['Negate Spells'],
+						name = ACL['Negate Spells'],
 						inline = true,
 						get = function() AR:UpdateFilterGroup('negateGroup') return '' end,
 						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
@@ -679,7 +679,7 @@ function AR:GetOptions()
 							AddSpell = {
 								order = 0,
 								type = 'input',
-								name = PA.ACL['New ID'],
+								name = ACL['New ID'],
 								set = function(_, value)
 									value = tonumber(value)
 									if not value then return end
@@ -692,7 +692,7 @@ function AR:GetOptions()
 							RemoveSpell = {
 								order = 1,
 								type = 'select',
-								name = PA.ACL['Remove ID'],
+								name = ACL['Remove ID'],
 								get = function() return '' end,
 								set = function(_, value)
 									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = nil;
@@ -707,34 +707,34 @@ function AR:GetOptions()
 										end
 									end
 									if not next(spellList) then
-										spellList[''] = PA.ACL['None']
+										spellList[''] = ACL['None']
 									end
 									return spellList
 								end,
 							},
-							spacer = PA.ACH:Spacer(2)
+							spacer = ACH:Spacer(2)
 						},
 					},
 				},
 			},
 		}
 
-	PA.Options.args.AuraReminder.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	PA.Options.args.AuraReminder.args.Authors = PA.ACH:Description(AR.Authors, -1, 'large')
+	PA.Options.args.AuraReminder.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	PA.Options.args.AuraReminder.args.Authors = ACH:Description(AR.Authors, -1, 'large')
 
 	if PA.Retail then
 		local optionGroup = PA.Options.args.AuraReminder.args.filterGroup.args.filterConditions.args
 
-		local Specializations = { ['ANY'] = PA.ACL['Any'] }
+		local Specializations = { ['ANY'] = ACL['Any'] }
 
 		for i = 1, 4 do
 			Specializations[tostring(i)] = select(2, GetSpecializationInfo(i))
 		end
 
-		optionGroup.role = PA.ACH:Select(PA.ACL['Role'], PA.ACL['You must be a certain role for the icon to appear.'], 1, { TANK = PA.ACL['Tank'], DAMAGER = PA.ACL['Damage'], HEALER = PA.ACL['Healer'], ANY = PA.ACL['Any'] }, nil, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or 'ANY' end, nil, nil, function() return selectedGroup == 'Global' end)
-		optionGroup.tree = PA.ACH:Select(PA.ACL['Talent Tree'], PA.ACL['You must be using a certain talent tree for the icon to show.'], 2, Specializations, nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree or 'ANY') end, function(_, value) if value == 'ANY' then AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY' else AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
-		optionGroup.talentTreeException = PA.ACH:Select(PA.ACL['Tree Exception'], PA.ACL['Set a talent tree to not follow the reverse check.'], 2, CopyTable(Specializations), nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end, function(_, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end, nil, function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
-		optionGroup.talentTreeException.values.NONE = PA.ACL['None']
+		optionGroup.role = ACH:Select(ACL['Role'], ACL['You must be a certain role for the icon to appear.'], 1, { TANK = ACL['Tank'], DAMAGER = ACL['Damage'], HEALER = ACL['Healer'], ANY = ACL['Any'] }, nil, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or 'ANY' end, nil, nil, function() return selectedGroup == 'Global' end)
+		optionGroup.tree = ACH:Select(ACL['Talent Tree'], ACL['You must be using a certain talent tree for the icon to show.'], 2, Specializations, nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree or 'ANY') end, function(_, value) if value == 'ANY' then AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY' else AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
+		optionGroup.talentTreeException = ACH:Select(ACL['Tree Exception'], ACL['Set a talent tree to not follow the reverse check.'], 2, CopyTable(Specializations), nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end, function(_, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end, nil, function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
+		optionGroup.talentTreeException.values.NONE = ACL['None']
 	end
 end
 

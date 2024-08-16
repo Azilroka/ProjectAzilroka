@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local MA = PA:NewModule('MouseoverAuras', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.MA = MA
 
-MA.Title = PA.ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
-MA.Description = PA.ACL['Auras for your mouseover target']
+MA.Title = ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
+MA.Description = ACL['Auras for your mouseover target']
 MA.Authors = 'Azilroka'
 MA.isEnabled = false
 
@@ -150,20 +150,20 @@ function MA:UPDATE_MOUSEOVER_UNIT()
 end
 
 function MA:GetOptions()
-	local MouseoverAuras = PA.ACH:Group(MA.Title, MA.Description, nil, 'tab', function(info) return MA.db[info[#info]] end, function(info, value) MA.db[info[#info]] = value MA:SetPosition() end)
+	local MouseoverAuras = ACH:Group(MA.Title, MA.Description, nil, 'tab', function(info) return MA.db[info[#info]] end, function(info, value) MA.db[info[#info]] = value MA:SetPosition() end)
 	PA.Options.args.MouseoverAuras = MouseoverAuras
 
-	MouseoverAuras.args.Description = PA.ACH:Header(MA.Description, 0)
-	MouseoverAuras.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MA.db[info[#info]] = value if not MA.isEnabled then MA:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	MouseoverAuras.args.Description = ACH:Header(MA.Description, 0)
+	MouseoverAuras.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) MA.db[info[#info]] = value if not MA.isEnabled then MA:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	MouseoverAuras.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	MouseoverAuras.args.General = ACH:Group(ACL['General'], nil, 2)
 	MouseoverAuras.args.General.inline = true
 
-	MouseoverAuras.args.General.args.Size = PA.ACH:Range(PA.ACL['Size'], nil, 1, { min = 16, max = 60, step = 1 })
-	MouseoverAuras.args.General.args.Spacing = PA.ACH:Range(PA.ACL['Spacing'], nil, 2, { min = 0, max = 20, step = 1 })
+	MouseoverAuras.args.General.args.Size = ACH:Range(ACL['Size'], nil, 1, { min = 16, max = 60, step = 1 })
+	MouseoverAuras.args.General.args.Spacing = ACH:Range(ACL['Spacing'], nil, 2, { min = 0, max = 20, step = 1 })
 
-	MouseoverAuras.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	MouseoverAuras.args.Authors = PA.ACH:Description(MA.Authors, -1, 'large')
+	MouseoverAuras.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	MouseoverAuras.args.Authors = ACH:Description(MA.Authors, -1, 'large')
 end
 
 function MA:BuildProfile()

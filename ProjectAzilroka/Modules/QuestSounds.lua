@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0', 'AceTimer-3.0')
 PA.QS = QS
 
-QS.Title = PA.ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
-QS.Description = PA.ACL['Audio for Quest Progress & Completions.']
+QS.Title = ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
+QS.Description = ACL['Audio for Quest Progress & Completions.']
 QS.Authors = 'Azilroka'
 QS.Credits = 'Yoco'
 QS.isEnabled = false
@@ -44,7 +44,7 @@ function QS:PlaySoundFile(file)
 	if QS.db.UseSoundID then
 		PlaySound(tonumber(file), QS.db.Channel)
 	else
-		PlaySoundFile(PA.LSM:Fetch('sound', file), QS.db.Channel)
+		PlaySoundFile(PA.Libs.LSM:Fetch('sound', file), QS.db.Channel)
 	end
 
 	QS:ScheduleTimer('ResetSoundPlayback', QS.db.Throttle)
@@ -79,76 +79,76 @@ end
 
 function QS:RegisterSounds()
 	if PA.Classic then
-		PA.LSM:Register('sound', 'You Will Die!', 'Sound/Creature/CThun/CThunYouWillDIe.ogg')
-		PA.LSM:Register('sound', 'Gong Quest Complete', 'Sound/Doodad/G_GongTroll01.ogg')
-		PA.LSM:Register('sound', 'Creature Quest Complete', 'Sound/Creature/Chicken/ChickenDeathA.ogg')
-		PA.LSM:Register('sound', 'Creature Objective Complete', 'Sound/Creature/Frog/FrogFootstep2.ogg')
-		PA.LSM:Register('sound', 'Creature Objective Progress', 'Sound/Creature/Crab/CrabWoundC.ogg')
-		PA.LSM:Register('sound', 'Peon Quest Complete', 'Sound/Creature/Peon/PeonBuildingComplete1.ogg')
-		PA.LSM:Register('sound', 'Peon Objective Complete', 'Sound/Creature/Peon/PeonReady1.ogg')
-		PA.LSM:Register('sound', 'Peon Objective Progress', 'Sound/Creature/Peasant/PeasantWhat3.ogg')
-		PA.LSM:Register('sound', 'QuestGuru Quest Complete', 'Sound/Interface/levelup2.ogg')
-		PA.LSM:Register('sound', 'QuestGuru Objective Complete', 'Sound/Interface/AuctionWindowClose.ogg')
-		PA.LSM:Register('sound', 'QuestGuru Objective Progress', 'Sound/Interface/AuctionWindowOpen.ogg')
+		PA.Libs.LSM:Register('sound', 'You Will Die!', 'Sound/Creature/CThun/CThunYouWillDIe.ogg')
+		PA.Libs.LSM:Register('sound', 'Gong Quest Complete', 'Sound/Doodad/G_GongTroll01.ogg')
+		PA.Libs.LSM:Register('sound', 'Creature Quest Complete', 'Sound/Creature/Chicken/ChickenDeathA.ogg')
+		PA.Libs.LSM:Register('sound', 'Creature Objective Complete', 'Sound/Creature/Frog/FrogFootstep2.ogg')
+		PA.Libs.LSM:Register('sound', 'Creature Objective Progress', 'Sound/Creature/Crab/CrabWoundC.ogg')
+		PA.Libs.LSM:Register('sound', 'Peon Quest Complete', 'Sound/Creature/Peon/PeonBuildingComplete1.ogg')
+		PA.Libs.LSM:Register('sound', 'Peon Objective Complete', 'Sound/Creature/Peon/PeonReady1.ogg')
+		PA.Libs.LSM:Register('sound', 'Peon Objective Progress', 'Sound/Creature/Peasant/PeasantWhat3.ogg')
+		PA.Libs.LSM:Register('sound', 'QuestGuru Quest Complete', 'Sound/Interface/levelup2.ogg')
+		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Complete', 'Sound/Interface/AuctionWindowClose.ogg')
+		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Progress', 'Sound/Interface/AuctionWindowOpen.ogg')
 	else
-		PA.LSM:Register('sound', 'Rubber Ducky', 566121)
-		PA.LSM:Register('sound', 'Cartoon FX', 566543)
-		PA.LSM:Register('sound', 'Explosion', 566982)
-		PA.LSM:Register('sound', 'Shing!', 566240)
-		PA.LSM:Register('sound', 'Wham!', 566946)
-		PA.LSM:Register('sound', 'Simon Chime', 566076)
-		PA.LSM:Register('sound', 'War Drums', 567275)
-		PA.LSM:Register('sound', 'Cheer', 567283)
-		PA.LSM:Register('sound', 'Humm', 569518)
-		PA.LSM:Register('sound', 'Short Circuit', 568975)
-		PA.LSM:Register('sound', 'Fel Portal', 569215)
-		PA.LSM:Register('sound', 'Fel Nova', 568582)
-		PA.LSM:Register('sound', 'You Will Die!', 546633)
-		PA.LSM:Register('sound', 'Gong Quest Complete', 565564)
-		PA.LSM:Register('sound', 'Gong Objective Complete', 565515)
-		PA.LSM:Register('sound', 'Gong Objective Progress', 569179)
-		PA.LSM:Register('sound', 'Wacky Quest Complete', 566877)
-		PA.LSM:Register('sound', 'Wacky Objectives Complete', 567381)
-		PA.LSM:Register('sound', 'Wacky Objective Progress', 566877)
-		PA.LSM:Register('sound', 'Creature Quest Complete', 546068)
-		PA.LSM:Register('sound', 'Creature Objective Complete', 549326)
-		PA.LSM:Register('sound', 'Creature Objective Progress', 546421)
-		PA.LSM:Register('sound', 'Peon Quest Complete', 558132)
-		PA.LSM:Register('sound', 'Peon Objective Complete', 558137)
-		PA.LSM:Register('sound', 'Peon Objective Progress', 558127)
-		PA.LSM:Register('sound', 'QuestGuru Quest Complete', 567478)
-		PA.LSM:Register('sound', 'QuestGuru Objective Complete', 567499)
-		PA.LSM:Register('sound', 'QuestGuru Objective Progress', 567482)
+		PA.Libs.LSM:Register('sound', 'Rubber Ducky', 566121)
+		PA.Libs.LSM:Register('sound', 'Cartoon FX', 566543)
+		PA.Libs.LSM:Register('sound', 'Explosion', 566982)
+		PA.Libs.LSM:Register('sound', 'Shing!', 566240)
+		PA.Libs.LSM:Register('sound', 'Wham!', 566946)
+		PA.Libs.LSM:Register('sound', 'Simon Chime', 566076)
+		PA.Libs.LSM:Register('sound', 'War Drums', 567275)
+		PA.Libs.LSM:Register('sound', 'Cheer', 567283)
+		PA.Libs.LSM:Register('sound', 'Humm', 569518)
+		PA.Libs.LSM:Register('sound', 'Short Circuit', 568975)
+		PA.Libs.LSM:Register('sound', 'Fel Portal', 569215)
+		PA.Libs.LSM:Register('sound', 'Fel Nova', 568582)
+		PA.Libs.LSM:Register('sound', 'You Will Die!', 546633)
+		PA.Libs.LSM:Register('sound', 'Gong Quest Complete', 565564)
+		PA.Libs.LSM:Register('sound', 'Gong Objective Complete', 565515)
+		PA.Libs.LSM:Register('sound', 'Gong Objective Progress', 569179)
+		PA.Libs.LSM:Register('sound', 'Wacky Quest Complete', 566877)
+		PA.Libs.LSM:Register('sound', 'Wacky Objectives Complete', 567381)
+		PA.Libs.LSM:Register('sound', 'Wacky Objective Progress', 566877)
+		PA.Libs.LSM:Register('sound', 'Creature Quest Complete', 546068)
+		PA.Libs.LSM:Register('sound', 'Creature Objective Complete', 549326)
+		PA.Libs.LSM:Register('sound', 'Creature Objective Progress', 546421)
+		PA.Libs.LSM:Register('sound', 'Peon Quest Complete', 558132)
+		PA.Libs.LSM:Register('sound', 'Peon Objective Complete', 558137)
+		PA.Libs.LSM:Register('sound', 'Peon Objective Progress', 558127)
+		PA.Libs.LSM:Register('sound', 'QuestGuru Quest Complete', 567478)
+		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Complete', 567499)
+		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Progress', 567482)
 	end
 end
 
 function QS:GetOptions()
-	local QuestSounds = PA.ACH:Group(QS.Title, QS.Description, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end)
+	local QuestSounds = ACH:Group(QS.Title, QS.Description, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end)
 	PA.Options.args.QuestSounds = QuestSounds
 
-	QuestSounds.args.Description = PA.ACH:Description(QS.Description, 0)
-	QuestSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) QS.db[info[#info]] = value if (not QS.isEnabled) then QS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	QuestSounds.args.Description = ACH:Description(QS.Description, 0)
+	QuestSounds.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) QS.db[info[#info]] = value if (not QS.isEnabled) then QS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	QuestSounds.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	QuestSounds.args.General = ACH:Group(ACL['General'], nil, 2)
 	QuestSounds.args.General.inline = true
-	QuestSounds.args.General.args.Throttle = PA.ACH:Range(PA.ACL['Throttle'], nil, nil, { min = 1, max = 30, step = 1})
-	QuestSounds.args.General.args.Channel = PA.ACH:Select(PA.ACL['Channel'], nil, nil, {Master = PA.ACL['Master'], SFX = PA.ACL['SFX'], Ambience = PA.ACL['Ambience'], Dialog = PA.ACL['Dialog']})
+	QuestSounds.args.General.args.Throttle = ACH:Range(ACL['Throttle'], nil, nil, { min = 1, max = 30, step = 1})
+	QuestSounds.args.General.args.Channel = ACH:Select(ACL['Channel'], nil, nil, {Master = ACL['Master'], SFX = ACL['SFX'], Ambience = ACL['Ambience'], Dialog = ACL['Dialog']})
 
-	QuestSounds.args.General.args.LSM = PA.ACH:Group(PA.ACL['Sound by LSM'], nil, 1, nil, nil, nil, function() return QS.db.UseSoundID end)
-	QuestSounds.args.General.args.LSM.args.QuestComplete = PA.ACH:SharedMediaSound(PA.ACL['Quest Complete'], nil, 1)
-	QuestSounds.args.General.args.LSM.args.ObjectiveComplete = PA.ACH:SharedMediaSound(PA.ACL['Objective Complete'], nil, 2)
-	QuestSounds.args.General.args.LSM.args.ObjectiveProgress = PA.ACH:SharedMediaSound(PA.ACL['Objective Progress'], nil, 3)
+	QuestSounds.args.General.args.LSM = ACH:Group(ACL['Sound by LSM'], nil, 1, nil, nil, nil, function() return QS.db.UseSoundID end)
+	QuestSounds.args.General.args.LSM.args.QuestComplete = ACH:SharedMediaSound(ACL['Quest Complete'], nil, 1)
+	QuestSounds.args.General.args.LSM.args.ObjectiveComplete = ACH:SharedMediaSound(ACL['Objective Complete'], nil, 2)
+	QuestSounds.args.General.args.LSM.args.ObjectiveProgress = ACH:SharedMediaSound(ACL['Objective Progress'], nil, 3)
 
-	QuestSounds.args.General.args.ID = PA.ACH:Group(PA.ACL['Sound by SoundID'], nil, 2, nil, function(info) return tostring(QS.db[info[#info]]) end, function(info, value) QS.db[info[#info]] = tonumber(value) end, function() return (not QS.db.UseSoundID) end)
-	QuestSounds.args.General.args.ID.args.UseSoundID = PA.ACH:Toggle(PA.ACL['Use Sound ID'], nil, 0, nil, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end, false)
-	QuestSounds.args.General.args.ID.args.QuestCompleteID = PA.ACH:Input(PA.ACL['Quest Complete Sound ID'], nil, 1)
-	QuestSounds.args.General.args.ID.args.ObjectiveCompleteID = PA.ACH:Input(PA.ACL['Objective Complete Sound ID'], nil, 2)
-	QuestSounds.args.General.args.ID.args.ObjectiveProgressID = PA.ACH:Input(PA.ACL['Objective Progress Sound ID'], nil, 3)
+	QuestSounds.args.General.args.ID = ACH:Group(ACL['Sound by SoundID'], nil, 2, nil, function(info) return tostring(QS.db[info[#info]]) end, function(info, value) QS.db[info[#info]] = tonumber(value) end, function() return (not QS.db.UseSoundID) end)
+	QuestSounds.args.General.args.ID.args.UseSoundID = ACH:Toggle(ACL['Use Sound ID'], nil, 0, nil, nil, nil, function(info) return QS.db[info[#info]] end, function(info, value) QS.db[info[#info]] = value end, false)
+	QuestSounds.args.General.args.ID.args.QuestCompleteID = ACH:Input(ACL['Quest Complete Sound ID'], nil, 1)
+	QuestSounds.args.General.args.ID.args.ObjectiveCompleteID = ACH:Input(ACL['Objective Complete Sound ID'], nil, 2)
+	QuestSounds.args.General.args.ID.args.ObjectiveProgressID = ACH:Input(ACL['Objective Progress Sound ID'], nil, 3)
 
-	QuestSounds.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -4)
-	QuestSounds.args.Authors = PA.ACH:Description(QS.Authors, -3, 'large')
-	QuestSounds.args.CreditsHeader = PA.ACH:Header(PA.ACL['Image Credits:'], -2)
-	QuestSounds.args.Credits = PA.ACH:Description(QS.Credits, -1, 'large')
+	QuestSounds.args.AuthorHeader = ACH:Header(ACL['Authors:'], -4)
+	QuestSounds.args.Authors = ACH:Description(QS.Authors, -3, 'large')
+	QuestSounds.args.CreditsHeader = ACH:Header(ACL['Image Credits:'], -2)
+	QuestSounds.args.Credits = ACH:Description(QS.Credits, -1, 'large')
 end
 
 function QS:BuildProfile()

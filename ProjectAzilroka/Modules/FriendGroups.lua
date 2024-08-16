@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local FG = PA:NewModule('FriendGroups', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.FriendGroups= FG
 
-FG.Title = PA.ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
-FG.Description = PA.ACL['Manage Friends List with Groups']
+FG.Title = ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
+FG.Description = ACL['Manage Friends List with Groups']
 FG.Authors = 'Azilroka'
 FG.Credits = 'Mikeprod    frankkkkk'
 
@@ -957,7 +957,7 @@ function FG:GetOptions()
 			Enable = {
 				order = 1,
 				type = 'toggle',
-				name = PA.ACL['Enable'],
+				name = ACL['Enable'],
 				set = function(info, value)
 					FG.db[info[#info]] = value
 					if (not FG.isEnabled) then
@@ -970,14 +970,14 @@ function FG:GetOptions()
 			General = {
 				order = 2,
 				type = 'group',
-				name = PA.ACL['General'],
+				name = ACL['General'],
 				guiInline = true,
 				args = {},
 			},
 			AuthorHeader = {
 				order = -2,
 				type = 'header',
-				name = PA.ACL['Authors:'],
+				name = ACL['Authors:'],
 			},
 			Authors = {
 				order = -1,

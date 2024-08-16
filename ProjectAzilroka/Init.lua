@@ -1,10 +1,10 @@
-local AddOnName = ...
+local AddOnName, Engine = ...
 local _G = _G
 local LibStub = _G.LibStub
 
 local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
 
-_G.ProjectAzilroka = PA
+_G.ProjectAzilroka = Engine
 
 local min, max = min, max
 local select = select
@@ -24,27 +24,33 @@ local GetRealmName = GetRealmName
 local UIParent = UIParent
 local CreateFrame = CreateFrame
 
--- Ace Libraries
-PA.AC = LibStub('AceConfig-3.0')
-PA.GUI = LibStub('AceGUI-3.0')
-PA.ACR = LibStub('AceConfigRegistry-3.0')
-PA.ACD = LibStub('AceConfigDialog-3.0')
-PA.ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false)
-PA.ADB = LibStub('AceDB-3.0')
+PA.Libs = {
+	-- Ace Libraries
+	AC = LibStub('AceConfig-3.0'),
+	GUI = LibStub('AceGUI-3.0'),
+	ACR = LibStub('AceConfigRegistry-3.0'),
+	ACD = LibStub('AceConfigDialog-3.0'),
+	ACL = LibStub('AceLocale-3.0'):GetLocale(AddOnName, false),
+	ADB = LibStub('AceDB-3.0'),
 
--- Extra Libraries
-PA.LSM = LibStub('LibSharedMedia-3.0')
-PA.LDB = LibStub('LibDataBroker-1.1')
-PA.LCG = LibStub("LibCustomGlow-1.0")
-PA.LAB = LibStub('LibActionButton-1.0')
-PA.ACH = LibStub('LibAceConfigHelper')
+	-- Extra Libraries
+	LSM = LibStub('LibSharedMedia-3.0'),
+	LDB = LibStub('LibDataBroker-1.1'),
+	LCG = LibStub("LibCustomGlow-1.0"),
+	LAB = LibStub('LibActionButton-1.0'),
+	ACH = LibStub('LibAceConfigHelper'),
 
--- External Libraries
-PA.Masque = LibStub("Masque", true)
-PA.LCD = LibStub("LibClassicDurations", true)
+	-- External Libraries
+	Masque = LibStub("Masque", true),
+	LCD = LibStub("LibClassicDurations", true),
+}
 
-if PA.LCD then
-	PA.LCD:Register(AddOnName) 	-- Register LibClassicDurations
+Engine[1] = PA
+Engine[2] = PA.Libs.ACL
+Engine[3] = PA.Libs.ACH
+
+if PA.Libs.LCD then
+	PA.Libs.LCD:Register(AddOnName) 	-- Register LibClassicDurations
 end
 
 -- WoW Data
@@ -79,7 +85,7 @@ PA.Wrath = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
 PA.Multiple = 1
-PA.Solid = PA.LSM:Fetch('background', 'Solid')
+PA.Solid = PA.Libs.LSM:Fetch('background', 'Solid')
 
 -- Project Data
 function PA:IsAddOnEnabled(addon, character)
@@ -104,14 +110,14 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(', ', '    ')
 
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 PA.GrowthDirection = {
-	DOWN_RIGHT = format(PA.ACL["%s and then %s"], PA.ACL["Down"], PA.ACL["Right"]),
-	DOWN_LEFT = format(PA.ACL["%s and then %s"], PA.ACL["Down"], PA.ACL["Left"]),
-	UP_RIGHT = format(PA.ACL["%s and then %s"], PA.ACL["Up"], PA.ACL["Right"]),
-	UP_LEFT = format(PA.ACL["%s and then %s"], PA.ACL["Up"], PA.ACL["Left"]),
-	RIGHT_DOWN = format(PA.ACL["%s and then %s"], PA.ACL["Right"], PA.ACL["Down"]),
-	RIGHT_UP = format(PA.ACL["%s and then %s"], PA.ACL["Right"], PA.ACL["Up"]),
-	LEFT_DOWN = format(PA.ACL["%s and then %s"], PA.ACL["Left"], PA.ACL["Down"]),
-	LEFT_UP = format(PA.ACL["%s and then %s"], PA.ACL["Left"], PA.ACL["Up"]),
+	DOWN_RIGHT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Down"], PA.Libs.ACL["Right"]),
+	DOWN_LEFT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Down"], PA.Libs.ACL["Left"]),
+	UP_RIGHT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Up"], PA.Libs.ACL["Right"]),
+	UP_LEFT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Up"], PA.Libs.ACL["Left"]),
+	RIGHT_DOWN = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Right"], PA.Libs.ACL["Down"]),
+	RIGHT_UP = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Right"], PA.Libs.ACL["Up"]),
+	LEFT_DOWN = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Left"], PA.Libs.ACL["Down"]),
+	LEFT_UP = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Left"], PA.Libs.ACL["Up"]),
 }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
@@ -507,7 +513,7 @@ do
 end
 
 _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
-	text = PA.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
+	text = PA.Libs.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
 	button1 = _G.ACCEPT,
 	button2 = _G.CANCEL,
 	OnAccept = _G.ReloadUI,
@@ -517,7 +523,7 @@ _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
 }
 
 _G.StaticPopupDialogs["PROJECTAZILROKA_RL"] = {
-	text = PA.ACL["This setting requires that you reload your User Interface."],
+	text = PA.Libs.ACL["This setting requires that you reload your User Interface."],
 	button1 = _G.ACCEPT,
 	button2 = _G.CANCEL,
 	OnAccept = _G.ReloadUI,
@@ -562,14 +568,14 @@ PA.Defaults = {
 	}
 }
 
-PA.Options = PA.ACH:Group(PA:Color(PA.Title), nil, 6)
+PA.Options = PA.Libs.ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
 	if _G.ElvUI then _G.ElvUI[1].Options.args.ProjectAzilroka = PA.Options end
 end
 
 function PA:BuildProfile()
-	PA.data = PA.ADB:New('ProjectAzilrokaDB', PA.Defaults, true)
+	PA.data = PA.Libs.ADB:New('ProjectAzilrokaDB', PA.Defaults, true)
 
 	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
 	PA.data.RegisterCallback(PA, 'OnProfileCopied', 'SetupProfile')
@@ -599,7 +605,7 @@ function PA:PLAYER_LOGIN()
 	PA.Multiple = PA:GetUIScale()
 
 	PA.AS = _G.AddOnSkins and _G.AddOnSkins[1]
-	PA.EP = LibStub('LibElvUIPlugin-1.0', true)
+	PA.Libs.EP = LibStub('LibElvUIPlugin-1.0', true)
 	PA.Options.childGroups = PA.EC and 'tab' or 'tree'
 
 	PA:ProtectedCall(PA, PA.ScanSpellBook)
@@ -610,11 +616,11 @@ function PA:PLAYER_LOGIN()
 
 	PA:BuildProfile()
 
-	if PA.EP then
-		PA.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
+	if PA.Libs.EP then
+		PA.Libs.EP:RegisterPlugin('ProjectAzilroka', PA.GetOptions)
 	else
-		PA.AC:RegisterOptionsTable('ProjectAzilroka', PA.Options)
-		PA.ACD:AddToBlizOptions('ProjectAzilroka', 'ProjectAzilroka')
+		PA.Libs.AC:RegisterOptionsTable('ProjectAzilroka', PA.Options)
+		PA.Libs.ACD:AddToBlizOptions('ProjectAzilroka', 'ProjectAzilroka')
 	end
 
 	PA:UpdateCooldownSettings('all')

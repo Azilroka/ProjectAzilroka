@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local BLDB = PA:NewModule('BLDB', 'AceEvent-3.0')
 PA.BLDB, _G.BLDB = BLDB, BLDB
 
@@ -12,8 +12,8 @@ local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
 local UIParent = UIParent
 
-BLDB.Title = PA.ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
-BLDB.Description = PA.ACL['Provides a Custom DataBroker Bar']
+BLDB.Title = ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
+BLDB.Description = ACL['Provides a Custom DataBroker Bar']
 BLDB.Authors = 'Azilroka'
 BLDB.isEnabled = false
 
@@ -82,7 +82,7 @@ function BLDB:Update()
 	end
 
 	for Key, Slide in pairs(BLDB.Buttons) do
-		Slide.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
+		Slide.Text:SetFont(PA.Libs.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 		if BLDB.db['ShowIcon'] and BLDB.db['ShowText'] then
 			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
 			Slide:SetSize(BLDB.db['PanelWidth'] + BLDB.db['PanelHeight'], BLDB.db['PanelHeight'])
@@ -186,7 +186,7 @@ function BLDB:New(_, name, object)
 	tinsert(BLDB.Whitelist, button)
 
 	button.Text = button:CreateFontString(nil, 'OVERLAY')
-	button.Text:SetFont(PA.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
+	button.Text:SetFont(PA.Libs.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 	button.Text:SetPoint('CENTER', button)
 
 	button.Icon = button:CreateTexture(nil, 'ARTWORK')
@@ -227,29 +227,29 @@ function BLDB:New(_, name, object)
 end
 
 function BLDB:GetOptions()
-	local BrokerLDB = PA.ACH:Group(BLDB.Title, BLDB.Description, nil, nil, function(info) return BLDB.db[info[#info]] end)
+	local BrokerLDB = ACH:Group(BLDB.Title, BLDB.Description, nil, nil, function(info) return BLDB.db[info[#info]] end)
 	PA.Options.args.BrokerLDB = BrokerLDB
 
-	BrokerLDB.args.Description = PA.ACH:Description(BLDB.Description, 0)
-	BrokerLDB.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BLDB.db[info[#info]] = value if not BLDB.isEnabled then BLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	BrokerLDB.args.Description = ACH:Description(BLDB.Description, 0)
+	BrokerLDB.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) BLDB.db[info[#info]] = value if not BLDB.isEnabled then BLDB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	BrokerLDB.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2, nil, nil, function(info, value) BLDB.db[info[#info]] = value BLDB:Update() end)
+	BrokerLDB.args.General = ACH:Group(ACL['General'], nil, 2, nil, nil, function(info, value) BLDB.db[info[#info]] = value BLDB:Update() end)
 	BrokerLDB.args.General.inline = true
 
-	BrokerLDB.args.General.args.ShowIcon = PA.ACH:Toggle(PA.ACL['Show Icon'], nil, 1)
-	BrokerLDB.args.General.args.MouseOver = PA.ACH:Toggle(PA.ACL['MouseOver'], nil, 2)
-	BrokerLDB.args.General.args.ShowText = PA.ACH:Toggle(PA.ACL['Show Text'], nil, 3)
-	BrokerLDB.args.General.args.PanelHeight = PA.ACH:Range(PA.ACL['Panel Height'], nil, 4, { min = 20, max = 40, step = 1 })
-	BrokerLDB.args.General.args.PanelWidth = PA.ACH:Range(PA.ACL['Panel Width'], nil, 5, { min = 0, softMin = 140, max = 280, step = 1 })
+	BrokerLDB.args.General.args.ShowIcon = ACH:Toggle(ACL['Show Icon'], nil, 1)
+	BrokerLDB.args.General.args.MouseOver = ACH:Toggle(ACL['MouseOver'], nil, 2)
+	BrokerLDB.args.General.args.ShowText = ACH:Toggle(ACL['Show Text'], nil, 3)
+	BrokerLDB.args.General.args.PanelHeight = ACH:Range(ACL['Panel Height'], nil, 4, { min = 20, max = 40, step = 1 })
+	BrokerLDB.args.General.args.PanelWidth = ACH:Range(ACL['Panel Width'], nil, 5, { min = 0, softMin = 140, max = 280, step = 1 })
 
-	BrokerLDB.args.General.args.FontSettings = PA.ACH:Group(PA.ACL['Font Settings'], nil, -1)
+	BrokerLDB.args.General.args.FontSettings = ACH:Group(ACL['Font Settings'], nil, -1)
 	BrokerLDB.args.General.args.FontSettings.inline = true
-	BrokerLDB.args.General.args.FontSettings.args.Font = PA.ACH:SharedMediaFont(PA.ACL['Font'], nil, 1)
-	BrokerLDB.args.General.args.FontSettings.args.FontSize = PA.ACH:Range(PA.ACL['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
-	BrokerLDB.args.General.args.FontSettings.args.FontFlag = PA.ACH:FontFlags(PA.ACL['Font Outline'], nil, 3)
+	BrokerLDB.args.General.args.FontSettings.args.Font = ACH:SharedMediaFont(ACL['Font'], nil, 1)
+	BrokerLDB.args.General.args.FontSettings.args.FontSize = ACH:Range(ACL['Font Size'], nil, 2, { min = 6, max = 22, step = 1 })
+	BrokerLDB.args.General.args.FontSettings.args.FontFlag = ACH:FontFlags(ACL['Font Outline'], nil, 3)
 
-	BrokerLDB.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	BrokerLDB.args.Authors = PA.ACH:Description(BLDB.Authors, -1, 'large')
+	BrokerLDB.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	BrokerLDB.args.Authors = ACH:Description(BLDB.Authors, -1, 'large')
 end
 
 function BLDB:BuildProfile()

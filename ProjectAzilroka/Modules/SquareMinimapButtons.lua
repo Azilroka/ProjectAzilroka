@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
-SMB.Title = PA.ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
-SMB.Description = PA.ACL['Minimap Button Bar / Minimap Button Skinning']
+SMB.Title = ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
+SMB.Description = ACL['Minimap Button Bar / Minimap Button Skinning']
 SMB.Authors = 'Azilroka    Sinaris    Omega    Durc'
 SMB.isEnabled = false
 
@@ -159,6 +159,7 @@ function SMB:HandleBlizzardButtons()
 			_G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
 			_G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
 			_G.ExpansionLandingPageMinimapButton:Show()
+			_G.ExpansionLandingPageMinimapButton.Layout = function() return end
 			_G.ExpansionLandingPageMinimapButton:SetScale(1)
 			_G.ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
 			_G.ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(s)
@@ -184,22 +185,11 @@ function SMB:HandleBlizzardButtons()
 		end
 
 		if SMB.db.MoveTracker and not _G.MinimapCluster.Tracking.Button.SMB then
-			--_G.MinimapCluster.Tracking.Show = nil
-
 			_G.MinimapCluster.Tracking.Button:Show()
 			PA:SetTemplate(_G.MinimapCluster.Tracking.Button)
-
 			_G.MinimapCluster.Tracking.Button:SetParent(SMB.Bar)
 			_G.MinimapCluster.Tracking.Button:SetSize(Size, Size)
-
-			--_G.MinimapCluster.Tracking.Icon:ClearAllPoints()
-			--_G.MinimapCluster.Tracking.Icon:SetPoint('CENTER')
-
 			_G.MinimapCluster.Tracking.Background:SetAlpha(0)
-			--_G.MinimapCluster.Tracking.IconOverlay:SetAlpha(0)
-			_G.MinimapCluster.Tracking.Button:SetAlpha(0)
-
-			_G.MinimapCluster.Tracking.Button:SetParent(_G.MinimapCluster.Tracking)
 			_G.MinimapCluster.Tracking.Button:ClearAllPoints()
 			_G.MinimapCluster.Tracking.Button:SetAllPoints(_G.MinimapCluster.Tracking)
 
@@ -465,40 +455,40 @@ function SMB:Update()
 end
 
 function SMB:GetOptions()
-	local SquareMinimapButtons = PA.ACH:Group(SMB.Title, SMB.Description, nil, nil, function(info) return SMB.db[info[#info]] end, function(info, value) SMB.db[info[#info]] = value SMB:Update() end)
+	local SquareMinimapButtons = ACH:Group(SMB.Title, SMB.Description, nil, nil, function(info) return SMB.db[info[#info]] end, function(info, value) SMB.db[info[#info]] = value SMB:Update() end)
 	PA.Options.args.SquareMinimapButtons = SquareMinimapButtons
 
-	SquareMinimapButtons.args.Description = PA.ACH:Description(SMB.Description, 0)
-	SquareMinimapButtons.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SMB.db[info[#info]] = value if (not SMB.isEnabled) then SMB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
-	SquareMinimapButtons.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	SquareMinimapButtons.args.Description = ACH:Description(SMB.Description, 0)
+	SquareMinimapButtons.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) SMB.db[info[#info]] = value if (not SMB.isEnabled) then SMB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	SquareMinimapButtons.args.General = ACH:Group(ACL['General'], nil, 2)
 	SquareMinimapButtons.args.General.inline = true
 
-	SquareMinimapButtons.args.General.args.MBB = PA.ACH:Group(PA.ACL['Minimap Buttons / Bar'], nil, 1)
+	SquareMinimapButtons.args.General.args.MBB = ACH:Group(ACL['Minimap Buttons / Bar'], nil, 1)
 	SquareMinimapButtons.args.General.args.MBB.inline = true
-	SquareMinimapButtons.args.General.args.MBB.args.BarEnabled = PA.ACH:Toggle(PA.ACL['Enable Bar'], nil, 1)
-	SquareMinimapButtons.args.General.args.MBB.args.BarMouseOver = PA.ACH:Toggle(PA.ACL['Bar MouseOver'], nil, 2)
-	SquareMinimapButtons.args.General.args.MBB.args.Backdrop = PA.ACH:Toggle(PA.ACL['Bar Backdrop'], nil, 3)
-	SquareMinimapButtons.args.General.args.MBB.args.IconSize = PA.ACH:Range(PA.ACL['Icon Size'], nil, 4, { min = 12, max = 48, step = 1 })
-	SquareMinimapButtons.args.General.args.MBB.args.ButtonSpacing = PA.ACH:Range(PA.ACL['Button Spacing'], nil, 5, { min = -1, max = 10, step = 1 })
-	SquareMinimapButtons.args.General.args.MBB.args.ButtonsPerRow = PA.ACH:Range(PA.ACL['Buttons Per Row'], nil, 6, { min = 1, max = 100, step = 1 })
-	SquareMinimapButtons.args.General.args.MBB.args.Shadows = PA.ACH:Toggle(PA.ACL['Shadows'], nil, 7)
-	SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = PA.ACH:Toggle(PA.ACL['Reverse Direction'], nil, 8)
-	SquareMinimapButtons.args.General.args.Strata = PA.ACH:Select(PA.ACL['Frame Strata'], nil, 3, { BACKGROUND = 'BACKGROUND', LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', DIALOG = 'DIALOG', FULLSCREEN = 'FULLSCREEN', FULLSCREEN_DIALOG = 'FULLSCREEN_DIALOG', TOOLTIP = 'TOOLTIP' })
-	SquareMinimapButtons.args.General.args.Level = PA.ACH:Range(PA.ACL['Frame Level'], nil, 4, { min = 0, max = 255, step = 1 })
+	SquareMinimapButtons.args.General.args.MBB.args.BarEnabled = ACH:Toggle(ACL['Enable Bar'], nil, 1)
+	SquareMinimapButtons.args.General.args.MBB.args.BarMouseOver = ACH:Toggle(ACL['Bar MouseOver'], nil, 2)
+	SquareMinimapButtons.args.General.args.MBB.args.Backdrop = ACH:Toggle(ACL['Bar Backdrop'], nil, 3)
+	SquareMinimapButtons.args.General.args.MBB.args.IconSize = ACH:Range(ACL['Icon Size'], nil, 4, { min = 12, max = 48, step = 1 })
+	SquareMinimapButtons.args.General.args.MBB.args.ButtonSpacing = ACH:Range(ACL['Button Spacing'], nil, 5, { min = -1, max = 10, step = 1 })
+	SquareMinimapButtons.args.General.args.MBB.args.ButtonsPerRow = ACH:Range(ACL['Buttons Per Row'], nil, 6, { min = 1, max = 100, step = 1 })
+	SquareMinimapButtons.args.General.args.MBB.args.Shadows = ACH:Toggle(ACL['Shadows'], nil, 7)
+	SquareMinimapButtons.args.General.args.MBB.args.ReverseDirection = ACH:Toggle(ACL['Reverse Direction'], nil, 8)
+	SquareMinimapButtons.args.General.args.Strata = ACH:Select(ACL['Frame Strata'], nil, 3, { BACKGROUND = 'BACKGROUND', LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', DIALOG = 'DIALOG', FULLSCREEN = 'FULLSCREEN', FULLSCREEN_DIALOG = 'FULLSCREEN_DIALOG', TOOLTIP = 'TOOLTIP' })
+	SquareMinimapButtons.args.General.args.Level = ACH:Range(ACL['Frame Level'], nil, 4, { min = 0, max = 255, step = 1 })
 
-	SquareMinimapButtons.args.General.args.MBB.args.Visibility = PA.ACH:Input(PA.ACL['Visibility'], nil, 12, nil, 'double')
+	SquareMinimapButtons.args.General.args.MBB.args.Visibility = ACH:Input(ACL['Visibility'], nil, 12, nil, 'double')
 
-	SquareMinimapButtons.args.General.args.Blizzard = PA.ACH:Group(PA.ACL['Blizzard'], nil, 2, nil, nil, function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end)
+	SquareMinimapButtons.args.General.args.Blizzard = ACH:Group(ACL['Blizzard'], nil, 2, nil, nil, function(info, value) SMB.db[info[#info]] = value SMB:HandleBlizzardButtons() end)
 	SquareMinimapButtons.args.General.args.Blizzard.inline = true
-	SquareMinimapButtons.args.General.args.Blizzard.args.HideGarrison = PA.ACH:Toggle(PA.ACL['Hide Garrison'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.MoveGarrison end, function() return PA.Classic end)
-	SquareMinimapButtons.args.General.args.Blizzard.args.MoveGarrison = PA.ACH:Toggle(PA.ACL['Move Garrison Icon'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.HideGarrison end, function() return PA.Classic end)
-	SquareMinimapButtons.args.General.args.Blizzard.args.MoveMail = PA.ACH:Toggle(PA.ACL['Move Mail Icon'])
-	SquareMinimapButtons.args.General.args.Blizzard.args.MoveGameTimeFrame = PA.ACH:Toggle(PA.ACL['Move Game Time Frame'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Retail end)
-	SquareMinimapButtons.args.General.args.Blizzard.args.MoveTracker = PA.ACH:Toggle(PA.ACL['Move Tracker Icon'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Classic end)
-	SquareMinimapButtons.args.General.args.Blizzard.args.MoveQueue = PA.ACH:Toggle(PA.ACL['Move Queue Status Icon'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Classic end)
+	SquareMinimapButtons.args.General.args.Blizzard.args.HideGarrison = ACH:Toggle(ACL['Hide Garrison'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.MoveGarrison end, function() return PA.Classic end)
+	SquareMinimapButtons.args.General.args.Blizzard.args.MoveGarrison = ACH:Toggle(ACL['Move Garrison Icon'], nil, nil, nil, nil, nil, nil, nil, function() return SMB.db.HideGarrison end, function() return PA.Classic end)
+	SquareMinimapButtons.args.General.args.Blizzard.args.MoveMail = ACH:Toggle(ACL['Move Mail Icon'])
+	SquareMinimapButtons.args.General.args.Blizzard.args.MoveGameTimeFrame = ACH:Toggle(ACL['Move Game Time Frame'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Retail end)
+	SquareMinimapButtons.args.General.args.Blizzard.args.MoveTracker = ACH:Toggle(ACL['Move Tracker Icon'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Classic end)
+	SquareMinimapButtons.args.General.args.Blizzard.args.MoveQueue = ACH:Toggle(ACL['Move Queue Status Icon'], nil, nil, nil, nil, nil, nil, nil, nil, function() return PA.Classic end)
 
-	SquareMinimapButtons.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	SquareMinimapButtons.args.Authors = PA.ACH:Description(SMB.Authors, -1, 'large')
+	SquareMinimapButtons.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	SquareMinimapButtons.args.Authors = ACH:Description(SMB.Authors, -1, 'large')
 end
 
 function SMB:BuildProfile()

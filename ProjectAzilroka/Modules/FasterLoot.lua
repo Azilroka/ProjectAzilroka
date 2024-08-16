@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local FL = PA:NewModule('FasterLoot', 'AceEvent-3.0')
 PA.FL, _G.FasterLoot = FL, FL
 
-FL.Title = PA.ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
-FL.Description = PA.ACL['Increases auto loot speed near instantaneous.']
+FL.Title = ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
+FL.Description = ACL['Increases auto loot speed near instantaneous.']
 FL.Authors = 'Azilroka'
 FL.isEnabled = false
 
@@ -61,14 +61,14 @@ function FL:BuildProfile()
 end
 
 function FL:GetOptions()
-	local FasterLoot = PA.ACH:Group(FL.Title, FL.Description, nil, nil, function(info) return FL.db[info[#info]] end)
+	local FasterLoot = ACH:Group(FL.Title, FL.Description, nil, nil, function(info) return FL.db[info[#info]] end)
 	PA.Options.args.FasterLoot = FasterLoot
 
-	FasterLoot.args.Description = PA.ACH:Header(FL.Description, 0)
-	FasterLoot.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) FL.db[info[#info]] = value if not FL.isEnabled then FL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	FasterLoot.args.Description = ACH:Header(FL.Description, 0)
+	FasterLoot.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) FL.db[info[#info]] = value if not FL.isEnabled then FL:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	FasterLoot.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	FasterLoot.args.Authors = PA.ACH:Description(FL.Authors, -1, 'large')
+	FasterLoot.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	FasterLoot.args.Authors = ACH:Description(FL.Authors, -1, 'large')
 end
 
 function FL:UpdateSettings()

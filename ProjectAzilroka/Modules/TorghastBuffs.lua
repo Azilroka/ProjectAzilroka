@@ -1,10 +1,10 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local TB = PA:NewModule('TorghastBuffs', 'AceEvent-3.0')
-local LSM = PA.LSM
+local LSM = PA.Libs.LSM
 PA.TB = TB
 
-TB.Title = PA.ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r']
-TB.Description = PA.ACL['Torghast Buffs']
+TB.Title = ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r']
+TB.Description = ACL['Torghast Buffs']
 TB.Authors = 'Azilroka'
 TB.isEnabled = false
 
@@ -158,7 +158,7 @@ function TB:HandleVisibility()
 				RegisterStateDriver(header, 'visibility', format('[@%s, exists][group] show; hide', header.unit))
 			end
 
-			header.unitName:SetFont(PA.LSM:Fetch('font', PA.LSM:GetDefault('font')), 12, 'THICKOUTLINE')
+			header.unitName:SetFont(PA.Libs.LSM:Fetch('font', PA.Libs.LSM:GetDefault('font')), 12, 'THICKOUTLINE')
 
 			if UnitExists(header.unit) then
 				header.unitName:SetText(UnitName(header.unit))
@@ -174,27 +174,27 @@ function TB:HandleVisibility()
 end
 
 function TB:GetOptions()
-	local TorghastBuffs = PA.ACH:Group(TB.Title, TB.Description, nil, nil, function(info) return TB.db[info[#info]] end, function(info, value) TB.db[info[#info]] = value TB:UpdateAllHeaders() end)
+	local TorghastBuffs = ACH:Group(TB.Title, TB.Description, nil, nil, function(info) return TB.db[info[#info]] end, function(info, value) TB.db[info[#info]] = value TB:UpdateAllHeaders() end)
 	PA.Options.args.TorghastBuffs = TorghastBuffs
 
-	TorghastBuffs.args.Description = PA.ACH:Description(TB.Description, 0)
-	TorghastBuffs.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) TB.db[info[#info]] = value if (not TB.isEnabled) then TB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	TorghastBuffs.args.Description = ACH:Description(TB.Description, 0)
+	TorghastBuffs.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) TB.db[info[#info]] = value if (not TB.isEnabled) then TB:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	TorghastBuffs.args.General = PA.ACH:Group(PA.ACL['General'], nil, 2)
+	TorghastBuffs.args.General = ACH:Group(ACL['General'], nil, 2)
 	TorghastBuffs.args.General.inline = true
 
-	TorghastBuffs.args.General.args.Masque = PA.ACH:Toggle(PA.ACL['Masque Support'], nil, 1)
-	TorghastBuffs.args.General.args.size = PA.ACH:Range(PA.ACL["Size"], PA.ACL["Set the size of the individual auras."], 2, { min = 16, max = 60, step = 2 })
-	TorghastBuffs.args.General.args.growthDirection = PA.ACH:Select(PA.ACL["Growth Direction"], PA.ACL["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."], 4, PA.GrowthDirection)
-	TorghastBuffs.args.General.args.wrapAfter = PA.ACH:Range(PA.ACL["Wrap After"], PA.ACL["Begin a new row or column after this many auras."], 5, { min = 1, max = 32, step = 1 })
-	TorghastBuffs.args.General.args.maxWraps = PA.ACH:Range(PA.ACL["Max Wraps"], PA.ACL["Limit the number of rows or columns."], 6, { min = 1, max = 32, step = 1 })
-	TorghastBuffs.args.General.args.horizontalSpacing = PA.ACH:Range(PA.ACL["Horizontal Spacing"], nil, 7, { min = 0, max = 50, step = 1 })
-	TorghastBuffs.args.General.args.verticalSpacing = PA.ACH:Range(PA.ACL["Vertical Spacing"], nil, 8, { min = 0, max = 50, step = 1 })
-	TorghastBuffs.args.General.args.sortMethod = PA.ACH:Select(PA.ACL["Sort Method"], PA.ACL["Defines how the group is sorted."], 9, { INDEX = PA.ACL["Index"], NAME = PA.ACL["Name"] })
-	TorghastBuffs.args.General.args.sortDir = PA.ACH:Select(PA.ACL["Sort Direction"], PA.ACL["Defines the sort order of the selected sort method."], 10, { ['+'] = PA.ACL["Ascending"], ['-'] = PA.ACL["Descending"] })
+	TorghastBuffs.args.General.args.Masque = ACH:Toggle(ACL['Masque Support'], nil, 1)
+	TorghastBuffs.args.General.args.size = ACH:Range(ACL["Size"], ACL["Set the size of the individual auras."], 2, { min = 16, max = 60, step = 2 })
+	TorghastBuffs.args.General.args.growthDirection = ACH:Select(ACL["Growth Direction"], ACL["The direction the auras will grow and then the direction they will grow after they reach the wrap after limit."], 4, PA.GrowthDirection)
+	TorghastBuffs.args.General.args.wrapAfter = ACH:Range(ACL["Wrap After"], ACL["Begin a new row or column after this many auras."], 5, { min = 1, max = 32, step = 1 })
+	TorghastBuffs.args.General.args.maxWraps = ACH:Range(ACL["Max Wraps"], ACL["Limit the number of rows or columns."], 6, { min = 1, max = 32, step = 1 })
+	TorghastBuffs.args.General.args.horizontalSpacing = ACH:Range(ACL["Horizontal Spacing"], nil, 7, { min = 0, max = 50, step = 1 })
+	TorghastBuffs.args.General.args.verticalSpacing = ACH:Range(ACL["Vertical Spacing"], nil, 8, { min = 0, max = 50, step = 1 })
+	TorghastBuffs.args.General.args.sortMethod = ACH:Select(ACL["Sort Method"], ACL["Defines how the group is sorted."], 9, { INDEX = ACL["Index"], NAME = ACL["Name"] })
+	TorghastBuffs.args.General.args.sortDir = ACH:Select(ACL["Sort Direction"], ACL["Defines the sort order of the selected sort method."], 10, { ['+'] = ACL["Ascending"], ['-'] = ACL["Descending"] })
 
-	TorghastBuffs.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	TorghastBuffs.args.Authors = PA.ACH:Description(TB.Authors, -1, 'large')
+	TorghastBuffs.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	TorghastBuffs.args.Authors = ACH:Description(TB.Authors, -1, 'large')
 end
 
 function TB:BuildProfile()

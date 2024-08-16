@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
 PA.MF, _G.MovableFrames = MF, MF
 
-MF.Title = PA.ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
-MF.Description = PA.ACL['Make Blizzard Frames Movable']
+MF.Title = ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
+MF.Description = ACL['Make Blizzard Frames Movable']
 MF.Authors = 'Azilroka    Simpy'
 MF.isEnabled = false
 
@@ -172,13 +172,13 @@ function MF:Update()
 end
 
 function MF:GetOptions()
-	PA.Options.args.MovableFrames = PA.ACH:Group(MF.Title, MF.Description, nil, nil, function(info) return MF.db[info[#info]] end, function(info, value) MF.db[info[#info]] = value MF:Update() end)
-	PA.Options.args.MovableFrames.args.Header = PA.ACH:Description(MF.Description, 0)
-	PA.Options.args.MovableFrames.args.Enable = PA.ACH:Toggle(PA.ACL["Enable"], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
-	PA.Options.args.MovableFrames.args.ClampedToScreen = PA.ACH:Toggle(PA.ACL["Clamp to Screen"], nil, 1)
+	PA.Options.args.MovableFrames = ACH:Group(MF.Title, MF.Description, nil, nil, function(info) return MF.db[info[#info]] end, function(info, value) MF.db[info[#info]] = value MF:Update() end)
+	PA.Options.args.MovableFrames.args.Header = ACH:Description(MF.Description, 0)
+	PA.Options.args.MovableFrames.args.Enable = ACH:Toggle(ACL["Enable"], nil, 1, nil, nil, nil, nil, function(info, value) MF.db[info[#info]] = value if (not MF.isEnabled) then MF:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	PA.Options.args.MovableFrames.args.ClampedToScreen = ACH:Toggle(ACL["Clamp to Screen"], nil, 1)
 
-	PA.Options.args.MovableFrames.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	PA.Options.args.MovableFrames.args.Authors = PA.ACH:Description(MF.Authors, -1, 'large')
+	PA.Options.args.MovableFrames.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	PA.Options.args.MovableFrames.args.Authors = ACH:Description(MF.Authors, -1, 'large')
 end
 
 function MF:BuildProfile()

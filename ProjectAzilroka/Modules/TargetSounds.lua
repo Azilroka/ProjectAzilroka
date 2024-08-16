@@ -1,9 +1,9 @@
-local PA = _G.ProjectAzilroka
+local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local TS = PA:NewModule('TargetSounds', 'AceEvent-3.0')
 PA.TS = TS
 
-TS.Title = PA.ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
-TS.Description = PA.ACL['Audio for Target Sounds.']
+TS.Title = ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
+TS.Description = ACL['Audio for Target Sounds.']
 TS.Authors = 'Azilroka'
 TS.isEnabled = false
 
@@ -29,14 +29,14 @@ function TS:PLAYER_TARGET_CHANGED()
 end
 
 function TS:GetOptions()
-	local TargetSounds = PA.ACH:Group(TS.Title, TS.Description, nil, nil, function(info) return TS.db[info[#info]] end, function(info, value) TS.db[info[#info]] = value end)
+	local TargetSounds = ACH:Group(TS.Title, TS.Description, nil, nil, function(info) return TS.db[info[#info]] end, function(info, value) TS.db[info[#info]] = value end)
 	PA.Options.args.TargetSounds = TargetSounds
 
-	TargetSounds.args.Description = PA.ACH:Description(TS.Description, 0)
-	TargetSounds.args.Enable = PA.ACH:Toggle(PA.ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) TS.db[info[#info]] = value if (not TS.isEnabled) then TS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	TargetSounds.args.Description = ACH:Description(TS.Description, 0)
+	TargetSounds.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) TS.db[info[#info]] = value if (not TS.isEnabled) then TS:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
 
-	TargetSounds.args.AuthorHeader = PA.ACH:Header(PA.ACL['Authors:'], -2)
-	TargetSounds.args.Authors = PA.ACH:Description(TS.Authors, -1, 'large')
+	TargetSounds.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
+	TargetSounds.args.Authors = ACH:Description(TS.Authors, -1, 'large')
 end
 
 function TS:BuildProfile()
