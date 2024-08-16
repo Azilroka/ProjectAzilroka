@@ -68,9 +68,9 @@ function OzCD:PLAYER_ENTERING_WORLD()
 
 		if (currentDuration > .1) and (currentDuration < OzCD.db.IgnoreDuration) then
 			if (currentDuration >= OzCD.db.SuppressDuration) then
-				OzCD.DelayCooldowns[SpellID] = Duration
+				OzCD.DelayCooldowns[SpellID] = currentDuration
 			elseif (currentDuration >= COOLDOWN_MIN_DURATION) then
-				OzCD.ActiveCooldowns[SpellID] = Duration
+				OzCD.ActiveCooldowns[SpellID] = currentDuration
 			end
 		end
 	end
@@ -138,6 +138,8 @@ function OzCD:UpdateActiveCooldowns()
 			Frame.Duration = Duration
 			Frame.SpellID = SpellID
 			Frame.SpellName = spellData.name
+
+			OzCD.ActiveCooldowns[SpellID] = CurrentDuration -- Sync Time
 
 			Frame.Icon:SetTexture(spellData.iconID)
 
@@ -270,9 +272,7 @@ end
 function OzCD:SetPosition()
 	local sizex = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and 0 or 2)
 	local sizey = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and OzCD.db.StatusBar and 6 or 0)
-	local anchor = 'BOTTOMLEFT'
-	local growthx = 1
-	local growthy = 1
+	local anchor, growthx, growthy = 'BOTTOMLEFT', 1, 1
 	local cols = floor(OzCD.Holder:GetWidth() / sizex + 0.5)
 
 	for i, button in ipairs(OzCD.Holder) do
@@ -444,10 +444,7 @@ function OzCD:Initialize()
 
 	OzCD:GROUP_ROSTER_UPDATE()
 
-	if PA.Retail then
-		OzCD:RegisterEvent('PLAYER_ENTERING_WORLD') -- Check for Active Cooldowns Login / Reload.
-	end
-
+	OzCD:RegisterEvent('PLAYER_ENTERING_WORLD') -- Check for Active Cooldowns Login / Reload.
 	OzCD:RegisterEvent('GROUP_ROSTER_UPDATE') -- Channel Distribution
 	OzCD:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED') -- For Cooldown Queue
 	OzCD:RegisterEvent('SPELL_UPDATE_COOLDOWN')	-- Process Cooldown Queue

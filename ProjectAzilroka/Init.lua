@@ -477,27 +477,21 @@ do
 		PA.ScanTooltip:Hide()
 	end
 
-	function PA:SPELLS_CHANGED()
-		local numPetSpells = HasPetSpells()
-		if numPetSpells then
-			ScanSpellBook(BOOKTYPE_PET, numPetSpells)
-
-			-- Process Modules Event
-			for _, module in PA:IterateModules() do
-				if module.SPELLS_CHANGED then
-					PA:ProtectedCall(module, module.SPELLS_CHANGED)
-				end
-			end
-		end
-	end
-
 	function PA:ScanSpellBook()
 		for tab = 1, GetNumSpellBookSkillLines() do
 			local info = GetSpellBookSkillLineInfo(tab)
 			ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
 		end
 
-		PA:SPELLS_CHANGED()
+		local numPetSpells = HasPetSpells()
+		if numPetSpells then
+			ScanSpellBook(BOOKTYPE_PET, numPetSpells)
+		end
+
+		-- Process Modules Event
+		for _, module in PA:IterateModules() do
+			if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
+		end
 	end
 end
 
@@ -619,7 +613,7 @@ function PA:PLAYER_LOGIN()
 		if module.Initialize then PA:ProtectedCall(module, module.Initialize) end
 	end
 
-	PA:RegisterEvent('SPELLS_CHANGED')
+	PA:RegisterEvent('SPELLS_CHANGED', 'ScanSpellBook')
 end
 
 PA:RegisterEvent('PLAYER_LOGIN')
