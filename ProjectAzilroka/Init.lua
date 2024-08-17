@@ -1,10 +1,12 @@
 local AddOnName, Engine = ...
-local _G = _G
+local _G, _ = _G
 local LibStub = _G.LibStub
 
 local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
 
 _G.ProjectAzilroka = Engine
+
+PA.Debug = true
 
 local min, max = min, max
 local select = select
@@ -54,24 +56,16 @@ if PA.Libs.LCD then
 end
 
 -- WoW Data
-PA.MyClass = select(2, UnitClass('player'))
+_, PA.MyClass = UnitClass('player')
 PA.MyName = UnitName('player')
-PA.MyRace = select(2, UnitRace("player"))
+_, PA.MyRace = UnitRace("player")
 PA.MyRealm = GetRealmName()
 PA.Locale = GetLocale()
 PA.Noop = function() end
-PA.TexCoords = {.08, .92, .08, .92}
 
-if _G.ElvUI then
-	PA.TexCoords = {0, 1, 0, 1}
-	local modifier = 0.04 * _G.ElvUI[1].db.general.cropIcon
-	for i, v in ipairs(PA.TexCoords) do
-		if i % 2 == 0 then
-			PA.TexCoords[i] = v - modifier
-		else
-			PA.TexCoords[i] = v + modifier
-		end
-	end
+function PA:TexCoords()
+	local modifier = .04 * (ElvUI and _G.ElvUI[1].db.general.cropIcon or 2)
+	return modifier, 1 - modifier, modifier, 1 - modifier
 end
 
 PA.UIScale = UIParent:GetScale()
@@ -218,15 +212,15 @@ function PA:ConflictAddOn(AddOns)
 	return false
 end
 
-function PA:CountTable(T)
+function PA:CountTable(t)
 	local n = 0
-	for _ in pairs(T) do n = n + 1 end
+	for _ in next, t do n = n + 1 end
 	return n
 end
 
 function PA:PairsByKeys(t, f)
 	local a = {}
-	for n in pairs(t) do tinsert(a, n) end
+	for n in next, t do tinsert(a, n) end
 	sort(a, f)
 	local i = 0
 	local iter = function()
@@ -489,7 +483,7 @@ do
 		isScanning = false
 	end
 
-	function PA:ScanSpellBook()
+	function PA:ScanSpellBook(event)
 		if not isScanning then -- prevent duplicate fires
 			isScanning = true
 			for tab = 1, GetNumSpellBookSkillLines() do
@@ -502,9 +496,11 @@ do
 				ScanSpellBook(BOOKTYPE_PET, numPetSpells)
 			end
 
-			-- Process Modules Event
-			for _, module in PA:IterateModules() do
-				if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
+			if event == 'SPELLS_CHANGED' then
+				-- Process Modules Event
+				for _, module in PA:IterateModules() do
+					if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
+				end
 			end
 
 			PA:ScheduleTimer(resetScan, 1)

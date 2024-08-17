@@ -261,7 +261,7 @@ function AR:CreateReminder(index)
 	frame:Hide()
 	frame:SetClampedToScreen(true)
 	frame.icon = frame:CreateTexture(nil, 'OVERLAY')
-	frame.icon:SetTexCoord(unpack(PA.TexCoords))
+	frame.icon:SetTexCoord(PA:TexCoords())
 	frame.cooldown = CreateFrame('Cooldown', nil, frame, 'CooldownFrameTemplate')
 	frame.cooldown:SetAllPoints(frame.icon)
 

@@ -162,7 +162,7 @@ function SRF:SetButtonTexture(button, texture)
 
 	local Normal, Pushed, Disabled, Highlight = button:GetNormalTexture(), button:GetPushedTexture(), button:GetDisabledTexture(), button:GetHighlightTexture()
 
-	local left, right, top, bottom = unpack(PA.TexCoords)
+	local left, right, top, bottom = PA:TexCoords()
 	Normal:SetTexCoord(left, right, top, bottom)
 	Normal:SetVertexColor(.9, .9, .9)
 	PA:SetInside(Normal, button)

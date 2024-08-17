@@ -758,7 +758,7 @@ function stAM:Initialize()
 		if not next(Required) then
 			Required = nil
 		else
-			for num, addon in pairs(Required) do
+			for num, addon in next, Required do
 				local Reason = addonCache[addon]
 				if not Reason then
 					_, _, _, _, Reason = GetAddOnInfo(addon)
@@ -786,20 +786,25 @@ function stAM:Initialize()
 	stAM.SelectedCharacter = PA.MyName
 
 	stAM.Menu = {
-		{ text = 'All', checked = function() return stAM.SelectedCharacter == true end, func = function() stAM.SelectedCharacter = true stAM:UpdateAddonList() end}
+		{ order = 0, text = 'All', checked = function() return stAM.SelectedCharacter == true end, func = function() stAM.SelectedCharacter = true stAM:UpdateAddonList() end}
 	}
 
 	_G.stAddonManagerServerDB[PA.MyRealm] = _G.stAddonManagerServerDB[PA.MyRealm] or {}
 	_G.stAddonManagerServerDB[PA.MyRealm][PA.MyName] = true
 
-	local index = 2
-	for Character in PA:PairsByKeys(_G.stAddonManagerServerDB[PA.MyRealm]) do
-		stAM.Menu[index] = { text = Character, checked = function() return stAM.SelectedCharacter == Character end, func = function() stAM.SelectedCharacter = Character stAM:UpdateAddonList() end }
-		index = index + 1
+	local function menuSort(a, b)
+		if a.order and b.order and not (a.order == b.order) then
+			return a.order < b.order
+		end
+		return a.text < b.text
 	end
 
-	stAM.MenuOffset = index
+	for Character in next, _G.stAddonManagerServerDB[PA.MyRealm] do
+		tinsert(stAM.Menu, { text = Character, checked = function() return stAM.SelectedCharacter == Character end, func = function() stAM.SelectedCharacter = Character stAM:UpdateAddonList() end })
+	end
+	sort(stAM.Menu, menuSort)
 
+	stAM.MenuOffset = #stAM.Menu
 	stAM.scrollOffset = 0
 
 	stAM:BuildFrame()

@@ -27,7 +27,7 @@ function MA:GetAuraIcon(index)
 	end
 
 	local button = CreateFrame('Button', 'MouseoverAurasHolderButton'..index, MA.Holder, 'PA_AuraTemplate')
-	button.Icon:SetTexCoord(unpack(PA.TexCoords))
+	button.Icon:SetTexCoord(PA:TexCoords())
 
 	PA:SetTemplate(button)
 	PA:RegisterCooldown(button.Cooldown)

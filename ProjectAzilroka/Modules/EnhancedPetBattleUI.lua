@@ -497,7 +497,7 @@ function EPB:InitPetFrameAPI()
 
 				local Font, FontSize, FontFlag = PA.Libs.LSM:Fetch("font", EPB.db["Font"]), EPB.db["FontSize"], EPB.db["FontFlag"]
 				button.turnsRemaining:SetFont(Font, FontSize, FontFlag)
-				button.icon:SetTexCoord(unpack(PA.TexCoords))
+				button.icon:SetTexCoord(PA:TexCoords())
 				PA:SetInside(button.icon)
 				button:SetBackdropBorderColor(unpack(self.isDebuff and {1, 0, 0} or {0, 1, 0}))
 			end
@@ -849,7 +849,7 @@ function EPB:InitPetFrameAPI()
 				frame.Text:SetPoint("CENTER")
 				frame.Texture = frame:CreateTexture(nil, "ARTWORK")
 				PA:SetInside(frame.Texture)
-				frame.Texture:SetTexCoord(unpack(PA.TexCoords))
+				frame.Texture:SetTexCoord(PA:TexCoords())
 				EPB:SetAuraTooltipScripts(frame)
 				return frame
 			end
@@ -987,7 +987,7 @@ function EPB:InitPetFrameAPI()
 				frame.Icon:SetSize(40, 40)
 
 				frame.Icon.PetTexture = frame.Icon:CreateTexture(nil, "ARTWORK")
-				frame.Icon.PetTexture:SetTexCoord(unpack(PA.TexCoords))
+				frame.Icon.PetTexture:SetTexCoord(PA:TexCoords())
 				PA:SetInside(frame.Icon.PetTexture)
 
 				frame.Icon.PetModel = CreateFrame("PlayerModel", nil, frame.Icon)
@@ -1690,7 +1690,7 @@ function EPB:CreateExtraActionButton(name)
 	Button.icon:SetDrawLayer("ARTWORK")
 	Button.icon:SetTexture("")
 	PA:SetInside(Button.icon)
-	Button.icon:SetTexCoord(unpack(PA.TexCoords))
+	Button.icon:SetTexCoord(PA:TexCoords())
 	Button:SetNormalTexture("")
 	Button:SetPushedTexture("")
 	Button:SetHighlightTexture("")

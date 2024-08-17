@@ -190,7 +190,7 @@ function OzCD:GetCooldown(index)
 		Frame = CreateFrame('Button', 'OzCD_'..index, OzCD.Holder, 'PA_AuraTemplate')
 		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
 
-		Frame.Icon:SetTexCoord(unpack(PA.TexCoords))
+		Frame.Icon:SetTexCoord(PA:TexCoords())
 
 		Frame.Cooldown:SetDrawEdge(false)
 		Frame.Cooldown.CooldownOverride = 'OzCooldowns'
@@ -336,7 +336,7 @@ function OzCD:GenerateSpellOptions()
 			SpellOptions[tblID] = {
 				type = 'toggle',
 				image = spellData.iconID,
-				imageCoords = PA.TexCoords,
+				imageCoords = { PA:TexCoords() },
 				name = ' '..spellData.name,
 				desc = 'Spell ID: '..SpellID,
 			}

@@ -302,8 +302,8 @@ function SMB:SkinMinimapButton(button)
 
 					local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = region:GetTexCoord()
 					if ULx == 0 and ULy == 0 and LLx == 0 and LLy == 1 and URx == 1 and URy == 0 and LRx == 1 and LRy == 1 then
-						region:SetTexCoord(unpack(PA.TexCoords))
-						button:HookScript('OnLeave', function() region:SetTexCoord(unpack(PA.TexCoords)) end)
+						region:SetTexCoord(PA:TexCoords())
+						button:HookScript('OnLeave', function() region:SetTexCoord(PA:TexCoords()) end)
 					end
 
 					region.SetPoint = function() return end

@@ -527,7 +527,7 @@ function IF:CreateAuraIcon(element)
 
 	Frame.Texture = Frame:CreateTexture(nil, 'ARTWORK')
 	PA:SetInside(Frame.Texture)
-	Frame.Texture:SetTexCoord(unpack(PA.TexCoords))
+	Frame.Texture:SetTexCoord(PA:TexCoords())
 
 	local stackFrame = CreateFrame('Frame', nil, Frame)
 	stackFrame:SetAllPoints(Frame)

@@ -141,7 +141,7 @@
 	<Button name='TorghastBuffsTemplate58' inherits='TorghastBuffsTemplate' virtual='true'><Size x='58' y='58'/></Button>
 	<Button name='TorghastBuffsTemplate60' inherits='TorghastBuffsTemplate' virtual='true'><Size x='60' y='60'/></Button>
 
-	<Frame name='TorghastBuffsHeaderTemplate' inherits='SecureAuraHeaderTemplate' clampedToScreen='true'>
+	<Frame name='TorghastBuffsHeaderTemplate' inherits='SecureAuraHeaderTemplate' clampedToScreen='true' virtual='true'>
 		<Layers>
 			<Layer level='OVERLAY' textureSubLevel='1'>
 				<FontString parentKey='unitName' inherits='GameFontHighlightSmallOutline'>

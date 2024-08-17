@@ -47,7 +47,7 @@ function TB:CreateIcon(button)
 	PA:SetInside(button.texture)
 	PA:SetInside(button.highlight)
 
-	button.texture:SetTexCoord(unpack(PA.TexCoords))
+	button.texture:SetTexCoord(PA:TexCoords())
 	button.unit = button:GetParent().unit
 
 	TB:UpdateIcon(button)
