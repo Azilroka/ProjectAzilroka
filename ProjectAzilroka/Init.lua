@@ -6,8 +6,6 @@ local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceConsole-3.0',
 
 _G.ProjectAzilroka = Engine
 
-PA.Debug = true
-
 local min, max = min, max
 local select = select
 local pairs = pairs
