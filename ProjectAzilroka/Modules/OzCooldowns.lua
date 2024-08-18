@@ -336,7 +336,7 @@ function OzCD:GenerateSpellOptions()
 			SpellOptions[tblID] = {
 				type = 'toggle',
 				image = spellData.iconID,
-				imageCoords = { PA:TexCoords() },
+				imageCoords = PA:TexCoords(true),
 				name = ' '..spellData.name,
 				desc = 'Spell ID: '..SpellID,
 			}

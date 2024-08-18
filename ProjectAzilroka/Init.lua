@@ -61,9 +61,17 @@ PA.MyRealm = GetRealmName()
 PA.Locale = GetLocale()
 PA.Noop = function() end
 
-function PA:TexCoords()
-	local modifier = .04 * (ElvUI and _G.ElvUI[1].db.general.cropIcon or 2)
-	return modifier, 1 - modifier, modifier, 1 - modifier
+do
+	local modifier, left, right, top, bottom
+
+	function PA:TexCoords(pack)
+		if not modifier then
+			modifier = .04 * (ElvUI and _G.ElvUI[1].db.general.cropIcon or 2)
+			left, right, top, bottom = modifier, 1 - modifier, modifier, 1 - modifier
+		end
+		if pack then return { left, right, top, bottom } end
+		return left, right, top, bottom
+	end
 end
 
 PA.UIScale = UIParent:GetScale()
