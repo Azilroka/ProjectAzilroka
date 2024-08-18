@@ -21,7 +21,7 @@
 								<Anchor point='BOTTOMRIGHT' x='-1'/>
 							</Anchors>
 						</FontString>
-					<Layer>
+					</Layer>
 				</Layers>
 				<Anchors>
 					<Anchor point='TOP' relativePoint='BOTTOM' x='0' y='-1'/>

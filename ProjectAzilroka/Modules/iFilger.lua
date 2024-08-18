@@ -333,18 +333,10 @@ end
 function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visible)
 	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA:GetAuraData(unit, index, filter)
 
-	if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unit) then
-		local durationNew, expirationTimeNew
-		if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, spellID, caster, name) end
-		if durationNew and durationNew > 0 then
-			duration, expiration = durationNew, expirationTimeNew
-		end
-	end
-
 	if name then
 		local position = visible + offset + 1
 		local button = element[position] or IF:CreateAuraIcon(element, position)
-		local show = IF:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,timeMod, effect1, effect2, effect3)
+		local show = IF:CustomFilter(element, unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3)
 
 		button.caster, button.filter, button.isDebuff, button.expiration, button.duration, button.spellID, button.isPlayer = caster, filter, isDebuff, expiration, duration, spellID, caster == 'player' or caster == 'vehicle'
 

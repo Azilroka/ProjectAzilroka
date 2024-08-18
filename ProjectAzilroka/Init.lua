@@ -333,13 +333,15 @@ do
 	local UnitAura = UnitAura
 
 	function PA:GetAuraData(unitToken, index, filter)
-		if PA.Retail then
-			return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
-		elseif PA.Classic and PA.Libs.LCD then
-			return PA.Libs.LCD:UnitAura(unitToken, index, filter)
-		else
-			return UnitAura(unitToken, index, filter)
+		if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unitToken) then
+			local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod = PA.Libs.LCD:UnitAura(unitToken, index, filter)
+			local durationNew, expirationTimeNew
+			if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, spellID, caster, name) end
+			if durationNew and durationNew > 0 then duration, expiration = durationNew, expirationTimeNew end
+			return name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod
 		end
+
+		return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
 	end
 
 	-- GetMouseFocus
