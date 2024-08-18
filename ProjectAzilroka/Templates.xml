@@ -9,6 +9,20 @@
 				</Anchors>
 			</Cooldown>
 			<StatusBar parentKey='StatusBar' hidden='true'>
+				<Layers>
+					<Layer level='OVERLAY' textureSubLevel='1'>
+						<FontString parentKey='Name' inherits='NumberFontNormal' justifyH='LEFT' hidden='true'>
+							<Anchors>
+								<Anchor point='BOTTOMLEFT' x='-1'/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey='Time' inherits='NumberFontNormal' justifyH='RIGHT' hidden='true'>
+							<Anchors>
+								<Anchor point='BOTTOMRIGHT' x='-1'/>
+							</Anchors>
+						</FontString>
+					<Layer>
+				</Layers>
 				<Anchors>
 					<Anchor point='TOP' relativePoint='BOTTOM' x='0' y='-1'/>
 				</Anchors>

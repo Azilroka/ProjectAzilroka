@@ -335,6 +335,8 @@ do
 	function PA:GetAuraData(unitToken, index, filter)
 		if PA.Retail then
 			return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
+		elseif PA.Classic and PA.Libs.LCD then
+			return PA.LCD:UnitAura(unitToken, index, filter)
 		else
 			return UnitAura(unitToken, index, filter)
 		end
@@ -483,33 +485,42 @@ do
 		PA.ScanTooltip:Hide()
 	end
 
-	local isScanning = false
-
-	local function resetScan()
-		isScanning = false
+	local SpellOptions = {}
+	function PA:GenerateSpellOptions(db)
+		for SpellID, SpellName in next, db do
+			local spellData = PA.SpellBook.Complete[SpellID]
+			local tblID = tostring(SpellID)
+	
+			if spellData.name and not SpellOptions[tblID] then
+				SpellOptions[tblID] = {
+					type = 'toggle',
+					image = spellData.iconID,
+					imageCoords = PA:TexCoords(true),
+					name = ' '..spellData.name,
+					desc = 'Spell ID: '..SpellID,
+				}
+			end
+		end
+	
+		return SpellOptions
 	end
-
+	
 	function PA:ScanSpellBook(event)
-		if not isScanning then -- prevent duplicate fires
-			isScanning = true
-			for tab = 1, GetNumSpellBookSkillLines() do
-				local info = GetSpellBookSkillLineInfo(tab)
-				ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
-			end
+		for tab = 1, GetNumSpellBookSkillLines() do
+			local info = GetSpellBookSkillLineInfo(tab)
+			ScanSpellBook(BOOKTYPE_SPELL, info.numSpellBookItems, info.itemIndexOffset)
+		end
 
-			local numPetSpells = HasPetSpells()
-			if numPetSpells then
-				ScanSpellBook(BOOKTYPE_PET, numPetSpells)
-			end
+		local numPetSpells = HasPetSpells()
+		if numPetSpells then
+			ScanSpellBook(BOOKTYPE_PET, numPetSpells)
+		end
 
-			if event == 'SPELLS_CHANGED' then
-				-- Process Modules Event
-				for _, module in PA:IterateModules() do
-					if module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
-				end
+		if event then
+			-- Process Modules Event
+			for _, module in PA:IterateModules() do
+				if module.isEnabled and module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
 			end
-
-			PA:ScheduleTimer(resetScan, 1)
 		end
 	end
 end
@@ -631,7 +642,12 @@ function PA:PLAYER_LOGIN()
 		if module.Initialize then PA:ProtectedCall(module, module.Initialize) end
 	end
 
-	PA:RegisterEvent('SPELLS_CHANGED', 'ScanSpellBook')
+	if PA.Retail then
+		PA:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', 'ScanSpellBook')
+		PA:RegisterEvent('TRAIT_CONFIG_UPDATED', 'ScanSpellBook')
+	else
+		PA:RegisterEvent('SPELLS_CHANGED', 'ScanSpellBook')
+	end
 end
 
 PA:RegisterEvent('PLAYER_LOGIN')

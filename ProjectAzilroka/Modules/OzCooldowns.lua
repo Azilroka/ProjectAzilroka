@@ -42,7 +42,6 @@ OzCD.DelayCooldowns = {}
 
 local GLOBAL_COOLDOWN_TIME = 1.5
 local COOLDOWN_MIN_DURATION = .1
-local SpellOptions = {}
 
 OzCD.HasCDDelay = {
 	[5384] = true
@@ -324,26 +323,7 @@ end
 
 function OzCD:SPELLS_CHANGED()
  	PA:AddKeysToTable(OzCD.db.SpellCDs, PA.SpellBook.Spells)
-	PA.Options.args.OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
-end
-
-function OzCD:GenerateSpellOptions()
-	for SpellID, SpellName in next, OzCD.db.SpellCDs do
-		local spellData = PA.SpellBook.Complete[SpellID]
-		local tblID = tostring(SpellID)
-
-		if spellData.name and not SpellOptions[tblID] then
-			SpellOptions[tblID] = {
-				type = 'toggle',
-				image = spellData.iconID,
-				imageCoords = PA:TexCoords(true),
-				name = ' '..spellData.name,
-				desc = 'Spell ID: '..SpellID,
-			}
-		end
-	end
-
-	return SpellOptions
+	PA.Options.args.OzCooldowns.args.General.args.Spells.args = PA:GenerateSpellOptions(OzCD.db.SpellCDs)
 end
 
 function OzCD:GetOptions()
@@ -384,7 +364,7 @@ function OzCD:GetOptions()
 
 	OzCooldowns.args.General.args.Spells = ACH:Group(_G.SPELLS, nil, 8, nil, function(info) return OzCD.db.SpellCDs[tonumber(info[#info])] end, function(info, value) OzCD.db.SpellCDs[tonumber(info[#info])] = value end)
 	OzCooldowns.args.General.args.Spells.inline = true
-	OzCooldowns.args.General.args.Spells.args = OzCD:GenerateSpellOptions()
+	OzCooldowns.args.General.args.Spells.args = PA:GenerateSpellOptions(OzCD.db.SpellCDs)
 
 	OzCooldowns.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
 	OzCooldowns.args.Authors = ACH:Description(OzCD.Authors, -1, 'large')

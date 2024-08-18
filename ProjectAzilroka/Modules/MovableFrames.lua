@@ -12,7 +12,7 @@ MF.alteredFrames = {}
 local next = next
 
 local _G = _G
-local IsAddOnLoaded = IsAddOnLoaded
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 local IsShiftKeyDown = IsShiftKeyDown
 
 local Frames = {

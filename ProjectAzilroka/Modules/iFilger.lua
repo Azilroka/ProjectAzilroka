@@ -150,7 +150,7 @@ function IF:UpdateActiveCooldowns()
 			button.spellID = SpellID
 			button.spellName = Name
 
-			button.Texture:SetTexture(Icon)
+			button.Icon:SetTexture(Icon)
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
@@ -207,7 +207,7 @@ function IF:UpdateItemCooldowns()
 			button.itemName = Name
 			button.expiration = Start + Duration
 
-			button.Texture:SetTexture(GetItemIcon(itemID))
+			button.Icon:SetTexture(GetItemIcon(itemID))
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
@@ -331,21 +331,14 @@ function IF:CustomFilter(element, unit, button, name, texture, count, debuffType
 end
 
 function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visible)
-	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3
+	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA:GetAuraData(unit, index, filter)
 
-	if PA.Classic and PA.LCD and not UnitIsUnit('player', unit) then
+	if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unit) then
 		local durationNew, expirationTimeNew
-		name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA.LCD:UnitAura(unit, index, filter)
-
-		if spellID then
-			durationNew, expirationTimeNew = PA.LCD:GetAuraDurationByUnit(unit, spellID, caster, name)
-		end
-
+		if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, spellID, caster, name) end
 		if durationNew and durationNew > 0 then
 			duration, expiration = durationNew, expirationTimeNew
 		end
-	else
-		name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = UnitAura(unit, index, filter)
 	end
 
 	if name then
@@ -356,6 +349,7 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 		button.caster, button.filter, button.isDebuff, button.expiration, button.duration, button.spellID, button.isPlayer = caster, filter, isDebuff, expiration, duration, spellID, caster == 'player' or caster == 'vehicle'
 
 		button:SetShown(show)
+
 		if show then
 			if not element.db.StatusBar then
 				if (duration and duration >= AURA_MIN_DURATION) then
@@ -365,8 +359,8 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 			end
 
 			button:SetID(index)
-			button.Texture:SetTexture(texture)
-			button.Stacks:SetText(count > 1 and count or "")
+			button.Icon:SetTexture(texture)
+			button.Count:SetText(count > 1 and count or '')
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
 			button.StatusBar.Name:SetText(name)
 
@@ -514,30 +508,19 @@ function IF:BAG_UPDATE_COOLDOWN()
 end
 
 function IF:CreateAuraIcon(element)
-	local Frame = CreateFrame('Button', nil, element)
+	local Frame = CreateFrame('Button', nil, element, 'PA_AuraTemplate')
 	Frame:EnableMouse(false)
 	Frame:SetSize(element.db.Size, element.db.Size)
 
-	Frame.Cooldown = CreateFrame('Cooldown', nil, Frame, 'CooldownFrameTemplate')
-	Frame.Cooldown:SetAllPoints()
-	Frame.Cooldown:SetReverse(false)
 	Frame.Cooldown:SetDrawEdge(false)
 	Frame.Cooldown.CooldownOverride = 'iFilger'
 	PA:RegisterCooldown(Frame.Cooldown)
 
-	Frame.Texture = Frame:CreateTexture(nil, 'ARTWORK')
-	PA:SetInside(Frame.Texture)
-	Frame.Texture:SetTexCoord(PA:TexCoords())
+	Frame.Icon:SetTexCoord(PA:TexCoords())
 
-	local stackFrame = CreateFrame('Frame', nil, Frame)
-	stackFrame:SetAllPoints(Frame)
-	stackFrame:SetFrameLevel(Frame.Cooldown:GetFrameLevel() + 1)
+	Frame.Count:SetFont(PA.Libs.LSM:Fetch('font', element.db.StackCountFont), element.db.StackCountFontSize, element.db.StackCountFontFlag)
+	Frame.Count:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
 
-	Frame.Stacks = stackFrame:CreateFontString(nil, 'OVERLAY', 'NumberFontNormal')
-	Frame.Stacks:SetFont(PA.Libs.LSM:Fetch('font', element.db.StackCountFont), element.db.StackCountFontSize, element.db.StackCountFontFlag)
-	Frame.Stacks:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOMRIGHT', 0, 2)
-
-	Frame.StatusBar = CreateFrame('StatusBar', nil, Frame)
 	Frame.StatusBar:SetSize(element.db.StatusBarWidth, element.db.StatusBarHeight)
 	Frame.StatusBar:SetStatusBarTexture(PA.Libs.LSM:Fetch('statusbar', element.db.StatusBarTexture))
 	Frame.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
@@ -567,21 +550,18 @@ function IF:CreateAuraIcon(element)
 		end)
 	end
 
-	Frame.StatusBar.Name = Frame.StatusBar:CreateFontString(nil, 'OVERLAY')
 	Frame.StatusBar.Name:SetFont(PA.Libs.LSM:Fetch('font', element.db.StatusBarFont), element.db.StatusBarFontSize, element.db.StatusBarFontFlag)
 	Frame.StatusBar.Name:SetPoint('BOTTOMLEFT', Frame.StatusBar, element.db.StatusBarNameX, element.db.StatusBarNameY)
-	Frame.StatusBar.Name:SetJustifyH('LEFT')
 
-	Frame.StatusBar.Time = Frame.StatusBar:CreateFontString(nil, 'OVERLAY')
 	Frame.StatusBar.Time:SetFont(PA.Libs.LSM:Fetch('font', element.db.StatusBarFont), element.db.StatusBarFontSize, element.db.StatusBarFontFlag)
 	Frame.StatusBar.Time:SetPoint('BOTTOMRIGHT', Frame.StatusBar, element.db.StatusBarTimeX, element.db.StatusBarTimeY)
-	Frame.StatusBar.Time:SetJustifyH('RIGHT')
 
 	PA:CreateBackdrop(Frame)
 	PA:CreateShadow(Frame.backdrop)
 	PA:CreateBackdrop(Frame.StatusBar, 'Default')
 	PA:CreateShadow(Frame.StatusBar.backdrop)
 
+	Frame.Count:SetShown(true)
 	Frame.StatusBar:SetShown(element.db.StatusBar)
 	Frame.StatusBar.Name:SetShown(element.db.StatusBarNameEnabled)
 	Frame.StatusBar.Time:SetShown(element.db.StatusBarTimeEnabled)
@@ -606,7 +586,7 @@ function IF:UpdateAll()
 
 		for _, Button in ipairs(Frame) do
 			Button:SetSize(Frame.db.Size, Frame.db.Size)
-			Button.Stacks:SetFont(PA.Libs.LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
+			Button.Count:SetFont(PA.Libs.LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
 			Button.StatusBar:SetStatusBarTexture(PA.Libs.LSM:Fetch('statusbar', Frame.db.StatusBarTexture))
 			Button.StatusBar:SetStatusBarColor(unpack(Frame.db.StatusBarTextureColor))
 			Button.StatusBar:SetSize(Frame.db.StatusBarWidth, Frame.db.StatusBarHeight)
@@ -634,7 +614,7 @@ end
 
 function IF:SPELLS_CHANGED()
 	PA:AddKeysToTable(IF.db.Cooldowns.SpellCDs, PA.SpellBook.Spells)
-	PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = IF:GenerateSpellOptions()
+	PA.Options.args.iFilger.args.Cooldowns.args.Spells.args = PA:GenerateSpellOptions(IF.db.Cooldowns.SpellCDs)
 end
 
 local function GetSelectedSpell()
@@ -691,25 +671,6 @@ function IF:BuildProfile()
 	end
 
 	PA.Defaults.profile.iFilger.Cooldowns.SpellCDs = PA.SpellBook.Spells
-end
-
-function IF:GenerateSpellOptions()
-	local SpellOptions = {}
-
-	for SpellID, SpellName in pairs(IF.db.Cooldowns.SpellCDs) do
-		local Name, _, Icon = GetSpellInfo(SpellID)
-		if Name then
-			SpellOptions[tostring(SpellID)] = {
-				type = 'toggle',
-				image = Icon,
-				imageCoords = PA.TexCoords,
-				name = ' '..(type(SpellName) == 'string' and SpellName or Name),
-				desc = 'Spell ID: '..SpellID,
-			}
-		end
-	end
-
-	return SpellOptions
 end
 
 function IF:GetOptions()
@@ -786,7 +747,7 @@ function IF:GetOptions()
 
 	iFilger.args.Cooldowns.args.Spells = ACH:Group(_G.SPELLS, nil, 12, nil, function(info) return IF.db.Cooldowns.SpellCDs[tonumber(info[#info])] end, function(info, value) IF.db.Cooldowns.SpellCDs[tonumber(info[#info])] = value end)
 	iFilger.args.Cooldowns.args.Spells.inline = true
-	iFilger.args.Cooldowns.args.Spells.args = IF:GenerateSpellOptions()
+	iFilger.args.Cooldowns.args.Spells.args = PA:GenerateSpellOptions(IF.db.Cooldowns.SpellCDs)
 end
 
 function IF:UpdateSettings()
