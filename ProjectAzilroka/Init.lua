@@ -336,7 +336,7 @@ do
 		if PA.Retail then
 			return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
 		elseif PA.Classic and PA.Libs.LCD then
-			return PA.LCD:UnitAura(unitToken, index, filter)
+			return PA.Libs.LCD:UnitAura(unitToken, index, filter)
 		else
 			return UnitAura(unitToken, index, filter)
 		end
