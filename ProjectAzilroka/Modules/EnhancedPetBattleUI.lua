@@ -1536,7 +1536,7 @@ function EPB:Initialize()
 
 	EPB.isEnabled = true
 
-	BattlePetBreedID = IsAddOnLoaded("BattlePetBreedID")
+	BattlePetBreedID = C_AddOns.IsAddOnLoaded("BattlePetBreedID")
 	BreedInfo = LibStub("LibPetBreedInfo-1.0", true)
 
 	EPB:InitHealingForbiddenCheck()
