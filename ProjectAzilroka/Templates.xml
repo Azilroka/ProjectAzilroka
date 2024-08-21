@@ -98,15 +98,15 @@
 		<Size x='26' y='26'/>
 		<Layers>
 			<Layer level='ARTWORK' textureSubLevel='1'>
-				<Texture parentKey='texture'/>
+				<Texture parentKey='Icon'/>
 			</Layer>
 			<Layer level='HIGHLIGHT' textureSubLevel='1'>
-				<Texture parentKey='hightlight'>
+				<Texture parentKey='Hightlight'>
 					<Color r='1' g='1' b='1' a='.45'/>
 				</Texture>
 			</Layer>
 			<Layer level='OVERLAY' textureSubLevel='1'>
-				<FontString parentKey='count' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
+				<FontString parentKey='Count' inherits='GameFontHighlightSmallOutline' justifyH='LEFT'>
 					<Anchors>
 						<Anchor point='TOP' relativeKey='$parent'/>
 						<Anchor point='BOTTOM' relativeKey='$parent'/>

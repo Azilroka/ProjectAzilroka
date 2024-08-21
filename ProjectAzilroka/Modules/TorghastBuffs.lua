@@ -47,14 +47,14 @@ function TB:CreateIcon(button)
 	PA:SetInside(button.texture)
 	PA:SetInside(button.highlight)
 
-	button.texture:SetTexCoord(PA:TexCoords())
+	button.Icon:SetTexCoord(PA:TexCoords())
 	button.unit = button:GetParent().unit
 
 	TB:UpdateIcon(button)
 	button:SetScript('OnAttributeChanged', TB.OnAttributeChanged)
 
 	if TB.MasqueGroup and TB.db.Masque then
-		TB.MasqueGroup:AddButton(button, TB:MasqueData(button.texture, button.highlight))
+		TB.MasqueGroup:AddButton(button, TB:MasqueData(button.Icon, button.Highlight))
 		if button.__MSQ_BaseFrame then button.__MSQ_BaseFrame:SetFrameLevel(2) end --Lower the framelevel to fix issue with buttons created during combat
 		TB.MasqueGroup:ReSkin()
 	else
@@ -63,14 +63,13 @@ function TB:CreateIcon(button)
 end
 
 function TB:UpdateIcon(button)
-	button.count:SetPoint('BOTTOMRIGHT', TB.db.countXOffset, TB.db.countYOffset)
-	button.count:SetFont(LSM:Fetch('font', TB.db.countFont), TB.db.countFontSize, TB.db.countFontOutline)
+	button.Count:SetPoint('BOTTOMRIGHT', TB.db.countXOffset, TB.db.countYOffset)
+	button.Count:SetFont(LSM:Fetch('font', TB.db.countFont), TB.db.countFontSize, TB.db.countFontOutline)
 end
 
 function TB:UpdateAura(button, index)
-	local name, texture, count, _, _, _, _, _, _, spellID = PA:GetAuraData(button.unit, index, 'MAW')
-
-	local atlas = _G.C_Spell.GetMawPowerBorderAtlasBySpellID(spellID)
+	local auraData = PA:GetAuraData(button.unit, index, 'MAW')
+	local atlas = _G.C_Spell.GetMawPowerBorderAtlasBySpellID(auraData.spellId)
 	local colorIndex = atlas and (strfind(atlas, 'purple') and 4 or strfind(atlas, 'blue') and 3 or strfind(atlas, 'green') and 2)
 
 	if colorIndex then
@@ -79,8 +78,8 @@ function TB:UpdateAura(button, index)
 		PA:SetTemplate(button)
 	end
 
-	button.count:SetText(count > 1 and count or "")
-	button.texture:SetTexture(texture)
+	button.Count:SetText(auraData.applications > 1 and auraData.applications or "")
+	button.Icon:SetTexture(auraData.icon)
 end
 
 
@@ -158,7 +157,7 @@ function TB:HandleVisibility()
 				RegisterStateDriver(header, 'visibility', format('[@%s, exists][group] show; hide', header.unit))
 			end
 
-			header.unitName:SetFont(PA.Libs.LSM:Fetch('font', PA.Libs.LSM:GetDefault('font')), 12, 'THICKOUTLINE')
+			header.unitName:SetFont(LSM:Fetch('font', LSM:GetDefault('font')), 12, 'THICKOUTLINE')
 
 			if UnitExists(header.unit) then
 				header.unitName:SetText(UnitName(header.unit))

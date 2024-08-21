@@ -1,5 +1,6 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
+local LSM = PA.Libs.LSM
 PA.OzCD = OzCD
 
 OzCD.Title = ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r']
@@ -194,12 +195,12 @@ function OzCD:GetCooldown(index)
 		Frame.Cooldown:SetDrawEdge(false)
 		Frame.Cooldown.CooldownOverride = 'OzCooldowns'
 
-		Frame.Count:SetFont(PA.Libs.LSM:Fetch('font', OzCD.db.StackFont), OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
+		Frame.Count:SetFont(LSM:Fetch('font', OzCD.db.StackFont), OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
 		Frame.Count:SetTextColor(1, 1, 1)
 
 		Frame.StatusBar:SetShown(OzCD.db.StatusBar)
 		Frame.StatusBar:SetMinMaxValues(0, 1)
-		Frame.StatusBar:SetStatusBarTexture(PA.Libs.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture))
+		Frame.StatusBar:SetStatusBarTexture(LSM:Fetch('statusbar', OzCD.db.StatusBarTexture))
 		Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
 		Frame.StatusBar:SetSize(OzCD.db.Size - 2, 4)
 		Frame.StatusBar:SetScript('OnUpdate', function(s)
@@ -285,21 +286,19 @@ function OzCD:SetPosition()
 end
 
 function OzCD:UpdateSettings()
-	local StatusBarTexture = PA.Libs.LSM:Fetch('statusbar', OzCD.db.StatusBarTexture)
-	local StackFont = PA.Libs.LSM:Fetch('font', OzCD.db.StackFont)
+	local StatusBarTexture = LSM:Fetch('statusbar', OzCD.db.StatusBarTexture)
+	local StackFont = LSM:Fetch('font', OzCD.db.StackFont)
 
 	for _, Frame in ipairs(OzCD.Holder) do
 		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
 		Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
 		Frame.Count:SetFont(StackFont, OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
 
+		Frame.StatusBar:SetShown(OzCD.db.StatusBar)
 		if OzCD.db.StatusBar then
 			Frame.StatusBar:SetStatusBarTexture(StatusBarTexture)
 			Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
 			Frame.StatusBar:SetSize(OzCD.db.Size, 4)
-			Frame.StatusBar:Show()
-		else
-			Frame.StatusBar:Hide()
 		end
 	end
 

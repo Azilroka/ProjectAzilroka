@@ -12,9 +12,7 @@ _G.MouseoverAuras = MA
 local floor = floor
 local tinsert = tinsert
 
-local GetMouseFocus = GetMouseFocus
 local GetCursorPosition = GetCursorPosition
-local UnitAura = UnitAura
 local CreateFrame = CreateFrame
 local UnitExists = UnitExists
 
@@ -38,30 +36,29 @@ function MA:GetAuraIcon(index)
 	return button
 end
 
-function MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer)
-	local isPlayer = (caster == 'player' or caster == 'vehicle' or caster == 'pet')
-	return isPlayer and (duration ~= 0)
+function MA:CustomFilter(unit, button, auraData) -- More to be done here
+	return auraData.isFromPlayerOrPlayerPet and auraData.duration > 0
 end
 
 function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
-	local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3 = PA:GetAuraData(unit, index, filter)
+	local auraData = PA:GetAuraData(unit, index, filter)
 
-	if name then
+	if auraData then
 		local position = visible + offset + 1
 		local button = MA:GetAuraIcon(position)
-		local show = MA:CustomFilter(unit, button, name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod, effect1, effect2, effect3)
-		button.caster, button.filter, button.isDebuff, button.isPlayer = caster, filter, isDebuff, caster == 'player' or caster == 'vehicle'
+		local show = MA:CustomFilter(unit, button, auraData)
+		button.caster, button.filter, button.isDebuff, button.isPlayer = auraData.sourceUnit, filter, auraData.isHarmful, auraData.isFromPlayerOrPlayerPet
 
 		if show then
-			button:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
+			button:SetBackdropBorderColor(auraData.isHarmful and 1 or 0, 0, 0)
 			button:SetSize(MA.db.Size, MA.db.Size)
 			button:SetID(index)
 			button:SetShown(show)
 
-			button.Cooldown:SetShown(duration and duration > 0)
-			button.Cooldown:SetCooldown(expiration - duration, duration)
-			button.Icon:SetTexture(texture)
-			button.Count:SetText(count > 1 and count or '')
+			button.Cooldown:SetShown(auraData.duration and auraData.duration > 0)
+			button.Cooldown:SetCooldown(auraData.expirationTime - auraData.duration, auraData.duration)
+			button.Icon:SetTexture(auraData.icon)
+			button.Count:SetText(auraData.applications > 1 and auraData.applications or '')
 
 			return VISIBLE
 		end

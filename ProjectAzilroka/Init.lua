@@ -328,20 +328,17 @@ end
 -- backwards compatibility
 do
 	-- Unit Aura
-	local GetAuraDataByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
-	local UnpackAuraData = AuraUtil and AuraUtil.UnpackAuraData
-	local UnitAura = UnitAura
+	local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
 
 	function PA:GetAuraData(unitToken, index, filter)
+		local auraData = GetAuraDataByIndex(unitToken, index, filter)
 		if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unitToken) then
-			local name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod = PA.Libs.LCD:UnitAura(unitToken, index, filter)
 			local durationNew, expirationTimeNew
-			if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, spellID, caster, name) end
-			if durationNew and durationNew > 0 then duration, expiration = durationNew, expirationTimeNew end
-			return name, texture, count, debuffType, duration, expiration, caster, isStealable, nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll, timeMod
+			if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, auraData.spellId, caster, name) end
+			if durationNew and durationNew > 0 then auraData.duration, auraData.expirationTime = durationNew, expirationTimeNew end
 		end
 
-		return UnpackAuraData(GetAuraDataByIndex(unitToken, index, filter))
+		return auraData
 	end
 
 	-- GetMouseFocus
@@ -369,7 +366,7 @@ do
 				local name = list.text or ('test'..depth)
 
 				local func = (list.arg1 or list.arg2) and (function() list.func(nil, list.arg1, list.arg2) end) or list.func
-				local checked = list.checked and (not list.notCheckable and function() return list.checked(list) end) or E.noop
+				local checked = list.checked and (not list.notCheckable and function() return list.checked(list) end or PA.Noop)
 				if checked then
 					previous = root:CreateCheckbox(list.text or name, checked, func)
 				else
@@ -398,37 +395,42 @@ do
 	local HasPetSpells = C_SpellBook.HasPetSpells or HasPetSpells
 
 	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(info, bookType)
-		local startTime, duration, isEnabled, modRate
+		local info = {}
 		if bookType then
-			startTime, duration, isEnabled, modRate = _G.GetSpellCooldown(info, bookType)
+			info.startTime, info.duration, info.isEnabled, info.modRate = _G.GetSpellCooldown(info, bookType)
 		else
-			startTime, duration, isEnabled, modRate = _G.GetSpellCooldown(info)
+			info.startTime, info.duration, info.isEnabled, info.modRate = _G.GetSpellCooldown(info)
 		end
-		return { startTime = startTime, duration = duration, isEnabled = isEnabled, modRate = modRate }
+		return info
 	end
 
 	local GetSpellCharges = C_Spell.GetSpellCharges or function(index, bookType)
-		local currentCharges, maxCharges, cooldownStart, cooldownDuration, chargeModRate = GetSpellCharges(info, bookType)
-		return { currentCharges	= currentCharges, maxCharges = maxCharges, cooldownStartTime = cooldownStart, cooldownDuration = cooldownDuration, chargeModRate = chargeModRate }
+		local info = {}
+		info.currentCharges, info.maxCharges, info.cooldownStartTime, info.cooldownDuration, info.chargeModRate = GetSpellCharges(info, bookType)
+		return info
 	end
 
 	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }
 	local GetSpellBookItemInfo = C_SpellBook.GetSpellBookItemInfo or function(index, bookType)
-		local spellType, id = GetSpellBookItemInfo(index, bookType)
-		local _, spellSubName = GetSpellBookItemName(index, bookType)
-		local name, _, icon, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(index, bookType)
-		return { actionID = id, spellID = spellID, itemType = bookTypes[spellType], name = name, subName = spellSubName or '', iconID = icon, isPassive = false, isOffSpec = false, skillLineIndex = index }
+		local info, _ = { isPassive = false, isOffSpec = false, skillLineIndex = index }
+		info.itemType, info.actionID = GetSpellBookItemInfo(index, bookType)
+		_, info.subName = GetSpellBookItemName(index, bookType)
+		info.name, _, info.iconID, _, _, _, info.spellID = GetSpellInfo(index, bookType)
+		info.itemType = bookTypes[info.itemType]
+		return info
 	end
 
 	local GetSpellInfo = C_Spell.GetSpellInfo or function(index, bookType)
-		local name, _, iconID, castTime, minRange, maxRange, spellID, originalIcon = GetSpellInfo(index, bookType)
-		return { name = name, iconID = iconID, castTime = castTime, minRange = minRange, maxRange = maxRange, spellID = spellID, originalIcon = originalIcon }
+		local info, _ = {}
+		info.name, _, info.iconID, info.castTime, info.minRange, info.maxRange, info.spellID, info.originalIcon = GetSpellInfo(index, bookType)
+		return info
 	end
 
 	local GetNumSpellBookSkillLines = C_SpellBook.GetNumSpellBookSkillLines or GetNumSpellTabs
 	local GetSpellBookSkillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo or function(index)
-		local name, texture, offset, numSlots, isGuild, offspecID = GetSpellTabInfo(index)
-		return { name = name, iconID = texture, itemIndexOffset = offset, numSpellBookItems = numSlots, isGuild = isGuild, offSpecID = offspecID, shouldHide = false, specID = false }
+		local info = { shouldHide = false }
+		info.name, info.iconID, info.itemIndexOffset, info.numSpellBookItems, info.isGuild, info.offspecID = GetSpellTabInfo(index)
+		return info
 	end
 
 	-- Need for modules
@@ -590,6 +592,10 @@ function PA:GetOptions()
 end
 
 function PA:BuildProfile()
+	for _, module in PA:IterateModules() do
+		if module.BuildProfile then PA:ProtectedCall(module, module.BuildProfile) end
+	end
+
 	PA.data = PA.Libs.ADB:New('ProjectAzilrokaDB', PA.Defaults, true)
 
 	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
@@ -623,11 +629,6 @@ function PA:PLAYER_LOGIN()
 	PA.Libs.EP = LibStub('LibElvUIPlugin-1.0', true)
 
 	PA:ProtectedCall(PA, PA.ScanSpellBook)
-
-	for _, module in PA:IterateModules() do
-		if module.BuildProfile then PA:ProtectedCall(module, module.BuildProfile) end
-	end
-
 	PA:BuildProfile()
 
 	if PA.Libs.EP then
