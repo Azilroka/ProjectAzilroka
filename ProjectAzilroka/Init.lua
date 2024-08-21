@@ -8,7 +8,7 @@ _G.ProjectAzilroka = Engine
 
 local min, max = min, max
 local select = select
-local pairs = pairs
+local next = next
 local sort = sort
 local gsub = gsub
 local tinsert = tinsert
@@ -45,9 +45,12 @@ PA.Libs = {
 	LCD = LibStub("LibClassicDurations", true),
 }
 
+local ACL, ACH = PA.Libs.ACL, PA.Libs.ACH
+
 Engine[1] = PA
-Engine[2] = PA.Libs.ACL
-Engine[3] = PA.Libs.ACH
+Engine[2] = ACL
+Engine[3] = ACH
+
 
 if PA.Libs.LCD then
 	PA.Libs.LCD:Register(AddOnName) 	-- Register LibClassicDurations
@@ -110,14 +113,14 @@ PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(', ', '    ')
 
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 PA.GrowthDirection = {
-	DOWN_RIGHT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Down"], PA.Libs.ACL["Right"]),
-	DOWN_LEFT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Down"], PA.Libs.ACL["Left"]),
-	UP_RIGHT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Up"], PA.Libs.ACL["Right"]),
-	UP_LEFT = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Up"], PA.Libs.ACL["Left"]),
-	RIGHT_DOWN = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Right"], PA.Libs.ACL["Down"]),
-	RIGHT_UP = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Right"], PA.Libs.ACL["Up"]),
-	LEFT_DOWN = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Left"], PA.Libs.ACL["Down"]),
-	LEFT_UP = format(PA.Libs.ACL["%s and then %s"], PA.Libs.ACL["Left"], PA.Libs.ACL["Up"]),
+	DOWN_RIGHT = format(ACL["%s and then %s"], ACL["Down"], ACL["Right"]),
+	DOWN_LEFT = format(ACL["%s and then %s"], ACL["Down"], ACL["Left"]),
+	UP_RIGHT = format(ACL["%s and then %s"], ACL["Up"], ACL["Right"]),
+	UP_LEFT = format(ACL["%s and then %s"], ACL["Up"], ACL["Left"]),
+	RIGHT_DOWN = format(ACL["%s and then %s"], ACL["Right"], ACL["Down"]),
+	RIGHT_UP = format(ACL["%s and then %s"], ACL["Right"], ACL["Up"]),
+	LEFT_DOWN = format(ACL["%s and then %s"], ACL["Left"], ACL["Down"]),
+	LEFT_UP = format(ACL["%s and then %s"], ACL["Left"], ACL["Up"]),
 }
 
 PA.ElvUI = PA:IsAddOnEnabled('ElvUI', PA.MyName)
@@ -136,8 +139,8 @@ end
 PA.oUF = GetoUF()
 
 PA.Classes = {}
-for k, v in pairs(_G.LOCALIZED_CLASS_NAMES_MALE) do PA.Classes[v] = k end
-for k, v in pairs(_G.LOCALIZED_CLASS_NAMES_FEMALE) do PA.Classes[v] = k end
+for k, v in next, _G.LOCALIZED_CLASS_NAMES_MALE do PA.Classes[v] = k end
+for k, v in next, _G.LOCALIZED_CLASS_NAMES_FEMALE do PA.Classes[v] = k end
 
 function PA:ClassColorCode(class)
 	local color = PA:GetClassColor(PA.Classes[class])
@@ -194,11 +197,13 @@ function PA:ShortValue(value)
 	end
 end
 
+local function clamp(v, min, max)
+	min, max = min or 0, max or 1
+	return v > max and max or v < min or v
+end
+
 function PA:RGBToHex(r, g, b, header, ending)
-	r = r <= 1 and r >= 0 and r or 1
-	g = g <= 1 and g >= 0 and g or 1
-	b = b <= 1 and b >= 0 and b or 1
-	return format('%s%02x%02x%02x%s', header or '|cff', r*255, g*255, b*255, ending or '')
+	return format('%s%02x%02x%02x%s', header or '|cff', clamp(r) * 255, clamp(g) * 255, clamp(b) * 255, ending or '')
 end
 
 function PA:HexToRGB(hex)
@@ -210,7 +215,7 @@ function PA:HexToRGB(hex)
 end
 
 function PA:ConflictAddOn(AddOns)
-	for AddOn in pairs(AddOns) do
+	for AddOn in next, AddOns do
 		if PA:IsAddOnEnabled(AddOn, PA.MyName) then
 			return true
 		end
@@ -241,7 +246,7 @@ end
 function PA:AddKeysToTable(current, tbl)
 	if type(current) ~= 'table' then return end
 
-	for key, value in pairs(tbl) do
+	for key, value in next, tbl do
 		if current[key] == nil then
 			current[key] = value
 		end
@@ -301,7 +306,7 @@ function PA:CopyTable(current, default)
 	end
 
 	if type(default) == 'table' then
-		for option, value in pairs(default) do
+		for option, value in next, default do
 			current[option] = (type(value) == 'table' and PA:CopyTable(current[option], value)) or value
 		end
 	end
@@ -442,7 +447,7 @@ do
 
 	-- Simpy Magic
 	local t = {}
-	for _, name in pairs({'SPELL_RECAST_TIME_SEC','SPELL_RECAST_TIME_MIN','SPELL_RECAST_TIME_CHARGES_SEC','SPELL_RECAST_TIME_CHARGES_MIN'}) do
+	for _, name in next, { 'SPELL_RECAST_TIME_SEC', 'SPELL_RECAST_TIME_MIN', 'SPELL_RECAST_TIME_CHARGES_SEC', 'SPELL_RECAST_TIME_CHARGES_MIN' } do
 		t[name] = _G[name]:gsub('%%%.%dg','[%%d%%.]-'):gsub('%.$','%%.'):gsub('^(.-)$','^%1$')
 	end
 
@@ -530,7 +535,7 @@ do
 end
 
 _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
-	text = PA.Libs.ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
+	text = ACL["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
 	button1 = _G.ACCEPT,
 	button2 = _G.CANCEL,
 	OnAccept = _G.ReloadUI,
@@ -540,7 +545,7 @@ _G.StaticPopupDialogs["PROJECTAZILROKA"] = {
 }
 
 _G.StaticPopupDialogs["PROJECTAZILROKA_RL"] = {
-	text = PA.Libs.ACL["This setting requires that you reload your User Interface."],
+	text = ACL["This setting requires that you reload your User Interface."],
 	button1 = _G.ACCEPT,
 	button2 = _G.CANCEL,
 	OnAccept = _G.ReloadUI,
@@ -585,7 +590,7 @@ PA.Defaults = {
 	}
 }
 
-PA.Options = PA.Libs.ACH:Group(PA:Color(PA.Title), nil, 6)
+PA.Options = ACH:Group(PA:Color(PA.Title), nil, 6)
 
 function PA:GetOptions()
 	if _G.ElvUI then _G.ElvUI[1].Options.args.ProjectAzilroka = PA.Options end
