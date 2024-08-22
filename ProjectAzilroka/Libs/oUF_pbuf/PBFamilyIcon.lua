@@ -1,26 +1,3 @@
---[[
-# Element: Pet Battle Family Icon
-
-Handles the visibility and updating of an indicator based on the unit's incoming resurrect status.
-
-## Widget
-
-PBFamilyIcon - A `Texture` used to display if the unit has an incoming resurrect.
-
-## Notes
-
-A default texture will be applied if the widget is a Texture and doesn't have a texture or a color set.
-
-## Examples
-
-    -- Position and size
-    local PBFamilyIcon = self:CreateTexture(nil, 'OVERLAY')
-    PBFamilyIcon:SetSize(16, 16)
-    PBFamilyIcon:SetPoint('TOPRIGHT', self)
-
-    -- Register it with oUF
-    self.PBFamilyIcon = PBFamilyIcon
---]]
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
 if not oUF then
@@ -35,11 +12,6 @@ local function Update(self, event, unit)
 
 	local element = self.PBFamilyIcon
 
-	--[[ Callback: PBFamilyIcon:PreUpdate()
-	Called before the element has been updated.
-
-	* self - the PBFamilyIcon element
-	--]]
 	if (element.PreUpdate) then
 		element:PreUpdate()
 	end
@@ -50,25 +22,12 @@ local function Update(self, event, unit)
 		element:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\]] .. suffix)
 	end
 
-	--[[ Callback: PBFamilyIcon:PostUpdate(incomingResurrect)
-	Called after the element has been updated.
-
-	* self              - the PBFamilyIcon element
-	* petType.          - the family type of thepet
-	--]]
 	if (element.PostUpdate) then
 		return element:PostUpdate(petType)
 	end
 end
 
 local function Path(self, ...)
-	--[[ Override: PBFamilyIcon.Override(self, event, ...)
-	Used to completely override the internal update function.
-
-	* self  - the parent object
-	* event - the event triggering the update (string)
-	* ...   - the arguments accompanying the event
-	--]]
 	return (self.PBFamilyIcon.Override or Update)(self, ...)
 end
 

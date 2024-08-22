@@ -10,21 +10,10 @@ end
 		.fadeOutTime: How long it takes the cutaway health to fade, defaults to 0.6 seconds
 		.lengthBeforeFade: How long it takes before the cutaway begins to fade, defaults to 0.3 seconds
 ]]
--- GLOBALS: ElvUI
 
 local _G = _G
 local max = math.max
 local hooksecurefunc = hooksecurefunc
-
-local E -- placeholder
-
-local function checkElvUI()
-	if not E then
-		E = _G.ElvUI and _G.ElvUI[1]
-
-		assert(E, "PBCutaway was not able to locate ElvUI and it is required.")
-	end
-end
 
 local function closureFunc(self)
 	self.ready = nil
@@ -41,7 +30,7 @@ local function fadeClosure(element)
 		}
 	end
 
-	E:UIFrameFadeOut(element, element.fadeOutTime, element.__parentElement:GetAlpha(), 0)
+	UIFrameFadeOut(element, element.fadeOutTime, element.__parentElement:GetAlpha(), 0)
 end
 
 local function Shared_PreUpdate(self, element, petOwner, petIndex)
@@ -108,7 +97,7 @@ local function PBHealth_PostUpdate(self, unit, curHealth, maxHealth)
 	if (element.cur - curHealth) > (maxHealth * 0.01) then
 		element:SetAlpha(self:GetAlpha())
 
-		E:Delay(element.lengthBeforeFade, fadeClosure, element)
+		C_Timer.After(element.lengthBeforeFade, fadeClosure, element)
 
 		element.playing = true
 	else
@@ -151,8 +140,6 @@ end
 local function Enable(self)
 	local element = self and self.PBCutaway
 	if (element) then
-		checkElvUI()
-
 		if (element.Health and element.Health:IsObjectType("Texture") and not element.Health:GetTexture()) then
 			element.Health:SetTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end

@@ -1,80 +1,3 @@
---[[
-# Element: Experience Bar
-
-Handles the updating of a status bar that displays the unit's Experience.
-
-## Widget
-
-Experience - A `StatusBar` used to represent the unit's Experience.
-
-## Sub-Widgets
-
-.bg - A `Texture` used as a background. It will inherit the color of the main StatusBar.
-
-## Notes
-
-A default texture will be applied if the widget is a StatusBar and doesn't have a texture set.
-
-## Options
-
-.smoothGradient                   - 9 color values to be used with the .colorSmooth option (table)
-.considerSelectionInCombatHostile - Indicates whether selection should be considered hostile while the unit is in
-                                    combat with the player (boolean)
-
-The following options are listed by priority. The first check that returns true decides the color of the bar.
-
-.colorDisconnected - Use `self.colors.disconnected` to color the bar if the unit is offline (boolean)
-.colorTapping      - Use `self.colors.tapping` to color the bar if the unit isn't tapped by the player (boolean)
-.colorThreat       - Use `self.colors.threat[threat]` to color the bar based on the unit's threat status. `threat` is
-                     defined by the first return of [UnitThreatSituation](https://wow.gamepedia.com/API_UnitThreatSituation) (boolean)
-.colorClass        - Use `self.colors.class[class]` to color the bar based on unit class. `class` is defined by the
-                     second return of [UnitClass](http://wowprogramming.com/docs/api/UnitClass.html) (boolean)
-.colorClassNPC     - Use `self.colors.class[class]` to color the bar if the unit is a NPC (boolean)
-.colorClassPet     - Use `self.colors.class[class]` to color the bar if the unit is player controlled, but not a player
-                     (boolean)
-.colorSelection    - Use `self.colors.selection[selection]` to color the bar based on the unit's selection color.
-                     `selection` is defined by the return value of Private.unitSelectionType, a wrapper function
-                     for [UnitSelectionType](https://wow.gamepedia.com/API_UnitSelectionType) (boolean)
-.colorReaction     - Use `self.colors.reaction[reaction]` to color the bar based on the player's reaction towards the
-                     unit. `reaction` is defined by the return value of
-                     [UnitReaction](http://wowprogramming.com/docs/api/UnitReaction.html) (boolean)
-.colorSmooth       - Use `smoothGradient` if present or `self.colors.smooth` to color the bar with a smooth gradient
-                     based on the player's current Experience percentage (boolean)
-.colorExperience       - Use `self.colors.Experience` to color the bar. This flag is used to reset the bar color back to default
-                     if none of the above conditions are met (boolean)
-
-## Sub-Widgets Options
-
-.multiplier - Used to tint the background based on the main widgets R, G and B values. Defaults to 1 (number)[0-1]
-
-## Examples
-
-    -- Position and size
-    local Experience = CreateFrame('StatusBar', nil, self)
-    Experience:SetHeight(20)
-    Experience:SetPoint('TOP')
-    Experience:SetPoint('LEFT')
-    Experience:SetPoint('RIGHT')
-
-    -- Add a background
-    local Background = Experience:CreateTexture(nil, 'BACKGROUND')
-    Background:SetAllPoints(Experience)
-    Background:SetTexture(1, 1, 1, .5)
-
-    -- Options
-    Experience.colorTapping = true
-    Experience.colorDisconnected = true
-    Experience.colorClass = true
-    Experience.colorReaction = true
-    Experience.colorExperience = true
-
-    -- Make the background darker.
-    Background.multiplier = .5
-
-    -- Register it with oUF
-    Experience.bg = Background
-    self.PBExperience = Experience
---]]
 local PA = _G.ProjectAzilroka
 local oUF = PA.oUF
 if not oUF then
@@ -114,13 +37,6 @@ local function UpdateColor(self, event, unit)
 end
 
 local function ColorPath(self, ...)
-	--[[ Override: Experience.UpdateColor(self, event, unit)
-	Used to completely override the internal function for updating the widgets' colors.
-
-	* self  - the parent object
-	* event - the event triggering the update (string)
-	* unit  - the unit accompanying the event (string)
-	--]]
 	(self.PBExperience.UpdateColor or UpdateColor)(self, ...)
 end
 
@@ -132,12 +48,6 @@ local function Update(self, event, unit)
 
 	local element = self.PBExperience
 
-	--[[ Callback: Experience:PreUpdate(unit)
-	Called before the element has been updated.
-
-	* self - the Experience element
-	* unit - the unit for which the update has been triggered (string)
-	--]]
 	if (element.PreUpdate) then
 		element:PreUpdate(unit)
 	end
@@ -155,14 +65,6 @@ local function Update(self, event, unit)
 	element.cur = cur
 	element.max = max
 
-	--[[ Callback: Experience:PostUpdate(unit, cur, max)
-	Called after the element has been updated.
-
-	* self - the Experience element
-	* unit - the unit for which the update has been triggered (string)
-	* cur  - the unit's current Experience value (number)
-	* max  - the unit's maximum possible Experience value (number)
-	--]]
 	if (element.PostUpdate) then
 		element:PostUpdate(unit, cur, max)
 	end
@@ -171,15 +73,8 @@ end
 local function Path(self, event, ...)
 	if (self.isForced and event ~= "ElvUI_UpdateAllElements") then
 		return
-	end -- ElvUI changed
+	end
 
-	--[[ Override: Experience.Override(self, event, unit)
-	Used to completely override the internal update function.
-
-	* self  - the parent object
-	* event - the event triggering the update (string)
-	* unit  - the unit accompanying the event (string)
-	--]]
 	(self.PBExperience.Override or Update)(self, event, ...)
 
 	ColorPath(self, event, ...)
@@ -212,7 +107,7 @@ local function Disable(self)
 	if (element) then
 		element:Hide()
 
-		element:SetScript("OnUpdate", nil) -- ElvUI changed
+		element:SetScript("OnUpdate", nil)
 		self:UnregisterEvent("PET_BATTLE_XP_CHANGED", Path)
 	end
 end

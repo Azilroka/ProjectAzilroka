@@ -1,9 +1,9 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
-local BLDB = PA:NewModule('BLDB', 'AceEvent-3.0')
+local BLDB = PA:NewModule('BrokerLDB', 'AceEvent-3.0')
 PA.BLDB, _G.BLDB = BLDB, BLDB
 
 local _G = _G
-local pairs = pairs
+local next = next
 local tinsert = tinsert
 local tremove = tremove
 local strfind, strlower, strlen = strfind, strlower, strlen
@@ -60,7 +60,7 @@ function BLDB:AnimSlideOut(frame)
 end
 
 function BLDB:SlideOut()
-	for _, Slides in pairs(BLDB.Whitelist) do
+	for _, Slides in next, BLDB.Whitelist do
 		BLDB:AnimSlideIn(Slides)
 	end
 	BLDB:AnimSlideIn(BLDB.Frame)
@@ -69,7 +69,7 @@ function BLDB:SlideOut()
 end
 
 function BLDB:SlideIn()
-	for _, Slides in pairs(BLDB.Buttons) do
+	for _, Slides in next, BLDB.Buttons do
 		Slides:Hide()
 	end
 	BLDB.Frame.Arrow:SetRotation(-1.57)
@@ -81,7 +81,7 @@ function BLDB:Update()
 		BLDB:New(nil, Name, Object)
 	end
 
-	for Key, Slide in pairs(BLDB.Buttons) do
+	for Key, Slide in next, BLDB.Buttons do
 		Slide.Text:SetFont(PA.Libs.LSM:Fetch('font', BLDB.db['Font']), BLDB.db['FontSize'], BLDB.db['FontFlag'])
 		if BLDB.db['ShowIcon'] and BLDB.db['ShowText'] then
 			if BLDB.db['PanelWidth'] == 0 then BLDB.db['PanelWidth'] = 140 end
@@ -111,13 +111,13 @@ function BLDB:Update()
 			Slide.anim.in2:SetOffset(x, 0)
 			Slide.anim.out2:SetOffset(-x, 0)
 		end
-		for _, Blacklisted in pairs(BLDB.Blacklist) do
+		for _, Blacklisted in next, BLDB.Blacklist do
 			if Slide:GetName() == Blacklisted then tremove(BLDB.Whitelist, Key) Slide.Enabled = false return end
 		end
 	end
 
 	local yOffSet = 0
-	for _, Slide in pairs(BLDB.Whitelist) do
+	for _, Slide in next, BLDB.Whitelist do
 		Slide:SetPoint('TOPLEFT', BLDB.Frame, 'TOPRIGHT', 1, yOffSet)
 		yOffSet = yOffSet - BLDB.db['PanelHeight'] - 1
 	end
@@ -137,7 +137,7 @@ end
 function BLDB:AddBlacklistFrame(frame)
 	frame.Enabled = false
 	local index
-	for i, v in pairs(BLDB.Whitelist) do
+	for i, v in next, BLDB.Whitelist do
 		if v == frame:GetName() then
 			index = i
 			break
@@ -152,7 +152,7 @@ end
 function BLDB:RemoveBlacklistFrame(frame)
 	frame.Enabled = true
 	local index
-	for i, v in pairs(BLDB.Blacklist) do
+	for i, v in next, BLDB.Blacklist do
 		if v == frame:GetName() then
 			index = i
 			break
@@ -166,7 +166,7 @@ end
 
 function BLDB:New(_, name, object)
 	if _G['BLDB_'..name] then return end
-	for _, v in pairs(BLDB.Ignore) do
+	for _, v in next, BLDB.Ignore do
 		if name == v then return end
 	end
 

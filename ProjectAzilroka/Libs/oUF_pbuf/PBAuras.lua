@@ -62,12 +62,6 @@ local function createAuraIcon(element, index)
 	button.icon = icon
 	button.turnsRemaining = turnsRemaining
 
-	--[[ Callback: Auras:PostCreateIcon(button)
-	Called after a new aura button has been created.
-
-	* self   - the widget holding the aura buttons
-	* button - the newly created aura button (Button)
-	--]]
 	if (element.PostCreateIcon) then
 		element:PostCreateIcon(button)
 	end
@@ -75,8 +69,7 @@ local function createAuraIcon(element, index)
 	return button
 end
 
-local VISIBLE = 0
-local HIDDEN = 1
+local VISIBLE, HIDDEN = 0, 1
 
 local function updateIcon(element, petOwner, petIndex, index, offset, isDebuff, visible)
 	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
@@ -94,16 +87,6 @@ local function updateIcon(element, petOwner, petIndex, index, offset, isDebuff, 
 		local position = visible + offset + 1
 		local button = element[position]
 		if (not button) then
-			--[[ Override: Auras:CreateIcon(position)
-			Used to create the aura button at a given position.
-
-			* self     - the widget holding the aura buttons
-			* position - the position at which the aura button is to be created (number)
-
-			## Returns
-
-			* button - the button used to represent the aura (Button)
-			--]]
 			button = (element.CreateIcon or createAuraIcon)(element, position)
 
 			tinsert(element, button)
@@ -159,12 +142,8 @@ end
 
 local ABSOLUTE_MAX = 12
 local function filterIcons(element, petOwner, petIndex, limit, isDebuff, offset, dontHide)
-	if (not offset) then
-		offset = 0
-	end
-	local index = 1
-	local visible = 0
-	local hidden = 0
+	offset = offset or 0
+	local index, visible, hidden = 1, 0, 0
 
 	while (visible < limit and index <= ABSOLUTE_MAX) do
 		local result = updateIcon(element, petOwner, petIndex, index, offset, isDebuff, visible)
@@ -252,8 +231,6 @@ local function Update(self, event)
 	local petOwner, petIndex = petInfo.petOwner, petInfo.petIndex
 	UpdateAuras(self, event, petOwner, petIndex)
 
-	-- Assume no event means someone wants to re-anchor things. This is usually
-	-- done by UpdateAllElements and :ForceUpdate.
 	if (event == "ForceUpdate" or not event) then
 		local buffs = self.PBBuffs
 		if (buffs) then

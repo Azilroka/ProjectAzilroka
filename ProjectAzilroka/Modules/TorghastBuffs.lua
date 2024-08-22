@@ -221,6 +221,7 @@ function TB:UpdateSettings()
 end
 
 function TB:Initialize()
+	if not PA.Retail then return end
 	if TB.db.Enable ~= true then
 		return
 	end

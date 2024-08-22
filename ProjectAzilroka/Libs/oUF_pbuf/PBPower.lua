@@ -20,13 +20,6 @@ local function Update(self, event, unit)
 end
 
 local function Path(self, ...)
-	--[[ Override: Portrait.Override(self, event, unit)
-	Used to completely override the internal update function.
-
-	* self  - the parent object
-	* event - the event triggering the update (string)
-	* unit  - the unit accompanying the event (string)
-	--]]
 	return (self.PBPower.Override or Update)(self, ...)
 end
 
