@@ -508,7 +508,7 @@ function IF:CreateAuraIcon(element, position)
 					local timervalue, formatid = PA:GetTimeInfo(expiration, IF.db.Cooldown.threshold)
 					local color = PA.TimeColors[formatid]
 					if timervalue then
-						local Normalized = expiration / Frame.duration
+						local Normalized = PA:Clamp(expiration / Frame.duration)
 						s:SetValue(Normalized)
 						s.Time:SetFormattedText(PA.TimeFormats[formatid][1], timervalue)
 						s.Time:SetTextColor(color.r, color.g, color.b)
@@ -544,31 +544,33 @@ function IF:CreateAuraIcon(element, position)
 	return Frame
 end
 
-function IF:UpdateAll()
-	for FrameName, Frame in next, IF.Panels do
-		Frame.db = IF.db[FrameName]
+function IF:UpdateAll(init)
+	if not init then
+		for FrameName, Frame in next, IF.Panels do
+			Frame.db = IF.db[FrameName]
 
-		if Frame.db.Enable then
-			IF:EnableUnit(Frame)
-		else
-			IF:DisableUnit(Frame)
-		end
+			if Frame.db.Enable then
+				IF:EnableUnit(Frame)
+			else
+				IF:DisableUnit(Frame)
+			end
 
-		Frame:SetWidth((Frame.db.StatusBar and 1 or Frame.db.NumPerRow) * (Frame.db.StatusBar and Frame.db.StatusBarWidth or Frame.db.Size))
+			Frame:SetWidth((Frame.db.StatusBar and 1 or Frame.db.NumPerRow) * (Frame.db.StatusBar and Frame.db.StatusBarWidth or Frame.db.Size))
 
-		for _, Button in ipairs(Frame) do
-			Button:SetSize(Frame.db.Size, Frame.db.Size)
-			Button.Count:SetFont(LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
-			Button.StatusBar:SetStatusBarTexture(LSM:Fetch('statusbar', Frame.db.StatusBarTexture))
-			Button.StatusBar:SetStatusBarColor(unpack(Frame.db.StatusBarTextureColor))
-			Button.StatusBar:SetSize(Frame.db.StatusBarWidth, Frame.db.StatusBarHeight)
-			Button.StatusBar.Name:SetFont(LSM:Fetch('font', Frame.db.StatusBarFont), Frame.db.StatusBarFontSize, Frame.db.StatusBarFontFlag)
-			Button.StatusBar.Time:SetFont(LSM:Fetch('font', Frame.db.StatusBarFont), Frame.db.StatusBarFontSize, Frame.db.StatusBarFontFlag)
-			Button.StatusBar.Name:SetPoint('BOTTOMLEFT', Button.StatusBar, Frame.db.StatusBarNameX, Frame.db.StatusBarNameY)
-			Button.StatusBar.Time:SetPoint('BOTTOMRIGHT', Button.StatusBar, Frame.db.StatusBarTimeX, Frame.db.StatusBarTimeY)
-			Button.StatusBar:SetShown(Frame.db.StatusBar)
-			Button.StatusBar.Name:SetShown(Frame.db.StatusBarNameEnabled)
-			Button.StatusBar.Time:SetShown(Frame.db.StatusBarTimeEnabled)
+			for _, Button in ipairs(Frame) do
+				Button:SetSize(Frame.db.Size, Frame.db.Size)
+				Button.Count:SetFont(LSM:Fetch('font', Frame.db.StackCountFont), Frame.db.StackCountFontSize, Frame.db.StackCountFontFlag)
+				Button.StatusBar:SetStatusBarTexture(LSM:Fetch('statusbar', Frame.db.StatusBarTexture))
+				Button.StatusBar:SetStatusBarColor(unpack(Frame.db.StatusBarTextureColor))
+				Button.StatusBar:SetSize(Frame.db.StatusBarWidth, Frame.db.StatusBarHeight)
+				Button.StatusBar.Name:SetFont(LSM:Fetch('font', Frame.db.StatusBarFont), Frame.db.StatusBarFontSize, Frame.db.StatusBarFontFlag)
+				Button.StatusBar.Time:SetFont(LSM:Fetch('font', Frame.db.StatusBarFont), Frame.db.StatusBarFontSize, Frame.db.StatusBarFontFlag)
+				Button.StatusBar.Name:SetPoint('BOTTOMLEFT', Button.StatusBar, Frame.db.StatusBarNameX, Frame.db.StatusBarNameY)
+				Button.StatusBar.Time:SetPoint('BOTTOMRIGHT', Button.StatusBar, Frame.db.StatusBarTimeX, Frame.db.StatusBarTimeY)
+				Button.StatusBar:SetShown(Frame.db.StatusBar)
+				Button.StatusBar.Name:SetShown(Frame.db.StatusBarNameEnabled)
+				Button.StatusBar.Time:SetShown(Frame.db.StatusBarTimeEnabled)
+			end
 		end
 	end
 
@@ -758,12 +760,5 @@ function IF:Initialize()
 		IF:RegisterEvent('PLAYER_FOCUS_CHANGED', function() IF:UpdateAuras(IF.Panels.FocusBuffs, 'focus') IF:UpdateAuras(IF.Panels.FocusDebuffs, 'focus') end)
 	end
 
-	if IF.db.Cooldowns.Enable then
-		IF:ScheduleRepeatingTimer('UpdateActiveCooldowns', IF.db.Cooldowns.UpdateSpeed)
-		IF:ScheduleRepeatingTimer('UpdateDelayedCooldowns', .5)
-	end
-
-	if IF.db.ItemCooldowns.Enable then
-		IF:ScheduleRepeatingTimer('UpdateItemCooldowns', IF.db.ItemCooldowns.UpdateSpeed)
-	end
+	IF:UpdateAll(true)
 end

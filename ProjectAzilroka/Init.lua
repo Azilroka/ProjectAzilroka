@@ -4,25 +4,14 @@ local LibStub = _G.LibStub
 
 local PA = LibStub('AceAddon-3.0'):NewAddon('ProjectAzilroka', 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
 
-_G.ProjectAzilroka = Engine
-
 local min, max = min, max
-local select = select
-local next = next
-local sort = sort
-local gsub = gsub
-local tinsert = tinsert
-local print = print
-local format = format
-local strsplit, strmatch, strlen, strsub = strsplit, strmatch, strlen, strsub
+local next, sort, tinsert, print = next, sort, tinsert, print
+local format, strmatch, strlen, strsub, gsub = format, strmatch, strlen, strsub, gsub
 
-local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
-local GetAddOnEnableState = C_AddOns.GetAddOnEnableState
-local UnitName = UnitName
-local UnitClass = UnitClass
-local GetRealmName = GetRealmName
-local UIParent = UIParent
-local CreateFrame = CreateFrame
+local GetAddOnMetadata, GetAddOnEnableState = C_AddOns.GetAddOnMetadata, C_AddOns.GetAddOnEnableState
+local UnitName, UnitClass, GetRealmName = UnitName, UnitClass, GetRealmName
+
+local UIParent, CreateFrame = UIParent, CreateFrame
 
 PA.Libs = {
 	-- Ace Libraries
@@ -46,11 +35,7 @@ PA.Libs = {
 }
 
 local ACL, ACH = PA.Libs.ACL, PA.Libs.ACH
-
-Engine[1] = PA
-Engine[2] = ACL
-Engine[3] = ACH
-
+_G.ProjectAzilroka, Engine[1], Engine[2], Engine[3] = Engine, PA, ACL, ACH
 
 if PA.Libs.LCD then
 	PA.Libs.LCD:Register(AddOnName) 	-- Register LibClassicDurations
@@ -80,10 +65,7 @@ end
 PA.UIScale = UIParent:GetScale()
 PA.MyFaction = UnitFactionGroup('player')
 
-PA.Retail = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE
-PA.Classic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
-PA.TBC = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-PA.Wrath = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC
+PA.Retail, PA.Classic, PA.TBC, PA.Wrath = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE, WOW_PROJECT_ID == WOW_PROJECT_CLASSIC, WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC, WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 -- Pixel Perfect
 PA.ScreenWidth, PA.ScreenHeight = GetPhysicalScreenSize()
@@ -155,7 +137,7 @@ local Color = PA:GetClassColor(PA.MyClass)
 PA.ClassColor = { Color.r, Color.g, Color.b }
 
 PA.ScanTooltip = CreateFrame('GameTooltip', 'PAScanTooltip', UIParent, 'GameTooltipTemplate')
-PA.ScanTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
+PA.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 
 PA.PetBattleFrameHider = CreateFrame('Frame', 'PA_PetBattleFrameHider', UIParent, 'SecureHandlerStateTemplate')
 PA.PetBattleFrameHider:SetAllPoints()
@@ -163,7 +145,7 @@ PA.PetBattleFrameHider:SetFrameStrata('LOW')
 _G.RegisterStateDriver(PA.PetBattleFrameHider, 'visibility', '[petbattle] hide; show')
 
 function PA:GetUIScale()
-	local effectiveScale = _G.UIParent:GetEffectiveScale()
+	local effectiveScale = UIParent:GetEffectiveScale()
 	local magic = effectiveScale
 
 	local scale = max(.64, min(1.15, magic))
@@ -197,13 +179,13 @@ function PA:ShortValue(value)
 	end
 end
 
-local function clamp(v, min, max)
+function PA:Clamp(v, min, max)
 	min, max = min or 0, max or 1
 	return v > max and max or v < min or v
 end
 
 function PA:RGBToHex(r, g, b, header, ending)
-	return format('%s%02x%02x%02x%s', header or '|cff', clamp(r) * 255, clamp(g) * 255, clamp(b) * 255, ending or '')
+	return format('%s%02x%02x%02x%s', header or '|cff', PA:Clamp(r) * 255, PA:Clamp(g) * 255, PA:Clamp(b) * 255, ending or '')
 end
 
 function PA:HexToRGB(hex)
@@ -399,19 +381,19 @@ do
 	local GetSpellBookItemName = C_SpellBook.GetSpellBookItemName or GetSpellBookItemName
 	local HasPetSpells = C_SpellBook.HasPetSpells or HasPetSpells
 
-	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(info, bookType)
+	local GetSpellCooldown = C_Spell.GetSpellCooldown or function(index, bookType)
 		local info = {}
 		if bookType then
-			info.startTime, info.duration, info.isEnabled, info.modRate = _G.GetSpellCooldown(info, bookType)
+			info.startTime, info.duration, info.isEnabled, info.modRate = GetSpellCooldown(index, bookType)
 		else
-			info.startTime, info.duration, info.isEnabled, info.modRate = _G.GetSpellCooldown(info)
+			info.startTime, info.duration, info.isEnabled, info.modRate = GetSpellCooldown(index)
 		end
 		return info
 	end
 
 	local GetSpellCharges = C_Spell.GetSpellCharges or function(index, bookType)
 		local info = {}
-		info.currentCharges, info.maxCharges, info.cooldownStartTime, info.cooldownDuration, info.chargeModRate = GetSpellCharges(info, bookType)
+		info.currentCharges, info.maxCharges, info.cooldownStartTime, info.cooldownDuration, info.chargeModRate = GetSpellCharges(index, bookType)
 		return info
 	end
 
@@ -499,7 +481,7 @@ do
 		for SpellID, SpellName in next, db do
 			local spellData = PA.SpellBook.Complete[SpellID]
 			local tblID = tostring(SpellID)
-	
+
 			if spellData.name and not SpellOptions[tblID] then
 				SpellOptions[tblID] = {
 					type = 'toggle',
@@ -510,10 +492,10 @@ do
 				}
 			end
 		end
-	
+
 		return SpellOptions
 	end
-	
+
 	function PA:ScanSpellBook(event)
 		for tab = 1, GetNumSpellBookSkillLines() do
 			local info = GetSpellBookSkillLineInfo(tab)

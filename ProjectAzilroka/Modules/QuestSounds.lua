@@ -1,23 +1,22 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local QS = PA:NewModule('QuestSounds', 'AceEvent-3.0', 'AceTimer-3.0')
-PA.QS = QS
+local LSM = PA.Libs.LSM
 
-QS.Title = ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r']
-QS.Description = ACL['Audio for Quest Progress & Completions.']
-QS.Authors = 'Azilroka'
-QS.Credits = 'Yoco'
-QS.isEnabled = false
+PA.QuestSounds = QS
 
-local PlaySoundFile = PlaySoundFile
-local PlaySound = PlaySound
+QS.Title, QS.Description, QS.Authors, QS.Credits, QS.isEnabled = ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'], ACL['Audio for Quest Progress & Completions.'], 'Azilroka', 'Yoco', false
 
-function QS:CountCompletedObjectives()
-	local Objectives = C_QuestLog.GetQuestObjectives(QS.QuestID)
-	local Completed, Total = 0, #Objectives
+local tonumber = tonumber
+local PlaySound, PlaySoundFile = PlaySound, PlaySoundFile
+
+function QS:CountCompletedObjectives(questID)
+	local Objectives = C_QuestLog.GetQuestObjectives(questID)
+	local Completed, Total = 0, 0
 	for _, objective in ipairs(Objectives) do
 		if objective.finished then
 			Completed = Completed + 1
 		end
+		Total = Total + 1
 	end
 
 	return Completed, Total
@@ -44,7 +43,7 @@ function QS:PlaySoundFile(file)
 	if QS.db.UseSoundID then
 		PlaySound(tonumber(file), QS.db.Channel)
 	else
-		PlaySoundFile(PA.Libs.LSM:Fetch('sound', file), QS.db.Channel)
+		PlaySoundFile(LSM:Fetch('sound', file), QS.db.Channel)
 	end
 
 	QS:ScheduleTimer('ResetSoundPlayback', QS.db.Throttle)
@@ -79,46 +78,46 @@ end
 
 function QS:RegisterSounds()
 	if PA.Classic then
-		PA.Libs.LSM:Register('sound', 'You Will Die!', 'Sound/Creature/CThun/CThunYouWillDIe.ogg')
-		PA.Libs.LSM:Register('sound', 'Gong Quest Complete', 'Sound/Doodad/G_GongTroll01.ogg')
-		PA.Libs.LSM:Register('sound', 'Creature Quest Complete', 'Sound/Creature/Chicken/ChickenDeathA.ogg')
-		PA.Libs.LSM:Register('sound', 'Creature Objective Complete', 'Sound/Creature/Frog/FrogFootstep2.ogg')
-		PA.Libs.LSM:Register('sound', 'Creature Objective Progress', 'Sound/Creature/Crab/CrabWoundC.ogg')
-		PA.Libs.LSM:Register('sound', 'Peon Quest Complete', 'Sound/Creature/Peon/PeonBuildingComplete1.ogg')
-		PA.Libs.LSM:Register('sound', 'Peon Objective Complete', 'Sound/Creature/Peon/PeonReady1.ogg')
-		PA.Libs.LSM:Register('sound', 'Peon Objective Progress', 'Sound/Creature/Peasant/PeasantWhat3.ogg')
-		PA.Libs.LSM:Register('sound', 'QuestGuru Quest Complete', 'Sound/Interface/levelup2.ogg')
-		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Complete', 'Sound/Interface/AuctionWindowClose.ogg')
-		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Progress', 'Sound/Interface/AuctionWindowOpen.ogg')
+		LSM:Register('sound', 'You Will Die!', 'Sound/Creature/CThun/CThunYouWillDIe.ogg')
+		LSM:Register('sound', 'Gong Quest Complete', 'Sound/Doodad/G_GongTroll01.ogg')
+		LSM:Register('sound', 'Creature Quest Complete', 'Sound/Creature/Chicken/ChickenDeathA.ogg')
+		LSM:Register('sound', 'Creature Objective Complete', 'Sound/Creature/Frog/FrogFootstep2.ogg')
+		LSM:Register('sound', 'Creature Objective Progress', 'Sound/Creature/Crab/CrabWoundC.ogg')
+		LSM:Register('sound', 'Peon Quest Complete', 'Sound/Creature/Peon/PeonBuildingComplete1.ogg')
+		LSM:Register('sound', 'Peon Objective Complete', 'Sound/Creature/Peon/PeonReady1.ogg')
+		LSM:Register('sound', 'Peon Objective Progress', 'Sound/Creature/Peasant/PeasantWhat3.ogg')
+		LSM:Register('sound', 'QuestGuru Quest Complete', 'Sound/Interface/levelup2.ogg')
+		LSM:Register('sound', 'QuestGuru Objective Complete', 'Sound/Interface/AuctionWindowClose.ogg')
+		LSM:Register('sound', 'QuestGuru Objective Progress', 'Sound/Interface/AuctionWindowOpen.ogg')
 	else
-		PA.Libs.LSM:Register('sound', 'Rubber Ducky', 566121)
-		PA.Libs.LSM:Register('sound', 'Cartoon FX', 566543)
-		PA.Libs.LSM:Register('sound', 'Explosion', 566982)
-		PA.Libs.LSM:Register('sound', 'Shing!', 566240)
-		PA.Libs.LSM:Register('sound', 'Wham!', 566946)
-		PA.Libs.LSM:Register('sound', 'Simon Chime', 566076)
-		PA.Libs.LSM:Register('sound', 'War Drums', 567275)
-		PA.Libs.LSM:Register('sound', 'Cheer', 567283)
-		PA.Libs.LSM:Register('sound', 'Humm', 569518)
-		PA.Libs.LSM:Register('sound', 'Short Circuit', 568975)
-		PA.Libs.LSM:Register('sound', 'Fel Portal', 569215)
-		PA.Libs.LSM:Register('sound', 'Fel Nova', 568582)
-		PA.Libs.LSM:Register('sound', 'You Will Die!', 546633)
-		PA.Libs.LSM:Register('sound', 'Gong Quest Complete', 565564)
-		PA.Libs.LSM:Register('sound', 'Gong Objective Complete', 565515)
-		PA.Libs.LSM:Register('sound', 'Gong Objective Progress', 569179)
-		PA.Libs.LSM:Register('sound', 'Wacky Quest Complete', 566877)
-		PA.Libs.LSM:Register('sound', 'Wacky Objectives Complete', 567381)
-		PA.Libs.LSM:Register('sound', 'Wacky Objective Progress', 566877)
-		PA.Libs.LSM:Register('sound', 'Creature Quest Complete', 546068)
-		PA.Libs.LSM:Register('sound', 'Creature Objective Complete', 549326)
-		PA.Libs.LSM:Register('sound', 'Creature Objective Progress', 546421)
-		PA.Libs.LSM:Register('sound', 'Peon Quest Complete', 558132)
-		PA.Libs.LSM:Register('sound', 'Peon Objective Complete', 558137)
-		PA.Libs.LSM:Register('sound', 'Peon Objective Progress', 558127)
-		PA.Libs.LSM:Register('sound', 'QuestGuru Quest Complete', 567478)
-		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Complete', 567499)
-		PA.Libs.LSM:Register('sound', 'QuestGuru Objective Progress', 567482)
+		LSM:Register('sound', 'Rubber Ducky', 566121)
+		LSM:Register('sound', 'Cartoon FX', 566543)
+		LSM:Register('sound', 'Explosion', 566982)
+		LSM:Register('sound', 'Shing!', 566240)
+		LSM:Register('sound', 'Wham!', 566946)
+		LSM:Register('sound', 'Simon Chime', 566076)
+		LSM:Register('sound', 'War Drums', 567275)
+		LSM:Register('sound', 'Cheer', 567283)
+		LSM:Register('sound', 'Humm', 569518)
+		LSM:Register('sound', 'Short Circuit', 568975)
+		LSM:Register('sound', 'Fel Portal', 569215)
+		LSM:Register('sound', 'Fel Nova', 568582)
+		LSM:Register('sound', 'You Will Die!', 546633)
+		LSM:Register('sound', 'Gong Quest Complete', 565564)
+		LSM:Register('sound', 'Gong Objective Complete', 565515)
+		LSM:Register('sound', 'Gong Objective Progress', 569179)
+		LSM:Register('sound', 'Wacky Quest Complete', 566877)
+		LSM:Register('sound', 'Wacky Objectives Complete', 567381)
+		LSM:Register('sound', 'Wacky Objective Progress', 566877)
+		LSM:Register('sound', 'Creature Quest Complete', 546068)
+		LSM:Register('sound', 'Creature Objective Complete', 549326)
+		LSM:Register('sound', 'Creature Objective Progress', 546421)
+		LSM:Register('sound', 'Peon Quest Complete', 558132)
+		LSM:Register('sound', 'Peon Objective Complete', 558137)
+		LSM:Register('sound', 'Peon Objective Progress', 558127)
+		LSM:Register('sound', 'QuestGuru Quest Complete', 567478)
+		LSM:Register('sound', 'QuestGuru Objective Complete', 567499)
+		LSM:Register('sound', 'QuestGuru Objective Progress', 567482)
 	end
 end
 
@@ -188,7 +187,7 @@ function QS:Initialize()
 			if KT then
 				KT.db.profile.soundQuest = false
 			else
-				_G.DisableAddOn('QuestGuruSounds')
+				_G.C_AddOns.DisableAddOn('QuestGuruSounds')
 			end
 			_G.ReloadUI()
 		end

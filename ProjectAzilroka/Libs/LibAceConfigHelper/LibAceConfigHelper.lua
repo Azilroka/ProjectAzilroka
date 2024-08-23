@@ -19,14 +19,8 @@ function ACH:Execute(name, desc, order, func, image, confirm, width, get, set, d
 
 	if confirm then
 		local confirmType = type(confirm)
-		if confirmType == 'boolean' then
-			optionTable.confirm = true
-		elseif confirmType == 'string' then
-			optionTable.confirm = true
-			optionTable.confirmText = confirm
-		elseif confirmType == 'function' then
-			optionTable.confirm = confirm
-		end
+		optionTable.confirm = confirmType == 'function' and confirm or true
+		optionTable.confirmText = confirmType == 'string' and confirm or nil
 	end
 
 	return optionTable
@@ -51,14 +45,8 @@ function ACH:Select(name, desc, order, values, confirm, width, get, set, disable
 
 	if confirm then
 		local confirmType = type(confirm)
-		if confirmType == 'boolean' then
-			optionTable.confirm = true
-		elseif confirmType == 'string' then
-			optionTable.confirm = true
-			optionTable.confirmText = confirm
-		elseif confirmType == 'function' then
-			optionTable.confirm = confirm
-		end
+		optionTable.confirm = confirmType == 'function' and confirm or true
+		optionTable.confirmText = confirmType == 'string' and confirm or nil
 	end
 
 	return optionTable
@@ -71,14 +59,8 @@ function ACH:MultiSelect(name, desc, order, values, confirm, width, get, set, di
 
 	if confirm then
 		local confirmType = type(confirm)
-		if confirmType == 'boolean' then
-			optionTable.confirm = true
-		elseif confirmType == 'string' then
-			optionTable.confirm = true
-			optionTable.confirmText = confirm
-		elseif confirmType == 'function' then
-			optionTable.confirm = confirm
-		end
+		optionTable.confirm = confirmType == 'function' and confirm or true
+		optionTable.confirmText = confirmType == 'string' and confirm or nil
 	end
 
 	return optionTable
@@ -89,14 +71,8 @@ function ACH:Toggle(name, desc, order, tristate, confirm, width, get, set, disab
 
 	if confirm then
 		local confirmType = type(confirm)
-		if confirmType == 'boolean' then
-			optionTable.confirm = true
-		elseif confirmType == 'string' then
-			optionTable.confirm = true
-			optionTable.confirmText = confirm
-		elseif confirmType == 'function' then
-			optionTable.confirm = confirm
-		end
+		optionTable.confirm = confirmType == 'function' and confirm or true
+		optionTable.confirmText = confirmType == 'string' and confirm or nil
 	end
 
 	return optionTable

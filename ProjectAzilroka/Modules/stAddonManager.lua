@@ -11,20 +11,9 @@ stAM.Authors = 'Azilroka    Safturento'
 stAM.isEnabled = false
 
 local _G = _G
-local unpack = unpack
-local tinsert = tinsert
-local wipe = wipe
-local pairs = pairs
-local sort = sort
-local format = format
-local strlen = strlen
-local strlower = strlower
-local strfind = strfind
-local min = min
-local max = max
-local concat = table.concat
-local select = select
-local gsub = gsub
+local min, max = min, max
+local next, ipairs, sort, unpack, wipe, tinsert, concat = next, ipairs, sort, unpack, wipe, tinsert, table.concat
+local format, gsub, strlen, strlower, strfind = format, gsub, strlen, strlower, strfind
 
 local GetNumAddOns = C_AddOns.GetNumAddOns
 local GetAddOnInfo = C_AddOns.GetAddOnInfo
@@ -36,11 +25,10 @@ local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 local DisableAllAddOns = C_AddOns.DisableAllAddOns
 local EnableAllAddOns = C_AddOns.EnableAllAddOns
 
-local CreateFrame = CreateFrame
-local UIParent = UIParent
-local GameTooltip = GameTooltip
+local UIParent, CreateFrame, GameTooltip = UIParent, CreateFrame, GameTooltip
 
 local IsShiftKeyDown = IsShiftKeyDown
+
 local MAX_BUTTONS = 50
 
 _G.StaticPopupDialogs.STADDONMANAGER_OVERWRITEPROFILE = {
@@ -96,7 +84,7 @@ function stAMCheckButtonMixin:OnClick()
 		else
 			EnableAddOn(self.name, stAM.SelectedCharacter)
 			if stAM.db.EnableRequiredAddons and self.required then
-				for _, AddOn in pairs(self.required) do
+				for _, AddOn in next, self.required do
 					EnableAddOn(AddOn)
 				end
 			end
@@ -412,7 +400,7 @@ function stAM:NewAddOnProfile(name, overwrite)
 
 	_G.stAddonManagerProfilesDB[name] = {}
 
-	for i = 1, #stAM.AddOnInfo do
+	for i in next, stAM.AddOnInfo do
 		local AddOn, isEnabled = stAM.AddOnInfo[i].Name, PA:IsAddOnEnabled(i, stAM.SelectedCharacter)
 		if isEnabled then
 			tinsert(_G.stAddonManagerProfilesDB[name], AddOn)
@@ -427,7 +415,7 @@ function stAM:LoadProfile(name)
 		DisableAllAddOns(stAM.SelectedCharacter)
 	end
 
-	for _, AddOn in pairs(_G.stAddonManagerProfilesDB[name]) do
+	for _, AddOn in next, _G.stAddonManagerProfilesDB[name] do
 		EnableAddOn(AddOn, stAM.SelectedCharacter)
 	end
 
@@ -441,7 +429,7 @@ function stAM:InitProfiles()
 	PA:SetTemplate(ProfileMenu)
 	ProfileMenu:Hide()
 
-	for _, name in pairs({'EnableAll', 'DisableAll', 'NewButton'}) do
+	for _, name in next, {'EnableAll', 'DisableAll', 'NewButton'} do
 		local Button = CreateFrame('Button', nil, ProfileMenu)
 		PA:SetTemplate(Button)
 		Button:SetSize(stAM.db.ButtonWidth, stAM.db.ButtonHeight)
@@ -479,7 +467,7 @@ function stAM:InitProfiles()
 		Pullout:SetHeight(stAM.db.ButtonHeight)
 		Pullout:Hide()
 
-		for _, Frame in pairs({'Load', 'Delete', 'Update'}) do
+		for _, Frame in next, {'Load', 'Delete', 'Update'} do
 			local Button = CreateFrame('Button', nil, Pullout)
 			PA:SetTemplate(Button)
 			Button:SetSize(73, stAM.db.ButtonHeight)
@@ -542,7 +530,7 @@ function stAM:UpdateProfiles()
 	local ProfileMenu = stAM.ProfileMenu
 
 	wipe(stAM.Profiles)
-	for name, _ in pairs(_G.stAddonManagerProfilesDB) do tinsert(stAM.Profiles, name) end
+	for name, _ in next, _G.stAddonManagerProfilesDB do tinsert(stAM.Profiles, name) end
 	sort(stAM.Profiles)
 
 	local PreviousButton

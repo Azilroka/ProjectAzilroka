@@ -1,24 +1,11 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local AR = PA:NewModule('AuraReminder', 'AceEvent-3.0', 'AceTimer-3.0')
+_G.AuraReminder, PA.AuraReminder = AR, AR
 
-PA.AR = AR
-
-AR.Title = ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r']
-AR.Description = ACL['Reminder for Buffs / Debuffs']
-AR.Authors = 'Azilroka'
-AR.isEnabled = false
+AR.Title, AR.Description, AR.Authors, AR.isEnabled = ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'], ACL['Reminder for Buffs / Debuffs'], 'Azilroka', false
 
 local _G = _G
-local pairs = pairs
-local ipairs = ipairs
-local tonumber = tonumber
-local tostring = tostring
-local select = select
-local format = format
-local strmatch = strmatch
-local unpack = unpack
-local tinsert = tinsert
-local wipe = wipe
+local next, tonumber, tostring, select, format, strmatch, tinsert, wipe = next, tonumber, tostring, select, format, strmatch, tinsert, wipe
 
 local GetSpellCooldown = GetSpellCooldown
 local GetSpellInfo = GetSpellInfo
@@ -40,10 +27,7 @@ local GetItemInfoInstant = GetItemInfoInstant
 
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
 
-local CreateFrame = CreateFrame
-local UIParent = UIParent
-
-_G.AuraReminder = AR
+local UIParent, CreateFrame = UIParent, CreateFrame
 
 AR.CreatedReminders = {}
 
@@ -61,7 +45,7 @@ end
 
 function AR:FindPlayerAura(db, checkPersonal, filter)
 	if db then
-		for spellID, value in pairs(db) do
+		for spellID, value in next, db do
 			if value == true then
 				return AR:FindAuraBySpellID(spellID, 'player', filter, checkPersonal and 'player')
 			end
@@ -142,15 +126,15 @@ end
 function AR:Reminder_Update()
 	if UnitIsDeadOrGhost('player') or (not PA.Classic and UnitInVehicle('player')) then return end
 
-	for _, button in ipairs(AR.CreatedReminders) do
+	for _, button in next, AR.CreatedReminders do
 		button:Hide()
 		button:SetAlpha(1)
 	end
 
 	local Position = 1
-	for _, filter in pairs({PA.MyClass, 'Global'}) do
+	for _, filter in next, {PA.MyClass, 'Global'} do
 		if AR.db.Filters then
-			for _, db in pairs(AR.db.Filters[filter]) do
+			for _, db in next, AR.db.Filters[filter] do
 				if db.enable and (not db.level or db.level and UnitLevel('player') > db.level) then
 					local Button = AR.CreatedReminders[Position]
 					if (not Button) or (Button:IsVisible()) then
@@ -183,11 +167,11 @@ function AR:Reminder_Update()
 							local negate = AR:FindPlayerAura(db.negateGroup, db.personal)
 							local skip = false
 							if not (negate or hasBuff or hasDebuff) then
-								for buff, value in pairs(db.spellGroup) do
+								for buff, value in next, db.spellGroup do
 									if value then
-										local usable = IsUsableSpell(buff);
+										local usable = IsUsableSpell(buff)
 										if db.strictFilter then
-											usable = usable and IsSpellKnownOrOverridesKnown(buff);
+											usable = usable and IsSpellKnownOrOverridesKnown(buff)
 											skip = not usable;
 										end
 										if usable and AR:IsSpellOnCooldown(buff) then
@@ -252,7 +236,7 @@ function AR:SetIconPosition(button, db)
 	local size = db.size or 40
 
 	button:ClearAllPoints()
-	button:SetPoint('CENTER', UIParent, 'CENTER', xOffset, yOffset);
+	button:SetPoint('CENTER', UIParent, 'CENTER', xOffset, yOffset)
 	button:SetSize(size, size)
 end
 
@@ -273,7 +257,7 @@ function AR:CreateReminder(index)
 end
 
 function AR:UpdateFilterGroup(group)
-	for option, optionTable in pairs(PA.Options.args.AuraReminder.args.filterGroup.args[group].args) do
+	for option, optionTable in next, PA.Options.args.AuraReminder.args.filterGroup.args[group].args do
 		if strmatch(option, "^AR") then
 			optionTable.hidden = true
 		end
@@ -281,7 +265,7 @@ function AR:UpdateFilterGroup(group)
 
 	if AR.db.Filters[selectedGroup][selectedFilter] and AR.db.Filters[selectedGroup][selectedFilter][group] then
 		local i = 1
-		for spell in pairs(AR.db.Filters[selectedGroup][selectedFilter][group]) do
+		for spell in next, AR.db.Filters[selectedGroup][selectedFilter][group] do
 			if spell and GetSpellInfo(spell) then
 				local name = format('AR%s', i + 2)
 				local optionName = PA.Options.args.AuraReminder.args.filterGroup.args[group].args[name]
@@ -303,9 +287,9 @@ end
 
 function AR:CleanDB()
 	-- Cleanup DB
-	for _, filter in pairs({PA.MyClass, 'Global'}) do
+	for _, filter in next, {PA.MyClass, 'Global'} do
 		if AR.db.Filters and AR.db.Filters[filter] then
-			for _, db in pairs(AR.db.Filters[filter]) do
+			for _, db in next, AR.db.Filters[filter] do
 				if db.role == 'ANY' then db.role = nil end
 				if db.tree == 'ANY' then db.tree = nil end
 				if db.talentTreeException == 'NONE' then db.talentTreeException = nil end
@@ -326,410 +310,66 @@ function AR:GetOptions()
 	local AuraReminder = ACH:Group(AR.Title, nil, nil, 'tree', function(info) return AR.db[info[#info]] end, function(info, value) AR.db[info[#info]] = value end)
 	PA.Options.args.AuraReminder = AuraReminder
 
-	AuraReminder.args = {
-			Description = {
-				order = 0,
-				type = 'description',
-				name = AR.Description,
-			},
-			Enable = {
-				order = 1,
-				type = 'toggle',
-				name = ACL['Enable'],
-				set = function(info, value)
-					AR.db[info[#info]] = value
-					if (not AR.isEnabled) then
-						AR:Initialize()
-					else
-						_G.StaticPopup_Show('PROJECTAZILROKA_RL')
-					end
-				end,
-			},
-			Sound = {
-				order = 2,
-				type = 'select', dialogControl = 'LSM30_Sound',
-				name = ACL['Sound'],
-				desc = ACL['Sound that will play when you have a warning icon displayed.'],
-				values = PA.Libs.LSM:HashTable('sound'),
-			},
-			selectGroup = {
-				order = 3,
-				type = 'select',
-				name = ACL['Select Group'],
-				get = function()
-					if selectedGroup == 'Global' then
-						return selectedGroup
-					else
-						return 'Class'
-					end
-				end,
-				set = function(_, value)
-					selectedFilter = nil
-					if value == 'Class' then
-						selectedGroup = PA.MyClass
-					else
-						selectedGroup = value
-					end
-				end,
-				values = { Class = 'Class', Global = 'Global'},
-			},
-			selectFilter = {
-				order = 4,
-				type = 'select',
-				name = ACL['Select Filter'],
-				get = function() return selectedFilter ~= '' and selectedFilter or '' end,
-				set = function(_, value)
-					selectedFilter = value ~= '' and value or nil
-					AR:UpdateFilterGroup('spellGroup')
-					AR:UpdateFilterGroup('negateGroup')
-				end,
-				values = function()
-					wipe(filters)
-					for filter in pairs(AR.db.Filters[selectedGroup]) do
-						filters[filter] = filter
-					end
-					if not next(filters) then
-						filters[''] = ACL['None']
-					end
-					return filters
-				end,
-			},
-			filterControl = {
-				order = 5,
-				type = 'group',
-				name = ACL['Filter Control'],
-				inline = true,
-				args = {
-					addFilter = {
-						order = 1,
-						type = 'input',
-						name = ACL['New Filter Name'],
-						get = function() return addGroupTemplate.name end,
-						set = function(_, value)
-							if AR.db.Filters[selectedGroup][value] then return end
-							addGroupTemplate.name = value
-						end,
-					},
-					addFilterTemplate = {
-						order = 2,
-						type = 'select',
-						name = ACL['New Filter Type'],
-						get = function() return addGroupTemplate.template end,
-						set = function(_, value)
-							if AR.db.Filters[selectedGroup][value] then
-								return
-							end
-							addGroupTemplate.template = value
-						end,
-						values = function()
-							wipe(filterTypeList)
-							filterTypeList.SPELL = ACL['Spell']
-							if selectedGroup ~= 'Global' then
-								filterTypeList.WEAPON = ACL['Weapon']
-								filterTypeList.COOLDOWN = ACL['Cooldown']
-							end
-							return filterTypeList
-						end,
-					},
-					addFilterButton = {
-						type = 'execute',
-						order = 3,
-						name = ACL['Add Filter'],
-						hidden = function() return addGroupTemplate.name == '' or addGroupTemplate.template == '' end,
-						func = function()
-							AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template }
-							if addGroupTemplate.template == 'COOLDOWN' then
-								AR.db.Filters[selectedGroup][addGroupTemplate.name].cooldownAlpha = .5
-							--elseif addGroupTemplate.template == 'WEAPON' then
-							else
-								AR.db.Filters[selectedGroup][addGroupTemplate.name].spellGroup = {}
-								AR.db.Filters[selectedGroup][addGroupTemplate.name].negateGroup = {}
-							end
+	AuraReminder.args.Description = ACH:Description(AR.Description, 0)
+	AuraReminder.args.Enable = ACH:Toggle(ACL['Enable'], nil, 1, nil, nil, nil, nil, function(info, value) AR.db[info[#info]] = value if (not AR.isEnabled) then AR:Initialize() else _G.StaticPopup_Show('PROJECTAZILROKA_RL') end end)
+	AuraReminder.args.Sound = ACH:SharedMediaSound(ACL['Sound'], ACL['Sound that will play when you have a warning icon displayed.'], 2)
+	AuraReminder.args.selectGroup = ACH:Select(ACL['Select Group'], nil, 3, { Class = 'Class', Global = 'Global'}, nil, nil, function() return selectedGroup == 'Global' and selectedGroup or 'Class' end, function(_, value) selectedGroup = value == 'Class' and PA.MyClass or value end)
+	AuraReminder.args.selectFilter = ACH:Select(ACL['Select Filter'], nil, 4, function() wipe(filters) for filter in next, AR.db.Filters[selectedGroup] do filters[filter] = filter end if not next(filters) then filters[''] = ACL['None'] end return filters end, nil, nil, function() return selectedFilter ~= '' and selectedFilter or '' end, function(_, value) selectedFilter = value ~= '' and value or nil AR:UpdateFilterGroup('spellGroup') AR:UpdateFilterGroup('negateGroup') end)
 
-							selectedFilter = addGroupTemplate.name
+	AuraReminder.args.filterControl = ACH:Group(ACL['Filter Control'], nil, 5)
+	AuraReminder.args.filterControl.inline = true
+	AuraReminder.args.filterControl.args.addFilter = ACH:Input(ACL['New Filter Name'], nil, 1, nil, nil, function() return addGroupTemplate.name end, function(_, value) if AR.db.Filters[selectedGroup][value] then return end addGroupTemplate.name = value end)
+	AuraReminder.args.filterControl.args.addFilterTemplate = ACH:Select(ACL['New Filter Type'], nil, 2, function() wipe(filterTypeList) filterTypeList.SPELL = ACL['Spell'] if selectedGroup ~= 'Global' then filterTypeList.WEAPON = ACL['Weapon'] filterTypeList.COOLDOWN = ACL['Cooldown'] end return filterTypeList end, nil, nil, function() return addGroupTemplate.template end, function(_, value) if AR.db.Filters[selectedGroup][value] then return end addGroupTemplate.template = value end)
+	AuraReminder.args.filterControl.args.addFilterButton = ACH:Execute(ACL['Add Filter'], nil, 3, function() AR.db.Filters[selectedGroup][addGroupTemplate.name] = { enable = true, size = 50, filterType = addGroupTemplate.template } if addGroupTemplate.template == 'COOLDOWN' then AR.db.Filters[selectedGroup][addGroupTemplate.name].cooldownAlpha = .5 else AR.db.Filters[selectedGroup][addGroupTemplate.name].spellGroup, AR.db.Filters[selectedGroup][addGroupTemplate.name].negateGroup = {}, {} end selectedFilter = addGroupTemplate.name addGroupTemplate.name, addGroupTemplate.template = '', '' end, nil, nil, nil, nil, nil, nil, function() return addGroupTemplate.name == '' or addGroupTemplate.template == '' end)
+	AuraReminder.args.filterControl.args.deleteGroup = ACH:Select(ACL['Remove Filter'], nil, 5, function() wipe(filters) for filter in next, AR.db.Filters[selectedGroup] do filters[filter] = filter end if not next(filters) then filters[''] = ACL['None'] end return filters end, function(_, value) return ACL['Remove Filter']..' - '..value end, nil, function() return '' end, function(_, value) selectedFilter = nil if DefaultFilters[selectedGroup][value] then AR.db.Filters[selectedGroup][value].enable = false else AR.db.Filters[selectedGroup][value] = nil end end)
 
-							addGroupTemplate.name = ''
-							addGroupTemplate.template = ''
-						end,
-					},
-					deleteGroup = {
-						order = 5,
-						type = 'select',
-						name = ACL['Remove Filter'],
-						get = function() return '' end,
-						confirm = function(_, value) return ACL['Remove Filter']..' - '..value end,
-						set = function(_, value)
-							selectedFilter = nil
-							if DefaultFilters[selectedGroup][value] then
-								AR.db.Filters[selectedGroup][value].enable = false;
-							else
-								AR.db.Filters[selectedGroup][value] = nil;
-							end
-						end,
-						values = function()
-							wipe(filters)
-							for filter in pairs(AR.db.Filters[selectedGroup]) do
-								filters[filter] = filter
-							end
-							if not next(filters) then
-								filters[''] = ACL['None']
-							end
-							return filters
-						end,
-					},
-				},
-			},
-			filterGroup = {
-				order = 8,
-				type = 'group',
-				name = function() return selectedFilter end,
-				inline = true,
-				get = function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] end,
-				set = function(info, value) AR.db.Filters[selectedGroup][selectedFilter][info[#info]] = value end,
-				hidden = function() return not selectedFilter end,
-				args = {
-					enable = {
-						order = 1,
-						type = 'toggle',
-						name = ACL['Enable'],
-					},
-					filterType = {
-						order = 2,
-						type = 'select',
-						name = ACL['Filter Type'],
-						desc = ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'],
-						values = function()
-							wipe(filterTypeList)
-							filterTypeList.SPELL = ACL['Spell']
-							if selectedGroup ~= 'Global' then
-								filterTypeList.WEAPON = ACL['Weapon']
-								filterTypeList.COOLDOWN = ACL['Cooldown']
-							end
-							return filterTypeList
-						end,
-					},
-					xOffset = {
-						order = 3,
-						type = 'range',
-						name = ACL['X Offset'],
-						min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1,
-					},
-					yOffset = {
-						order = 4,
-						type = 'range',
-						name = ACL['Y Offset'],
-						min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1,
-					},
-					size = {
-						order = 5,
-						type = 'range',
-						name = ACL['Size'],
-						min = 0, max = 128, step = 1,
-					},
-					conditions = {
-						order = 10,
-						type = 'multiselect',
-						name = ACL['Conditions'],
-						get = function(_, key) return AR.db.Filters[selectedGroup][selectedFilter][key] end,
-						set = function(_, key, value) AR.db.Filters[selectedGroup][selectedFilter][key] = value end,
-						values = {
-							instance = ACL['Inside Raid/Party'],
-							pvp = ACL['Inside BG/Arena'],
-							combat = ACL['Combat'],
-						},
-					},
-					filterConditions = {
-						order = 11,
-						type = 'group',
-						name = ACL['Filter Conditions'],
-						inline = true,
-						args = {
-							level = {
-								order = 4,
-								type = 'range',
-								name = ACL['Level Requirement'],
-								desc = ACL['Level requirement for the icon to be able to display. 0 for disabled.'],
-								min = 0, max = MAX_PLAYER_LEVEL, step = 1,
-							},
-							personal = {
-								order = 5,
-								type = 'toggle',
-								name = ACL['Personal Buffs'],
-								desc = ACL['Only check if the buff is coming from you.'],
-								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
-							},
-							reverseCheck = {
-								order = 6,
-								type = 'toggle',
-								name = ACL['Reverse Check'],
-								desc = ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'],
-								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
-							},
-							strictFilter = {
-								order = 7,
-								type = 'toggle',
-								name = ACL['Strict Filter'],
-								desc = ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'],
-								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end,
-							},
-							disableSound = {
-								order = 8,
-								type = 'toggle',
-								name = ACL['Disable Sound'],
-								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end,
-							},
-						},
-					},
-					cooldownConditions = {
-						order = 12,
-						type = 'group',
-						name = ACL['Cooldown Conditions'],
-						inline = true,
-						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'COOLDOWN' or selectedGroup == 'Global' end,
-						args = {
-							dscription = {
-								order = 0,
-								type = 'description',
-								fontSize = 'medium',
-								name = function()
-									local spellID = AR.db.Filters[selectedGroup][selectedFilter].cooldownSpellID
-									if not spellID or spellID == '' then return end
-									return format('%s (%s)', GetSpellInfo(spellID), spellID)
-								end,
-								hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].cooldownSpellID == '' end,
-							},
-							cooldownSpellID = {
-								order = 1,
-								type = 'input',
-								name = ACL['Spell ID'],
-								get = function(info) return tostring(AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or '') end,
-								set = function(info, value)
-									value = tonumber(value)
-									if not value then return end
+	AuraReminder.args.filterGroup = ACH:Group(function() return selectedFilter end, nil, 8, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] end, function(info, value) AR.db.Filters[selectedGroup][selectedFilter][info[#info]] = value end, nil, function() return not selectedFilter end)
+	AuraReminder.args.filterGroup.inline = true
+	AuraReminder.args.filterGroup.args.enable = ACH:Toggle(ACL['Enable'], nil, 1)
+	AuraReminder.args.filterGroup.args.filterType = ACH:Select(ACL['Filter Type'], ACL['Change this if you want the Reminder module to check for weapon enchants, setting this will cause it to ignore any spells listed.'], 2, function() wipe(filterTypeList) filterTypeList.SPELL = ACL['Spell'] if selectedGroup ~= 'Global' then filterTypeList.WEAPON, filterTypeList.COOLDOWN = ACL['Weapon'], ACL['Cooldown'] end return filterTypeList end)
+	AuraReminder.args.filterGroup.args.xOffset = ACH:Range(ACL['X Offset'], nil, 3, { min = -(PA.ScreenWidth / 2), max = (PA.ScreenWidth / 2), step = 1 })
+	AuraReminder.args.filterGroup.args.yOffset = ACH:Range(ACL['Y Offset'], nil, 4, { min = -(PA.ScreenHeight / 2), max = (PA.ScreenHeight / 2), step = 1 })
+	AuraReminder.args.filterGroup.args.size = ACH:Range(ACL['Size'], nil, 5, { min = 8, max = 128, step = 1 })
+	AuraReminder.args.filterGroup.args.conditions = ACH:MultiSelect(ACL['Conditions'], nil, 10, { instance = ACL['Inside Raid/Party'], pvp = ACL['Inside BG/Arena'], combat = ACL['Combat'] }, nil, nil, function(_, key) return AR.db.Filters[selectedGroup][selectedFilter][key] end, function(_, key, value) AR.db.Filters[selectedGroup][selectedFilter][key] = value end)
 
-									AR.db.Filters[selectedGroup][selectedFilter][info[#info]] = value
-								end,
-							},
-							onCooldown = {
-								order = 2,
-								type = 'toggle',
-								name = ACL['Show On Cooldown'],
-							},
-							cooldownAlpha = {
-								order = 3,
-								type = 'range',
-								name = ACL['Cooldown Alpha'],
-								min = 0, max = 1, step = 0.1,
-								hidden = function() return not AR.db.Filters[selectedGroup][selectedFilter].onCooldown end,
-							},
-						},
-					},
-					spellGroup = {
-						order = 13,
-						type = 'group',
-						name = ACL['Spells'],
-						inline = true,
-						get = function() AR:UpdateFilterGroup('spellGroup') return '' end,
-						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
-						args = {
-							AddSpell = {
-								order = 0,
-								type = 'input',
-								name = ACL['New ID'],
-								set = function(_, value)
-									value = tonumber(value)
-									if not value then return end
+	AuraReminder.args.filterGroup.args.filterConditions = ACH:Group(ACL['Filter Conditions'], nil, 11)
+	AuraReminder.args.filterGroup.args.filterConditions.inline = true
+	AuraReminder.args.filterGroup.args.filterConditions.args.level = ACH:Range(ACL['Level Requirement'], ACL['Level requirement for the icon to be able to display. 0 for disabled.'], 4, { min = 0, max = MAX_PLAYER_LEVEL, step = 1 })
+	AuraReminder.args.filterGroup.args.filterConditions.args.personal = ACH:Toggle(ACL['Personal Buffs'], ACL['Only check if the buff is coming from you.'], 5, nil, nil, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end)
+	AuraReminder.args.filterGroup.args.filterConditions.args.reverseCheck = ACH:Toggle(ACL['Reverse Check'], ACL['Instead of hiding the frame when you have the buff, show the frame when you have the buff.'], 6, nil, nil, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end)
+	AuraReminder.args.filterGroup.args.filterConditions.args.strictFilter = ACH:Toggle(ACL['Strict Filter'], ACL['This ensures you can only see spells that you actually know. You may want to uncheck this option if you are trying to monitor a spell that is not directly clickable out of your spellbook.'], 7, nil, nil, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end)
+	AuraReminder.args.filterGroup.args.filterConditions.args.disableSound = ACH:Toggle(ACL['Disable Sound'], nil, 8, nil, nil, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType == 'COOLDOWN' end)
 
-									AR.db.Filters[selectedGroup][selectedFilter].spellGroup = AR.db.Filters[selectedGroup][selectedFilter].spellGroup or {}
-									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = true
-									AR:UpdateFilterGroup('spellGroup')
-								end,
-							},
-							RemoveSpell = {
-								order = 1,
-								type = 'select',
-								name = ACL['Remove ID'],
-								get = function() return '' end,
-								set = function(_, value)
-									AR.db.Filters[selectedGroup][selectedFilter].spellGroup[value] = nil;
-									AR:UpdateFilterGroup('spellGroup')
-								end,
-								values = function()
-									wipe(spellList)
-									if AR.db.Filters[selectedGroup][selectedFilter].spellGroup then
-										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].spellGroup) do
-											local name = GetSpellInfo(spellID)
-											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
-										end
-									end
-									return spellList
-								end,
-							},
-							spacer = ACH:Spacer(2)
-						},
-					},
-					negateGroup = {
-						order = 14,
-						type = 'group',
-						name = ACL['Negate Spells'],
-						inline = true,
-						get = function() AR:UpdateFilterGroup('negateGroup') return '' end,
-						hidden = function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end,
-						args = {
-							AddSpell = {
-								order = 0,
-								type = 'input',
-								name = ACL['New ID'],
-								set = function(_, value)
-									value = tonumber(value)
-									if not value then return end
+	AuraReminder.args.filterGroup.args.cooldownConditions = ACH:Group(ACL['Cooldown Conditions'], nil, 12, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'COOLDOWN' or selectedGroup == 'Global' end)
+	AuraReminder.args.filterGroup.args.cooldownConditions.inline = true
+	AuraReminder.args.filterGroup.args.cooldownConditions.args.description = ACH:Description(function() local spellID = AR.db.Filters[selectedGroup][selectedFilter].cooldownSpellID if not spellID or spellID == '' then return end return format('%s (%s)', GetSpellInfo(spellID), spellID) end, 0, 'medium', nil, nil, nil, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].cooldownSpellID == '' end)
+	AuraReminder.args.filterGroup.args.cooldownConditions.args.cooldownSpellID = ACH:Input(ACL['Spell ID'], nil, 1, nil, nil, function(info) return tostring(AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or '') end, function(info, value) value = tonumber(value) if not value then return end AR.db.Filters[selectedGroup][selectedFilter][info[#info]] = value end)
+	AuraReminder.args.filterGroup.args.cooldownConditions.args.onCooldown = ACH:Toggle(ACL['Show On Cooldown'], nil, 2)
+	AuraReminder.args.filterGroup.args.cooldownConditions.args.cooldownAlpha = ACH:Range(ACL['Cooldown Alpha'], nil, 3, { min = 0, max = 1, step = .1 }, nil, nil, nil, nil, function() return not AR.db.Filters[selectedGroup][selectedFilter].onCooldown end)
 
-									AR.db.Filters[selectedGroup][selectedFilter].negateGroup = AR.db.Filters[selectedGroup][selectedFilter].negateGroup or {}
-									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = true
-									AR:UpdateFilterGroup('negateGroup')
-								end,
-							},
-							RemoveSpell = {
-								order = 1,
-								type = 'select',
-								name = ACL['Remove ID'],
-								get = function() return '' end,
-								set = function(_, value)
-									AR.db.Filters[selectedGroup][selectedFilter].negateGroup[value] = nil;
-									AR:UpdateFilterGroup('negateGroup')
-								end,
-								values = function()
-									wipe(spellList)
-									if AR.db.Filters[selectedGroup][selectedFilter].negateGroup then
-										for spellID in pairs(AR.db.Filters[selectedGroup][selectedFilter].negateGroup) do
-											local name = GetSpellInfo(spellID)
-											spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID
-										end
-									end
-									if not next(spellList) then
-										spellList[''] = ACL['None']
-									end
-									return spellList
-								end,
-							},
-							spacer = ACH:Spacer(2)
-						},
-					},
-				},
-			},
-		}
+	local function AddSpellSet(info, value) value = tonumber(value) if not value then return end AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]] = AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]] or {} AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]][value] = true AR:UpdateFilterGroup(info[#info-1]) end
+	local function RemoveFilterSet(info, value) AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]][value] = nil AR:UpdateFilterGroup(info[#info-1]) end
+	local function RemoveFilterValues(info) wipe(spellList) if AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]] then for spellID in next, AR.db.Filters[selectedGroup][selectedFilter][info[#info-1]] do local name = GetSpellInfo(spellID) spellList[spellID] = name and format('%s (%s)', name, spellID) or spellID end end return spellList end
+
+	AuraReminder.args.filterGroup.args.spellGroup = ACH:Group(ACL['Spells'], nil, 13, nil, function() AR:UpdateFilterGroup('spellGroup') return '' end, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end)
+	AuraReminder.args.filterGroup.args.spellGroup.inline = true
+	AuraReminder.args.filterGroup.args.spellGroup.args.AddSpell = ACH:Input(ACL['New ID'], nil, 0, nil, nil, nil, AddSpellSet)
+	AuraReminder.args.filterGroup.args.spellGroup.args.RemoveSpell = ACH:Select(ACL['Remove ID'], nil, 1, RemoveFilterValues, nil, nil, function() return '' end, RemoveFilterSet)
+	AuraReminder.args.filterGroup.args.spellGroup.args.spacer = ACH:Spacer(2)
+
+	AuraReminder.args.filterGroup.args.negateGroup = ACH:Group(ACL['Negate Spells'], nil, 14, nil, function() AR:UpdateFilterGroup('negateGroup') return '' end, nil, nil, function() return AR.db.Filters[selectedGroup][selectedFilter].filterType ~= 'SPELL' end)
+	AuraReminder.args.filterGroup.args.negateGroup.inline = true
+	AuraReminder.args.filterGroup.args.negateGroup.args.AddSpell = ACH:Input(ACL['New ID'], nil, 0, nil, nil, nil, AddSpellSet)
+	AuraReminder.args.filterGroup.args.negateGroup.args.RemoveSpell = ACH:Select(ACL['Remove ID'], nil, 1, RemoveFilterValues, nil, nil, function() return '' end, RemoveFilterSet)
+	AuraReminder.args.filterGroup.args.negateGroup.args.spacer = ACH:Spacer(2)
 
 	PA.Options.args.AuraReminder.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
 	PA.Options.args.AuraReminder.args.Authors = ACH:Description(AR.Authors, -1, 'large')
 
 	if PA.Retail then
 		local optionGroup = PA.Options.args.AuraReminder.args.filterGroup.args.filterConditions.args
-
-		local Specializations = { ['ANY'] = ACL['Any'] }
-
-		for i = 1, 4 do
-			Specializations[tostring(i)] = select(2, GetSpecializationInfo(i))
-		end
+		local Specializations, _ = { ['ANY'] = ACL['Any'] }
+		for i = 1, 4 do _, Specializations[tostring(i)] = GetSpecializationInfo(i) end
 
 		optionGroup.role = ACH:Select(ACL['Role'], ACL['You must be a certain role for the icon to appear.'], 1, { TANK = ACL['Tank'], DAMAGER = ACL['Damage'], HEALER = ACL['Healer'], ANY = ACL['Any'] }, nil, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or 'ANY' end, nil, nil, function() return selectedGroup == 'Global' end)
 		optionGroup.tree = ACH:Select(ACL['Talent Tree'], ACL['You must be using a certain talent tree for the icon to show.'], 2, Specializations, nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree or 'ANY') end, function(_, value) if value == 'ANY' then AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY' else AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
@@ -745,7 +385,7 @@ function AR:BuildProfile()
 		Filters = { Global = {} },
 	}
 
-	for k in pairs(LOCALIZED_CLASS_NAMES_MALE) do PA.Defaults.profile.AuraReminder.Filters[k] = {} end
+	for k in next, LOCALIZED_CLASS_NAMES_MALE do PA.Defaults.profile.AuraReminder.Filters[k] = {} end
 
 	DefaultFilters = CopyTable(PA.Defaults.profile.AuraReminder.Filters)
 end

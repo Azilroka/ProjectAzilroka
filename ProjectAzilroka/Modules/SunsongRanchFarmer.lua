@@ -107,35 +107,6 @@ SRF.Quests = {
 	--[31671] = {80591, 84783}, -- Scallion
 }
 
---local function QuestItems(itemID)
---	for i = 1, GetNumQuestLogEntries() do
---		for qid, sid in pairs(FarmQuests) do
---			if qid == select(9, GetQuestLogTitle(i)) then
---				if itemID == sid[1] or itemID == sid[2] then
---					return true
---				end
---			end
---		end
---	end
-
---	return false
---end
-
---	for i = 1, SeedAnchor.NumBars do
---		local seedBar = CreateFrame("Frame", SeedAnchor.BarsName..i, SeedAnchor)
---		seedBar:SetFrameStrata("BACKGROUND")
-
---		if i == 1 or i == 3 then
---			seedBar.Autotarget = function(button)
---				if not E.db.sle.legacy.farm.autotarget then return end
---				local container, slot = SLE:BagSearch(button.itemId)
---				if container and slot then
---					button:SetAttribute("type", "macro")
---					button:SetAttribute("macrotext", format("/targetexact %s \n/use %s %s", L["Tilled Soil"], container, slot))
---				end
---			end
---		end
-
 function SRF:Update()
 	if not SRF.Bar then return end
 

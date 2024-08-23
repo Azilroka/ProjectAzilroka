@@ -1,21 +1,16 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local BLDB = PA:NewModule('BrokerLDB', 'AceEvent-3.0')
-PA.BLDB, _G.BLDB = BLDB, BLDB
+PA.BLDB, _G.BrokerLDB = BLDB, BLDB
 
 local _G = _G
-local next = next
-local tinsert = tinsert
-local tremove = tremove
+local next, tinsert, tremove = next, tinsert, tremove
 local strfind, strlower, strlen = strfind, strlower, strlen
 
 local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
 local UIParent = UIParent
 
-BLDB.Title = ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r']
-BLDB.Description = ACL['Provides a Custom DataBroker Bar']
-BLDB.Authors = 'Azilroka'
-BLDB.isEnabled = false
+BLDB.Title, BLDB.Description, BLDB.Authors, BLDB.isEnabled = ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r'], ACL['Provides a Custom DataBroker Bar'], 'Azilroka', false
 
 function BLDB:TextUpdate(_, name, _, value)
 	local naText = strfind(strlower(value or ''), 'n/a', nil, true)

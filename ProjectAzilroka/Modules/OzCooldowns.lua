@@ -1,52 +1,26 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
 local LSM = PA.Libs.LSM
-PA.OzCD = OzCD
+_G.OzCooldowns, PA.OzCD = OzCD, OzCD
 
-OzCD.Title = ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r']
-OzCD.Description = ACL['Minimalistic Cooldowns']
-OzCD.Authors = 'Azilroka    Nimaear'
-OzCD.isEnabled = false
+OzCD.Title, OzCD.Description, OzCD.Authors, OzCD.isEnabled = ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'], ACL['Minimalistic Cooldowns'], 'Azilroka    Nimaear', false
 
-_G.OzCooldowns = OzCD
+local next, ipairs, sort, unpack, tinsert, format, tonumber, ceil, floor = next, ipairs, sort, unpack, tinsert, format, tonumber, ceil, floor
 
-local next, ipairs = next, ipairs
-local format, tostring, tonumber = format, tostring, tonumber
-local ceil, floor = ceil, floor
-local sort, unpack, tinsert = sort, unpack, tinsert
+local GetSpellCooldown, GetSpellCharges = PA.GetSpellCooldown, PA.GetSpellCharges
 
-local GetTime = GetTime
-local GetSpellInfo = PA.GetSpellInfo
-local GetSpellCooldown = PA.GetSpellCooldown
-local GetSpellCharges = PA.GetSpellCharges
-local IsInRaid = IsInRaid
-local IsInGroup = IsInGroup
-local SendChatMessage = SendChatMessage
-
-local CopyTable = CopyTable
-local CreateFrame = CreateFrame
-local UIParent = UIParent
-
-local Channel
+local GetTime, IsInRaid, IsInGroup, SendChatMessage = GetTime, IsInRaid, IsInGroup, SendChatMessage
+local UIParent, CreateFrame, CopyTable = UIParent, CreateFrame, CopyTable
 
 OzCD.Holder = CreateFrame('Frame', 'OzCooldownsHolder', PA.PetBattleFrameHider)
 OzCD.Holder:SetSize(40, 40)
 OzCD.Holder:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 360)
+OzCD.Holder:SetMovable(not (PA.Tukui or PA.ElvUI))
+OzCD.Holder.Buttons = {}
 
-if not (PA.Tukui or PA.ElvUI) then
-	OzCD.Holder:SetMovable(true)
-end
+OzCD.Cooldowns, OzCD.ActiveCooldowns, OzCD.DelayCooldowns, OzCD.HasCDDelay = {}, {}, {}, { [5384] = true }
 
-OzCD.Cooldowns = {}
-OzCD.ActiveCooldowns = {}
-OzCD.DelayCooldowns = {}
-
-local GLOBAL_COOLDOWN_TIME = 1.5
-local COOLDOWN_MIN_DURATION = .1
-
-OzCD.HasCDDelay = {
-	[5384] = true
-}
+local GLOBAL_COOLDOWN_TIME, COOLDOWN_MIN_DURATION, Channel = 1.5, .1
 
 function OzCD:SetSize(Position)
 	Position = Position or PA:CountTable(OzCD.ActiveCooldowns)
@@ -110,8 +84,8 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 end
 
 function OzCD:UpdateActiveCooldowns()
-	for i = PA:CountTable(OzCD.ActiveCooldowns) + 1, #OzCD.Holder do
-		OzCD.Holder[i]:Hide()
+	for i = PA:CountTable(OzCD.ActiveCooldowns) + 1, #OzCD.Holder.Buttons do
+		OzCD.Holder.Buttons[i]:Hide()
 	end
 
 	local Position = 0
@@ -120,7 +94,7 @@ function OzCD:UpdateActiveCooldowns()
 
 		if spellData.name then
 			Position = Position + 1
-			local Frame, Start, Duration, Charges = OzCD:GetCooldown(Position)
+			local Frame, Start, Duration = OzCD:GetCooldown(Position)
 
 			do
 				local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
@@ -159,7 +133,7 @@ end
 
 function OzCD:UpdateDelayedCooldowns()
 	for SpellID in next, OzCD.DelayCooldowns do
-		local spellData, Start, Duration = PA.SpellBook.Complete[SpellID]
+		local Start, Duration = PA.SpellBook.Complete[SpellID]
 
 		do
 			local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
@@ -175,8 +149,7 @@ function OzCD:UpdateDelayedCooldowns()
 
 		if CurrentDuration then
 			if (CurrentDuration < OzCD.db.SuppressDuration) and (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				OzCD.DelayCooldowns[SpellID] = nil
-				OzCD.ActiveCooldowns[SpellID] = Duration
+				OzCD.DelayCooldowns[SpellID], OzCD.ActiveCooldowns[SpellID] = nil, Duration
 			end
 		else
 			OzCD.DelayCooldowns[SpellID] = nil
@@ -185,7 +158,7 @@ function OzCD:UpdateDelayedCooldowns()
 end
 
 function OzCD:GetCooldown(index)
-	local Frame = OzCD.Holder[index]
+	local Frame = OzCD.Holder.Buttons[index]
 	if not Frame then
 		Frame = CreateFrame('Button', 'OzCD_'..index, OzCD.Holder, 'PA_AuraTemplate')
 		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
@@ -203,18 +176,16 @@ function OzCD:GetCooldown(index)
 		Frame.StatusBar:SetStatusBarTexture(LSM:Fetch('statusbar', OzCD.db.StatusBarTexture))
 		Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
 		Frame.StatusBar:SetSize(OzCD.db.Size - 2, 4)
-		Frame.StatusBar:SetScript('OnUpdate', function(s)
-			if (Frame.CurrentDuration and Frame.CurrentDuration > 0) then
-				local normalized = Frame.CurrentDuration / Frame.Duration
-				if normalized == 0 then
-					normalized = 0
-				elseif normalized == 1 then
-					normalized = 1
-				end
+		Frame.StatusBar:SetScript('OnUpdate', function(s, elapsed)
+			s.elapsed = (s.elapsed or 0) + elapsed
+			if s.elapsed > .1 and (Frame.CurrentDuration and Frame.CurrentDuration > 0) then
+				local normalized = PA:Clamp(Frame.CurrentDuration / Frame.Duration)
 				s:SetValue(normalized)
 				if OzCD.db.StatusBarGradient then
 					s:SetStatusBarColor(1 - normalized, normalized, 0)
 				end
+
+				s.elapsed = 0
 			end
 		end)
 
@@ -260,7 +231,7 @@ function OzCD:GetCooldown(index)
 		Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
 		PA:RegisterCooldown(Frame.Cooldown)
 
-		tinsert(OzCD.Holder, Frame)
+		tinsert(OzCD.Holder.Buttons, Frame)
 
 		OzCD:SetSize()
 		OzCD:SetPosition()
@@ -270,15 +241,12 @@ function OzCD:GetCooldown(index)
 end
 
 function OzCD:SetPosition()
-	local sizex = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and 0 or 2)
-	local sizey = OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and OzCD.db.StatusBar and 6 or 0)
-	local anchor, growthx, growthy = 'BOTTOMLEFT', 1, 1
+	local anchor, growthx, growthy, sizex, sizey = 'BOTTOMLEFT', 1, 1, OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and 0 or 2), OzCD.db.Size + OzCD.db.Spacing + (OzCD.db.Vertical and OzCD.db.StatusBar and 6 or 0)
 	local cols = floor(OzCD.Holder:GetWidth() / sizex + 0.5)
 
-	for i, button in ipairs(OzCD.Holder) do
+	for i, button in next, OzCD.Holder.Buttons do
 		if (not button) then break end
-		local col = (i - 1) % cols
-		local row = floor((i - 1) / cols)
+		local col, row = (i - 1) % cols, floor((i - 1) / cols)
 
 		button:ClearAllPoints()
 		button:SetPoint(anchor, OzCD.Holder, anchor, col * sizex * growthx, row * sizey * growthy)
@@ -289,17 +257,15 @@ function OzCD:UpdateSettings()
 	local StatusBarTexture = LSM:Fetch('statusbar', OzCD.db.StatusBarTexture)
 	local StackFont = LSM:Fetch('font', OzCD.db.StackFont)
 
-	for _, Frame in ipairs(OzCD.Holder) do
+	for _, Frame in next, OzCD.Holder.Buttons do
 		Frame:SetSize(OzCD.db.Size, OzCD.db.Size)
 		Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
 		Frame.Count:SetFont(StackFont, OzCD.db.StackFontSize, OzCD.db.StackFontFlag)
 
 		Frame.StatusBar:SetShown(OzCD.db.StatusBar)
-		if OzCD.db.StatusBar then
-			Frame.StatusBar:SetStatusBarTexture(StatusBarTexture)
-			Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
-			Frame.StatusBar:SetSize(OzCD.db.Size, 4)
-		end
+		Frame.StatusBar:SetStatusBarTexture(StatusBarTexture)
+		Frame.StatusBar:SetStatusBarColor(unpack(OzCD.db.StatusBarTextureColor))
+		Frame.StatusBar:SetSize(OzCD.db.Size, 4)
 	end
 
 	OzCD:SetSize()
@@ -417,6 +383,7 @@ function OzCD:Initialize()
 	elseif PA.ElvUI then
 		_G.ElvUI[1]:CreateMover(OzCD.Holder, 'OzCooldownsMover', 'OzCooldowns Anchor', nil, nil, nil, 'ALL,GENERAL', nil, 'ProjectAzilroka,OzCooldowns')
 	else
+		OzCD.Holder:RegisterForDrag('LeftButton')
 		OzCD.Holder:SetScript('OnDragStart', OzCD.Holder.StartMoving)
 		OzCD.Holder:SetScript('OnDragStop', OzCD.Holder.StopMovingOrSizing)
 	end

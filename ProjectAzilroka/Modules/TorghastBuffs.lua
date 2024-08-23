@@ -1,29 +1,19 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
+if not PA.Retail then return end
+
 local TB = PA:NewModule('TorghastBuffs', 'AceEvent-3.0')
 local LSM = PA.Libs.LSM
-PA.TB = TB
+_G.TorghastBuffs, PA.TB = TB, TB
 
-TB.Title = ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r']
-TB.Description = ACL['Torghast Buffs']
-TB.Authors = 'Azilroka'
-TB.isEnabled = false
-
-_G.TorghastBuffs = TB
+TB.Title, TB.Description, TB.Authors, TB.isEnabled = ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'], ACL['Torghast Buffs'], 'Azilroka', false
 
 local _G = _G
-local format = format
-local unpack = unpack
-local strfind = strfind
-local strmatch = strmatch
-local tinsert = tinsert
-local RegisterStateDriver = RegisterStateDriver
-local UnregisterStateDriver = UnregisterStateDriver
-local GetItemQualityColor = GetItemQualityColor
+local format, strfind, tinsert, next = format, strfind, tinsert, next
 
-local CreateFrame = CreateFrame
-local UIParent = UIParent
-local UnitAura = UnitAura
-local CopyTable = CopyTable
+local RegisterStateDriver, UnregisterStateDriver = RegisterStateDriver, UnregisterStateDriver
+local CreateFrame, UIParent, CopyTable = CreateFrame, UIParent, CopyTable
+
+local GetItemQualityColor = C_Item.GetItemQualityColor
 
 local DIRECTION_TO_POINT = { DOWN_RIGHT = 'TOPLEFT', DOWN_LEFT = 'TOPRIGHT', UP_RIGHT = 'BOTTOMLEFT', UP_LEFT = 'BOTTOMRIGHT', RIGHT_DOWN = 'TOPLEFT', RIGHT_UP = 'BOTTOMLEFT', LEFT_DOWN = 'TOPRIGHT', LEFT_UP = 'BOTTOMRIGHT' }
 local DIRECTION_TO_HORIZONTAL_SPACING_MULTIPLIER = { DOWN_RIGHT = 1, DOWN_LEFT = -1, UP_RIGHT = 1, UP_LEFT = -1, RIGHT_DOWN = 1, RIGHT_UP = 1, LEFT_DOWN = -1, LEFT_UP = -1 }
@@ -44,8 +34,8 @@ function TB:MasqueData(texture, highlight)
 end
 
 function TB:CreateIcon(button)
-	PA:SetInside(button.texture)
-	PA:SetInside(button.highlight)
+	PA:SetInside(button.Icon)
+	PA:SetInside(button.Highlight)
 
 	button.Icon:SetTexCoord(PA:TexCoords())
 	button.unit = button:GetParent().unit
@@ -143,13 +133,13 @@ function TB:CreateAuraHeader(unit, unitName)
 end
 
 function TB:UpdateAllHeaders()
-	for _, header in pairs(TB.Headers) do
+	for _, header in next, TB.Headers do
 		TB:UpdateHeader(header)
 	end
 end
 
 function TB:HandleVisibility()
-	for _, header in pairs(TB.Headers) do
+	for _, header in next, TB.Headers do
 		if IsInJailersTower() then
 			if header.unit == 'player' then
 				RegisterStateDriver(header, 'visibility', '[petbattle] hide; show')
@@ -221,7 +211,6 @@ function TB:UpdateSettings()
 end
 
 function TB:Initialize()
-	if not PA.Retail then return end
 	if TB.db.Enable ~= true then
 		return
 	end
