@@ -161,7 +161,7 @@ function AR:Reminder_Update()
 						if (duration and duration > 1.5) and filterCheck and db.onCooldown then
 							Button:SetAlpha(db.cooldownAlpha or .5)
 						end
-					elseif (db.filterType == 'WEAPON' or (db.filterType == 'SPELL' and db.spellGroup and PA:CountTable(db.spellGroup) > 0)) and filterCheck then
+					elseif (db.filterType == 'WEAPON' or (db.filterType == 'SPELL' and db.spellGroup)) and filterCheck then
 						if db.filterType == 'SPELL' then
 							local hasBuff, hasDebuff = AR:FindPlayerAura(db.spellGroup, db.personal), AR:FindPlayerAura(db.spellGroup, nil, 'HARMFUL')
 							local negate = AR:FindPlayerAura(db.negateGroup, db.personal)

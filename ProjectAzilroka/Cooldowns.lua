@@ -195,7 +195,7 @@ function PA:Cooldown_Options(timer, db, parent)
 	timer.hhmmThreshold = hhmm or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.hhmmThreshold)
 	timer.mmssThreshold = mmss or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.mmssThreshold)
 	timer.hideBlizzard = db.hideBlizzard or PA.db.Cooldown.hideBlizzard
-	timer.roundTime = PA.db.cooldown.roundTime
+	timer.roundTime = PA.db.Cooldown.roundTime
 	timer.showModRate = db.showModRate
 
 	if db.reverse ~= nil then
