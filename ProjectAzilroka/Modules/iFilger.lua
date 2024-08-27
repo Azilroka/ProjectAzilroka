@@ -1,34 +1,15 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local IF = PA:NewModule('iFilger', 'AceEvent-3.0', 'AceTimer-3.0')
 local LSM = PA.Libs.LSM
-PA.iFilger = IF
-
-IF.Title = ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r']
-IF.Description = ACL['Minimalistic Auras / Buffs / Procs / Cooldowns']
-IF.Authors = 'Azilroka    Nils Ruesch    Ildyria'
-
-IF.isEnabled = false
-
 local _G = _G
+_G.iFilger, PA.iFilger = IF, IF
 
-_G.iFilger = IF
+IF.Title, IF.Description, IF.Authors, IF.isEnabled = 'iFilger', ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'], 'Azilroka    Nils Ruesch    Ildyria', false
 
-local CreateFrame = CreateFrame
-local UIParent = UIParent
+local CreateFrame, UIParent = CreateFrame, UIParent
 
-local floor = floor
-local format = format
-local ipairs = ipairs
-local next = next
-local select = select
-local sort = sort
-local strmatch = strmatch
-local tinsert = tinsert
-local tonumber = tonumber
-local tostring = tostring
-local type = type
-local unpack = unpack
-local wipe = wipe
+local floor, format, strmatch, tonumber, tostring = floor, format, strmatch, tonumber, tostring
+local sort, wipe, tinsert, unpack, next, ipairs = sort, wipe, tinsert, unpack, next, ipairs
 
 local CopyTable = CopyTable
 local GetTime = GetTime
@@ -37,18 +18,12 @@ local RegisterUnitWatch = RegisterUnitWatch
 local GetContainerItemCooldown = C_Container.GetContainerItemCooldown
 local GetContainerItemID = C_Container.GetContainerItemID
 local GetContainerNumSlots = C_Container.GetContainerNumSlots
-local GetItemIcon = C_Item.GetItemIcon
+
 local GetItemInfo = C_Item.GetItemInfo
+local GetItemCooldown = C_Item.GetItemCooldown
 
 local GetSpellInfo = PA.GetSpellInfo
-
-local GetFlyoutInfo = GetFlyoutInfo
-local GetFlyoutSlotInfo = GetFlyoutSlotInfo
-local GetInventoryItemCooldown = GetInventoryItemCooldown
-local GetInventoryItemLink = GetInventoryItemLink
-local GetItemCooldown = GetItemCooldown
-local GetSpellLink = GetSpellLink
-local IsSpellKnown = IsSpellKnown
+local GetSpellCooldown, GetSpellCharges = PA.GetSpellCooldown, PA.GetSpellCharges
 
 local VISIBLE = 1
 local HIDDEN = 0
@@ -56,18 +31,9 @@ local selectedSpell = ''
 local selectedFilter = nil
 local spellList = {}
 
-IF.Cooldowns = {}
-IF.ActiveCooldowns = {}
-IF.DelayCooldowns = {}
-IF.IsChargeCooldown = {}
-IF.ItemCooldowns = {}
-IF.HasCDDelay = {
-	[5384] = true
-}
+IF.Cooldowns, IF.ActiveCooldowns, IF.DelayCooldowns, IF.IsChargeCooldown, IF.ItemCooldowns, IF.HasCDDelay = {}, {}, {}, {}, {}, { [5384] = true }
 
-local GLOBAL_COOLDOWN_TIME = 1.5
-local COOLDOWN_MIN_DURATION = .1
-local AURA_MIN_DURATION = .1
+local GLOBAL_COOLDOWN_TIME, COOLDOWN_MIN_DURATION, AURA_MIN_DURATION = 1.5, .1, .1
 
 function IF:Spawn(unit, name, db, filter, position)
 	local object = CreateFrame('Button', 'iFilger_'..name, PA.PetBattleFrameHider)
@@ -120,37 +86,37 @@ end
 function IF:UpdateActiveCooldowns()
 	local Panel = IF.Panels.Cooldowns
 
-	for i = PA:CountTable(IF.ActiveCooldowns) + 1, #Panel do
-		Panel[i]:Hide()
-	end
-
-	local Position = 0
+	local Position = 1
 	for SpellID in next, IF.ActiveCooldowns do
-		local Name, _, Icon = GetSpellInfo(SpellID)
+		local spellData = PA.SpellBook.Complete[SpellID]
 
-		if Name then
+		if spellData.name then
+			local button = IF:GetCooldownFrame(Panel, Position)
 			Position = Position + 1
-			local button = Panel[Position] or IF:CreateAuraIcon(Panel)
 
 			local Start, Duration, CurrentDuration, Charges
 
-			if IF.IsChargeCooldown[SpellID] then
-				Charges, _, Start, Duration = GetSpellCharges(SpellID)
-			else
-				Start, Duration = GetSpellCooldown(SpellID)
+			do
+				local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
+
+				if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
+					Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
+				else
+					Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
+				end
 			end
 
 			CurrentDuration = (Start + Duration - GetTime())
 
-			if Charges and Start == (((2^32)/1000) - Duration) then
-				CurrentDuration = 0
-			end
+			-- if Charges and Start == (((2^32)/1000) - Duration) then
+			-- 	CurrentDuration = 0
+			-- end
 
 			button.duration = Duration
 			button.spellID = SpellID
-			button.spellName = Name
+			button.spellName = spellData.name
 
-			button.Icon:SetTexture(Icon)
+			button.Icon:SetTexture(spellData.iconID)
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
@@ -180,26 +146,25 @@ function IF:UpdateActiveCooldowns()
 		end
 	end
 
+	for i = Position + 1, #Panel do
+		Panel[i]:Hide()
+	end
+
 	IF:SetPosition(Panel)
 end
 
 function IF:UpdateItemCooldowns()
 	local Panel = IF.Panels.ItemCooldowns
 
-	for i = PA:CountTable(IF.ItemCooldowns) + 1, #Panel do
-		Panel[i]:Hide()
-	end
-
-	local Position = 0
+	local Position = 1
 	for itemID in next, IF.ItemCooldowns do
-		local Name = GetItemInfo(itemID)
+		local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent = GetItemInfo(itemID)
 
-		if Name then
+		if itemName then
+			local button = IF:GetCooldownFrame(Panel, Position)
 			Position = Position + 1
-			local button = Panel[Position] or IF:CreateAuraIcon(Panel)
 
-			local Start, Duration, CurrentDuration
-			Start, Duration = GetItemCooldown(itemID)
+			local Start, Duration, CurrentDuration = GetItemCooldown(itemID)
 			CurrentDuration = (Start + Duration - GetTime())
 
 			button.duration = Duration
@@ -207,7 +172,7 @@ function IF:UpdateItemCooldowns()
 			button.itemName = Name
 			button.expiration = Start + Duration
 
-			button.Icon:SetTexture(GetItemIcon(itemID))
+			button.Icon:SetTexture(itemTexture)
 			button:SetShown(CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION)
 
 			if (CurrentDuration and CurrentDuration >= COOLDOWN_MIN_DURATION) then
@@ -235,6 +200,10 @@ function IF:UpdateItemCooldowns()
 				button.CurrentDuration = 0
 			end
 		end
+	end
+
+	for i = Position, #Panel do
+		Panel[i]:Hide()
 	end
 
 	IF:SetPosition(Panel)
@@ -314,7 +283,7 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 
 	if auraData then
 		local position = visible + offset + 1
-		local button = element[position] or IF:CreateAuraIcon(element, position)
+		local button = IF:GetCooldownFrame(element, position)
 		local show = IF:CustomFilter(element, unit, button, auraData)
 
 		button.caster, button.filter, button.isDebuff, button.expiration, button.duration, button.spellID, button.isPlayer = auraData.sourceUnit, filter, auraData.isHarmful, auraData.expirationTime, auraData.duration, auraData.spellId, auraData.isFromPlayerOrPlayerPet
@@ -334,12 +303,7 @@ function IF:UpdateAuraIcon(element, unit, index, offset, filter, isDebuff, visib
 			button.Count:SetText(auraData.applications > 1 and auraData.applications or '')
 			button.StatusBar:SetStatusBarColor(unpack(element.db.StatusBarTextureColor))
 			button.StatusBar.Name:SetText(auraData.name)
-
-			if isDebuff then
-				button.backdrop:SetBackdropBorderColor(1, 0, 0)
-			else
-				button.backdrop:SetBackdropBorderColor(0, 0, 0)
-			end
+			button.backdrop:SetBackdropBorderColor(isDebuff and 1 or 0, 0, 0)
 
 			return VISIBLE
 		else
@@ -356,11 +320,9 @@ function IF:SetPosition(element)
 	local growthy = ((element.db.StatusBar and element.db.StatusBarDirection == 'DOWN' or element.db.Direction == 'DOWN') and -1) or 1
 	local cols = element.db.StatusBar and 1 or element.db.NumPerRow
 
-	local col, row
 	for i, button in ipairs(element) do
 		if (not button) then break end
-		col = (i - 1) % cols
-		row = floor((i - 1) / cols)
+		local col, row = (i - 1) % cols, floor((i - 1) / cols)
 
 		button:ClearAllPoints()
 		button:SetPoint(anchor, element, anchor, col * sizex * growthx, row * sizey * growthy)
@@ -402,12 +364,12 @@ end
 function IF:PLAYER_ENTERING_WORLD()
 	for SpellID in next, IF.db.Cooldowns.SpellCDs do
 		local cooldownInfo = GetSpellCooldown(SpellID)
-		local CurrentDuration = (Start + Duration - GetTime()) or 0
+		local currentDuration = (cooldownInfo.startTime + cooldownInfo.duration - GetTime()) or 0
 
-		if Enable == 1 and (CurrentDuration > .1) and (CurrentDuration < IF.db.Cooldowns.IgnoreDuration) then
-			if (CurrentDuration >= IF.db.Cooldowns.SuppressDuration) then
+		if currentDuration > .1 and (currentDuration < IF.db.Cooldowns.IgnoreDuration) then
+			if (currentDuration >= IF.db.Cooldowns.SuppressDuration) then
 				IF.DelayCooldowns[SpellID] = true
-			elseif (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+			elseif (currentDuration > GLOBAL_COOLDOWN_TIME) then
 				IF.ActiveCooldowns[SpellID] = true
 			end
 		end
@@ -476,7 +438,7 @@ function IF:BAG_UPDATE_COOLDOWN()
 	end
 end
 
-function IF:CreateAuraIcon(element, position)
+function IF:GetCooldownFrame(element, position)
 	local Frame = element[position]
 	if not Frame then
 		Frame = CreateFrame('Button', nil, element, 'PA_AuraTemplate')
@@ -657,7 +619,7 @@ function IF:GetOptions()
 	iFilger.args.AuthorHeader = ACH:Header(ACL['Authors:'], -2)
 	iFilger.args.Authors = ACH:Description(IF.Authors, -1, 'large')
 
-	for _, Name in next, {'Cooldowns','ItemCooldowns','Buffs','Procs','Enhancements','RaidDebuffs','TargetDebuffs','FocusBuffs','FocusDebuffs'} do
+	for _, Name in next, { 'Cooldowns', 'ItemCooldowns', 'Buffs', 'Procs', 'Enhancements', 'RaidDebuffs', 'TargetDebuffs', 'FocusBuffs', 'FocusDebuffs' } do
 		iFilger.args[Name] = ACH:Group(Name, nil, nil, nil, function(info) return IF.db[Name][info[#info]] end, function(info, value) IF.db[Name][info[#info]] = value IF:UpdateAll() end)
 
 		iFilger.args[Name].args.Enable = ACH:Toggle(ACL['Enable'], nil, 0)

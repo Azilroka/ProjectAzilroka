@@ -2,7 +2,7 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local AR = PA:NewModule('AuraReminder', 'AceEvent-3.0', 'AceTimer-3.0')
 _G.AuraReminder, PA.AuraReminder = AR, AR
 
-AR.Title, AR.Description, AR.Authors, AR.isEnabled = ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'], ACL['Reminder for Buffs / Debuffs'], 'Azilroka', false
+AR.Title, AR.Description, AR.Authors, AR.isEnabled = 'Aura Reminder', ACL['Reminder for Buffs / Debuffs'], 'Azilroka', false
 
 local _G = _G
 local next, tonumber, tostring, select, format, strmatch, tinsert, wipe = next, tonumber, tostring, select, format, strmatch, tinsert, wipe
@@ -39,7 +39,7 @@ do
 	end
 
 	function AR:FindAuraBySpellID(spellID, unit, filter, caster)
-		return _G.AuraUtil.FindAura(SpellIDPredicate, unit, filter, spellID, caster);
+		return _G.AuraUtil.FindAura(SpellIDPredicate, unit, filter, spellID, caster)
 	end
 end
 
@@ -172,7 +172,7 @@ function AR:Reminder_Update()
 										local usable = IsUsableSpell(buff)
 										if db.strictFilter then
 											usable = usable and IsSpellKnownOrOverridesKnown(buff)
-											skip = not usable;
+											skip = not usable
 										end
 										if usable and AR:IsSpellOnCooldown(buff) then
 											break
@@ -373,7 +373,7 @@ function AR:GetOptions()
 
 		optionGroup.role = ACH:Select(ACL['Role'], ACL['You must be a certain role for the icon to appear.'], 1, { TANK = ACL['Tank'], DAMAGER = ACL['Damage'], HEALER = ACL['Healer'], ANY = ACL['Any'] }, nil, nil, function(info) return AR.db.Filters[selectedGroup][selectedFilter][info[#info]] or 'ANY' end, nil, nil, function() return selectedGroup == 'Global' end)
 		optionGroup.tree = ACH:Select(ACL['Talent Tree'], ACL['You must be using a certain talent tree for the icon to show.'], 2, Specializations, nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter].tree or 'ANY') end, function(_, value) if value == 'ANY' then AR.db.Filters[PA.MyClass][selectedFilter].tree = 'ANY' else AR.db.Filters[PA.MyClass][selectedFilter].tree = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
-		optionGroup.talentTreeException = ACH:Select(ACL['Tree Exception'], ACL['Set a talent tree to not follow the reverse check.'], 2, CopyTable(Specializations), nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end, function(_, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end; end, nil, function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
+		optionGroup.talentTreeException = ACH:Select(ACL['Tree Exception'], ACL['Set a talent tree to not follow the reverse check.'], 2, CopyTable(Specializations), nil, nil, function() return tostring(AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] or 'NONE') end, function(_, value) if value == 'NONE' then AR.db.Filters[PA.MyClass][selectedFilter].talentTreeException = nil else AR.db.Filters[PA.MyClass][selectedFilter]['talentTreeException'] = tonumber(value) end end, nil, function() return selectedGroup == 'Global' or not AR.db.Filters[PA.MyClass][selectedFilter].reverseCheck end)
 		optionGroup.talentTreeException.values.NONE = ACL['None']
 	end
 end

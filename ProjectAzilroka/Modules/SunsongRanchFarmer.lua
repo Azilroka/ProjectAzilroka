@@ -2,12 +2,9 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 if PA.Classic then return end
 
 local SRF = PA:NewModule('SunsongRanchFarmer', 'AceEvent-3.0')
-PA.SRF, _G.SunsongRanchFarmer = SRF, SRF
+_G.SunsongRanchFarmer, PA.SunsongRanchFarmer = SRF, SRF
 
-SRF.Title = ACL['|cFF16C3F2Sunsong|r |cFFFFFFFFRanch Farmer|r']
-SRF.Description = ACL['A farm tool for Sunsong Ranch.']
-SRF.Authors = 'Azilroka'
-SRF.isEnabled = false
+SRF.Title, SRF.Description, SRF.Authors, SRF.isEnabled = 'Sunsong Ranch Farmer', ACL['A farm tool for Sunsong Ranch.'], 'Azilroka', false
 
 local _G = _G
 

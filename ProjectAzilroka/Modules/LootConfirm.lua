@@ -2,22 +2,12 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 if PA.Retail then return end
 
 local LC = PA:NewModule('LootConfirm', 'AceEvent-3.0')
-PA.LC, _G.LootConfirm = LC, LC
+_G.LootConfirm, PA.LC = LC, LC
 
-LC.Title = ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r']
-LC.Description = ACL['Confirms Loot for Solo/Groups (Need/Greed)']
-LC.Authors = 'Azilroka'
-LC.isEnabled = false
+LC.Title, LC.Description, LC.Authors, LC.isEnabled = 'Loot Confirm', ACL['Confirms Loot for Solo/Groups (Need/Greed)'], 'Azilroka', false
 
-local tonumber = tonumber
-local strmatch = strmatch
-
-local GetLootRollItemInfo = GetLootRollItemInfo
-local GetLootRollItemLink = GetLootRollItemLink
-local ConfirmLootRoll = ConfirmLootRoll
-local GetNumLootItems = GetNumLootItems
-local ConfirmLootSlot = ConfirmLootSlot
-local RollOnLoot = RollOnLoot
+local tonumber, strmatch = tonumber, strmatch
+local GetLootRollItemInfo, GetLootRollItemLink, GetNumLootItems, ConfirmLootRoll, ConfirmLootSlot, RollOnLoot = GetLootRollItemInfo, GetLootRollItemLink, GetNumLootItems, ConfirmLootRoll, ConfirmLootSlot, RollOnLoot
 
 function LC:Confirm(event, ...)
 	if event == 'CONFIRM_LOOT_ROLL' then
@@ -31,14 +21,14 @@ function LC:Confirm(event, ...)
 end
 
 -- LOOT_ROLL_TYPE_PASS, LOOT_ROLL_TYPE_NEED
--- texture, item, quantity, currencyID, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(slot);
+-- texture, item, quantity, currencyID, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(slot)
 
 function LC:START_LOOT_ROLL(_, rollID)
 	if not (LC.db.Disenchant or LC.db.Greed) then return end
 
 	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
-	local itemLink = GetLootRollItemLink(rollID)
-	local itemID = tonumber(strmatch(itemLink, 'item:(%d+)'))
+	-- local itemLink = GetLootRollItemLink(rollID)
+	-- local itemID = tonumber(strmatch(itemLink, 'item:(%d+)'))
 
 	if canDisenchant and LC.db.Disenchant then
 		RollOnLoot(rollID, _G.LOOT_ROLL_TYPE_DISENCHANT)

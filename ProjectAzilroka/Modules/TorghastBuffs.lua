@@ -5,7 +5,7 @@ local TB = PA:NewModule('TorghastBuffs', 'AceEvent-3.0')
 local LSM = PA.Libs.LSM
 _G.TorghastBuffs, PA.TB = TB, TB
 
-TB.Title, TB.Description, TB.Authors, TB.isEnabled = ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'], ACL['Torghast Buffs'], 'Azilroka', false
+TB.Title, TB.Description, TB.Authors, TB.isEnabled = 'Torghast Buffs', ACL['Torghast Buffs'], 'Azilroka', false
 
 local _G = _G
 local format, strfind, tinsert, next = format, strfind, tinsert, next

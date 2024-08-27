@@ -10,7 +10,7 @@ local CreateFrame = CreateFrame
 local GameTooltip = GameTooltip
 local UIParent = UIParent
 
-BLDB.Title, BLDB.Description, BLDB.Authors, BLDB.isEnabled = ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r'], ACL['Provides a Custom DataBroker Bar'], 'Azilroka', false
+BLDB.Title, BLDB.Description, BLDB.Authors, BLDB.isEnabled = 'Broker LDB', ACL['Provides a Custom DataBroker Bar'], 'Azilroka', false
 
 function BLDB:TextUpdate(_, name, _, value)
 	local naText = strfind(strlower(value or ''), 'n/a', nil, true)
@@ -22,7 +22,7 @@ function BLDB:TextUpdate(_, name, _, value)
 	end
 end
 
-function BLDB:AnimateSlide(frame, x, y, duration)
+function BLDB:AnimateSlide(frame, x, y, duration) -- Use LibAnim
 	frame.anim = frame:CreateAnimationGroup('Move_In')
 	frame.anim.in1 = frame.anim:CreateAnimation('Translation')
 	frame.anim.in1:SetDuration(0)
@@ -273,20 +273,15 @@ function BLDB:Initialize()
 	BLDB.isEnabled = true
 
 	BLDB.DropDown = CreateFrame('Frame', 'BLDBDropDown', UIParent, 'UIDropDownMenuTemplate')
+
 	BLDB.Slide = 'In'
-	BLDB.EasyMenu = {}
 
-	BLDB.Buttons = {}
-	BLDB.PluginObjects = {}
-
-	BLDB.Ignore = { 'Cork' }
-
-	BLDB.Whitelist = {}
-	BLDB.Blacklist = {}
+	BLDB.Buttons, BLDB.PluginObjects, BLDB.EasyMenu, BLDB.Whitelist, BLDB.Blacklist, BLDB.Ignore = {}, {}, {}, {}, {}, { 'Cork' }
 
 	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_DataObjectCreated', 'New')
 
 	local Frame = CreateFrame('Button', nil, UIParent)
+	BLDB.Frame = Frame
 	Frame.Arrow = Frame:CreateTexture(nil, 'OVERLAY')
 	Frame.Arrow:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\Arrow]])
 	Frame.Arrow:SetSize(12, 12)
@@ -314,11 +309,9 @@ function BLDB:Initialize()
 				BLDB:SlideIn()
 			end
 		else
-			_G.EasyMenu(BLDB.EasyMenu, BLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
+			PA:EasyMenu(BLDB.EasyMenu, BLDB.DropDown, 'cursor', 0, 0, 'MENU', 2)
 		end
 	end)
-
-	BLDB.Frame = Frame
 
 	BLDB:Update()
 	BLDB:SlideIn()

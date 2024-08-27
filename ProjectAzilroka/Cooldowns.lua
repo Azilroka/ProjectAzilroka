@@ -1,96 +1,74 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
+local LSM = PA.Libs.LSM
 
 --Lua functions
-local next = next
-local ipairs = ipairs
-local pairs = pairs
-local floor = floor
-local tinsert = tinsert
-local ceil = ceil
-local gsub = gsub
+local next, floor, tinsert, mod = next, floor, tinsert, mod
 
 --WoW API / Variables
-local GetTime = GetTime
-local CreateFrame = CreateFrame
-local hooksecurefunc = hooksecurefunc
+local GetTime, CreateFrame, hooksecurefunc = GetTime, CreateFrame, hooksecurefunc
 
 local ICON_SIZE = 36 --the normal size for an icon (don't change this)
 local FONT_SIZE = 20 --the base font size to use at a scale of 1
 local MIN_SCALE = 0.5 --the minimum scale we want to show cooldown counts at, anything below this will be hidden
 local MIN_DURATION = 1.5 --the minimum duration to show cooldown text for
 
+PA.TimeColors = {} -- 0:days 1:hours 2:minutes 3:seconds 4:expire 5:mmss 6:hhmm 7:modRate 8:targetAura 9:expiringAura 10-14:targetAura
+PA.TimeIndicatorColors = {} -- same color indexes
 PA.TimeThreshold = 3
 
-PA.TimeColors = { --aura time colors
-	[0] = '|cffeeeeee', --days
-	[1] = '|cffeeeeee', --hours
-	[2] = '|cffeeeeee', --minutes
-	[3] = '|cffeeeeee', --seconds
-	[4] = '|cfffe0000', --expire (fade timer)
-	[5] = '|cff909090', --mmss
-	[6] = '|cff707070', --hhmm
-}
-
-PA.TimeFormats = { -- short / indicator color
-	[0] = {'%dd', '%d%sd|r'},
-	[1] = {'%dh', '%d%sh|r'},
-	[2] = {'%dm', '%d%sm|r'},
-	[3] = {'%ds', '%d%ss|r'},
-	[4] = {'%.1fs', '%.1f%ss|r'},
-	[5] = {'%d:%02d', '%d%s:|r%02d'}, --mmss
-	[6] = {'%d:%02d', '%d%s:|r%02d'}, --hhmm
-}
-
-for _, x in pairs(PA.TimeFormats) do
-	x[3] = gsub(x[1], 's$', '') -- 1 without seconds
-	x[4] = gsub(x[2], '%%ss', '%%s') -- 2 without seconds
+for i = 0, 14 do
+	PA.TimeColors[i] = { r = 1, g = 1, b = 1 }
+	PA.TimeIndicatorColors[i] = '|cffffffff'
 end
 
-PA.TimeIndicatorColors = {
-	[0] = '|cff00b3ff',
-	[1] = '|cff00b3ff',
-	[2] = '|cff00b3ff',
-	[3] = '|cff00b3ff',
-	[4] = '|cff00b3ff',
-	[5] = '|cff00b3ff',
-	[6] = '|cff00b3ff',
+PA.TimeFormats = { -- short / indicator color
+	-- special options (3, 4): rounding
+	[0] = {'%dd', '%d%sd|r', '%.0fd', '%.0f%sd|r'},
+	[1] = {'%dh', '%d%sh|r', '%.0fh', '%.0f%sh|r'},
+	[2] = {'%dm', '%d%sm|r', '%.0fm', '%.0f%sm|r'},
+	-- special options (3, 4): show seconds
+	[3] = {'%d', '%d', '%ds', '%d%ss|r'},
+	[4] = {'%.1f', '%.1f', '%.1fs', '%.1f%ss|r'},
+
+	[5] = {'%d:%02d', '%d%s:|r%02d'}, -- mmss
 }
 
-local DAY, HOUR, MINUTE = 86400, 3600, 60
-local DAYISH, HOURISH, MINUTEISH = HOUR * 23.5, MINUTE * 59.5, 59.5
-local HALFDAYISH, HALFHOURISH, HALFMINUTEISH = DAY/2 + 0.5, HOUR/2 + 0.5, MINUTE/2 + 0.5
+PA.TimeFormats[6] = PA:CopyTable({}, PA.TimeFormats[5]) -- hhmm
+PA.TimeFormats[7] = PA:CopyTable({}, PA.TimeFormats[3]) -- modRate
 
-function PA:GetTimeInfo(s, threshhold, hhmm, mmss)
-	if s < MINUTE then
-		if s >= threshhold then
-			return floor(s), 3, 0.51
-		else
-			return s, 4, 0.051
-		end
-	elseif s < HOUR then
-		if mmss and s < mmss then
-			return s/MINUTE, 5, 0.51, s%MINUTE
-		else
-			local minutes = floor((s/MINUTE)+.5)
-			if hhmm and s < (hhmm * MINUTE) then
-				return s/HOUR, 6, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH), minutes%MINUTE
+do
+	local YEAR, DAY, HOUR, MINUTE = 31557600, 86400, 3600, 60
+	function PA:GetTimeInfo(sec, threshold, hhmm, mmss, modRate)
+		if sec < MINUTE then
+			if modRate then
+				return sec, 7, 0.5 / modRate
+			elseif sec > threshold then
+				return sec, 3, 0.5
 			else
-				return ceil(s / MINUTE), 2, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH)
+				return sec, 4, 0.1
 			end
-		end
-	elseif s < DAY then
-		if mmss and s < mmss then
-			return s/MINUTE, 5, 0.51, s%MINUTE
-		elseif hhmm and s < (hhmm * MINUTE) then
-			local minutes = floor((s/MINUTE)+.5)
-			return s/HOUR, 6, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH), minutes%MINUTE
+		elseif mmss and sec < mmss then
+			return sec / MINUTE, 5, 1, mod(sec, MINUTE)
+		elseif hhmm and sec < (hhmm * MINUTE) then
+			return sec / HOUR, 6, 30, mod(sec, HOUR) / MINUTE
+		elseif sec < HOUR then
+			local mins = mod(sec, HOUR) / MINUTE
+			return mins, 2, mins > 2 and 30 or 1
+		elseif sec < DAY then
+			local hrs = mod(sec, DAY) / HOUR
+			return hrs, 1, hrs > 1 and 60 or 30
 		else
-			local hours = floor((s/HOUR)+.5)
-			return ceil(s / HOUR), 1, hours > 1 and (s - (hours*HOUR - HALFHOURISH)) or (s - HOURISH)
+			local days = mod(sec, YEAR) / DAY
+			return days, 0, days > 1 and 120 or 60
 		end
+	end
+end
+
+function PA:Cooldown_UnbuggedTime(timer)
+	if timer.buggedTime then
+		return time() - GetTime()
 	else
-		local days = floor((s/DAY)+.5)
-		return ceil(s / DAY), 0, days > 1 and (s - (days*DAY - HALFDAYISH)) or (s - DAYISH)
+		return GetTime()
 	end
 end
 
@@ -118,41 +96,42 @@ function PA:Cooldown_OnUpdate(elapsed)
 		return
 	end
 
-	if not PA:Cooldown_IsEnabled(self) then
-		PA:Cooldown_StopTimer(self)
+	if not PA:Cooldown_TimerEnabled(self) then
+		PA:Cooldown_TimerStop(self)
+		return 2
 	else
-		local now = GetTime()
+		local now = PA:Cooldown_UnbuggedTime(self)
 		if self.endCooldown and now >= self.endCooldown then
-			PA:Cooldown_StopTimer(self)
+			PA:Cooldown_TimerStop(self)
 		elseif PA:Cooldown_BelowScale(self) then
 			self.text:SetText('')
 			if not forced then
 				self.nextUpdate = 500
 			end
-		elseif PA:Cooldown_TextThreshold(self, now) then
-			self.text:SetText('')
-			if not forced then
-				self.nextUpdate = 1
-			end
 		elseif self.endTime then
-			local value, id, nextUpdate, remainder = PA:GetTimeInfo(self.endTime - now, self.threshold, self.hhmmThreshold, self.mmssThreshold)
-			if not forced then
-				self.nextUpdate = nextUpdate
-			end
-
-			local style = PA.TimeFormats[id]
-			if style then
-				local which = (self.textColors and 2 or 1) + (self.showSeconds and 0 or 2)
-				if self.textColors then
-					self.text:SetFormattedText(style[which], value, self.textColors[id], remainder)
-				else
-					self.text:SetFormattedText(style[which], value, remainder)
+			local timeLeft = (self.endTime - now) / (self.modRate or 1)
+			if PA:Cooldown_TextThreshold(self, timeLeft) then
+				self.text:SetText('')
+				if not forced then
+					self.nextUpdate = 1
 				end
-			end
+			else
+				local value, id, nextUpdate, remainder = PA:GetTimeInfo(timeLeft, self.threshold, self.hhmmThreshold, self.mmssThreshold, self.modRate ~= 1 and self.modRate)
+				if not forced then self.nextUpdate = nextUpdate end
 
-			local color = self.timeColors[id]
-			if color then
-				self.text:SetTextColor(color.r, color.g, color.b)
+				local style = PA.TimeFormats[id]
+				if style then
+					local opt = (id < 3 and self.roundTime) or ((id == 3 or id == 4 or id == 7) and self.showSeconds)
+					local which = (self.textColors and 2 or 1) + (opt and 2 or 0)
+					if self.textColors then
+						self.text:SetFormattedText(style[which], value, self.textColors[id], remainder)
+					else
+						self.text:SetFormattedText(style[which], value, remainder)
+					end
+				end
+
+				local color = not self.skipTextColor and self.timeColors[id]
+				if color then self.text:SetTextColor(color.r, color.g, color.b) end
 			end
 		end
 	end
@@ -171,13 +150,13 @@ function PA:Cooldown_OnSizeChanged(cd, width, force)
 	end
 
 	if cd.customFont then -- override font
-		cd.text:SetFont(PA.Libs.LSM:Fetch('font', cd.customFont), (scale * cd.customFontSize), cd.customFontOutline)
+		cd.text:SetFont(cd.customFont, (scale * cd.customFontSize), cd.customFontOutline)
 	elseif scale then -- default, no override
 		cd.text:SetFont(PA.Libs.LSM:Fetch('font', PA.Libs.LSM:GetDefault('font')), (scale * FONT_SIZE), 'OUTLINE')
 	end
 end
 
-function PA:Cooldown_IsEnabled(cd)
+function PA:Cooldown_TimerEnabled(cd)
 	if cd.forceEnabled then
 		return true
 	elseif cd.forceDisabled then
@@ -189,13 +168,12 @@ function PA:Cooldown_IsEnabled(cd)
 	end
 end
 
-function PA:Cooldown_ForceUpdate(cd)
+function PA:Cooldown_TimerUpdate(cd)
 	PA.Cooldown_OnUpdate(cd, -1)
 	cd:Show()
 end
 
-function PA:Cooldown_StopTimer(cd)
-	cd.text:SetText('')
+function PA:Cooldown_TimerStop(cd)
 	cd:Hide()
 end
 
@@ -217,6 +195,8 @@ function PA:Cooldown_Options(timer, db, parent)
 	timer.hhmmThreshold = hhmm or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.hhmmThreshold)
 	timer.mmssThreshold = mmss or (PA.db.Cooldown.checkSeconds and PA.db.Cooldown.mmssThreshold)
 	timer.hideBlizzard = db.hideBlizzard or PA.db.Cooldown.hideBlizzard
+	timer.roundTime = PA.db.cooldown.roundTime
+	timer.showModRate = db.showModRate
 
 	if db.reverse ~= nil then
 		timer.reverseToggle = (PA.db.Cooldown.Enable and not db.reverse) or (db.reverse and not PA.db.Cooldown.Enable)
@@ -231,7 +211,7 @@ function PA:Cooldown_Options(timer, db, parent)
 	end
 
 	if fonts and fonts.enable then
-		timer.customFont = fonts.font
+		timer.customFont = LSM:Fetch('font', fonts.font)
 		timer.customFontSize = fonts.fontSize
 		timer.customFontOutline = fonts.fontOutline
 	else
@@ -267,9 +247,9 @@ function PA:CreateCooldownTimer(parent)
 	PA:ToggleBlizzardCooldownText(parent, timer)
 
 	-- keep an eye on the size so we can rescale the font if needed
-	self:Cooldown_OnSizeChanged(timer, parent:GetWidth())
+	PA:Cooldown_OnSizeChanged(timer, parent:GetWidth())
 	parent:SetScript('OnSizeChanged', function(_, width)
-		self:Cooldown_OnSizeChanged(timer, width)
+		PA:Cooldown_OnSizeChanged(timer, width)
 	end)
 
 	-- keep this after Cooldown_OnSizeChanged
@@ -279,16 +259,31 @@ function PA:CreateCooldownTimer(parent)
 end
 
 PA.RegisteredCooldowns = {}
-function PA:OnSetCooldown(start, duration)
+function PA:OnSetCooldown(start, duration, modRate)
 	if (not self.forceDisabled) and (start and duration) and (duration > MIN_DURATION) then
 		local timer = self.timer or PA:CreateCooldownTimer(self)
 		timer.start = start
-		timer.duration = duration
-		timer.endTime = start + duration
+		timer.modRate = timer.showModRate and modRate or 1
+		timer.duration = duration * (not timer.showModRate and modRate or 1)
+
+		local now = GetTime()
+		if start <= (now + 1) then -- this second is for Target Aura
+			timer.endTime = start + duration
+			timer.buggedTime = nil
+		else -- https://github.com/Stanzilla/WoWUIBugs/issues/47
+			local startup = time() - now
+			local cdtime = (2 ^ 32) * 0.001 - start
+			local startTime = startup - cdtime
+			timer.endTime = startTime + duration
+			timer.buggedTime = true
+		end
+
 		timer.endCooldown = timer.endTime - 0.05
-		PA:Cooldown_ForceUpdate(timer)
+		timer.paused = nil -- a new cooldown was called
+
+		PA:Cooldown_TimerUpdate(timer)
 	elseif self.timer then
-		PA:Cooldown_StopTimer(self.timer)
+		PA:Cooldown_TimerStop(self.timer)
 	end
 end
 
@@ -312,37 +307,18 @@ function PA:ToggleBlizzardCooldownText(cd, timer, request)
 	if timer and cd and cd.SetHideCountdownNumbers then
 		local forceHide = cd.hideText or timer.hideBlizzard
 		if request then
-			return forceHide or PA:Cooldown_IsEnabled(timer)
+			return forceHide or PA:Cooldown_TimerEnabled(timer)
 		else
-			cd:SetHideCountdownNumbers(forceHide or PA:Cooldown_IsEnabled(timer))
+			cd:SetHideCountdownNumbers(forceHide or PA:Cooldown_TimerEnabled(timer))
 		end
 	end
-end
-
-function PA:GetCooldownColors(db)
-	if not db then db = PA.db.Cooldown end -- just incase someone calls this without a first arg use the global
-	local c13 = PA:RGBToHex(db.hhmmColorIndicator.r, db.hhmmColorIndicator.g, db.hhmmColorIndicator.b) -- color for timers that are soon to expire
-	local c12 = PA:RGBToHex(db.mmssColorIndicator.r, db.mmssColorIndicator.g, db.mmssColorIndicator.b) -- color for timers that are soon to expire
-	local c11 = PA:RGBToHex(db.expireIndicator.r, db.expireIndicator.g, db.expireIndicator.b) -- color for timers that are soon to expire
-	local c10 = PA:RGBToHex(db.secondsIndicator.r, db.secondsIndicator.g, db.secondsIndicator.b) -- color for timers that have seconds remaining
-	local c9 = PA:RGBToHex(db.minutesIndicator.r, db.minutesIndicator.g, db.minutesIndicator.b) -- color for timers that have minutes remaining
-	local c8 = PA:RGBToHex(db.hoursIndicator.r, db.hoursIndicator.g, db.hoursIndicator.b) -- color for timers that have hours remaining
-	local c7 = PA:RGBToHex(db.daysIndicator.r, db.daysIndicator.g, db.daysIndicator.b) -- color for timers that have days remaining
-	local c6 = db.hhmmColor -- HH:MM color
-	local c5 = db.mmssColor -- MM:SS color
-	local c4 = db.expiringColor -- color for timers that are soon to expire
-	local c3 = db.secondsColor -- color for timers that have seconds remaining
-	local c2 = db.minutesColor -- color for timers that have minutes remaining
-	local c1 = db.hoursColor -- color for timers that have hours remaining
-	local c0 = db.daysColor -- color for timers that have days remaining
-	return c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13
 end
 
 function PA:UpdateCooldownOverride(module)
 	local cooldowns = (module and PA.RegisteredCooldowns[module])
 	if (not cooldowns) or not next(cooldowns) then return end
 
-	for _, parent in ipairs(cooldowns) do
+	for _, parent in next, cooldowns do
 		local db = (parent.CooldownOverride and PA.db[parent.CooldownOverride]) or PA.db
 		if db and db.Cooldown then
 			local timer = parent.isHooked and parent.isRegisteredCooldown and parent.timer
@@ -357,30 +333,49 @@ function PA:UpdateCooldownOverride(module)
 
 				PA:ToggleBlizzardCooldownText(parent, cd)
 			elseif cd.text and cd.customFont then
-				cd.text:SetFont(PA.Libs.LSM:Fetch('font', cd.customFont), cd.customFontSize, cd.customFontOutline)
+				cd.text:SetFont(cd.customFont, cd.customFontSize, cd.customFontOutline)
 			end
 		end
 	end
 end
 
+do
+	local function RGB(db) return PA:CopyTable({r = 1, g = 1, b = 1}, db) end
+	local function HEX(db) return PA:RGBToHex(db.r, db.g, db.b) end
+
+	function PA:GetCooldownColors(db)
+		if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
+
+		return
+		--> time colors (0 - 7) <-- 7 is mod rate, which is different from text colors (as mod rate has no indicator)
+		RGB(db.daysColor), RGB(db.hoursColor), RGB(db.minutesColor), RGB(db.secondsColor), RGB(db.expiringColor), RGB(db.mmssColor), RGB(db.hhmmColor), RGB(db.modRateColor),
+		--> text colors (0 - 7) <--
+		HEX(db.daysIndicator), HEX(db.hoursIndicator), HEX(db.minutesIndicator), HEX(db.secondsIndicator), HEX(db.expireIndicator), HEX(db.mmssColorIndicator), HEX(db.hhmmColorIndicator)
+	end
+end
+
 function PA:UpdateCooldownSettings(module)
-	local db, timeColors, textColors = PA.db.Cooldown, PA.TimeColors, PA.TimeIndicatorColors
+	local db, timeColors, textColors, _ = PA.db.Cooldown, PA.TimeColors, PA.TimeIndicatorColors
 
 	-- update the module timecolors if the config called it but ignore 'global' and 'all':
 	-- global is the main call from config, all is the core file calls
-	local isModule = module and (module ~= 'global' and module ~= 'all') and PA.db[module] and PA.db[module].Cooldown
+	local isModule = module and (module ~= 'global' and module ~= 'all') and PA.db[module] and PA.db[module].cooldown
 	if isModule then
-		if not PA.TimeColors[module] then PA.TimeColors[module] = {} end
-		if not PA.TimeIndicatorColors[module] then PA.TimeIndicatorColors[module] = {} end
-		db, timeColors, textColors = PA.db[module].Cooldown, PA.TimeColors[module], PA.TimeIndicatorColors[module]
+		if not timeColors[module] then timeColors[module] = {} end
+		if not textColors[module] then textColors[module] = {} end
+		db, timeColors, textColors = E.db[module].cooldown, timeColors[module], textColors[module]
 	end
 
-	timeColors[0], timeColors[1], timeColors[2], timeColors[3], timeColors[4], timeColors[5], timeColors[6], textColors[0], textColors[1], textColors[2], textColors[3], textColors[4], textColors[5], textColors[6] = PA:GetCooldownColors(db)
+	--> color for TIME that has X remaining <--
+	timeColors[0], timeColors[1], timeColors[2], timeColors[3], timeColors[4], timeColors[5], timeColors[6], timeColors[7], -- daysColor, hoursColor, minutesColor, secondsColor, expiringColor, mmssColor [MM:SS], hhmmColor [HH:MM], modRateColor
+	--> color for TEXT that has X remaining <--
+	textColors[0], textColors[1], textColors[2], textColors[3], textColors[4], textColors[5], textColors[6], -- daysIndicator, hoursIndicator, minutesIndicator, secondsIndicator, expireIndicator, mmssColorIndicator, hhmmColorIndicator
+	_ = PA:GetCooldownColors(db)
 
 	if isModule then
 		PA:UpdateCooldownOverride(module)
 	elseif module == 'global' then -- this is only a call from the config change
-		for key in pairs(PA.RegisteredCooldowns) do
+		for key in next, PA.RegisteredCooldowns do
 			PA:UpdateCooldownOverride(key)
 		end
 	end
@@ -397,21 +392,22 @@ local function profile(db)
 end
 
 local function group(order, db, label)
-	local main = ACH:Group(label, nil, order, nil, function(info) local t = (profile(db))[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b) local t = (profile(db))[info[#info]] t.r, t.g, t.b = r, g, b; PA:UpdateCooldownSettings(db); end)
+	local main = ACH:Group(label, nil, order, nil, function(info) local t = (profile(db))[info[#info]] return t.r, t.g, t.b, t.a end, function(info, r, g, b) local t = (profile(db))[info[#info]] t.r, t.g, t.b = r, g, b PA:UpdateCooldownSettings(db) end)
 	PA.Options.args.Cooldown.args[db] = main
 
 	local mainArgs = main.args
-	mainArgs.reverse = ACH:Toggle(ACL["Reverse Toggle"], ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."], 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end)
-	mainArgs.hideBlizzard = ACH:Toggle(ACL["Force Hide Blizzard Text"], ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."], 2, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, nil, function() if db == 'global' then return PA.db.Cooldown.Enable else return (PA.db.Cooldown.Enable and not profile(db).reverse) or (not PA.db.Cooldown.Enable and profile(db).reverse) end end)
+	mainArgs.showModRate = ACH:Toggle(ACL["Display Modified Rate"], nil, 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end)
+	mainArgs.reverse = ACH:Toggle(ACL["Reverse Toggle"], ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."], 5, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end)
+	mainArgs.hideBlizzard = ACH:Toggle(ACL["Force Hide Blizzard Text"], ACL["This option will force hide Blizzard's cooldown text if it is enabled at [Interface > ActionBars > Show Numbers on Cooldown]."], 6, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end, nil, function() if db == 'global' then return PA.db.Cooldown.Enable else return (PA.db.Cooldown.Enable and not profile(db).reverse) or (not PA.db.Cooldown.Enable and profile(db).reverse) end end)
 
-	local seconds = ACH:Group(ACL["Text Threshold"], nil, 3, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, function() return not (profile(db)).checkSeconds end)
+	local seconds = ACH:Group(ACL["Text Threshold"], nil, 3, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end, function() return not (profile(db)).checkSeconds end)
 	seconds.inline = true
 	seconds.args.checkSeconds = ACH:Toggle(ACL["Enable"], ACL["This will override the global cooldown settings."], 1, nil, nil, nil, nil, nil, false)
 	seconds.args.mmssThreshold = ACH:Range(ACL["MM:SS Threshold"], ACL["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."], 2, { min = -1, max = 10800, step = 1 })
 	seconds.args.hhmmThreshold = ACH:Range(ACL["HH:MM Threshold"], ACL["Threshold (in minutes) before text is shown in the HH:MM format. Set to -1 to never change to this format."], 3, { min = -1, max = 1440, step = 1 })
 	mainArgs.secondsGroup = seconds
 
-	local fonts = ACH:Group(ACL["Fonts"], nil, 4, nil, function(info) return (profile(db)).fonts[info[#info]] end, function(info, value) (profile(db)).fonts[info[#info]] = value; PA:UpdateCooldownSettings(db); end, function() return not (profile(db)).fonts.enable end)
+	local fonts = ACH:Group(ACL["Fonts"], nil, 4, nil, function(info) return (profile(db)).fonts[info[#info]] end, function(info, value) (profile(db)).fonts[info[#info]] = value PA:UpdateCooldownSettings(db) end, function() return not (profile(db)).fonts.enable end)
 	fonts.inline = true
 	fonts.args.enable = ACH:Toggle(ACL["Enable"], ACL["This will override the global cooldown settings."], 1, nil, nil, nil, nil, nil, false)
 	fonts.args.font = ACH:SharedMediaFont(ACL["Font"], nil, 2)
@@ -421,22 +417,23 @@ local function group(order, db, label)
 
 	local colors = ACH:Group(ACL["Color Override"], nil, 5, nil, nil, nil, function() return not (profile(db)).override end)
 	colors.inline = true
-	colors.args.override = ACH:Toggle(ACL["Enable"], ACL["This will override the global cooldown settings."], 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, false)
-	colors.args.threshold = ACH:Range(ACL["Low Threshold"], ACL["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"], 2, { min = -1, max = 20, step = 1 }, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end)
+	colors.args.override = ACH:Toggle(ACL["Enable"], ACL["This will override the global cooldown settings."], 1, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end, false)
+	colors.args.threshold = ACH:Range(ACL["Low Threshold"], ACL["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"], 2, { min = -1, max = 20, step = 1 }, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end)
 	mainArgs.colorGroup = colors
 
 	local tColors = ACH:Group(ACL["Threshold Colors"], nil, 3)
-	tColors.args.expiringColor = ACH:Color(ACL["Expiring"], ACL["Color when the text is about to expire"], 1)
-	tColors.args.secondsColor = ACH:Color(ACL["Seconds"], ACL["Color when the text is in the seconds format."], 2)
-	tColors.args.minutesColor = ACH:Color(ACL["Minutes"], ACL["Color when the text is in the minutes format."], 3)
-	tColors.args.hoursColor = ACH:Color(ACL["Hours"], ACL["Color when the text is in the hours format."], 4)
-	tColors.args.daysColor = ACH:Color(ACL["Days"], ACL["Color when the text is in the days format."], 5)
-	tColors.args.mmssColor = ACH:Color(ACL["MM:SS"], nil, 6)
-	tColors.args.hhmmColor = ACH:Color(ACL["HH:MM"], nil, 7)
+	tColors.args.modRateColor = ACH:Color(ACL["Modified Rate"], ACL["Color when the text is using a modified timer rate."], 2, nil, nil, nil, nil, nil, not PA.Retail)
+	tColors.args.expiringColor = ACH:Color(ACL["Expiring"], ACL["Color when the text is about to expire."], 3)
+	tColors.args.secondsColor = ACH:Color(ACL["Seconds"], ACL["Color when the text is in the seconds format."], 4)
+	tColors.args.minutesColor = ACH:Color(ACL["Minutes"], ACL["Color when the text is in the minutes format."], 5)
+	tColors.args.hoursColor = ACH:Color(ACL["Hours"], ACL["Color when the text is in the hours format."], 6)
+	tColors.args.daysColor = ACH:Color(ACL["Days"], ACL["Color when the text is in the days format."], 7)
+	tColors.args.mmssColor = ACH:Color(ACL["MM:SS"], nil, 8)
+	tColors.args.hhmmColor = ACH:Color(ACL["HH:MM"], nil, 9)
 	mainArgs.colorGroup.args.timeColors = tColors
 
 	local iColors = ACH:Group(ACL["Time Indicator Colors"], nil, 4, nil, nil, nil, function() return not (profile(db)).useIndicatorColor end)
-	iColors.args.useIndicatorColor = ACH:Toggle(ACL["Use Indicator Color"], nil, 0, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value; PA:UpdateCooldownSettings(db); end, false)
+	iColors.args.useIndicatorColor = ACH:Toggle(ACL["Use Indicator Color"], nil, 0, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end, false)
 	iColors.args.expireIndicator = ACH:Color(ACL["Expiring"], ACL["Color when the text is about to expire"], 1)
 	iColors.args.secondsIndicator = ACH:Color(ACL["Seconds"], ACL["Color when the text is in the seconds format."], 2)
 	iColors.args.minutesIndicator = ACH:Color(ACL["Minutes"], ACL["Color when the text is in the minutes format."], 3)
@@ -452,6 +449,8 @@ local function group(order, db, label)
 		mainArgs.colorGroup.disabled = nil
 		mainArgs.colorGroup.name = ACL["COLORS"]
 
+		mainArgs.roundTime = ACH:Toggle(ACL["Round Timers"], nil, 2, nil, nil, nil, function(info) return (profile(db))[info[#info]] end, function(info, value) (profile(db))[info[#info]] = value PA:UpdateCooldownSettings(db) end)
+
 		-- keep these two in this order
 		PA.Options.args.Cooldown.args.hideBlizzard = mainArgs.hideBlizzard
 		mainArgs.hideBlizzard = nil
@@ -462,7 +461,7 @@ local function group(order, db, label)
 	end
 end
 
-PA.Options.args.Cooldown = ACH:Group(ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'], nil, 2, 'tab', function(info) return PA.db.Cooldown[info[#info]] end, function(info, value) PA.db.Cooldown[info[#info]] = value; PA:UpdateCooldownSettings('global'); end)
+PA.Options.args.Cooldown = ACH:Group('Cooldown Text', nil, 0, 'tab', function(info) return PA.db.Cooldown[info[#info]] end, function(info, value) PA.db.Cooldown[info[#info]] = value PA:UpdateCooldownSettings('global') end)
 PA.Options.args.Cooldown.args.intro = ACH:Description(ACL['Adjust Cooldown Settings.'], 0)
 PA.Options.args.Cooldown.args.Enable = ACH:Toggle(ACL["Enable"], ACL["Display cooldown text on anything with the cooldown spiral."], 1)
 

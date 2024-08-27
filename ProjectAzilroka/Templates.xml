@@ -1,5 +1,5 @@
 <Ui>
-	<Button name='PA_AuraTemplate' inherits='BackdropTemplate' virtual='true' framelevel='4' >
+	<Button name='PA_AuraTemplate' inherits='BackdropTemplate' virtual='true' frameLevel='4' >
 		<Size x='16' y='16'/>
 		<Frames>
 			<Cooldown parentKey='Cooldown' inherits='CooldownFrameTemplate' hidden='true'>
@@ -47,8 +47,74 @@
 		</Layers>
 	</Button>
 
+	<!--Enhanced Battle Pet UI-->
+	<Frame name='EnhancedPetBattleFrame_Pet' inherits='BackdropTemplate' virtual='true' frameLevel='4' hidden='true' enableMouse='true'>
+		<Size x='260' y='60'/>
+		<Frames>
+			<Frame parentKey='Icon' frameLevel='5'>
+				<Size x='40' y='40'/>
+				<Layers>
+					<Layer level='ARTWORK' textureSubLevel='1'>
+						<Texture parentKey='PetTexture'>
+							<Anchors>
+								<Anchor point='TOPLEFT' x='1' y='-1'/>
+								<Anchor point='BOTTOMRIGHT' x='-1' y='1'/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level='OVERLAY' textureSubLevel='1'>
+						<Texture parentKey='Dead' file='Interface\AddOns\ProjectAzilroka\Media\Textures\Dead' hidden='true'>
+							<Anchors>
+								<Anchor point='TOPLEFT' x='-8' y='8'/>
+								<Anchor point='BOTTOMRIGHT' x='8' y='-8'/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey='PetType' enableMouse='true'>
+				<Size x='32' y='32'/>
+				<Layers>
+					<Layer level='ARTWORK' textureSubLevel='1'>
+						<Texture parentKey='Texture'>
+							<Anchors>
+								<Anchor point='TOPLEFT' x='1' y='-1'/>
+								<Anchor point='BOTTOMRIGHT' x='-1' y='1'/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<StatusBar parentKey='Health' frameLevel='6'>
+				<Size x='150' y='11'/>
+				<Layers>
+					<Layer level='OVERLAY' textureSubLevel='1'>
+						<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline'/>
+					</Layer>
+				</Layers>
+			</StatusBar>
+			<StatusBar parentKey='Power' frameLevel='6'>
+				<Size x='150' y='11'/>
+				<Layers>
+					<Layer level='OVERLAY' textureSubLevel='1'>
+						<FontString parentKey='StatusText' inherits='GameFontHighlightSmallOutline'/>
+					</Layer>
+				</Layers>
+			</StatusBar>
+		</Frames>
+		<Layers>
+			<Layer level='OVERLAY' textureSubLevel='1'>
+				<FontString parentKey='Power' inherits='NumberFontNormal'/>
+				<FontString parentKey='Speed' inherits='NumberFontNormal'/>
+				<FontString parentKey='Name' inherits='NumberFontNormal'/>
+				<FontString parentKey='Level' inherits='NumberFontNormal'/>
+				<FontString parentKey='BreedID' inherits='NumberFontNormal'/>
+			</Layer>
+		</Layers>
+	</Frame>
+
 	<!-- stAddOnManager -->
-	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' framelevel='4'>
+	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' frameLevel='4'>
 		<Size x='22' y='18'/>
 		<Layers>
 			<Layer level='OVERLAY' textureSubLevel='1'>

@@ -1,13 +1,8 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local MF = PA:NewModule('MovableFrames', 'AceEvent-3.0', 'AceHook-3.0')
-PA.MF, _G.MovableFrames = MF, MF
+_G.MovableFrames, PA.MovableFrames = MF, MF
 
-MF.Title = ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r']
-MF.Description = ACL['Make Blizzard Frames Movable']
-MF.Authors = 'Azilroka    Simpy'
-MF.isEnabled = false
-
-MF.alteredFrames = {}
+MF.Title, MF.Description, MF.Authors, MF.isEnabled = 'Movable Frames', ACL['Make Blizzard Frames Movable'], 'Azilroka    Simpy', false
 
 local next = next
 
@@ -16,48 +11,11 @@ local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 local IsShiftKeyDown = IsShiftKeyDown
 
 local Frames = {
-	'AddonList',
-	'BankFrame',
-	'CharacterFrame',
-	'DressUpFrame',
-	'FriendsFrame',
-	'FriendsFriendsFrame',
-	'GameMenuFrame',
-	'GhostFrame',
-	'GossipFrame',
-	'GuildInviteFrame',
-	'GuildRegistrarFrame',
-	'HelpFrame',
-	'InterfaceOptionsFrame',
-	'ItemTextFrame',
-	'LFGDungeonReadyDialog',
-	'LootFrame',
-	'LossOfControlFrame',
-	'MailFrame',
-	'MerchantFrame',
-	'PetitionFrame',
-	'PetStableFrame',
-	'PVEFrame',
-	'QuestFrame',
-	'QuestLogFrame',
-	'QuestLogPopupDetailFrame',
-	'RaidBrowserFrame',
-	'RaidParentFrame',
-	'ReadyCheckFrame',
-	'ScrollOfResurrectionSelectionFrame',
-	'SpellBookFrame',
-	'SplashFrame',
-	'StaticPopup1',
-	'StaticPopup2',
-	'StaticPopup3',
-	'StaticPopup4',
-	'TabardFrame',
-	'TaxiFrame',
-	'TimeManagerFrame',
-	'TradeFrame',
-	'VideoOptionsFrame',
-	'WorldMapFrame',
-	'WorldStateScoreFrame',
+	'AddonList', 'BankFrame', 'CharacterFrame', 'DressUpFrame', 'FriendsFrame', 'FriendsFriendsFrame', 'GameMenuFrame', 'GhostFrame', 'GossipFrame', 'GuildInviteFrame',
+	'GuildRegistrarFrame', 'HelpFrame', 'InterfaceOptionsFrame', 'ItemTextFrame', 'LFGDungeonReadyDialog', 'LootFrame', 'LossOfControlFrame', 'MailFrame', 'MerchantFrame',
+	'PetitionFrame', 'PetStableFrame', 'PVEFrame', 'QuestFrame', 'QuestLogFrame', 'QuestLogPopupDetailFrame', 'RaidBrowserFrame', 'RaidParentFrame', 'ReadyCheckFrame',
+	'ScrollOfResurrectionSelectionFrame', 'SpellBookFrame', 'SplashFrame', 'StaticPopup1', 'StaticPopup2', 'StaticPopup3', 'StaticPopup4', 'TabardFrame', 'TaxiFrame',
+	'TimeManagerFrame', 'TradeFrame', 'VideoOptionsFrame', 'WorldMapFrame', 'WorldStateScoreFrame'
 }
 
 local AddOnFrames = {
@@ -121,21 +79,13 @@ end
 
 function MF:OnMouseWheel(frame, delta)
 	if frame:IsMouseOver() and IsShiftKeyDown() then
-		local oldScale = frame:GetScale() or 1
-		local newScale = oldScale + (0.01 * delta)
-
-		if newScale > 1.5 then newScale = 1.5 end
-		if newScale < 0.75 then newScale = 0.75 end
-
-		frame:SetScale(newScale)
+		frame:SetScale(PA:Clamp((frame:GetScale() or 1) + (0.01 * delta), .75, 1.5))
 	end
 end
 
 function MF:MakeMovable(name)
 	local frame = _G[name]
-	if not frame then
-		return
-	end
+	if not frame then return end
 
 	if name == 'AchievementFrame' then
 		local header = _G.AchievementFrameHeader or _G.AchievementFrame.Header
@@ -209,7 +159,7 @@ function MF:Initialize()
 		end
 	end
 
-	MF.isEnabled = true
+	MF.alteredFrames, MF.isEnabled = {}, true
 
 	if PA:IsAddOnEnabled('WorldQuestTracker') or PA:IsAddOnEnabled('Leatrix_Maps') then
 		Frames.WorldMapFrame = nil

@@ -2,10 +2,7 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local TS = PA:NewModule('TargetSounds', 'AceEvent-3.0')
 PA.TS = TS
 
-TS.Title = ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r']
-TS.Description = ACL['Audio for Target Sounds.']
-TS.Authors = 'Azilroka'
-TS.isEnabled = false
+TS.Title, TS.Description, TS.Authors, TS.isEnabled = 'Target Sounds', ACL['Audio for Target Sounds.'], 'Azilroka', false
 
 local UnitExists = UnitExists
 local UnitIsEnemy = UnitIsEnemy

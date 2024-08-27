@@ -12,7 +12,6 @@ LSM:Register('statusbar', 'Sinaris', Path..[[StatusBars\Sinaris]])
 LSM:Register('statusbar', 'Slate', Path..[[StatusBars\Slate]])
 LSM:Register('statusbar', 'Smooth', Path..[[StatusBars\Smooth]])
 LSM:Register('statusbar', 'Tukui', Path..[[StatusBars\Tukui]])
-LSM:Register('statusbar', 'Solid', [[Interface\Buttons\WHITE8X8]])
 
 LSM:Register('font', 'Action Man', Path..[[Fonts\ActionMan.ttf]])
 LSM:Register('font', 'Arial', Path..[[Fonts\Arial.ttf]])

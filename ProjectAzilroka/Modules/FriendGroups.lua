@@ -2,18 +2,11 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local FG = PA:NewModule('FriendGroups', 'AceEvent-3.0', 'AceTimer-3.0', 'AceHook-3.0')
 _G.FriendGroups= FG
 
-FG.Title = ACL['|cFF16C3F2Friend|r |cFFFFFFFFGroups|r']
-FG.Description = ACL['Manage Friends List with Groups']
-FG.Authors = 'Azilroka'
-FG.Credits = 'Mikeprod    frankkkkk'
+FG.Title, FG.Description, FG.Authors, FG.Credits = 'Friend Groups', ACL['Manage Friends List with Groups'], 'Azilroka', 'Mikeprod    frankkkkk'
 
 local FRIENDS_GROUP_NAME_COLOR = NORMAL_FONT_COLOR
 
-local ONE_MINUTE = 60
-local ONE_HOUR = 60 * ONE_MINUTE
-local ONE_DAY = 24 * ONE_HOUR
-local ONE_MONTH = 30 * ONE_DAY
-local ONE_YEAR = 12 * ONE_MONTH
+local ONE_YEAR = 31536000
 
 local FriendListEntries = {}
 local GroupCount = 0

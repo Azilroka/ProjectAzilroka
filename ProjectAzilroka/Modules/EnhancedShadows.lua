@@ -1,11 +1,8 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local ES = PA:NewModule('EnhancedShadows', 'AceEvent-3.0', 'AceTimer-3.0')
-PA.ES = ES
+_G.EnhancedShadows, PA.ES = ES, ES
 
-ES.Title = ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r']
-ES.Description = ACL['Adds options for registered shadows']
-ES.Authors = 'Azilroka'
-ES.isEnabled = false
+ES.Title, ES.Description, ES.Authors, ES.isEnabled = 'Enhanced Shadows', ACL['Adds options for registered shadows'], 'Azilroka', false
 
 local unpack, floor, pairs = unpack, floor, pairs
 local UnitAffectingCombat = UnitAffectingCombat
@@ -98,9 +95,5 @@ function ES:Initialize()
 		return
 	end
 
-	_G.EnhancedShadows = ES
-
 	ES.isEnabled = true
-
-	ES:ScheduleTimer('UpdateShadows', 1)
 end

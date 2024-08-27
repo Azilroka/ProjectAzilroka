@@ -2,13 +2,10 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
 PA.stAM, _G.stAddonManager = stAM, stAM
 
-_G.stAddonManagerProfilesDB = {}
-_G.stAddonManagerServerDB = {}
+stAddonManagerProfilesDB = {}
+stAddonManagerServerDB = {}
 
-stAM.Title = ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r']
-stAM.Description = ACL['A simple and minimalistic addon to disable/enabled addons without logging out.']
-stAM.Authors = 'Azilroka    Safturento'
-stAM.isEnabled = false
+stAM.Title, stAM.Description, stAM.Authors, stAM.isEnabled = 'stAddonManager', ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'], 'Azilroka    Safturento', false
 
 local _G = _G
 local min, max = min, max
@@ -260,6 +257,7 @@ function stAM:BuildFrame()
 	CharacterSelect.DropDown = CreateFrame('Frame', 'stAMCharacterSelectDropDown', CharacterSelect, 'UIDropDownMenuTemplate')
 	CharacterSelect:SetSize(150, 20)
 	PA:SetTemplate(CharacterSelect)
+
 	CharacterSelect:SetScript('OnEnter', function() CharacterSelect:SetBackdropBorderColor(unpack(stAM.db.ClassColor and PA.ClassColor or stAM.db.CheckColor)) end)
 	CharacterSelect:SetScript('OnLeave', function() PA:SetTemplate(CharacterSelect) end)
 	CharacterSelect:SetScript('OnClick', function() PA:EasyMenu(stAM.Menu, CharacterSelect.DropDown, CharacterSelect, 0, 38 + (stAM.MenuOffset * 16), 'MENU', 5) end)
@@ -590,8 +588,10 @@ function stAM:UpdateAddonList()
 
 			if info.Icon then
 				button.Icon:SetTexture(info.Icon)
+				button.Icon:SetTexCoord(PA:TexCoords())
 			elseif info.Atlas then
 				button.Icon:SetAtlas(info.Atlas)
+				button.Icon:SetTexCoord(0, 1, 0, 1)
 			end
 
 			button.Icon:SetShown(info.Icon or info.Atlas)
@@ -733,7 +733,26 @@ function stAM:Initialize()
 
 	stAM.isEnabled = true
 
-	stAM.AddOnInfo, stAM.Profiles = {}, {}
+	stAM.Menu = {
+		{ order = 0, text = 'All', checked = function() return stAM.SelectedCharacter == true end, func = function() stAM.SelectedCharacter = true stAM:UpdateAddonList() end}
+	}
+
+	stAddonManagerServerDB[PA.MyRealm] = stAddonManagerServerDB[PA.MyRealm] or {}
+	stAddonManagerServerDB[PA.MyRealm][PA.MyName] = true
+
+	local function menuSort(a, b)
+		if a.order and b.order and not (a.order == b.order) then
+			return a.order < b.order
+		end
+		return a.text < b.text
+	end
+
+	for Character in next, stAddonManagerServerDB[PA.MyRealm] do
+		tinsert(stAM.Menu, { text = Character, checked = function() return stAM.SelectedCharacter == Character end, func = function() stAM.SelectedCharacter = Character stAM:UpdateAddonList() end })
+	end
+	sort(stAM.Menu, menuSort)
+
+	stAM.AddOnInfo, stAM.Profiles, stAM.SelectedCharacter, stAM.MenuOffset, stAM.scrollOffset = {}, {}, PA.MyName, #stAM.Menu, 0
 
 	local addonCache, _ = {}
 	for addonIndex = 1, GetNumAddOns() do
@@ -770,30 +789,6 @@ function stAM:Initialize()
 
 		stAM.AddOnInfo[addonIndex] = { Name = Name, Title = Title, Authors = GetAddOnMetadata(addonIndex, 'Author'), Version = GetAddOnMetadata(addonIndex, 'Version'), Notes = Notes, Required = Required, Optional = Optional, Missing = MissingAddons, Disabled = DisabledAddons, Icon = iconTexture, Atlas = iconAtlas }
 	end
-
-	stAM.SelectedCharacter = PA.MyName
-
-	stAM.Menu = {
-		{ order = 0, text = 'All', checked = function() return stAM.SelectedCharacter == true end, func = function() stAM.SelectedCharacter = true stAM:UpdateAddonList() end}
-	}
-
-	_G.stAddonManagerServerDB[PA.MyRealm] = _G.stAddonManagerServerDB[PA.MyRealm] or {}
-	_G.stAddonManagerServerDB[PA.MyRealm][PA.MyName] = true
-
-	local function menuSort(a, b)
-		if a.order and b.order and not (a.order == b.order) then
-			return a.order < b.order
-		end
-		return a.text < b.text
-	end
-
-	for Character in next, _G.stAddonManagerServerDB[PA.MyRealm] do
-		tinsert(stAM.Menu, { text = Character, checked = function() return stAM.SelectedCharacter == Character end, func = function() stAM.SelectedCharacter = Character stAM:UpdateAddonList() end })
-	end
-	sort(stAM.Menu, menuSort)
-
-	stAM.MenuOffset = #stAM.Menu
-	stAM.scrollOffset = 0
 
 	stAM:BuildFrame()
 	stAM:InitProfiles()

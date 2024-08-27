@@ -1,12 +1,8 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local MXP = PA:NewModule('MasterXP', 'AceTimer-3.0', 'AceEvent-3.0')
-local L = ACL
+_G.MasterExperience, PA.MasterExperience = MXP, MXP
 
-MXP.Title = L['|cFF16C3F2Master|r |cFFFFFFFFExperience|r']
-MXP.Description = L['Shows Experience Bars for Party / Battle.net Friends']
-MXP.Authors = 'Azilroka'
-MXP.isEnabled = false
-PA.MXP, _G.MasterExperience = MXP, MXP
+MXP.Title, MXP.Description, MXP.Authors, MXP.isEnabled = 'Master Experience', ACL['Shows Experience Bars for Party / Battle.net Friends'], 'Azilroka', false
 
 local _G = _G
 local min, max, format = min, max, format

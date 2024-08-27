@@ -1,33 +1,27 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local EFL = PA:NewModule('EnhancedFriendsList', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
+local LSM = PA.Libs.LSM
+
 PA.EFL, _G.EnhancedFriendsList = EFL, EFL
 
-EFL.Title = ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r']
-EFL.Description = ACL['Provides Friends List Customization']
-EFL.Authors = 'Azilroka'
-EFL.Credits = 'Marotheit    Merathilis'
-EFL.isEnabled = false
+EFL.Title, EFL.Description, EFL.Authors, EFL.Credits, EFL.isEnabled = 'Enhanced Friends List', ACL['Provides Friends List Customization'], 'Azilroka', 'Marotheit    Merathilis', false
 
-local pairs = pairs
-local format = format
-local unpack = unpack
-local time = time
+local next, format, unpack, time = next, format, unpack, time
+
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
 local BNet_GetClientTexture = BNet_GetClientTexture or BNet_GetBattlenetClientAtlas
 local GetQuestDifficultyColor = GetQuestDifficultyColor
 local WrapTextInColorCode = WrapTextInColorCode
+
 local _G = _G
 
 local MediaPath = 'Interface/AddOns/ProjectAzilroka/Media/EnhancedFriendsList/'
-local ONE_MINUTE = 60;
-local ONE_HOUR = 60 * ONE_MINUTE;
-local ONE_DAY = 24 * ONE_HOUR;
-local ONE_MONTH = 30 * ONE_DAY;
-local ONE_YEAR = 12 * ONE_MONTH;
 
 local isBNConnected = _G.BNConnected()
 local LEVEL = LEVEL
+
+local BNET_CLIENT_WOW = BNET_CLIENT_WOW
 
 --[[
 /run for i,v in pairs(_G) do if type(v)=='string' and i:match('BNET_CLIENT_') then print(i,'=',v) end end
@@ -35,29 +29,29 @@ local LEVEL = LEVEL
 
 EFL.Icons = {
 	Game = {
-		Alliance = { Name = _G.FACTION_ALLIANCE, Order = 1, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Alliance' },
-		Horde = { Name = _G.FACTION_HORDE, Order = 2, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Horde' },
-		Neutral = { Name = _G.FACTION_STANDING_LABEL4, Order = 3, Default = BNet_GetClientTexture(_G.BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/WoW' },
-		App = { Name = ACL['App'], Order = 4, Color = '82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
-		BSAp = { Name = ACL['Mobile'], Order = 5, Color = '82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/Mobile' },
-		D3 = { Name = ACL['Diablo 3'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D3), Launcher = MediaPath..'GameIcons/Launcher/D3' },
-		Fen = { Name = ACL['Diablo 4'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_FEN), Launcher = MediaPath..'GameIcons/Launcher/D4' },
-		WTCG = { Name = ACL['Hearthstone'], Color = 'FFB100', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WTCG), Launcher = MediaPath..'GameIcons/Launcher/Hearthstone' },
-		S1 = { Name = ACL['Starcraft'], Color = 'C495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC), Launcher = MediaPath..'GameIcons/Launcher/SC' },
-		S2 = { Name = ACL['Starcraft 2'], Color = 'C495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC2), Launcher = MediaPath..'GameIcons/Launcher/SC2' },
-		Hero = { Name = ACL['Hero of the Storm'], Color = '00CCFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_HEROES), Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
-		Pro = { Name = ACL['Overwatch'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_OVERWATCH), Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
-		VIPR = { Name = ACL['Call of Duty 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
-		ODIN = { Name = ACL['Call of Duty Modern Warfare'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW), Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
-		W3 = { Name = ACL['Warcraft 3 Reforged'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
-		LAZR = { Name = ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
-		ZEUS = { Name = ACL['Call of Duty Cold War'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
-		WLBY = { Name = ACL['Crash Bandicoot 4'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_CRASH4), Launcher = MediaPath..'GameIcons/Launcher/CB4' },
-		OSI = { Name = ACL['Diablo II Resurrected'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
-		FORE = { Name = ACL['Call of Duty Vanguard'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
-		RTRO = { Name = ACL['Arcade Collection'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
-		ANBS = { Name = ACL['Diablo Immortal'], Color = 'C41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/DI' },
-		GRY = { Name = ACL['Warcraft Arclight Rumble'], Color = 'FFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arclight' },
+		Alliance = { Name = _G.FACTION_ALLIANCE, Order = 1, Default = BNet_GetClientTexture(BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Alliance' },
+		Horde = { Name = _G.FACTION_HORDE, Order = 2, Default = BNet_GetClientTexture(BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/Horde' },
+		Neutral = { Name = _G.FACTION_STANDING_LABEL4, Order = 3, Default = BNet_GetClientTexture(BNET_CLIENT_WOW), Launcher = MediaPath..'GameIcons/Launcher/WoW' },
+		App = { Name = ACL['App'], Order = 4, Color = 'FF82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/BattleNet' },
+		BSAp = { Name = ACL['Mobile'], Order = 5, Color = 'FF82C5FF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_APP), Launcher = MediaPath..'GameIcons/Launcher/Mobile' },
+		D3 = { Name = ACL['Diablo 3'], Color = 'FFC41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D3), Launcher = MediaPath..'GameIcons/Launcher/D3' },
+		Fen = { Name = ACL['Diablo 4'], Color = 'FFC41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_FEN), Launcher = MediaPath..'GameIcons/Launcher/D4' },
+		WTCG = { Name = ACL['Hearthstone'], Color = 'FFFFB100', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WTCG), Launcher = MediaPath..'GameIcons/Launcher/Hearthstone' },
+		S1 = { Name = ACL['Starcraft'], Color = 'FFC495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC), Launcher = MediaPath..'GameIcons/Launcher/SC' },
+		S2 = { Name = ACL['Starcraft 2'], Color = 'FFC495DD', Default = BNet_GetClientTexture(_G.BNET_CLIENT_SC2), Launcher = MediaPath..'GameIcons/Launcher/SC2' },
+		Hero = { Name = ACL['Hero of the Storm'], Color = 'FF00CCFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_HEROES), Launcher = MediaPath..'GameIcons/Launcher/Heroes' },
+		Pro = { Name = ACL['Overwatch'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_OVERWATCH), Launcher = MediaPath..'GameIcons/Launcher/Overwatch' },
+		VIPR = { Name = ACL['Call of Duty 4'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD), Launcher = MediaPath..'GameIcons/Launcher/COD4' },
+		ODIN = { Name = ACL['Call of Duty Modern Warfare'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW), Launcher = MediaPath..'GameIcons/Launcher/CODMW' },
+		W3 = { Name = ACL['Warcraft 3 Reforged'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_WC3), Launcher = MediaPath..'GameIcons/Launcher/WC3R' },
+		LAZR = { Name = ACL['Call of Duty Modern Warfare 2'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_MW2), Launcher = MediaPath..'GameIcons/Launcher/CODMW2' },
+		ZEUS = { Name = ACL['Call of Duty Cold War'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_BOCW), Launcher = MediaPath..'GameIcons/Launcher/CODCW' },
+		WLBY = { Name = ACL['Crash Bandicoot 4'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_CRASH4), Launcher = MediaPath..'GameIcons/Launcher/CB4' },
+		OSI = { Name = ACL['Diablo II Resurrected'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_D2), Launcher = MediaPath..'GameIcons/Launcher/D2' },
+		FORE = { Name = ACL['Call of Duty Vanguard'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_COD_VANGUARD), Launcher = MediaPath..'GameIcons/Launcher/CODVanguard' },
+		RTRO = { Name = ACL['Arcade Collection'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCADE), Launcher = MediaPath..'GameIcons/Launcher/Arcade' },
+		ANBS = { Name = ACL['Diablo Immortal'], Color = 'FFC41F3B', Default = BNet_GetClientTexture(_G.BNET_CLIENT_DI), Launcher = MediaPath..'GameIcons/Launcher/DI' },
+		GRY = { Name = ACL['Warcraft Arclight Rumble'], Color = 'FFFFFFFF', Default = BNet_GetClientTexture(_G.BNET_CLIENT_ARCLIGHT), Launcher = MediaPath..'GameIcons/Launcher/Arclight' },
 	},
 	Status = {
 		Online = { Name = _G.FRIENDS_LIST_ONLINE, Order = 1, Default = _G.FRIENDS_TEXTURE_ONLINE, Square = MediaPath..'StatusIcons/Square/Online', D3 = MediaPath..'StatusIcons/D3/Online', Color = {.243, .57, 1} },
@@ -80,8 +74,8 @@ end
 
 function EFL:CreateTexture(button, type, layer)
 	if button.efl and button.efl[type] then
-		button.efl[type].Left:SetTexture(PA.Libs.LSM:Fetch('statusbar', EFL.db['Texture']))
-		button.efl[type].Right:SetTexture(PA.Libs.LSM:Fetch('statusbar', EFL.db['Texture']))
+		button.efl[type].Left:SetTexture(LSM:Fetch('statusbar', EFL.db['Texture']))
+		button.efl[type].Right:SetTexture(LSM:Fetch('statusbar', EFL.db['Texture']))
 		return
 	end
 
@@ -131,7 +125,7 @@ function EFL:UpdateFriends(button)
 		end
 		button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
 	elseif button.buttonType == _G.FRIENDS_BUTTON_TYPE_BNET and isBNConnected then
-		local info = _G.C_BattleNet.GetFriendAccountInfo(button.id);
+		local info = _G.C_BattleNet.GetFriendAccountInfo(button.id)
 		if info then
 			nameText = info.accountName
 			infoText = info.gameAccountInfo.richPresence
@@ -139,7 +133,7 @@ function EFL:UpdateFriends(button)
 				local client = info.gameAccountInfo.clientProgram
 				status = info.isDND and 'DND' or info.isAFK and 'AFK' or 'Online'
 
-				if client == _G.BNET_CLIENT_WOW then
+				if client == BNET_CLIENT_WOW then
 					local level = info.gameAccountInfo.characterLevel
 					local characterName = info.gameAccountInfo.characterName
 					local classcolor = PA:ClassColorCode(info.gameAccountInfo.className)
@@ -163,7 +157,9 @@ function EFL:UpdateFriends(button)
 					button.gameIcon:SetTexture(faction and EFL.Icons.Game[faction][EFL.db.GameIconPack or 'Default'] or EFL.Icons.Game.Neutral.Launcher)
 				else
 					if not EFL.Icons.Game[client] then client = 'BSAp' end
-					nameText = format('|cFF%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFF', nameText)
+					if EFL.db.ColorByGame then
+						nameText = format('|c%s%s|r', EFL.Icons.Game[client].Color or 'FFFFFFFF', nameText)
+					end
 					button.gameIcon:SetTexture(EFL.Icons.Game[client][EFL.db.GameIconPack or 'Default'])
 				end
 
@@ -172,7 +168,7 @@ function EFL:UpdateFriends(button)
 				button.gameIcon:SetAlpha(1)
 			else
 				local lastOnline = info.lastOnlineTime
-				infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= ONE_YEAR) and _G.FRIENDS_LIST_OFFLINE or format(_G.BNET_LAST_ONLINE_TIME, _G.FriendsFrame_GetLastOnline(lastOnline))
+				infoText = (not lastOnline or lastOnline == 0 or time() - lastOnline >= 31536000) and _G.FRIENDS_LIST_OFFLINE or format(_G.BNET_LAST_ONLINE_TIME, _G.FriendsFrame_GetLastOnline(lastOnline))
 			end
 			button.status:SetTexture(EFL.Icons.Status[status][EFL.db.StatusIconPack])
 		end
@@ -197,12 +193,12 @@ function EFL:UpdateFriends(button)
 		EFL:SetGradientColor(button.efl.highlight, StatusColor[status].Inside, StatusColor[status].Outside)
 	end
 
-	button.name:SetFont(PA.Libs.LSM:Fetch('font', EFL.db.NameFont), EFL.db.NameFontSize, EFL.db.NameFontFlag)
-	button.info:SetFont(PA.Libs.LSM:Fetch('font', EFL.db.InfoFont), EFL.db.InfoFontSize, EFL.db.InfoFontFlag)
+	button.name:SetFont(LSM:Fetch('font', EFL.db.NameFont), EFL.db.NameFontSize, EFL.db.NameFontFlag)
+	button.info:SetFont(LSM:Fetch('font', EFL.db.InfoFont), EFL.db.InfoFontSize, EFL.db.InfoFontFlag)
 
 	if button.Favorite and button.Favorite:IsShown() then
 		button.Favorite:ClearAllPoints()
-		button.Favorite:SetPoint('TOPLEFT', button.name, 'TOPLEFT', button.name:GetStringWidth(), 0);
+		button.Favorite:SetPoint('TOPLEFT', button.name, 'TOPLEFT', button.name:GetStringWidth(), 0)
 	end
 end
 
@@ -221,8 +217,9 @@ function EFL:GetOptions()
 	EnhancedFriendsList.args.General.args.NameSettings.args.NameFont = ACH:SharedMediaFont(ACL['Name Font'], ACL['The font that the RealID / Character Name / Level uses.'], 1)
 	EnhancedFriendsList.args.General.args.NameSettings.args.NameFontSize = ACH:Range(ACL['Name Font Size'], ACL['The font that the RealID / Character Name / Level uses.'], 2, { min = 6, max = 22, step = 1 })
 	EnhancedFriendsList.args.General.args.NameSettings.args.NameFontFlag = ACH:FontFlags(ACL['Name Font Flag'], ACL['The font that the RealID / Character Name / Level uses.'], 3)
-	EnhancedFriendsList.args.General.args.NameSettings.args.ShowLevel = ACH:Toggle(ACL['Show Level'], nil, 4)
-	EnhancedFriendsList.args.General.args.NameSettings.args.DiffLevel = ACH:Toggle(ACL['Level by Difficulty'], nil, 5, nil, nil, nil, nil, nil, function() return (not EFL.db.ShowLevel) end)
+	EnhancedFriendsList.args.General.args.NameSettings.args.ColorByGame = ACH:Toggle(ACL['Color By Game'], nil, 4)
+	EnhancedFriendsList.args.General.args.NameSettings.args.ShowLevel = ACH:Toggle(ACL['Show Level'], nil, 5)
+	EnhancedFriendsList.args.General.args.NameSettings.args.DiffLevel = ACH:Toggle(ACL['Level by Difficulty'], nil, 6, nil, nil, nil, nil, nil, function() return (not EFL.db.ShowLevel) end)
 
 	EnhancedFriendsList.args.General.args.InfoSettings = ACH:Group(ACL['Info Settings'], nil, 2)
 	EnhancedFriendsList.args.General.args.InfoSettings.inline = true
@@ -244,11 +241,11 @@ function EFL:GetOptions()
 	EnhancedFriendsList.args.StatusIcons = ACH:Group(ACL['Status Icon Preview'], nil, 5)
 	EnhancedFriendsList.args.StatusIcons.inline = true
 
-	for Key, Value in pairs(EFL.Icons.Game) do
+	for Key, Value in next, EFL.Icons.Game do
 		EnhancedFriendsList.args.GameIconsPreview.args[Key] = ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Game[info[#info]][EFL.db.GameIconPack], 32, 32 end)
 	end
 
-	for Key, Value in pairs(EFL.Icons.Status) do
+	for Key, Value in next, EFL.Icons.Status do
 		EnhancedFriendsList.args.StatusIcons.args[Key] = ACH:Execute(Value.Name, nil, Value.Order, nil, function(info) return EFL.Icons.Status[info[#info]][EFL.db.StatusIconPack], 16, 16 end)
 	end
 
@@ -269,6 +266,7 @@ function EFL:BuildProfile()
 		InfoFontFlag = 'OUTLINE',
 		StatusIconPack = 'Default',
 		ShowLevel = true,
+		ColorByGame = true,
 		DiffLevel = true,
 		ShowStatusHighlight = true,
 		ShowStatusBackground = false,

@@ -1,29 +1,18 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local FL = PA:NewModule('FasterLoot', 'AceEvent-3.0')
-PA.FL, _G.FasterLoot = FL, FL
+PA.FasterLoot, _G.FasterLoot = FL, FL
 
-FL.Title = ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r']
-FL.Description = ACL['Increases auto loot speed near instantaneous.']
-FL.Authors = 'Azilroka'
-FL.isEnabled = false
+FL.Title, FL.Description, FL.Authors, FL.isEnabled = 'Faster Loot', ACL['Increases auto loot speed near instantaneous.'], 'Azilroka', false
 
-local GetNumLootItems = GetNumLootItems
-local LootSlot = LootSlot
-local GetCVarBool = GetCVarBool
-local IsModifiedClick = IsModifiedClick
-local GetBagName = GetBagName or (C_Container and C_Container.GetBagName)
-local GetLootSlotLink = GetLootSlotLink
-local GetItemInfo = GetItemInfo
-local EquipItemByName = EquipItemByName
+local GetCVarBool, IsModifiedClick, LootSlot, GetNumLootItems, GetLootSlotLink = GetCVarBool, IsModifiedClick, LootSlot, GetNumLootItems, GetLootSlotLink
+local GetBagName, GetContainerNumSlots = C_Container.GetBagName, C_Container.GetContainerNumSlots
 
-local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local GetItemInfo, EquipItemByName = C_Item.GetItemInfo, C_Item.EquipItemByName
 
-local HaveEmptyBagSlots = 0
+local NUM_BAG_SLOTS, HaveEmptyBagSlots = NUM_BAG_SLOTS, 0
 
 function FL:LootItems()
-	if FL.isLooting then
-		return
-	end
+	if FL.isLooting then return end
 
 	for i = 0, NUM_BAG_SLOTS do
 		if not GetBagName(i) then
@@ -31,14 +20,13 @@ function FL:LootItems()
 		end
 	end
 
-	local link, itemEquipLoc, bindType, _
 	if (GetCVarBool('autoLootDefault') ~= IsModifiedClick('AUTOLOOTTOGGLE')) then
 		FL.isLooting = true
 		for i = GetNumLootItems(), 1, -1 do
-			link = GetLootSlotLink(i)
+			local link = GetLootSlotLink(i)
 			LootSlot(i)
 			if link then
-				itemEquipLoc, _, _, _, _, bindType = select(9, GetItemInfo(link))
+				local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent = GetItemInfo(link)
 
 				if itemEquipLoc == "INVTYPE_BAG" and bindType < 2 and HaveEmptyBagSlots > 0 then
 					EquipItemByName(link)
@@ -52,8 +40,7 @@ function FL:QUEST_COMPLETE(event)
 end
 
 function FL:LOOT_CLOSED()
-	FL.isLooting = false
-	FL.HaveEmptyBagSlots = 0
+	FL.isLooting, FL.HaveEmptyBagSlots = false, 0
 end
 
 function FL:BuildProfile()
@@ -82,8 +69,7 @@ function FL:Initialize()
 
 	FL.isEnabled = true
 
-	LOOTFRAME_AUTOLOOT_DELAY = 0.1;
-	LOOTFRAME_AUTOLOOT_RATE = 0.1;
+	LOOTFRAME_AUTOLOOT_DELAY, LOOTFRAME_AUTOLOOT_RATE = .1, .1
 
 	FL:RegisterEvent('LOOT_READY', 'LootItems')
 	FL:RegisterEvent('LOOT_OPENED', 'LootItems')

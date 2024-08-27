@@ -3,11 +3,9 @@ local OzCD = PA:NewModule('OzCooldowns', 'AceEvent-3.0', 'AceTimer-3.0')
 local LSM = PA.Libs.LSM
 _G.OzCooldowns, PA.OzCD = OzCD, OzCD
 
-OzCD.Title, OzCD.Description, OzCD.Authors, OzCD.isEnabled = ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'], ACL['Minimalistic Cooldowns'], 'Azilroka    Nimaear', false
+OzCD.Title, OzCD.Description, OzCD.Authors, OzCD.isEnabled = 'OzCooldowns', ACL['Minimalistic Cooldowns'], 'Azilroka    Nimaear', false
 
-local next, ipairs, sort, unpack, tinsert, format, tonumber, ceil, floor = next, ipairs, sort, unpack, tinsert, format, tonumber, ceil, floor
-
-local GetSpellCooldown, GetSpellCharges = PA.GetSpellCooldown, PA.GetSpellCharges
+local next, sort, unpack, tinsert, format, tonumber, floor = next, sort, unpack, tinsert, format, tonumber, floor
 
 local GetTime, IsInRaid, IsInGroup, SendChatMessage = GetTime, IsInRaid, IsInGroup, SendChatMessage
 local UIParent, CreateFrame, CopyTable = UIParent, CreateFrame, CopyTable
@@ -23,7 +21,6 @@ OzCD.Cooldowns, OzCD.ActiveCooldowns, OzCD.DelayCooldowns, OzCD.HasCDDelay = {},
 local GLOBAL_COOLDOWN_TIME, COOLDOWN_MIN_DURATION, Channel = 1.5, .1
 
 function OzCD:SetSize(Position)
-	Position = Position or PA:CountTable(OzCD.ActiveCooldowns)
 	local Vertical, Spacing, Size = OzCD.db.Vertical, OzCD.db.Spacing + 2, OzCD.db.Size
 	local xSpacing = Vertical and 0 or Spacing
 	local ySpacing = Vertical and (Spacing + (OzCD.db.StatusBar and 5 or 0)) or 0
@@ -37,8 +34,7 @@ end
 
 function OzCD:PLAYER_ENTERING_WORLD()
 	for SpellID in next, OzCD.db.SpellCDs do
-		local cooldownInfo = GetSpellCooldown(SpellID)
-		local currentDuration = (cooldownInfo.startTime + cooldownInfo.duration - GetTime()) or 0
+		local currentDuration = PA:GetCooldownInfo(SpellID)
 
 		if (currentDuration > .1) and (currentDuration < OzCD.db.IgnoreDuration) then
 			if (currentDuration >= OzCD.db.SuppressDuration) then
@@ -58,14 +54,7 @@ end
 
 function OzCD:SPELL_UPDATE_COOLDOWN()
 	for SpellID in next, OzCD.Cooldowns do
-		local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
-		local Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
-
-		if chargeInfo and ( chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges ) then
-			Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
-		end
-
-		local CurrentDuration = (Start + Duration - GetTime())
+		local CurrentDuration, _, Duration = PA:GetCooldownInfo(SpellID)
 
 		if CurrentDuration and (CurrentDuration < OzCD.db.IgnoreDuration) then
 			if (CurrentDuration >= OzCD.db.SuppressDuration) or OzCD.HasCDDelay[SpellID] then
@@ -84,29 +73,13 @@ function OzCD:SPELL_UPDATE_COOLDOWN()
 end
 
 function OzCD:UpdateActiveCooldowns()
-	for i = PA:CountTable(OzCD.ActiveCooldowns) + 1, #OzCD.Holder.Buttons do
-		OzCD.Holder.Buttons[i]:Hide()
-	end
-
-	local Position = 0
+	local Position = 1
 	for SpellID in next, OzCD.ActiveCooldowns do
 		local spellData = PA.SpellBook.Complete[SpellID]
 
 		if spellData.name then
+			local Frame, CurrentDuration, Start, Duration = OzCD:GetCooldownFrame(Position), PA:GetCooldownInfo(SpellID)
 			Position = Position + 1
-			local Frame, Start, Duration = OzCD:GetCooldown(Position)
-
-			do
-				local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
-
-				if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
-					Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
-				else
-					Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
-				end
-			end
-
-			local CurrentDuration = (Start + Duration - GetTime())
 
 			Frame.CurrentDuration = CurrentDuration
 			Frame.Duration = Duration
@@ -128,36 +101,26 @@ function OzCD:UpdateActiveCooldowns()
 		end
 	end
 
+	for i = Position, #OzCD.Holder.Buttons do
+		OzCD.Holder.Buttons[i]:Hide()
+	end
+
 	OzCD:SetSize(Position)
 end
 
 function OzCD:UpdateDelayedCooldowns()
 	for SpellID in next, OzCD.DelayCooldowns do
-		local Start, Duration = PA.SpellBook.Complete[SpellID]
+		local CurrentDuration, Start, Duration = PA:GetCooldownInfo(SpellID)
 
-		do
-			local cooldownInfo, chargeInfo = GetSpellCooldown(SpellID), GetSpellCharges(SpellID)
-
-			if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
-				Start, Duration = chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration
-			else
-				Start, Duration = cooldownInfo.startTime, cooldownInfo.duration
-			end
-		end
-
-		local CurrentDuration = (Start + Duration - GetTime())
-
-		if CurrentDuration then
-			if (CurrentDuration < OzCD.db.SuppressDuration) and (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
-				OzCD.DelayCooldowns[SpellID], OzCD.ActiveCooldowns[SpellID] = nil, Duration
-			end
-		else
+		if (CurrentDuration < OzCD.db.SuppressDuration) and (CurrentDuration > GLOBAL_COOLDOWN_TIME) then
+			OzCD.DelayCooldowns[SpellID], OzCD.ActiveCooldowns[SpellID] = nil, Duration
+		elseif CurrentDuration == 0 then
 			OzCD.DelayCooldowns[SpellID] = nil
 		end
 	end
 end
 
-function OzCD:GetCooldown(index)
+function OzCD:GetCooldownFrame(index)
 	local Frame = OzCD.Holder.Buttons[index]
 	if not Frame then
 		Frame = CreateFrame('Button', 'OzCD_'..index, OzCD.Holder, 'PA_AuraTemplate')
@@ -215,17 +178,9 @@ function OzCD:GetCooldown(index)
 		Frame:SetScript('OnLeave', _G.GameTooltip_Hide)
 		Frame:SetScript('OnClick', function(s)
 			if not OzCD.db.Announce then return end
-			local CurrentDuration = s.CurrentDuration
-			local TimeRemaining
-			if CurrentDuration > 60 then
-				TimeRemaining = format('%d m', ceil(CurrentDuration / 60))
-			elseif CurrentDuration <= 60 and CurrentDuration > 10 then
-				TimeRemaining = format('%d s', CurrentDuration)
-			elseif CurrentDuration <= 10 and CurrentDuration > 0 then
-				TimeRemaining = format('%.1f s', CurrentDuration)
-			end
-
-			SendChatMessage(format(ACL["My %s will be off cooldown in %s"], s.SpellName, TimeRemaining), Channel)
+			local timervalue, formatid, _, remainder = PA:GetTimeInfo(s.CurrentDuration, OzCD.db.Cooldown.threshold, OzCD.db.Cooldown.hhmmThreshold, OzCD.db.Cooldown.mmssThreshold)
+			local which = (OzCD.db.Cooldown.textColors and 2 or 1) + (OzCD.db.Cooldown.showSeconds and 0 or 2)
+			SendChatMessage(format(ACL["My %s will be off cooldown in %s"], s.SpellName, format(PA.TimeFormats[formatid][which], timervalue, remainder)), Channel)
 		end)
 
 		Frame:EnableMouse(OzCD.db.Tooltips or OzCD.db.Announce)
@@ -233,7 +188,6 @@ function OzCD:GetCooldown(index)
 
 		tinsert(OzCD.Holder.Buttons, Frame)
 
-		OzCD:SetSize()
 		OzCD:SetPosition()
 	end
 
@@ -268,7 +222,6 @@ function OzCD:UpdateSettings()
 		Frame.StatusBar:SetSize(OzCD.db.Size, 4)
 	end
 
-	OzCD:SetSize()
 	OzCD:SetPosition()
 
 	OzCD:CancelAllTimers()

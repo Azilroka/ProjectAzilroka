@@ -10,6 +10,7 @@ local format, strmatch, strlen, strsub, gsub = format, strmatch, strlen, strsub,
 
 local GetAddOnMetadata, GetAddOnEnableState = C_AddOns.GetAddOnMetadata, C_AddOns.GetAddOnEnableState
 local UnitName, UnitClass, GetRealmName = UnitName, UnitClass, GetRealmName
+local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
 
 local UIParent, CreateFrame = UIParent, CreateFrame
 
@@ -91,7 +92,7 @@ end
 
 PA.Title = GetAddOnMetadata('ProjectAzilroka', 'Title')
 PA.Version = GetAddOnMetadata('ProjectAzilroka', 'Version')
-PA.Authors = GetAddOnMetadata('ProjectAzilroka', 'Author'):gsub(', ', '    ')
+PA.Authors = gsub(GetAddOnMetadata('ProjectAzilroka', 'Author'), ', ', '    ')
 
 PA.AllPoints = { CENTER = 'CENTER', BOTTOM = 'BOTTOM', TOP = 'TOP', LEFT = 'LEFT', RIGHT = 'RIGHT', BOTTOMLEFT = 'BOTTOMLEFT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOPLEFT = 'TOPLEFT', TOPRIGHT = 'TOPRIGHT' }
 PA.GrowthDirection = {
@@ -205,12 +206,6 @@ function PA:ConflictAddOn(AddOns)
 	return false
 end
 
-function PA:CountTable(t)
-	local n = 0
-	for _ in next, t do n = n + 1 end
-	return n
-end
-
 function PA:PairsByKeys(t, f)
 	local a = {}
 	for n in next, t do tinsert(a, n) end
@@ -312,22 +307,19 @@ function PA:SetOutside(obj, anchor, xOffset, yOffset, anchor2)
 	obj:SetPoint('BOTTOMRIGHT', anchor2 or anchor, 'BOTTOMRIGHT', xOffset, -yOffset)
 end
 
--- backwards compatibility
-do
-	-- Unit Aura
-	local GetAuraDataByIndex = C_UnitAuras.GetAuraDataByIndex
-
-	function PA:GetAuraData(unitToken, index, filter)
-		local auraData = GetAuraDataByIndex(unitToken, index, filter)
-		if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unitToken) then
-			local durationNew, expirationTimeNew
-			if spellID then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unit, auraData.spellId, caster, name) end
-			if durationNew and durationNew > 0 then auraData.duration, auraData.expirationTime = durationNew, expirationTimeNew end
-		end
-
-		return auraData
+function PA:GetAuraData(unitToken, index, filter)
+	local auraData = GetAuraDataByIndex(unitToken, index, filter)
+	if PA.Classic and PA.Libs.LCD and not UnitIsUnit('player', unitToken) then
+		local durationNew, expirationTimeNew
+		if auraData.spellId then durationNew, expirationTimeNew = PA.Libs.LCD:GetAuraDurationByUnit(unitToken, auraData.spellId, auraData.sourceUnit, auraData.name) end
+		if durationNew and durationNew > 0 then auraData.duration, auraData.expirationTime = durationNew, expirationTimeNew end
 	end
 
+	return auraData
+end
+
+-- backwards compatibility
+do
 	-- GetMouseFocus
 	local GetMouseFocus = GetMouseFocus
 	local GetMouseFoci = GetMouseFoci
@@ -399,10 +391,10 @@ do
 
 	local bookTypes = { SPELL = 1, FUTURESPELL = 2, PETACTION = 3, FLYOUT = 4 }
 	local GetSpellBookItemInfo = C_SpellBook.GetSpellBookItemInfo or function(index, bookType)
-		local info, _ = { isPassive = false, isOffSpec = false, skillLineIndex = index }
-		info.itemType, info.actionID = GetSpellBookItemInfo(index, bookType)
+		local info, _ = { isPassive = _G.IsPassiveSpell(index, bookType), isOffSpec = false, skillLineIndex = index }
+		info.itemType, info.actionID = _G.GetSpellBookItemInfo(index, bookType)
 		_, info.subName = GetSpellBookItemName(index, bookType)
-		info.name, _, info.iconID, _, _, _, info.spellID = GetSpellInfo(index, bookType)
+		info.name, _, info.iconID, _, _, _, info.spellID = _G.GetSpellInfo(index, bookType)
 		info.itemType = bookTypes[info.itemType]
 		return info
 	end
@@ -421,9 +413,7 @@ do
 	end
 
 	-- Need for modules
-	PA.GetSpellInfo = GetSpellInfo
-	PA.GetSpellCooldown = GetSpellCooldown
-	PA.GetSpellCharges = GetSpellCharges
+	PA.GetSpellInfo, PA.GetSpellCooldown, PA.GetSpellCharges = GetSpellInfo, GetSpellCooldown, GetSpellCharges
 
 	PA.SpellBook = { Complete = {}, Spells = {} }
 
@@ -434,7 +424,7 @@ do
 	end
 
 	local function scanTooltip(spellID)
-		PA.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
+		PA.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
 		PA.ScanTooltip:SetSpellByID(spellID)
 		PA.ScanTooltip:Show()
 
@@ -478,18 +468,12 @@ do
 
 	local SpellOptions = {}
 	function PA:GenerateSpellOptions(db)
-		for SpellID, SpellName in next, db do
-			local spellData = PA.SpellBook.Complete[SpellID]
-			local tblID = tostring(SpellID)
+		for SpellID in next, db do
+			local spellData, tblID = PA.SpellBook.Complete[SpellID], tostring(SpellID)
 
 			if spellData.name and not SpellOptions[tblID] then
-				SpellOptions[tblID] = {
-					type = 'toggle',
-					image = spellData.iconID,
-					imageCoords = PA:TexCoords(true),
-					name = ' '..spellData.name,
-					desc = 'Spell ID: '..SpellID,
-				}
+				SpellOptions[tblID] = ACH:Toggle(' '..spellData.name, 'Spell ID: '..SpellID)
+				SpellOptions[tblID].image, SpellOptions[tblID].imageCoords = spellData.iconID, PA:TexCoords(true)
 			end
 		end
 
@@ -513,6 +497,18 @@ do
 				if module.isEnabled and module.SPELLS_CHANGED then PA:ProtectedCall(module, module.SPELLS_CHANGED) end
 			end
 		end
+	end
+
+	function PA:GetCooldownInfo(spellID)
+		local cooldownInfo, chargeInfo = GetSpellCooldown(spellID), GetSpellCharges(spellID)
+		local start, duration = cooldownInfo.startTime, cooldownInfo.duration
+
+		if chargeInfo and (chargeInfo.currentCharges and chargeInfo.maxCharges > 1 and chargeInfo.currentCharges < chargeInfo.maxCharges) then
+			start, duration = chargeInfo.cooldownStartTime, (chargeInfo.cooldownDuration * (chargeInfo.maxCharges - chargeInfo.currentCharges))
+		end
+
+		local currentDuration = max((start + duration - GetTime()), 0)
+		return currentDuration, start, duration, chargeInfo
 	end
 end
 
@@ -541,22 +537,28 @@ PA.Defaults = {
 		Cooldown = {
 			Enable = true,
 			threshold = 3,
+			roundTime = true,
 			hideBlizzard = false,
 			useIndicatorColor = false,
-			expiringColor = { r = 1, g = 0, b = 0 },
-			secondsColor = { r = 1, g = 1, b = 0 },
+			showModRate = false,
+
+			expiringColor = { r = 1, g = 0.2, b = 0.2 },
+			secondsColor = { r = 1, g = 1, b = 0.2 },
 			minutesColor = { r = 1, g = 1, b = 1 },
 			hoursColor = { r = 0.4, g = 1, b = 1 },
 			daysColor = { r = 0.4, g = 0.4, b = 1 },
-			expireIndicator = { r = 1, g = 1, b = 1 },
-			secondsIndicator = { r = 1, g = 1, b = 1 },
-			minutesIndicator = { r = 1, g = 1, b = 1 },
-			hoursIndicator = { r = 1, g = 1, b = 1 },
-			daysIndicator = { r = 1, g = 1, b = 1 },
+
+			expireIndicator = { r = 0.8, g = 0.8, b = 0.8 },
+			secondsIndicator = { r = 0.8, g = 0.8, b = 0.8 },
+			minutesIndicator = { r = 0.8, g = 0.8, b = 0.8 },
+			hoursIndicator = { r = 0.8, g = 0.8, b = 0.8 },
+			daysIndicator = { r = 0.8, g = 0.8, b = 0.8 },
 			hhmmColorIndicator = { r = 1, g = 1, b = 1 },
 			mmssColorIndicator = { r = 1, g = 1, b = 1 },
 
 			checkSeconds = false,
+			targetAuraDuration = 3600,
+			modRateColor = { r = 0.6, g = 1, b = 0.4 },
 			hhmmColor = { r = 0.43, g = 0.43, b = 0.43 },
 			mmssColor = { r = 0.56, g = 0.56, b = 0.56 },
 			hhmmThreshold = -1,
@@ -588,8 +590,10 @@ function PA:BuildProfile()
 	PA.data.RegisterCallback(PA, 'OnProfileChanged', 'SetupProfile')
 	PA.data.RegisterCallback(PA, 'OnProfileCopied', 'SetupProfile')
 
+	PA.Options.args.blank1 = ACH:Group('', nil, 1, nil, nil, nil, true)
+	PA.Options.args.blank2 = ACH:Group('', nil, -2, nil, nil, nil, true)
 	PA.Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(PA.data)
-	PA.Options.args.profiles.order = -2
+	PA.Options.args.profiles.order = -1
 
 	PA:SetupProfile()
 end

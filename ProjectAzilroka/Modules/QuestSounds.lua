@@ -4,7 +4,7 @@ local LSM = PA.Libs.LSM
 
 PA.QuestSounds = QS
 
-QS.Title, QS.Description, QS.Authors, QS.Credits, QS.isEnabled = ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'], ACL['Audio for Quest Progress & Completions.'], 'Azilroka', 'Yoco', false
+QS.Title, QS.Description, QS.Authors, QS.Credits, QS.isEnabled = 'QuestSounds', ACL['Audio for Quest Progress & Completions.'], 'Azilroka', 'Yoco', false
 
 local tonumber = tonumber
 local PlaySound, PlaySoundFile = PlaySound, PlaySoundFile

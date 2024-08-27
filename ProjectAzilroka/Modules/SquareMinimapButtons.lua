@@ -2,10 +2,7 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local SMB = PA:NewModule('SquareMinimapButtons', 'AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0')
 PA.SMB, _G.SquareMinimapButtons = SMB, SMB
 
-SMB.Title = ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r']
-SMB.Description = ACL['Minimap Button Bar / Minimap Button Skinning']
-SMB.Authors = 'Azilroka    Sinaris    Omega    Durc'
-SMB.isEnabled = false
+SMB.Title, SMB.Description, SMB.Authors, SMB.isEnabled = 'Square Minimap Buttons', ACL['Minimap Button Bar / Minimap Button Skinning'], 'Azilroka    Sinaris    Omega    Durc', false
 
 local _G = _G
 local strfind = strfind

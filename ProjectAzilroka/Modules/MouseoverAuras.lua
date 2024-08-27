@@ -1,27 +1,18 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local MA = PA:NewModule('MouseoverAuras', 'AceEvent-3.0', 'AceTimer-3.0')
-PA.MA = MA
+_G.MouseoverAuras, PA.MouseoverAuras = MA, MA
 
-MA.Title = ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r']
-MA.Description = ACL['Auras for your mouseover target']
-MA.Authors = 'Azilroka'
-MA.isEnabled = false
+MA.Title, MA.Description, MA.Authors, MA.isEnabled = 'Mouseover Auras', ACL['Auras for your mouseover target'], 'Azilroka', false
 
-_G.MouseoverAuras = MA
+local floor, tinsert = floor, tinsert
 
-local floor = floor
-local tinsert = tinsert
+local CreateFrame, UIParent, UnitExists, GetCursorPosition = CreateFrame, UIParent, UnitExists, GetCursorPosition
 
-local GetCursorPosition = GetCursorPosition
-local CreateFrame = CreateFrame
-local UnitExists = UnitExists
-
-local VISIBLE = 1
-local HIDDEN = 0
+local VISIBLE, HIDDEN = 1, 0
 
 function MA:GetAuraIcon(index)
-	if MA.Holder[position] then
-		return MA.Holder[position]
+	if MA.Holder[index] then
+		return MA.Holder[index]
 	end
 
 	local button = CreateFrame('Button', 'MouseoverAurasHolderButton'..index, MA.Holder, 'PA_AuraTemplate')
@@ -64,7 +55,7 @@ function MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
 		end
 	end
 
-	return name and HIDDEN or nil
+	return auraData and auraData.name and HIDDEN or nil
 end
 
 function MA:SetPosition()
@@ -85,7 +76,7 @@ end
 function MA:FilterIcons(unit, filter, limit, isDebuff, offset)
 	offset = offset or 0
 
-	local index, visible, hidden = 1, 0, 0
+	local visible, hidden = 0, 0
 
 	for index = 1, limit do
 		local result = MA:UpdateIcon(unit, index, offset, filter, isDebuff, visible)
@@ -127,10 +118,10 @@ function MA:Update(elapsed)
 		return
 	end
 
-	local scale, x, y = _G.UIParent:GetEffectiveScale(), GetCursorPosition()
+	local scale, x, y = UIParent:GetEffectiveScale(), GetCursorPosition()
 
 	MA.Holder:ClearAllPoints()
-	MA.Holder:SetPoint("BOTTOMLEFT", _G.UIParent, "BOTTOMLEFT", (x / scale), (y / scale) - 70)
+	MA.Holder:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", (x / scale), (y / scale) - 70)
 
 	MA.Holder.elapsed = MA.Holder.elapsed + elapsed
 
@@ -187,10 +178,9 @@ function MA:Initialize()
 	MA.Holder:SetFrameStrata('TOOLTIP')
 	MA.Holder:Hide()
 	MA.Holder:SetSize(120, 40)
-	MA.Holder.createdIcons = 0
-	MA.Holder.anchoredIcons = 0
-	MA.Holder.elapsed = 0
 	MA.Holder:SetScript('OnUpdate', MA.Update)
+
+	MA.Holder.createdIcons, MA.Holder.anchoredIcons, MA.Holder.elapsed = 0, 0, 0
 
 	MA:RegisterEvent('UPDATE_MOUSEOVER_UNIT')
 end

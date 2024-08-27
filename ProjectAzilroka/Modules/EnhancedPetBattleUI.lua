@@ -1,43 +1,40 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
-if PA.Classic then
-	return
-end
+if PA.Classic then return end
 
 local EPB = PA:NewModule('EnhancedPetBattleUI', "AceEvent-3.0")
+_G.EnhancedPetBattleUI, PA.EnhancedPetBattleUI = EPB, EPB
 
-EPB.Title = ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r']
-EPB.Description = ACL['An enhanced UI for pet battles']
-EPB.Authors = 'Azilroka'
-EPB.isEnabled = false
+EPB.Title, EPB.Description, EPB.Authors, EPB.isEnabled = 'EnhancedPet Battle UI', ACL['An enhanced UI for pet battles'], 'Azilroka', false
 
-_G.EPB = EPB
+local floor, min, max, ceil, format = floor, min, max, ceil, format
 
-local IsAddOnLoaded, format = _G.IsAddOnLoaded, _G.format
-local floor, min, max = _G.floor, _G.min, _G.max
+function EPB.round(num, idp)
+	local mult = 10 ^ (idp or 0)
+	return floor(num * mult + 0.5) / mult
+end
 
-local ceil, round = _G.format, EPB.round
+function EPB.clamp(num, minVal, maxVal)
+	return min(max(num, minVal), maxVal)
+end
 
-local CreateAtlasMarkup = _G.CreateAtlasMarkup
-local Enum_BattlePetOwner_Ally = _G.Enum.BattlePetOwner.Ally
-local Enum_BattlePetOwner_Enemy = _G.Enum.BattlePetOwner.Enemy
+local round, clamp = EPB.round, PA.Clamp
 
-local UIParent = _G.UIParent
-local CreateFrame = _G.CreateFrame
-
-local GetAddOnEnableState = _G.GetAddOnEnableState
-
-local UnitName = _G.UnitName
-local GameTooltip = _G.GameTooltip
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 local GetSpellInfo = _G.GetSpellInfo
-local UnitHealth = _G.UnitHealth
-local InCombatLockdown = _G.InCombatLockdown
 local GetSpellCooldown = _G.GetSpellCooldown
 local GetSpellLink = _G.GetSpellLink
 local GetItemInfo = _G.GetItemInfo
 local GetItemInfoInstant = _G.GetItemInfoInstant
 local GetItemCount = _G.GetItemCount
-local AuraUtil_FindAuraByName = _G.AuraUtil.FindAuraByName
 local GetItemQualityColor = _G.GetItemQualityColor
+
+local UIParent, CreateFrame, GameTooltip = UIParent, CreateFrame, GameTooltip
+
+local Enum_BattlePetOwner_Ally, Enum_BattlePetOwner_Enemy = Enum.BattlePetOwner.Ally, Enum.BattlePetOwner.Enemy
+
+local UnitHealth = _G.UnitHealth
+local InCombatLockdown = _G.InCombatLockdown
+local AuraUtil_FindAuraByName = _G.AuraUtil.FindAuraByName
 
 local C_PetBattles = C_PetBattles
 local C_PetJournal = C_PetJournal
@@ -45,18 +42,15 @@ local C_PetJournal = C_PetJournal
 local BattlePetBreedID, BreedInfo, BreedData
 
 EPB.Colors = {
-	White = {1, 1, 1},
-	Green = {0, 1, 0},
-	Yellow = {1, 1, 0},
-	Red = {1, 0, 0},
-	Orange = {1, 0.35, 0},
-	Black = {0, 0, 0}
+	White = { 1, 1, 1 },
+	Green = { 0, 1, 0 },
+	Yellow = { 1, 1, 0 },
+	Red = { 1, 0, 0 },
+	Orange = { 1, .35, 0 },
+	Black = { 0, 0, 0 }
 }
 
-EPB["TexturePath"] = [[Interface\AddOns\ProjectAzilroka\Media\Textures\]]
-EPB["TooltipHealthIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:16:32:16:32|t"
-EPB["TooltipPowerIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:0:16:0:16|t"
-EPB["TooltipSpeedIcon"] = "|TInterface\\PetBattles\\PetBattle-StatIcons:16:16:0:0:32:32:0:16:16:32|t"
+EPB.TexturePath, EPB.TooltipHealthIcon, EPB.TooltipPowerIcon, EPB.TooltipSpeedIcon = [[Interface\AddOns\ProjectAzilroka\Media\Textures\]], [[|TInterface\PetBattles\PetBattle-StatIcons:16:16:0:0:32:32:16:32:16:32|t]], [[|TInterface\PetBattles\PetBattle-StatIcons:16:16:0:0:32:32:0:16:0:16|t]], [[|TInterface\PetBattles\PetBattle-StatIcons:16:16:0:0:32:32:0:16:16:32|t]]
 EPB.Events = { "PLAYER_ENTERING_WORLD", "PET_BATTLE_MAX_HEALTH_CHANGED", "PET_BATTLE_HEALTH_CHANGED", "PET_BATTLE_AURA_APPLIED", "PET_BATTLE_AURA_CANCELED", "PET_BATTLE_AURA_CHANGED", "PET_BATTLE_XP_CHANGED", "PET_BATTLE_OPENING_START", "PET_BATTLE_OPENING_DONE", "PET_BATTLE_CLOSE", "BATTLE_PET_CURSOR_CLEAR", "PET_JOURNAL_LIST_UPDATE" }
 
 local E = PA.ElvUI and ElvUI[1]
@@ -68,7 +62,7 @@ function EPB:ChangePetBattlePetSelectionFrameState(state)
 	self.InSwitchMode = state
 	local bf = _G.PetBattleFrame.BottomFrame
 	local frame = bf.PetSelectionFrame
-	if (self.db["HideBlizzard"]) then
+	if self.db.HideBlizzard then
 		frame:Hide()
 	else
 		frame:SetShown(state)
@@ -114,10 +108,10 @@ function EPB:HideBlizzard()
 end
 
 function EPB:EnemyIconOnEnter()
-	C_PetJournal.SetSearchFilter("")
+	C_PetJournal.SetSearchFilter('')
 	C_PetJournal.SetFilterChecked(_G.LE_PET_JOURNAL_FILTER_COLLECTED, true)
 	C_PetJournal.SetFilterChecked(_G.LE_PET_JOURNAL_FILTER_NOT_COLLECTED, false)
-	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 2, 4)
+	GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 2, 4)
 	GameTooltip:ClearLines()
 	local parent = self:GetParent()
 	if parent.Owned ~= nil then
@@ -767,7 +761,6 @@ function EPB:InitPetFrameAPI()
 					end
 
 					frame:SetScript("OnHide", EPB.FrameOnHide)
-
 					frame:SetScript("OnEvent", EPB.UpdateFrame)
 
 					_G.RegisterStateDriver(frame, "visibility", "[petbattle] show; hide")
@@ -1068,9 +1061,7 @@ function EPB:InitPetFrameAPI()
 			end
 
 			function EPB:UpdatePetFrame(frame)
-				local NormTex = PA.Libs.LSM:Fetch("statusbar", EPB.db["StatusBarTexture"])
-				local Font, FontSize, FontFlag = PA.Libs.LSM:Fetch("font", EPB.db["Font"]), EPB.db["FontSize"], EPB.db["FontFlag"]
-				local Offset = EPB.db["TextOffset"]
+				local Offset, NormTex, Font, FontSize, FontFlag = EPB.db.TextOffset, PA.Libs.LSM:Fetch("statusbar", EPB.db.StatusBarTexture), PA.Libs.LSM:Fetch("font", EPB.db.Font), EPB.db.FontSize, EPB.db.FontFlag
 
 				frame.Name:SetFont(Font, FontSize, FontFlag)
 				frame.Level:SetFont(Font, FontSize, FontFlag)
@@ -1287,202 +1278,35 @@ function EPB:UpdateAuraHolder()
 end
 
 function EPB:GetOptions()
-	PA.Options.args.EnhancedPetBattleUI = {
-		type = "group",
-		name = EPB.Title,
-		desc = EPB.Description,
-		get = function(info)
-			return EPB.db[info[#info]]
-		end,
-		set = function(info, value)
-			EPB.db[info[#info]] = value
-			EPB:Update()
-		end,
-		args = {
-			Description = {
-				order = 0,
-				type = "description",
-				name = EPB.Description
-			},
-			Enable = {
-				order = 1,
-				type = "toggle",
-				name = ACL["Enable"],
-				set = function(info, value)
-					EPB.db[info[#info]] = value
-					if not EPB.isEnabled then
-						EPB:Initialize()
-					else
-						_G.StaticPopup_Show("PROJECTAZILROKA_RL")
-					end
-				end
-			},
-			General = {
-				order = 2,
-				type = "group",
-				name = ACL["General"],
-				inline = true,
-				args = {
-					HideBlizzard = {
-						order = 1,
-						type = "toggle",
-						name = ACL["Hide Blizzard"],
-						desc = ACL["Hide the Blizzard Pet Frames during battles"]
-					},
-					GrowUp = {
-						order = 2,
-						type = "toggle",
-						name = ACL["Grow the frames upwards"],
-						desc = ACL["Grow the frames from bottom for first pet upwards"]
-					},
-					TeamAurasOnBottom = {
-						order = 3,
-						type = "toggle",
-						name = ACL["Team Aura On Bottom"],
-						desc = ACL["Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"]
-					},
-					PetTrackerIcon = {
-						order = 4,
-						type = "toggle",
-						name = ACL["Use PetTracker Icon"],
-						desc = ACL["Use PetTracker Icon instead of Breed ID"],
-						disabled = function()
-							return not C_AddOns.IsAddOnLoaded("PetTracker")
-						end
-					},
-					EnhanceTooltip = {
-						order = 5,
-						type = "toggle",
-						name = ACL["Enhance Tooltip"],
-						desc = ACL["Add More Detailed Info if BreedInfo is available."],
-						disabled = function()
-							return not BattlePetBreedID
-						end
-					},
-					LevelBreakdown = {
-						order = 6,
-						type = "toggle",
-						name = ACL["Level Breakdown"],
-						desc = ACL["Add Pet Level Breakdown if BreedInfo is available."],
-						disabled = function()
-							return not (EPB.db["EnhanceTooltip"] and BattlePetBreedID)
-						end
-					},
-					UseoUF = {
-						order = 7,
-						type = "toggle",
-						name = ACL["Use oUF for the pet frames"],
-						desc = ACL["Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system."],
-						disabled = function()
-							return not PA.oUF
-						end,
-						set = function(info, value)
-							EPB.db[info[#info]] = value
-							_G.StaticPopup_Show("PROJECTAZILROKA_RL")
-						end
-					},
-					["3DPortrait"] = {
-						order = 8,
-						type = "toggle",
-						name = ACL["3D Portraits"],
-						desc = ACL["Use the 3D pet model instead of a texture for the pet icons"],
-						disabled = function()
-							return EPB.db.UseoUF
-						end
-					},
-					healthThreshold = {
-						order = 9,
-						type = 'range',
-						name = ACL["Health Threshold"],
-						desc = ACL["When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar."],
-						isPercent = true,
-						min = 0, max = 1, step = 0.01,
-					},
-					wildHealthThreshold = {
-						order = 10,
-						type = 'range',
-						name = ACL["Wild Health Threshold"],
-						desc = ACL["When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar."],
-						isPercent = true,
-						min = 0, max = 1, step = 0.01,
-					},
-					StatusBarTexture = {
-						type = "select",
-						dialogControl = "LSM30_Statusbar",
-						order = 13,
-						name = ACL["StatusBar Texture"],
-						values = PA.Libs.LSM:HashTable("statusbar")
-					},
-					Font = {
-						type = "select",
-						dialogControl = "LSM30_Font",
-						order = 14,
-						name = ACL["Font"],
-						values = PA.Libs.LSM:HashTable("font")
-					},
-					FontSize = {
-						order = 15,
-						name = ACL["Font Size"],
-						type = "range",
-						min = 8,
-						max = 24,
-						step = 1
-					},
-					FontFlag = ACH:FontFlags(ACL["Font Flag"], nil, 16),
-					TextOffset = {
-						order = 17,
-						name = ACL["Health/Experience Text Offset"],
-						type = "range",
-						min = -10,
-						max = 10,
-						step = 1
-					},
-					nameFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Name Format"],
-						order = 18,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-					healthFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Health Format"],
-						order = 19,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-					xpFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Experience Format"],
-						order = 20,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-					powerFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Power Format"],
-						order = 21,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-					speedFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Speed Format"],
-						order = 22,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-					breedFormat = {
-						type = "input",
-						width = "full",
-						name = ACL["Breed Format"],
-						order = 23,
-						disabled = function() return not EPB.db.UseoUF end
-					},
-				}
-			}
-		}
-	}
+	local EnhancedPetBattleUI = ACH:Group(EPB.Title, EPB.Description, nil, nil, function(info) return EPB.db[info[#info]] end, function(info, value) EPB.db[info[#info]] = value EPB:Update() end)
+	PA.Options.args.EnhancedPetBattleUI = EnhancedPetBattleUI
+
+	EnhancedPetBattleUI.args.Description = ACH:Description(EPB.Description, 0)
+	EnhancedPetBattleUI.args.Enable = ACH:Toggle(ACL["Enable"], nil, 1, nil, nil, nil, nil, function(info, value) EPB.db[info[#info]] = value if not EPB.isEnabled then EPB:Initialize() else _G.StaticPopup_Show("PROJECTAZILROKA_RL") end end)
+
+	EnhancedPetBattleUI.args.General = ACH:Group(ACL["General"], nil, 2)
+	EnhancedPetBattleUI.args.General.inline = true
+	EnhancedPetBattleUI.args.General.args.HideBlizzard = ACH:Toggle(ACL["Hide Blizzard"], ACL["Hide the Blizzard Pet Frames during battles"], 1)
+	EnhancedPetBattleUI.args.General.args.GrowUp = ACH:Toggle(ACL["Grow the frames upwards"], ACL["Grow the frames from bottom for first pet upwards"], 2)
+	EnhancedPetBattleUI.args.General.args.TeamAurasOnBottom = ACH:Toggle(ACL["Team Aura On Bottom"], ACL["Place team auras on the bottom of the last pet shown (or top if Grow upwards is selected)"], 3)
+	EnhancedPetBattleUI.args.General.args.PetTrackerIcon = ACH:Toggle(ACL["Use PetTracker Icon"], ACL["Use PetTracker Icon instead of Breed ID"], 4, nil, nil, nil, nil, nil, function() return not IsAddOnLoaded("PetTracker") end)
+	EnhancedPetBattleUI.args.General.args.EnhanceTooltip = ACH:Toggle(ACL["Enhance Tooltip"], ACL["Add More Detailed Info if BreedInfo is available."], 5, nil, nil, nil, nil, nil, function() return not BattlePetBreedID end)
+	EnhancedPetBattleUI.args.General.args.LevelBreakdown = ACH:Toggle(ACL["Level Breakdown"], ACL["Add Pet Level Breakdown if BreedInfo is available."], 6, nil, nil, nil, nil, nil, function() return not (EPB.db.EnhanceTooltip and BattlePetBreedID) end)
+	EnhancedPetBattleUI.args.General.args.UseoUF = ACH:Toggle(ACL["Use oUF for the pet frames"], ACL["Use the new PBUF library by Nihilistzsche included with ProjectAzilroka to create new pet frames using the oUF unitframe template system."], 7, nil, nil, nil, nil, function(info, value) EPB.db[info[#info]] = value _G.StaticPopup_Show("PROJECTAZILROKA_RL") end, function() return not PA.oUF end)
+	EnhancedPetBattleUI.args.General.args["3DPortrait"] = ACH:Toggle(ACL["3D Portraits"], ACL["Use the 3D pet model instead of a texture for the pet icons"], 8, nil, nil, nil, nil, nil, function() return EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.healthThreshold = ACH:Range(ACL["Health Threshold"], ACL["When the current health of any pet in your journal is under this percentage after a trainer battle, show the revive bar."], 9, { min = 0, max = 1, step = 0.01, isPercent = true })
+	EnhancedPetBattleUI.args.General.args.wildHealthThreshold = ACH:Range(ACL["Wild Health Threshold"], ACL["When the current health of any pet in your journal is under this percentage after a wild pet battle, show the revive bar."], 10, { min = 0, max = 1, step = 0.01, isPercent = true })
+	EnhancedPetBattleUI.args.General.args.StatusBarTexture = ACH:SharedMediaStatusbar(ACL["StatusBar Texture"], nil, 13)
+	EnhancedPetBattleUI.args.General.args.Font = ACH:SharedMediaFont(ACL["Font"], nil, 14)
+	EnhancedPetBattleUI.args.General.args.FontSize = ACH:Range(ACL["Font Size"], nil, 15, { min = 8, max = 24, step = 1 })
+	EnhancedPetBattleUI.args.General.args.FontFlag = ACH:FontFlags(ACL["Font Flag"], nil, 16)
+	EnhancedPetBattleUI.args.General.args.TextOffset = ACH:Range(ACL["Health/Experience Text Offset"], nil, 17, { min = -10, max = 10, step = 1 })
+	EnhancedPetBattleUI.args.General.args.nameFormat = ACH:Input(ACL["Name Format"], nil, 18, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.healthFormat = ACH:Input(ACL["Health Format"], nil, 19, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.xpFormat = ACH:Input(ACL["Experience Format"], nil, 20, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.powerFormat = ACH:Input(ACL["Power Format"], nil, 21, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.speedFormat = ACH:Input(ACL["Speed Format"], nil, 22, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
+	EnhancedPetBattleUI.args.General.args.breedFormat = ACH:Input(ACL["Breed Format"], nil, 23, nil, 'full', nil, nil, nil, function() return not EPB.db.UseoUF end)
 end
 
 function EPB:BuildProfile()
@@ -1503,7 +1327,7 @@ function EPB:BuildProfile()
 		ShowNameplates = true,
 		BreedIDOnNameplate = true,
 		["3DPortrait"] = true,
-		["UseoUF"] = PA.oUF ~= nil,
+		UseoUF = PA.oUF ~= nil,
 		nameFormat = "[pbuf:qualitycolor][pbuf:smartlevel] [pbuf:name]",
 		healthFormat = "[pbuf:health:current-percent]",
 		xpFormat = "[pbuf:xp:current-max-percent]",
@@ -1522,61 +1346,6 @@ function EPB:BuildProfile()
 		PA.Defaults.profile.EnhancedPetBattleUI.StatusBarTexture = _G.ElvUI[1].private.general.normTex
 		PA.Defaults.profile.EnhancedPetBattleUI.Font = _G.ElvUI[1].db.general.font
 		PA.Defaults.profile.EnhancedPetBattleUI.FontFlag = "OUTLINE"
-	end
-end
-
-function EPB:UpdateSettings()
-	EPB.db = PA.db.EnhancedPetBattleUI
-end
-
-function EPB:Initialize()
-	if EPB.db.Enable ~= true then
-		return
-	end
-
-	EPB.isEnabled = true
-
-	BattlePetBreedID = IsAddOnLoaded("BattlePetBreedID")
-	BreedInfo = LibStub("LibPetBreedInfo-1.0", true)
-
-	EPB:InitHealingForbiddenCheck()
-	EPB:BuildProfile()
-
-	EPB:InitPetFrameAPI()
-	EPB:CreateFrames()
-
-	if BreedInfo then
-		BreedData = BreedInfo.breedData
-	end
-
-	EPB:Update()
-
-	_G.hooksecurefunc("PetBattleAuraHolder_Update", EPB.UpdateAuraHolder)
-
-	_G.PetBattleFrame:HookScript("OnEvent", EPB.HideBlizzard)
-
-	EPB.holder = EPB:CreateReviveBar()
-	EPB.holder.ReviveButton = EPB:CreateReviveButton()
-	EPB.holder.BandageButton = EPB:CreateBandageButton()
-
-	EPB:UpdateReviveBar()
-	EPB:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
-	EPB:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
-	EPB:RegisterEvent("PET_BATTLE_CLOSE", "UpdateReviveBar")
-
-	if not _G.PetTracker_Sets or _G.PetTracker_Sets.switcher == false then
-		_G.PetBattlePetSelectionFrame_Show = function()
-			_G.PetBattleFrame_UpdateActionBarLayout(_G.PetBattleFrame)
-			EPB:ChangePetBattlePetSelectionFrameState(true)
-		end
-
-		_G.PetBattlePetSelectionFrame_Hide = function()
-			EPB:ChangePetBattlePetSelectionFrameState(false)
-		end
-	end
-	pcall(_G.LoadAddOn, "tdBattlePetScript")
-	if (IsAddOnLoaded("tdBattlePetScript")) then
-		EPB:UpdateTDBattlePetScriptAutoButton()
 	end
 end
 
@@ -1805,18 +1574,6 @@ function EPB:DebugPrint(...)
 	end
 end
 
-function EPB.round(num, idp)
-	local mult = 10 ^ (idp or 0)
-	return floor(num * mult + 0.5) / mult
-end
-
-function EPB.clamp(num, minVal, maxVal)
-	return min(max(num, minVal), maxVal)
-end
-
-local round = EPB.round
-local clamp = EPB.clamp
-
 function EPB:GetLevelBreakdown(petID)
 	if not BreedData then
 		return
@@ -1901,5 +1658,60 @@ function EPB:EnableMover(frame, petOwner)
 		_G.ElvUI[1]:CreateMover(frame, isFriend and "BattlePetMover" or "EnemyBattlePetMover", isFriend and "Battle Pet Frames" or "Enemy Battle Pet Frames", nil, nil, nil, "ALL,SOLO")
 	elseif PA.Tukui then
 		_G.Tukui[1]["Movers"]:RegisterFrame(frame)
+	end
+end
+
+function EPB:UpdateSettings()
+	EPB.db = PA.db.EnhancedPetBattleUI
+end
+
+function EPB:Initialize()
+	if EPB.db.Enable ~= true then
+		return
+	end
+
+	EPB.isEnabled = true
+
+	BattlePetBreedID = IsAddOnLoaded("BattlePetBreedID")
+	BreedInfo = LibStub("LibPetBreedInfo-1.0", true)
+
+	EPB:InitHealingForbiddenCheck()
+
+	EPB:InitPetFrameAPI()
+	EPB:CreateFrames()
+
+	if BreedInfo then
+		BreedData = BreedInfo.breedData
+	end
+
+	EPB:Update()
+
+	_G.hooksecurefunc("PetBattleAuraHolder_Update", EPB.UpdateAuraHolder)
+
+	_G.PetBattleFrame:HookScript("OnEvent", EPB.HideBlizzard)
+
+	EPB.holder = EPB:CreateReviveBar()
+	EPB.holder.ReviveButton = EPB:CreateReviveButton()
+	EPB.holder.BandageButton = EPB:CreateBandageButton()
+
+	EPB:UpdateReviveBar()
+	EPB:RegisterEvent("BAG_UPDATE", "UpdateReviveBar")
+	EPB:RegisterEvent("PET_JOURNAL_LIST_UPDATE", "UpdateReviveBar")
+	EPB:RegisterEvent("PET_BATTLE_CLOSE", "UpdateReviveBar")
+
+	if not _G.PetTracker_Sets or _G.PetTracker_Sets.switcher == false then
+		_G.PetBattlePetSelectionFrame_Show = function()
+			_G.PetBattleFrame_UpdateActionBarLayout(_G.PetBattleFrame)
+			EPB:ChangePetBattlePetSelectionFrameState(true)
+		end
+
+		_G.PetBattlePetSelectionFrame_Hide = function()
+			EPB:ChangePetBattlePetSelectionFrameState(false)
+		end
+	end
+
+	pcall(C_AddOns.LoadAddOn, "tdBattlePetScript")
+	if (IsAddOnLoaded("tdBattlePetScript")) then
+		EPB:UpdateTDBattlePetScriptAutoButton()
 	end
 end
