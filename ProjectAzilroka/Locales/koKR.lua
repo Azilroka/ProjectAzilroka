@@ -45,14 +45,12 @@ ACL['General'] = '일반'
 
 -- BigButtons - 농장 도우미
 ACL['BigButtons'] = '큰 버튼'
-ACL['|cFF16C3F2Big|r |cFFFFFFFFButtons|r'] = '|cFF16C3F2큰|r |cFFFFFFFF버튼|r'
 ACL['A farm tool for Sunsong Ranch.'] = '태양 노래 농장을 위한 도구 및 씨앗 크기 툴을 제공'
 ACL['Drop Farm Tools'] = '농장 수확 도구'
 ACL['Farm Tool Size'] = '농장 도구 크기'
 ACL['Seed Size'] = '씨앗 크기'
 
 -- BrokerLDB - 브로커 LDB
-ACL['|cFF16C3F2Broker|r|cFFFFFFFFLDB|r'] = '|cFF16C3F2브로커|r|cFFFFFFFFLDB|r'
 ACL['Provides a Custom DataBroker Bar'] = '마우스오버, 너비 및 높이와 같은 사용자 지정 옵션이있는 DataBroker 막대를 제공.'
 ACL['Font Settings'] = '글꼴 설정'
 ACL['MouseOver'] = '마우스오버'
@@ -63,7 +61,6 @@ ACL['Show Text'] = '문자 표시'
 
 -- Cooldown Text - 버프/디버프 알람
 ACL['Cooldown Text'] = true
-ACL['|cFF16C3F2Cooldown|r|cFFFFFFFFText|r'] = true
 ACL['Adjust Cooldown Settings.'] = "[재사용 대기시간] 설정을 조정합니다."
 ACL["Reverse Toggle"] = "반대로 보여줌"
 ACL["Reverse Toggle will enable Cooldown Text on this module when the global setting is disabled and disable them when the global setting is enabled."] = "설정내용이 있으면 안보이고, 없을대 화면에 보여줌"
@@ -100,7 +97,6 @@ ACL["Global"] = "일반"
 
 -- Dragon Overlay - 정예 관련 용 무늬 표시
 ACL['Dragon Overlay'] = '정예 마크 표시기'
-ACL['|cFF16C3F2Dragon|r |cFFFFFFFFOverlay|r'] = '|cFF16C3F2정예(용무늬 마크)|r |cFFFFFFFF표시기|r'
 ACL['Provides an overlay on UnitFrames for Boss, Elite, Rare and RareElite'] = '보스,엘리트,레어 및 레어 엘리트의 용무늬 마크를 제공'
 ACL['Anchor Point'] = '기준점'
 ACL['Class Icon'] = '클래식 아이콘'
@@ -121,12 +117,8 @@ ACL['World Boss'] = '월드 보스'
 ACL['X Offset'] = 'X 간격'
 ACL['Y Offset'] = 'Y 간격'
 
--- Enhanced Config - 고급 구성 - XML 에 누락되어 있음
-ACL["|cff1784d1Enhanced Config|r"] = "|cff1784d1고급 구성|r"
-
 -- Enhanced Friends List - 향상된 친구 목록 관리
 ACL['Enhanced Friends List'] = '고급 친구 관리'
-ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFFriends List|r'] = '|cFF16C3F2고급|r |cFFFFFFFF친구 관리|r'
 ACL['Provides Friends List Customization'] = '이미 등록 된 그림자에 대한 옵션 추가 : 색상, 크기, 클래스 별 색상'
 ACL['Name Font'] = '이름 글꼴'
 ACL['The font that the RealID / Character Name / Level uses.'] = '[실명ID/케릭터이름/레벨]에서 사용하는 글꼴.'
@@ -163,7 +155,6 @@ ACL['Game Icon Pack'] = true
 
 -- Enhanced Pet Battle UI - 향상된 팻 배틀 UI
 ACL['Enhanced Pet Battle UI'] = true
-ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFPet Battle UI|r'] = "|cFF16C3F2향상된|r |cFFFFFFFF애완동물 대전 UI|r"
 ACL['An enhanced UI for pet battles'] = true
 ACL["3D Portraits"] = "3D 초상화"
 ACL["Add More Detailed Info if BreedInfo is available."] = "번식 정보가 있으면 더 자세한 정보를 추가하십시오."
@@ -198,7 +189,6 @@ ACL["When the current health of any pet in your journal is under this percentage
 
 -- Enhanced Shadows - 강화된 그림자 기능
 ACL['Enhanced Shadows'] = '향상된 그림자 기능'
-ACL['|cFF16C3F2Enhanced|r |cFFFFFFFFShadows|r'] = '|cFF16C3F2향상된|r |cFFFFFFFF그림자|r'
 ACL['Adds options for registered shadows'] = '이미 등록 된 그림자에 대한 옵션 추가 : 색상,크기,클래스 별 색상.'
 ACL['Color by Class'] = '직업 별 색상'
 ACL['Shadow Color'] = '그림자 색상'
@@ -206,11 +196,9 @@ ACL['Size'] = '크기'
 
 -- Faster Loot - 빠른 루팅
 ACL['Faster Loot'] = '더 빠른 전리품'
-ACL['|cFF16C3F2Faster|r |cFFFFFFFFLoot|r'] = '|cFF16C3F2빠른|r |cFFFFFFFF루팅|r'
 ACL['Increases auto loot speed near instantaneous.'] = '순간에 가까운 자동 전리품 속도 증가.'
 
 -- iFilger -
-ACL['|cFF16C3F2i|r|cFFFFFFFFFilger|r'] = true
 ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'] = '[오라/버프/발동효과/재사용대기시간]을 불필요한 소유를 없애고,단순,간단명료하게 표현'
 ACL['Buffs'] = '버프'
 ACL['Cooldowns'] = true
@@ -232,7 +220,6 @@ ACL['Font Flag'] = '글꼴 외곽선'
 ACL['Filters'] = true
 
 -- Loot Confirm - 루팅 관련 자동화기능
-ACL['|cFF16C3F2Loot|r |cFFFFFFFFConfirm|r'] = '|cFF16C3F2루팅|r |cFFFFFFFF설정|r'
 ACL['Confirms Loot for Solo/Groups (Need/Greed)'] = '솔로/그룹 전리품 확인 (입찰/차비)'
 ACL['Automatically click OK on BOP items'] = '획귀 아이템 자동으로 확인을 클릭.'
 ACL['Auto Greed'] = '자동 차비'
@@ -244,7 +231,6 @@ ACL['If Disenchant and Greed is selected. It will always try to Disenchant first
 ACL['This will auto-roll if you are above the given level if: You cannot equip the item being rolled on, or the ilevel of your equipped item is higher than the item being rolled on or you have an heirloom equipped in that slot'] = true
 
 -- MasterExperience - 마스터 경험치
-ACL['|cFF16C3F2Master|r |cFFFFFFFFExperience|r'] = '|cFF16C3F2마스터|r |cFFFFFFFF경험치|r'
 ACL['Shows Experience Bars for Party / Battle.net Friends'] = '파티 /Battle.net 친구를위한 경험치 표시'
 ACL["Disabled"] = "사용안함"
 ACL["Max Level"] = "최대 레벨"
@@ -265,18 +251,15 @@ ACL['Colors'] = "색상"
 ACL['Color By Class'] = '직업 색상'
 
 -- Mouseover Auras - 마우스 오버시 버프 상황 표시
-ACL['|cFF16C3F2Mouseover|r|cFFFFFFFFAuras|r'] = '|cFF16C3F2마우스오버|r|cFFFFFFFF아우라|r'
 ACL['Auras for your mouseover target'] = '마우스 오버 대상에 대한 버프 정보'
 
 -- MovableFrames - 프레임 이동
 ACL['Movable Frames'] = '프레임 이동'
-ACL['|cFF16C3F2Movable|r |cFFFFFFFFFrames|r'] = '|cFF16C3F2프레임|r |cFFFFFFFF이동|r'
 ACL['Make Blizzard Frames Movable'] = '블리자드 프레임을 이동 가능하게 만들기 (예 : 캐릭터 프레임, 친구 목록, 길드 프레임)'
 ACL['Permanent Moving'] = '완전한 이동 (해당프레임 체크 해제 시 프레임을 다시 호출할 때 제자리에서 시작 됨)'
 ACL['Reset Moving'] = '이동 초기화'
 
 -- OzCooldowns - 심플한 재사용 대기시간 표시기
-ACL['|cFF16C3F2Oz|r|cFFFFFFFFCooldowns|r'] = true
 ACL['Minimalistic Cooldowns'] = "단순함을 추구하는 재사용 대기시간 표시기"
 ACL["My %s will be off cooldown in %s"] = "%s 쿨타임중! %s후에 사용가능!."
 ACL['Masque Support'] = '마스크 지원'
@@ -300,7 +283,6 @@ ACL['Gradient'] = '그라데이션 효과(Gradation)'
 ACL['Texture Color'] = '질감 색상' 
 
 -- QuestSounds - 퀘스트 진행.완료 소리
-ACL['|cFF16C3F2Quest|r|cFFFFFFFFSounds|r'] = '|cFF16C3F2퀘스트|r|cFFFFFFFF사운드|r'
 ACL['Audio for Quest Progress & Completions.'] = '퀘스트 진행 상황 및 완료를 위한 오디오 기능.'
 ACL['Sound by LSM'] = '꾸임 소리 선택'
 ACL['Sound by SoundID'] = '사운드ID 로 소리 선택'
@@ -319,7 +301,6 @@ ACL['Master'] = true
 ACL['SFX'] = true
 
 -- Reminder(AuraReminder) - 버프 알리 
-ACL['|cFF16C3F2Aura|r |cFFFFFFFFReminder|r'] = true
 ACL['Reminder for Buffs / Debuffs'] = '버프 / 디버프에 대한 알림'
 ACL['Sound'] = '사운드'
 ACL['Sound that will play when you have a warning icon displayed.'] = '경고 아이콘이 표시 될 때 재생되는 소리.'
@@ -370,12 +351,10 @@ ACL['Tree Exception'] = '예외 트리'
 ACL['Set a talent tree to not follow the reverse check.'] = '역활 확인을 구분하지 않는 특성 트리를 선택.'
 
 -- Reputation Reward - 평판 보상
-ACL['|cFF16C3F2Reputation|r|cFFFFFFFFRewards|r'] = '|cFF16C3F2평판|r|cFFFFFFFF보상|r'
 ACL['Adds Reputation into Quest Log & Quest Frame.'] = '퀘스트 로그 및 퀘스트 프레임에 평판을 추가합니다.'
 ACL['Show All Reputation'] = '모든 평판 보기'
 
 -- SquareMinimapButtons - 사각 미니맵 버튼
-ACL['|cFF16C3F2Square|r |cFFFFFFFFMinimap Buttons|r'] = '|cFF16C3F2사각|r |cFFFFFFFF미니맵 버튼|r'
 ACL['Minimap Button Bar / Minimap Button Skinning'] = '미니맵 버튼 바 / 미니맵 버튼 스킨'
 ACL['Square Minimap Buttons'] = '사각 미니맵 버튼'
 ACL['Bar Backdrop'] = '검정 배경'
@@ -398,7 +377,6 @@ ACL['Visibility'] = '표시 자동전화 조건'
 
 -- stAddOnManager - 실시간 에드온 On/Off 지원
 ACL['stAddOnManager'] = 'st에드온 메니저'
-ACL['|cFF16C3F2st|r|cFFFFFFFFAddonManager|r'] = '|cFF16C3F2st|r|cFFFFFFFF에드온 관리|r'
 ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'] = '로그 아웃하지 않고 애드온을 활성화/비활성화 할수 있게 하는 가벼운 애드온.'
 ACL['# Shown AddOns'] = '# 표시된 애드온'
 ACL['Are you sure you want to delete %s?'] = '%s을(를) 삭제 하시겠습니까?'
@@ -430,12 +408,10 @@ ACL['This will attempt to enable all the "Required" AddOns for the selected AddO
 ACL['Update'] = '업데이트'
 
 -- TargetSounds - 타겟 지정 사운드 지원
-ACL['|cFF16C3F2Target|r|cFFFFFFFFSounds|r'] = '|cFF16C3F2타겟|r|cFFFFFFFF사운드|r'
 ACL['Audio for Target Sounds.'] = '타겟 선택 하면, 사운드를 출력.'
 
 -- Torghast Buffs - 토르가스트 버프
 ACL['Torghast Buffs'] = '토르가스트 버프'
-ACL['|cFF16C3F2Torghast|r|cFFFFFFFFBuffs|r'] = '|cFF16C3F2토르가스트|r|cFFFFFFFF버프|r'
 ACL["Index"] = "색인"
 ACL["Name"] = "이름" 
 ACL['Masque Support'] = '마스크 지원'

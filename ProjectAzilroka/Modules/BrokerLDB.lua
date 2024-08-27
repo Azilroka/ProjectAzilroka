@@ -6,9 +6,9 @@ local _G = _G
 local next, tinsert, tremove = next, tinsert, tremove
 local strfind, strlower, strlen = strfind, strlower, strlen
 
-local CreateFrame = CreateFrame
-local GameTooltip = GameTooltip
-local UIParent = UIParent
+local CreateFrame, GameTooltip, UIParent = CreateFrame, GameTooltip, UIParent
+
+local LDB = PA.Libs.LDB
 
 BLDB.Title, BLDB.Description, BLDB.Authors, BLDB.isEnabled = 'Broker LDB', ACL['Provides a Custom DataBroker Bar'], 'Azilroka', false
 
@@ -72,7 +72,7 @@ function BLDB:SlideIn()
 end
 
 function BLDB:Update()
-	for Name, Object in PA.LDB:DataObjectIterator() do
+	for Name, Object in LDB:DataObjectIterator() do
 		BLDB:New(nil, Name, Object)
 	end
 
@@ -169,6 +169,7 @@ function BLDB:New(_, name, object)
 	button:Hide()
 	button.pluginName = name
 	button.pluginObject = object
+	button:RegisterForClicks('AnyDown')
 
 	button:SetFrameStrata('BACKGROUND')
 	button:SetFrameLevel(3)
@@ -190,7 +191,7 @@ function BLDB:New(_, name, object)
 
 	BLDB.PluginObjects[name] = button
 
-	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name, 'TextUpdate')
+	LDB.RegisterCallback(BLDB, 'LibDataBroker_AttributeChanged_'..name, 'TextUpdate')
 
 	button:SetScript('OnEnter', function(s)
 		if s.anim:IsPlaying() then return end
@@ -278,7 +279,7 @@ function BLDB:Initialize()
 
 	BLDB.Buttons, BLDB.PluginObjects, BLDB.EasyMenu, BLDB.Whitelist, BLDB.Blacklist, BLDB.Ignore = {}, {}, {}, {}, {}, { 'Cork' }
 
-	PA.LDB.RegisterCallback(BLDB, 'LibDataBroker_DataObjectCreated', 'New')
+	LDB.RegisterCallback(BLDB, 'LibDataBroker_DataObjectCreated', 'New')
 
 	local Frame = CreateFrame('Button', nil, UIParent)
 	BLDB.Frame = Frame
@@ -289,7 +290,7 @@ function BLDB:Initialize()
 	Frame:SetFrameStrata('BACKGROUND')
 	Frame:SetWidth(15)
 	Frame:SetPoint('LEFT', UIParent, 'LEFT', 1, 0)
-	Frame:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
+	Frame:RegisterForClicks('AnyDown')
 	PA:SetTemplate(Frame, 'Transparent')
 	BLDB:AnimateSlide(Frame, -150, 0, 1)
 
