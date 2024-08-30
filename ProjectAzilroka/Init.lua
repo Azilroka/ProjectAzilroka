@@ -394,7 +394,7 @@ do
 		local info, _ = { isPassive = _G.IsPassiveSpell(index, bookType), isOffSpec = false, skillLineIndex = index }
 		info.itemType, info.actionID = _G.GetSpellBookItemInfo(index, bookType)
 		_, info.subName = GetSpellBookItemName(index, bookType)
-		info.name, _, info.iconID, _, _, _, info.spellID = _G.GetSpellInfo(index, bookType)
+		info.name, _, info.iconID, _, info.minRange, info.maxRange, info.spellID = _G.GetSpellInfo(index, bookType)
 		info.itemType = bookTypes[info.itemType]
 		return info
 	end

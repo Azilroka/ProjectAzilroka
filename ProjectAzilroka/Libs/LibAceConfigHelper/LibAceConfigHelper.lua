@@ -163,7 +163,7 @@ function ACH:ActionSlotWidget(name, desc, order, multiline, width, get, set, dis
 end
 
 function ACH:FontFlags(name, desc, order, width, get, set, disabled, hidden)
-	local optionTable = { type = 'select', name = name, desc = desc, order = order, get = get, set = set, disabled = disabled, hidden = hidden, values = ACH.FontValues, sortByValue = true }
+	local optionTable = { type = 'select', name = name, desc = desc, order = order, get = get, set = set, disabled = disabled, hidden = hidden, values = ACH.FontValues, sortByValue = ElvUI and true or nil }
 
 	if width then insertWidth(optionTable, width) end
 

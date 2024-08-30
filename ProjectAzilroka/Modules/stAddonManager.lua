@@ -2,8 +2,7 @@ local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 local stAM = PA:NewModule('stAddonManager', 'AceEvent-3.0')
 PA.stAM, _G.stAddonManager = stAM, stAM
 
-stAddonManagerProfilesDB = {}
-stAddonManagerServerDB = {}
+stAddonManagerProfilesDB, stAddonManagerServerDB = {}, {}
 
 stAM.Title, stAM.Description, stAM.Authors, stAM.isEnabled = 'stAddonManager', ACL['A simple and minimalistic addon to disable/enabled addons without logging out.'], 'Azilroka    Safturento', false
 
@@ -21,6 +20,7 @@ local EnableAddOn = C_AddOns.EnableAddOn
 local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 local DisableAllAddOns = C_AddOns.DisableAllAddOns
 local EnableAllAddOns = C_AddOns.EnableAllAddOns
+local SaveAddOns = C_AddOns.SaveAddOns
 
 local UIParent, CreateFrame, GameTooltip = UIParent, CreateFrame, GameTooltip
 
@@ -87,6 +87,7 @@ function stAMCheckButtonMixin:OnClick()
 			end
 		end
 		stAM:UpdateAddonList()
+		SaveAddOns()
 	end
 end
 
