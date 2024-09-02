@@ -318,6 +318,25 @@ function PA:GetAuraData(unitToken, index, filter)
 	return auraData
 end
 
+function PA:SetFont(obj, font, fontSize, fontStyle)
+	if fontStyle == 'NONE' or not fontStyle then fontStyle = '' end
+
+	local shadow = strsub(fontStyle, 0, 6) == 'SHADOW'
+	if shadow then fontStyle = strsub(fontStyle, 7) end -- shadow isnt a real style
+
+	obj:SetFont(font, fontSize, fontStyle)
+	obj:SetShadowColor(0, 0, 0, (shadow and (fontStyle == '' and 1 or 0.6)) or 0)
+	obj:SetShadowOffset((shadow and 1) or 0, (shadow and -1) or 0)
+end
+
+function PA:GetFont(font, fontSize, fontStyle)
+	if fontStyle == 'NONE' or not fontStyle then fontStyle = '' end
+	local shadow = strsub(fontStyle, 0, 6) == 'SHADOW'
+	if shadow then fontStyle = strsub(fontStyle, 7) end -- shadow isnt a real style
+
+	return PA.Libs.LSM:Fetch('font', font), fontSize, fontStyle
+end
+
 -- backwards compatibility
 do
 	-- GetMouseFocus
