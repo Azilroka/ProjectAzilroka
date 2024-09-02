@@ -4,19 +4,24 @@ local ACH = LibStub:NewLibrary(MAJOR, MINOR)
 local LSM = LibStub('LibSharedMedia-3.0')
 
 if not ACH then return end
+
 local type, pairs = type, pairs
+local ElvUI = ElvUI and true
 
 ACH.FontValues = {
-	NONE = 'None',
+	[''] = 'None',
 	OUTLINE = 'Outline',
 	THICKOUTLINE = 'Thick',
-	SHADOW = '|cff888888Shadow|r',
-	SHADOWOUTLINE = '|cff888888Shadow|r Outline',
-	SHADOWTHICKOUTLINE = '|cff888888Shadow|r Thick',
 	MONOCHROME = '|cFFAAAAAAMono|r',
 	MONOCHROMEOUTLINE = '|cFFAAAAAAMono|r Outline',
 	MONOCHROMETHICKOUTLINE = '|cFFAAAAAAMono|r Thick'
 }
+
+if ElvUI then
+	ACH.FontValues.SHADOW = '|cff888888Shadow|r'
+	ACH.FontValues.SHADOWOUTLINE = '|cff888888Shadow|r Outline'
+	ACH.FontValues.SHADOWTHICKOUTLINE = '|cff888888Shadow|r Thick'
+end
 
 local function insertWidth(opt, width)
 	if type(width) == 'number' and width > 5 then
