@@ -113,6 +113,67 @@
 		</Layers>
 	</Frame>
 
+	<!-- Square Minimap Buttons / Bar-->
+	<Frame name='SMB_TrackingTemplate' virtual='true' inherits='BackdropTemplate'>
+		<Size x='32' y='32'/>
+		<Layers>
+			<Layer level='ARTWORK'>
+				<Texture name='$parentIcon'>
+					<Size x='20' y='20'/>
+					<Anchors>
+						<Anchor point='TOPLEFT' x='6' y='-6'/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<DropdownButton name='$parentButton' mixin='MiniMapTrackingButtonMixin'>
+				<Size x='32' y='32'/>
+				<Anchors>
+					<Anchor point='TOPLEFT'/>
+				</Anchors>
+				<Scripts>
+					<OnLoad method='OnLoad'/>
+					<OnEvent method='OnEvent'/>
+					<OnEnter method='OnEnter'/>
+					<OnLeave method='OnLeave'/>
+				</Scripts>
+			</DropdownButton>
+		</Frames>
+	</Frame>
+
+	<Button name='SMB_LFGTemplate' virtual='true' inherits='BackdropTemplate'>
+		<Size x='33' y='33'/>
+		<Anchors>
+			<Anchor point='TOPLEFT' x='25' y='-100'/>
+		</Anchors>
+		<Layers>
+			<Layer level='OVERLAY'>
+				<Texture name='$parentBorder' file='Interface\Minimap\MiniMap-TrackingBorder'>
+					<Size x='52' y='52'/>
+					<Anchors>
+						<Anchor point='TOPLEFT' x='1' y='-1'/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name='$parentIcon' inherits='EyeTemplate' hidden='false' parentKey='eye'>
+				<Size x='30' y='30'/>
+				<Anchors>
+					<Anchor point='CENTER'/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad function='MiniMapLFGFrame_OnLoad'/>
+			<OnClick function='MiniMapLFGFrame_OnClick'/>
+			<OnEvent function='MiniMapLFGFrame_OnEvent'/>
+			<OnEnter function='MiniMapLFGFrame_OnEnter'/>
+			<OnLeave function='MiniMapLFGFrame_OnLeave'/>
+		</Scripts>						
+	</Button>	
+
 	<!-- stAddOnManager -->
 	<CheckButton name='stAMCheckButton' mixin='stAMCheckButtonMixin' inherits='BackdropTemplate' virtual='true' frameLevel='4'>
 		<Size x='22' y='18'/>
@@ -157,6 +218,8 @@
 			<OnEnter method ='OnEnter'/>
 			<OnLeave method ='OnLeave'/>
 		</Scripts>
+
+		<CheckedTexture parentKey='CheckedTexture' file='Interface\Buttons\UI-CheckBox-Check'/>
 	</CheckButton>
 
 	<!-- TorghastBuffs -->

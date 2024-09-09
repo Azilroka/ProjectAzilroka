@@ -53,20 +53,23 @@ SMB.IgnoreButton = {
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
-
 local RemoveTextureID = { [136430] = true, [136467] = true, [136477] = true, [136468] = true, [130924] = true }
-local RemoveTextureFile = { 'interface/characterframe', 'border', 'background', 'alphamask', 'highlight' }
+local CheckTexture = { '[iI][cC][oO][nN]$', '[tT][eE][xX][tT][uU][rR][eE]' }
+local SpecialTexCoords = { ['TomCats-MinimapButton'] = { 0, .64, 0, .64 } }
 
 function SMB:RemoveTexture(texture)
+	return RemoveTextureID[texture]
+end
+
+function SMB:CheckTexture(texture)
 	if type(texture) == 'string' then
-		for _, path in next, RemoveTextureFile do
-			if strfind(texture, path) or (strfind(texture, 'interface/minimap') and not strfind(texture, 'interface/minimap/tracking')) then
+		for _, path in next, CheckTexture do
+			if strmatch(texture, path) then
 				return true
 			end
 		end
-	else
-		return RemoveTextureID[texture]
 	end
+	return false
 end
 
 function SMB:LockButton(Button)
@@ -95,26 +98,24 @@ end
 function SMB:HandleBlizzardButtons()
 	if not SMB.db.BarEnabled then return end
 	local Size = SMB.db.IconSize
-	local MailFrameVersion = PA.Retail and _G.MinimapCluster.MailFrame or _G.MiniMapMailFrame
 
-	if SMB.db.MoveMail and MailFrameVersion and not MailFrameVersion.SMB then
+	if SMB.db.MoveMail and not SMB_MailFrame then
 		local Frame = CreateFrame('Frame', 'SMB_MailFrame', SMB.Bar)
 		Frame:SetSize(Size, Size)
 		PA:SetTemplate(Frame)
 		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 		Frame.Icon:SetPoint('CENTER')
 		Frame.Icon:SetSize(18, 18)
-		Frame.Icon:SetTexture(_G.MiniMapMailIcon:GetTexture())
+		Frame.Icon:SetTexture('Interface/Icons/INV_Letter_15')
+		Frame.Icon:SetTexCoord(PA:TexCoords())
 		Frame:EnableMouse(true)
-		Frame:HookScript('OnEnter', function(s)
+		Frame:HookScript('OnEnter', function(_self)
 			if HasNewMail() then
-				GameTooltip:SetOwner(s, "ANCHOR_BOTTOMRIGHT")
-				if GameTooltip:IsOwned(s) then
-					MinimapMailFrameUpdate()
-				end
+				GameTooltip:SetOwner(_self, "ANCHOR_BOTTOMRIGHT")
+				MinimapMailFrameUpdate()
 			end
-			s:SetBackdropBorderColor(unpack(PA.ClassColor))
-			if SMB.Bar:IsShown() then
+			_self:SetBackdropBorderColor(unpack(PA.ClassColor))
+			if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
 				UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
 			end
 		end)
@@ -126,60 +127,54 @@ function SMB:HandleBlizzardButtons()
 			end
 		end)
 
-		MailFrameVersion:HookScript('OnShow', function() Frame.Icon:SetVertexColor(0, 1, 0) end)
-		MailFrameVersion:HookScript('OnHide', function() Frame.Icon:SetVertexColor(1, 1, 1) end)
-		MailFrameVersion:EnableMouse(false)
+		Frame:RegisterEvent('UPDATE_PENDING_MAIL')
+		Frame:SetScript('OnEvent', function(_self, event)
+			if event == 'UPDATE_PENDING_MAIL' then
+				if HasNewMail() then
+					_self.Icon:SetVertexColor(0, 1, 0)
+					if GameTooltip:IsOwned(_self) then
+						MinimapMailFrameUpdate()
+					end
+				else
+					_self.Icon:SetVertexColor(1, 1, 1)
+				end
+			end
+		end)
 
-		if MailFrameVersion:IsShown() then
-			Frame.Icon:SetVertexColor(0, 1, 0)
-		end
+		if HasNewMail() then Frame.Icon:SetVertexColor(0, 1, 0) end
+		if SMB.db.Shadows then PA:CreateShadow(Frame) end
 
-		-- Hide Icon & Border
-		_G.MiniMapMailIcon:Hide()
-		--_G.MiniMapMailBorder:Hide()
-
-		if SMB.db.Shadows then
-			PA:CreateShadow(Frame)
-		end
-
-		MailFrameVersion.SMB = true
 		tinsert(SMB.Buttons, Frame)
 	end
 
 	if PA.Retail then
-		if SMB.db.HideGarrison then
-			_G.ExpansionLandingPageMinimapButton:UnregisterAllEvents()
-			_G.ExpansionLandingPageMinimapButton:SetParent(SMB.Hider)
-			_G.ExpansionLandingPageMinimapButton:Hide()
-		elseif SMB.db.MoveGarrison and (C_Garrison.GetLandingPageGarrisonType() > 0) and not _G.ExpansionLandingPageMinimapButton.SMB then
-			Mixin(ExpansionLandingPageMinimapButton, BackdropTemplateMixin)
-			_G.ExpansionLandingPageMinimapButton:SetParent(Minimap)
-			_G.ExpansionLandingPageMinimapButton:UnregisterEvent('GARRISON_HIDE_LANDING_PAGE')
-			_G.ExpansionLandingPageMinimapButton:Show()
-			_G.ExpansionLandingPageMinimapButton.Layout = function() return end
-			_G.ExpansionLandingPageMinimapButton:SetScale(1)
-			_G.ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
-			_G.ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(s)
-				s:SetBackdropBorderColor(unpack(PA.ClassColor))
-				if SMB.Bar:IsShown() then
-					UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
-				end
-			end)
-			_G.ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(s)
-				PA:SetTemplate(s)
-				if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
-					UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
-				end
-			end)
+		-- if SMB.db.HideGarrison then
+		-- 	_G.ExpansionLandingPageMinimapButton:UnregisterAllEvents()
+		-- 	_G.ExpansionLandingPageMinimapButton:SetParent(SMB.Hider)
+		-- 	_G.ExpansionLandingPageMinimapButton:Hide()
+		-- elseif SMB.db.MoveGarrison and not _G.SMB_Garrison then
+		-- 	local Frame = Mixin(CreateFrame('Frame', 'SMB_Garrison', SMB.Bar), ExpansionLandingPageMinimapButtonMixin, BackdropTemplateMixin)
+		-- 	Frame:SetScript('OnEnter', function(s)
+		-- 		s:SetBackdropBorderColor(unpack(PA.ClassColor))
+		-- 		if SMB.Bar:IsShown() then
+		-- 			UIFrameFadeIn(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 1)
+		-- 		end
+		-- 	end)
+		-- 	_G.ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(s)
+		-- 		PA:SetTemplate(s)
+		-- 		if SMB.Bar:IsShown() and SMB.db.BarMouseOver then
+		-- 			UIFrameFadeOut(SMB.Bar, 0.2, SMB.Bar:GetAlpha(), 0)
+		-- 		end
+		-- 	end)
 
-			_G.ExpansionLandingPageMinimapButton.SMB = true
+		-- 	_G.ExpansionLandingPageMinimapButton.SMB = true
 
-			if SMB.db.Shadows then
-				PA:CreateShadow(_G.ExpansionLandingPageMinimapButton)
-			end
+		-- 	if SMB.db.Shadows then
+		-- 		PA:CreateShadow(_G.ExpansionLandingPageMinimapButton)
+		-- 	end
 
-			tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
-		end
+		-- 	tinsert(SMB.Buttons, _G.ExpansionLandingPageMinimapButton)
+		-- end
 
 		if SMB.db.MoveTracker and not _G.MinimapCluster.Tracking.Button.SMB then
 			_G.MinimapCluster.Tracking.Button:Show()
@@ -280,31 +275,39 @@ function SMB:HandleBlizzardButtons()
 	end
 end
 
+function SMB:HandleRegion(button, region)
+	local texture = region.GetTextureFileID and region:GetTextureFileID()
+	if not texture then
+		texture = strlower(tostring(region:GetTexture()))
+	end
+
+	region:ClearAllPoints()
+	region:SetDrawLayer('ARTWORK')
+	PA:SetInside(region)
+
+	region:SetMask('')
+
+	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = region:GetTexCoord()
+	if (ULx == 0 and ULy == 0 and LLx == 0 and LLy == 1 and URx == 1 and URy == 0 and LRx == 1 and LRy == 1) then
+		local l, r, t, b = unpack(SpecialTexCoords[button:GetDebugName()] or PA:TexCoords(true))
+		region:SetTexCoord(l, r, t, b)
+		button:HookScript('OnLeave', function() region:SetTexCoord(l, r, t, b) end)
+	end
+
+	region.SetPoint = function() return end
+end
+
 function SMB:SkinMinimapButton(button)
 	for _, frames in next, { button, button:GetChildren() } do
 		for _, region in next, { frames:GetRegions() } do
-			if region.IsObjectType and region:IsObjectType('Texture') then
-				local texture = region.GetTextureFileID and region:GetTextureFileID()
-				if not texture then
-					texture = strlower(tostring(region:GetTexture()))
-				end
-
-				if SMB:RemoveTexture(texture) then
+			if SMB:CheckTexture(region:GetDebugName()) then
+				SMB:HandleRegion(button, region)
+			elseif region.IsObjectType and region:IsObjectType('Texture') then
+				if SMB:CheckTexture(region:GetTextureFileID()) then
+					SMB:HandleRegion(button, region)
+				else
 					region:SetTexture()
 					region:SetAlpha(0)
-				else
-					region:ClearAllPoints()
-					region:SetDrawLayer('ARTWORK')
-					PA:SetInside(region)
-
-					region:SetMask('')
-					local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = region:GetTexCoord()
-					if ULx == 0 and ULy == 0 and LLx == 0 and LLy == 1 and URx == 1 and URy == 0 and LRx == 1 and LRy == 1 then
-						region:SetTexCoord(PA:TexCoords())
-						button:HookScript('OnLeave', function() region:SetTexCoord(PA:TexCoords()) end)
-					end
-
-					region.SetPoint = function() return end
 				end
 			end
 		end
