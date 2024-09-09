@@ -344,7 +344,7 @@ do
 	local function HEX(db) return PA:RGBToHex(db.r, db.g, db.b) end
 
 	function PA:GetCooldownColors(db)
-		if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
+		if not db then db = PA.db.Cooldown end -- just incase someone calls this without a first arg use the global
 
 		return
 		--> time colors (0 - 7) <-- 7 is mod rate, which is different from text colors (as mod rate has no indicator)
@@ -363,7 +363,7 @@ function PA:UpdateCooldownSettings(module)
 	if isModule then
 		if not timeColors[module] then timeColors[module] = {} end
 		if not textColors[module] then textColors[module] = {} end
-		db, timeColors, textColors = E.db[module].cooldown, timeColors[module], textColors[module]
+		db, timeColors, textColors = PA.db[module].Cooldown, timeColors[module], textColors[module]
 	end
 
 	--> color for TIME that has X remaining <--
