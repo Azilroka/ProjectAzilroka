@@ -116,6 +116,7 @@ function MF:ADDON_LOADED(_, addon)
 end
 
 function MF:Update()
+	if MF.db.Enable ~= true then return end
 	for frame in next, MF.alteredFrames do
 		frame:SetClampedToScreen(MF.db.ClampedToScreen)
 	end
