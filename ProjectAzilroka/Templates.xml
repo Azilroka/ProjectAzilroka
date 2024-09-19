@@ -230,7 +230,7 @@
 				<Texture parentKey='Icon'/>
 			</Layer>
 			<Layer level='HIGHLIGHT' textureSubLevel='1'>
-				<Texture parentKey='Hightlight'>
+				<Texture parentKey='Highlight'>
 					<Color r='1' g='1' b='1' a='.45'/>
 				</Texture>
 			</Layer>
