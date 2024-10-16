@@ -75,13 +75,13 @@ function stAMCheckButtonMixin:OnLoad()
 end
 
 function stAMCheckButtonMixin:OnClick()
-	if self.name then
-		if PA:IsAddOnEnabled(self.name, stAM.SelectedCharacter) then
-			DisableAddOn(self.name, stAM.SelectedCharacter)
+	if self.addonInfo.Name then
+		if PA:IsAddOnEnabled(self.addonInfo.Name, stAM.SelectedCharacter) then
+			DisableAddOn(self.addonInfo.Name, stAM.SelectedCharacter)
 		else
-			EnableAddOn(self.name, stAM.SelectedCharacter)
-			if stAM.db.EnableRequiredAddons and self.required then
-				for _, AddOn in next, self.required do
+			EnableAddOn(self.addonInfo.Name, stAM.SelectedCharacter)
+			if stAM.db.EnableRequiredAddons and self.addonInfo.Required then
+				for _, AddOn in next, self.addonInfo.Required do
 					EnableAddOn(AddOn)
 				end
 			end
@@ -94,19 +94,20 @@ end
 function stAMCheckButtonMixin:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
 	GameTooltip:ClearLines()
-	GameTooltip:AddDoubleLine('AddOn:', self.title, 1, 1, 1, 1, 1, 1)
-	GameTooltip:AddDoubleLine(ACL['Authors:'], self.authors, 1, 1, 1, 1, 1, 1)
-	GameTooltip:AddDoubleLine(ACL['Version:'], self.version, 1, 1, 1, 1, 1, 1)
-	if self.notes ~= nil then
-		GameTooltip:AddDoubleLine('Notes:', self.notes, 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddDoubleLine('AddOn:', self.addonInfo.Title, 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddDoubleLine(ACL['Version:'], self.addonInfo.Version, 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddLine(' ')
+	GameTooltip:AddDoubleLine(ACL['Authors:'], self.addonInfo.Authors, 1, 1, 1, 1, 1, 1)
+	if self.addonInfo.Notes ~= nil then
+		GameTooltip:AddDoubleLine('Notes:', self.addonInfo.Notes, 1, 1, 1, 1, 1, 1)
 	end
-	if self.required or self.optional then
+	if self.addonInfo.Required or self.addonInfo.Optional then
 		GameTooltip:AddLine(' ')
-		if self.required then
-			GameTooltip:AddDoubleLine('Required Dependencies:', concat(self.required, ', '), 1, 1, 1, 1, 1, 1)
+		if self.addonInfo.Required then
+			GameTooltip:AddDoubleLine('Required Dependencies:', concat(self.addonInfo.Required, ', '), 1, 1, 1, 1, 1, 1)
 		end
-		if self.optional then
-			GameTooltip:AddDoubleLine('Optional Dependencies:', concat(self.optional, ', '), 1, 1, 1, 1, 1, 1)
+		if self.addonInfo.Optional then
+			GameTooltip:AddDoubleLine('Optional Dependencies:', concat(self.addonInfo.Optional, ', '), 1, 1, 1, 1, 1, 1)
 		end
 	end
 	GameTooltip:Show()
@@ -581,11 +582,10 @@ function stAM:UpdateAddonList()
 	for i, button in ipairs(stAM.Frame.AddOns.Buttons) do
 		local addonIndex = (not stAM.searchQuery and (stAM.scrollOffset + i)) or stAM.Frame.Search.AddOns[stAM.scrollOffset + i]
 		local info = stAM.AddOnInfo[addonIndex]
+		button.addonInfo = info
 
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
-			button.name, button.title, button.authors, button.version, button.notes, button.required, button.optional, button.icon, button.atlas = info.Name, info.Title, info.Authors, info.Version, info.Notes, info.Required, info.Optional, info.Icon, info.Atlas
-
-			button.Text:SetText(info.Title)
+			button.Text:SetFormattedText('%s (%s)', info.Title, info.Version)
 
 			if info.Icon then
 				button.Icon:SetTexture(info.Icon)
