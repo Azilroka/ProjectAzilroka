@@ -95,7 +95,9 @@ function stAMCheckButtonMixin:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_TOPRIGHT', 0, 4)
 	GameTooltip:ClearLines()
 	GameTooltip:AddDoubleLine('AddOn:', self.addonInfo.Title, 1, 1, 1, 1, 1, 1)
-	GameTooltip:AddDoubleLine(ACL['Version:'], self.addonInfo.Version, 1, 1, 1, 1, 1, 1)
+	if self.addonInfo.Version then
+		GameTooltip:AddDoubleLine(ACL['Version:'], self.addonInfo.Version, 1, 1, 1, 1, 1, 1)
+	end
 	GameTooltip:AddLine(' ')
 	GameTooltip:AddDoubleLine(ACL['Authors:'], self.addonInfo.Authors, 1, 1, 1, 1, 1, 1)
 	if self.addonInfo.Notes ~= nil then
@@ -585,7 +587,7 @@ function stAM:UpdateAddonList()
 		button.addonInfo = info
 
 		if addonIndex and addonIndex <= #stAM.AddOnInfo then
-			button.Text:SetFormattedText('%s (%s)', info.Title, info.Version)
+			button.Text:SetFormattedText(info.Version and '%s (%s)' or '%s', info.Title, info.Version or '')
 
 			if info.Icon then
 				button.Icon:SetTexture(info.Icon)
