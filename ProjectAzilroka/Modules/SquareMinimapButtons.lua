@@ -53,12 +53,12 @@ SMB.IgnoreButton = {
 }
 
 local ButtonFunctions = { 'SetParent', 'ClearAllPoints', 'SetPoint', 'SetSize', 'SetScale', 'SetIgnoreParentScale', 'SetFrameStrata', 'SetFrameLevel' }
-local RemoveTextureID = { ['136430'] = true, ['136467'] = true, ['136477'] = true, ['136468'] = true, ['130924'] = true } -- , ['982840'] = true, ['132321'] = true
+local RemoveTextureID = { ['136430'] = true, ['136467'] = true, ['136477'] = true, ['136468'] = true, ['130924'] = true, ['982840'] = true }
 local CheckTexture = { '[iI][cC][oO][nN]$', '[tT][eE][xX][tT][uU][rR][eE]' }
 local SpecialTexCoords = { ['TomCats-MinimapButton'] = { 0, .64, 0, .64 } }
 
 function SMB:RemoveTexture(texture)
-	return RemoveTextureID[texture]
+	return RemoveTextureID[tostring(texture)]
 end
 
 function SMB:CheckTexture(texture)
@@ -104,8 +104,7 @@ function SMB:HandleBlizzardButtons()
 		Frame:SetSize(Size, Size)
 		PA:SetTemplate(Frame)
 		Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
-		Frame.Icon:SetPoint('CENTER')
-		Frame.Icon:SetSize(18, 18)
+		PA:SetInside(Frame.Icon)
 		Frame.Icon:SetTexture('Interface/Icons/INV_Letter_15')
 		Frame.Icon:SetTexCoord(PA:TexCoords())
 		Frame:EnableMouse(true)
