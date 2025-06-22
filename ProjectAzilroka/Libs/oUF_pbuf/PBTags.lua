@@ -93,7 +93,7 @@ oUF.Tags.Methods["pbuf:qualitycolor"] = function()
 	end
 
 	local rarity = C_PetBattles.GetBreedQuality(petInfo.petOwner, petInfo.petIndex)
-	return Hex(GetItemQualityColor(rarity - 1))
+	return Hex(GetItemQualityColor(rarity))
 end
 
 oUF.Tags.Events["pbuf:name"] = openingEvents
