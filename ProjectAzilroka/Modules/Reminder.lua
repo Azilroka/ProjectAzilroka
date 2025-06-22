@@ -54,8 +54,8 @@ function AR:FindPlayerAura(db, checkPersonal, filter)
 end
 
 function AR:IsSpellOnCooldown(id)
-	local start, duration = GetSpellCooldown(id)
-	if start > 0 and duration > 1.5 then
+	local cooldownInfo = GetSpellCooldown(id)
+	if coolInfo.startTime > 0 and cooldownInfo.duration > 1.5 then
 		return true
 	end
 end

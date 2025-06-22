@@ -389,20 +389,22 @@ function IF:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, SpellID)
 end
 
 function IF:SPELL_UPDATE_COOLDOWN()
-	local Start, Duration, Enable, Charges, _, ChargeStart, ChargeDuration, CurrentDuration
+	local Start, Duration, CooldownInfo, ChargeInfo, CurrentDuration
 
 	for SpellID in next, IF.Cooldowns do
-		Start, Duration, Enable = GetSpellCooldown(SpellID)
+		CooldownInfo = GetSpellCooldown(SpellID)
 
 		if IF.IsChargeCooldown[SpellID] ~= false then
-			Charges, _, ChargeStart, ChargeDuration = GetSpellCharges(SpellID)
+			ChargeInfo = GetSpellCharges(SpellID)
 
 			if IF.IsChargeCooldown[SpellID] == nil then
-				IF.IsChargeCooldown[SpellID] = Charges and true or false
+				IF.IsChargeCooldown[SpellID] = ChargeInfo and true or false
 			end
 
-			if Charges then
-				Start, Duration = ChargeStart, ChargeDuration
+			if ChargeInfo then
+				Start, Duration = ChargeInfo.cooldownStartTime, ChargeInfo.cooldownDuration
+			else
+				Start, Duration = CooldownInfo.startTime, CooldownInfo.duration
 			end
 		end
 
