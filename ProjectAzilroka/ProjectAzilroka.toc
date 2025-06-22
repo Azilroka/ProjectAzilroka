@@ -1,7 +1,7 @@
-## Interface: 110002, 40400, 11503
+## Interface: 110107, 40400, 11503
 ## Title: |cFF16C3F2Project|r|cFFFFFFFFAzilroka|r
 ## Author: Azilroka, Nihilistzsche
-## Version: 1.93
+## Version: 1.94
 ## OptionalDeps: Masque, Tukui, ElvUI, SpartanUI, BattlePetBreedID
 ## SavedVariables: ProjectAzilrokaDB, stAddonManagerProfilesDB, stAddonManagerServerDB
 ## X-Curse-Project-ID: 311661
