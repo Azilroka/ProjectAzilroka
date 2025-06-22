@@ -1797,14 +1797,6 @@ function EPB:UpdateReviveBar()
 		return
 	end
 
-	if not C_Item_GetItemInfo(EPB.holder.BandageButton.ID) then
-		C_Timer.After(1, function()
-			_G.RegisterStateDriver(self.holder, "visibility", "hide")
-			EPB:UpdateReviveBar()
-		end)
-		return
-	end
-
 	_G.RegisterStateDriver(
 		self.holder,
 		"visibility",
@@ -1819,9 +1811,10 @@ function EPB:CreateExtraActionButton(name)
 		"Button",
 		"EPB" .. name .. "Button",
 		self.holder,
-		"SecureActionButtonTemplate, ActionButtonTemplate"
+		"ActionButtonTemplate, SecureActionButtonTemplate"
 	)
-	Button:RegisterForClicks("AnyDown", "AnyUp")
+	Button:SetMouseClickEnabled(true)
+	Button:RegisterForClicks("AnyUp", "AnyDown")
 	Button:SetSize(50, 50)
 	PA:SetTemplate(Button)
 	Button.BorderColor = { Button:GetBackdropBorderColor() }
@@ -1837,9 +1830,9 @@ function EPB:CreateExtraActionButton(name)
 	Button.cooldown:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	Button.cooldown:SetScript("OnEvent", function(_self)
 		if Button.ID then
-			local Start, Duration = C_Spell_GetSpellCooldown(Button.ID)
-			if Duration and Duration > 1.5 then
-				_self:SetCooldown(Start, Duration)
+			local cdInfo = C_Spell_GetSpellCooldown(Button.ID)
+			if cdInfo.duration and cdInfo.duration > 1.5 then
+				_self:SetCooldown(cdInfo.startTime, cdInfo.duration)
 			end
 		end
 	end)
@@ -1879,15 +1872,9 @@ function EPB:CreateReviveButton()
 end
 
 function EPB:UpdateBandageButton(button)
-	local itemName, itemLink = C_Item_GetItemInfo(button.ID)
-	if button:GetAttribute("item") ~= itemName then
-		button:SetAttribute("item", itemName)
-	end
 	local Count = C_Item_GetItemCount(button.ID)
-	button:EnableMouse(Count > 0 and true or false)
 	button.Count:SetText(Count > 0 and Count or "")
 	button.icon:SetDesaturated(Count == 0 and true or false)
-	button.HyperLink = itemLink
 end
 
 function EPB:CreateBandageButton()
@@ -1900,7 +1887,13 @@ function EPB:CreateBandageButton()
 	Bandage:SetScript("OnShow", function(_self)
 		self:UpdateBandageButton(_self)
 	end)
-
+	Item:CreateFromItemID(Bandage.ID):ContinueOnItemLoad(function()
+		local itemName, itemLink = C_Item_GetItemInfo(Bandage.ID)
+		if Bandage:GetAttribute("item") ~= itemName then
+			Bandage:SetAttribute("item", itemName)
+		end
+		Bandage.HyperLink = itemLink
+	end)
 	return Bandage
 end
 
