@@ -7,10 +7,10 @@ AR.Title, AR.Description, AR.Authors, AR.isEnabled = 'Aura Reminder', ACL['Remin
 local _G = _G
 local next, tonumber, tostring, select, format, strmatch, tinsert, wipe = next, tonumber, tostring, select, format, strmatch, tinsert, wipe
 
-local GetSpellCooldown = GetSpellCooldown
-local GetSpellInfo = GetSpellInfo
+local GetSpellCooldown = PA.GetSpellCooldown
+local GetSpellInfo = PA.GetSpellInfo
 local IsSpellKnownOrOverridesKnown = IsSpellKnownOrOverridesKnown
-local IsUsableSpell = IsUsableSpell
+local IsUsableSpell = C_Spell.IsSpellUsable
 local IsInInstance = IsInInstance
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
