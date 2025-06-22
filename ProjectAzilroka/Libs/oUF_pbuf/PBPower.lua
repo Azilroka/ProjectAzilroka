@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -12,7 +12,7 @@ local function Update(self, event, unit)
 
 	local element = self.PBPower
 	element:SetTexture([[Interface\PetBattles\PetBattle-StatIcons]])
-	element:SetTexCoord(0, .5, 0, .5)
+	element:SetTexCoord(0, 0.5, 0, 0.5)
 
 	if element.PostUpdate then
 		element:PostUpdate(event)
@@ -29,7 +29,7 @@ end
 
 local function Enable(self, unit)
 	local element = self.PBPower
-	if (element) then
+	if element then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -48,7 +48,7 @@ end
 
 local function Disable(self)
 	local element = self.PBPower
-	if (element) then
+	if element then
 		element:Hide()
 
 		self:UnregisterEvent("PET_BATTLE_OPENING_START")

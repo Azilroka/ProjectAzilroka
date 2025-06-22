@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -19,7 +19,7 @@ local function Update(self, event, unit)
 		l, r, t, b = 0.5, 0, 0.5, 1
 	end
 	element:SetTexCoord(l, r, t, b)
-	if (element.PostUpdate) then
+	if element.PostUpdate then
 		element:PostUpdate(event)
 	end
 end
@@ -34,7 +34,7 @@ end
 
 local function Enable(self, unit)
 	local element = self.PBSpeed
-	if (element) then
+	if element then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -53,7 +53,7 @@ end
 
 local function Disable(self)
 	local element = self.PBSpeed
-	if (element) then
+	if element then
 		element:Hide()
 
 		self:UnregisterEvent("PET_BATTLE_OPENING_START")

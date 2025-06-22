@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -12,7 +12,7 @@ local function Update(self, event, unit)
 
 	local element = self.PBFamilyIcon
 
-	if (element.PreUpdate) then
+	if element.PreUpdate then
 		element:PreUpdate()
 	end
 
@@ -22,7 +22,7 @@ local function Update(self, event, unit)
 		element:SetTexture([[Interface\AddOns\ProjectAzilroka\Media\Textures\]] .. suffix)
 	end
 
-	if (element.PostUpdate) then
+	if element.PostUpdate then
 		return element:PostUpdate(petType)
 	end
 end
@@ -37,7 +37,7 @@ end
 
 local function Enable(self)
 	local element = self.PBFamilyIcon
-	if (element) then
+	if element then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -49,7 +49,7 @@ end
 
 local function Disable(self)
 	local element = self.PBFamilyIcon
-	if (element) then
+	if element then
 		element:Hide()
 
 		self:UnregisterEvent("PET_BATTLE_PET_TYPE_CHANGED", Path)

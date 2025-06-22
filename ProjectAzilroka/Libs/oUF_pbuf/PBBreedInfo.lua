@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return

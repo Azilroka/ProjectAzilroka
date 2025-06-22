@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -26,7 +26,7 @@ local function fadeClosure(element)
 		element.FadeObject = {
 			finishedFuncKeep = true,
 			finishedArg1 = element,
-			finishedFunc = closureFunc
+			finishedFunc = closureFunc,
 		}
 	end
 
@@ -60,14 +60,15 @@ local function Shared_UpdateCheckReturn(self, element, updateType, ...)
 	if not element:IsVisible() then
 		return true
 	end
-	if (updateType == PRE) then
+	if updateType == PRE then
 		local maxV = ...
 		return (not element.enabled or not self.cur) or element.ready or not maxV
-	elseif (updateType == POST) then
+	elseif updateType == POST then
 		local curV, maxV, petOwner, petIndex = ...
-		return (not element.enabled or not element.cur) or (not element.ready or not curV or not maxV) or
-			element.petOwner ~= petOwner or
-			element.petIndex ~= petIndex
+		return (not element.enabled or not element.cur)
+			or (not element.ready or not curV or not maxV)
+			or element.petOwner ~= petOwner
+			or element.petIndex ~= petIndex
 	else
 		return false
 	end
@@ -97,7 +98,9 @@ local function PBHealth_PostUpdate(self, unit, curHealth, maxHealth)
 	if (element.cur - curHealth) > (maxHealth * 0.01) then
 		element:SetAlpha(self:GetAlpha())
 
-		C_Timer.After(element.lengthBeforeFade, fadeClosure, element)
+		C_Timer.After(element.lengthBeforeFade, function()
+			fadeClosure(element)
+		end)
 
 		element.playing = true
 	else
@@ -115,18 +118,18 @@ local defaults = {
 	health = {
 		enabled = true,
 		lengthBeforeFade = 0.3,
-		fadeOutTime = 0.6
-	}
+		fadeOutTime = 0.6,
+	},
 }
 
 local function UpdateConfigurationValues(self, db)
 	local hs = false
-	if (self.Health) then
+	if self.Health then
 		local health = self.Health
 		local hdb = db.health
 		hs = hdb.enabled
 		health.enabled = hs
-		if (hs) then
+		if hs then
 			health.lengthBeforeFade = hdb.lengthBeforeFade
 			health.fadeOutTime = hdb.fadeOutTime
 			health:Show()
@@ -139,12 +142,12 @@ end
 
 local function Enable(self)
 	local element = self and self.PBCutaway
-	if (element) then
-		if (element.Health and element.Health:IsObjectType("Texture") and not element.Health:GetTexture()) then
+	if element then
+		if element.Health and element.Health:IsObjectType("Texture") and not element.Health:GetTexture() then
 			element.Health:SetTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
-		if (not element.defaultsSet) then
+		if not element.defaultsSet then
 			UpdateConfigurationValues(element, defaults)
 			element.defaultsSet = true
 		end
@@ -177,7 +180,7 @@ local function Enable(self)
 			end
 		end
 
-		if not (element.UpdateConfigurationValues) then
+		if not element.UpdateConfigurationValues then
 			element.UpdateConfigurationValues = UpdateConfigurationValues
 		end
 

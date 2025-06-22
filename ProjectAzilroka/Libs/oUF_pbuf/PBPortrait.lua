@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -11,7 +11,7 @@ local function Update(self, event, unit)
 	end
 
 	local element = self.PBPortrait
-	if (element.PreUpdate) then
+	if element.PreUpdate then
 		element:PreUpdate(unit)
 	end
 
@@ -44,7 +44,7 @@ local function Update(self, event, unit)
 		end
 	end
 
-	if (element.PostUpdate) then
+	if element.PostUpdate then
 		return element:PostUpdate(unit, event)
 	end
 end
@@ -59,7 +59,7 @@ end
 
 local function Enable(self, unit)
 	local element = self.PBPortrait
-	if (element) then
+	if element then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -74,7 +74,7 @@ end
 
 local function Disable(self)
 	local element = self.PBPortrait
-	if (element) then
+	if element then
 		element:Hide()
 
 		self:UnregisterEvent("PET_BATTLE_OPENING_START")

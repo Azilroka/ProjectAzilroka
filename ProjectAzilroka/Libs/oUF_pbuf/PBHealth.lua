@@ -1,4 +1,4 @@
-local PA = _G.ProjectAzilroka
+local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
 	return
@@ -8,30 +8,31 @@ local function UpdateColor(self, event, unit)
 	local element = self.PBHealth
 
 	local r, g, b, t
-	if(element.colorClass) then
+	if element.colorClass then
 		local _, class = UnitClass("player")
 		t = self.colors.class[class]
-	elseif (element.colorSmooth) then
-		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
-	elseif (element.colorHealth) then
+	elseif element.colorSmooth then
+		r, g, b =
+			self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
+	elseif element.colorHealth then
 		t = self.colors.health
 	end
 
-	if (t) then
+	if t then
 		r, g, b = t[1], t[2], t[3]
 	end
 
-	if (b) then
+	if b then
 		element:SetStatusBarColor(r, g, b)
 
 		local bg = element.bg
-		if (bg) then
+		if bg then
 			local mu = bg.multiplier or 1
 			bg:SetVertexColor(r * mu, g * mu, b * mu)
 		end
 	end
 
-	if (element.PostUpdateColor) then
+	if element.PostUpdateColor then
 		element:PostUpdateColor(unit, r, g, b)
 	end
 end
@@ -48,11 +49,13 @@ local function Update(self, event, unit)
 
 	local element = self.PBHealth
 
-	if (element.PreUpdate) then
+	if element.PreUpdate then
 		element:PreUpdate(unit)
 	end
 
-	local cur, max = C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex), C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex)
+	local cur, max =
+		C_PetBattles.GetHealth(petInfo.petOwner, petInfo.petIndex),
+		C_PetBattles.GetMaxHealth(petInfo.petOwner, petInfo.petIndex)
 
 	element:SetMinMaxValues(0, max)
 	element:SetValue(cur)
@@ -60,7 +63,7 @@ local function Update(self, event, unit)
 	element.cur = cur
 	element.max = max
 
-	if (element.PostUpdate) then
+	if element.PostUpdate then
 		element:PostUpdate(unit, cur, max)
 	end
 end
@@ -77,7 +80,7 @@ end
 
 local function Enable(self, unit)
 	local element = self.PBHealth
-	if (element) then
+	if element then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -86,7 +89,7 @@ local function Enable(self, unit)
 		self:RegisterEvent("PET_BATTLE_HEALTH_CHANGED", Path, true)
 		self:RegisterEvent("PET_BATTLE_MAX_HEALTH_CHANGED", Path, true)
 
-		if (element:IsObjectType("StatusBar") and not element:GetStatusBarTexture()) then
+		if element:IsObjectType("StatusBar") and not element:GetStatusBarTexture() then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
@@ -98,7 +101,7 @@ end
 
 local function Disable(self)
 	local element = self.PBHealth
-	if (element) then
+	if element then
 		element:Hide()
 
 		element:SetScript("OnUpdate", nil)
