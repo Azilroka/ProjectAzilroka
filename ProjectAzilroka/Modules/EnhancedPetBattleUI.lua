@@ -5,6 +5,7 @@ end
 
 local EPB = PA:NewModule("EnhancedPetBattleUI", "AceEvent-3.0")
 _G.EnhancedPetBattleUI, PA.EnhancedPetBattleUI = EPB, EPB
+_G.BINDING_HEADER_ENHANCEDPETBATTLEUI = "EnhancedPetBattleUI"
 
 EPB.Title, EPB.Description, EPB.Authors, EPB.isEnabled =
 	"EnhancedPet Battle UI", ACL["An enhanced UI for pet battles"], "Azilroka", false

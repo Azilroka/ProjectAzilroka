@@ -1,0 +1,4 @@
+<Bindings>
+    <Binding category="BINDING_HEADER_ENHANCEDPETBATTLEUI" name="SPELL Revive Battle Pets"/>
+    <Binding category="BINDING_HEADER_ENHANCEDPETBATTLEUI" name="ITEM Battle Pet Bandage"/>
+</Bindings>
