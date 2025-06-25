@@ -83,6 +83,9 @@ local function GetFormattedText(style, min, max, rested)
 		return format(useStyle, percentValue)
 	end
 end
+
+local HasBattlePetBreedID = C_AddOns.IsAddOnLoaded("BattlePetBreedID")
+
 -- luacheck: globals _FRAME Hex _TAGS _VARS
 
 oUF.Tags.Events["pbuf:qualitycolor"] = openingEvents
@@ -218,11 +221,7 @@ end
 oUF.Tags.Events["pbuf:breedicon"] = openingEvents
 oUF.Tags.Methods["pbuf:breedicon"] = function()
 	local petInfo = _FRAME.pbouf_petinfo
-	if not petInfo then
-		return ""
-	end
-
-	if not C_AddOns.IsAddOnLoaded("BattlePetBreedID") then
+	if not HasBattlePetBreedID or not petInfo then
 		return ""
 	end
 

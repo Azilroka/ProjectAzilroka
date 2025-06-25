@@ -12,7 +12,7 @@ local seenPetInfos = {}
 
 local function GetBreedInfo(petInfo)
 	if petInfo.breedInfo then
-		return
+		return petInfo.breedInfo
 	end
 	local oldOpt = _G.BPBID_Options.format
 	local breedInfo = {}

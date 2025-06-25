@@ -1497,7 +1497,7 @@ function EPB:GetOptions()
 		nil,
 		nil,
 		function()
-			return not IsAddOnLoaded("PetTracker")
+			return not C_AddOns.IsAddOnLoaded("PetTracker")
 		end
 	)
 	EnhancedPetBattleUI.args.General.args.EnhanceTooltip = ACH:Toggle(
@@ -1649,7 +1649,7 @@ function EPB:GetOptions()
 		nil,
 		nil,
 		function()
-			return not EPB.db.UseoUF
+			return not EPB.db.UseoUF or not BattlePetBreedID
 		end
 	)
 end
