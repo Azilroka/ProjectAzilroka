@@ -5,6 +5,8 @@ if not oUF then
 	return
 end
 
+local EPB
+
 local function UpdateTooltip(self)
 	local petInfo = self:GetParent().__owner.pbouf_petinfo
 	local auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petInfo.petOwner, petInfo.petIndex, self:GetID())
@@ -19,7 +21,8 @@ local function UpdateTooltip(self)
 	_G.PetBattleAbilityTooltip_SetAura(petInfo.petOwner, petInfo.petIndex, self:GetID())
 	GameTooltip:AddLine(_G.PetBattlePrimaryAbilityTooltip.Description:GetText(), 1, 1, 1)
 	GameTooltip:AddLine(" ")
-	if turnsRemaining > 0 then
+	if not EPB then EPB = PA.EnhancedPetBattleUI end
+	if EPB and turnsRemaining > 0 then
 		local remaining = function(r)
 			return r > 3 and EPB.Colors.Green or r > 2 and EPB.Colors.Yellow or EPB.Colors.Red
 		end
