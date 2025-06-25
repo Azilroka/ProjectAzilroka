@@ -4,7 +4,7 @@ local LSM = PA.Libs.LSM
 local _G = _G
 _G.iFilger, PA.iFilger = IF, IF
 
-IF.Title, IF.Description, IF.Authors, IF.isEnabled = 'iFilger', ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'], 'Azilroka    Nils Ruesch    Ildyria', false
+IF.Title, IF.Description, IF.Authors, IF.isEnabled = 'iFilger', ACL['Minimalistic Auras / Buffs / Procs / Cooldowns'], 'Azilroka    Nils Ruesch    Ildyria    Nihilistzsche', false
 
 local CreateFrame, UIParent = CreateFrame, UIParent
 
@@ -254,7 +254,8 @@ function IF:ToggleMover(frame)
 	end
 end
 
-function IF:CustomFilter(element, unit, button, name, auraData)
+function IF:CustomFilter(element, unit, button, auraData)
+	local spellID, duration = auraData.spellId, auraData.duration
 	if duration == 0 then
 		return false
 	end
