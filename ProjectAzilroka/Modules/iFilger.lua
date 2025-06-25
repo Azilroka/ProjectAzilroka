@@ -238,7 +238,7 @@ end
 
 function IF:CreateMover(frame)
 	if PA.ElvUI then
-		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
+		_G.ElvUI[1]:CreateMover(frame, frame:GetName()..'Mover', frame:GetName(), nil, nil, nil, 'ALL,GENERAL,iFilger', nil, 'ProjectAzilroka,iFilger,'..frame.name)
 	elseif PA.Tukui then
 		_G.Tukui[1]['Movers']:RegisterFrame(frame)
 	end
@@ -614,6 +614,11 @@ function IF:BuildProfile()
 	PA.Defaults.profile.iFilger.Cooldowns.SpellCDs = PA.SpellBook.Spells
 end
 
+function IF:GetSpellName(spellID)
+	local spellInfo = GetSpellInfo(spellID)
+	return spellInfo and spellInfo.name
+end
+
 function IF:GetOptions()
 	local iFilger = ACH:Group(IF.Title, IF.Description, nil, 'tab')
 	PA.Options.args.iFilger = iFilger
@@ -672,10 +677,10 @@ function IF:GetOptions()
 
 		iFilger.args[Name].args.filterGroup.args.filterGroup = ACH:Group(function() return selectedFilter end, nil, 10, nil, nil, nil, nil, function() return not selectedFilter end)
 		iFilger.args[Name].args.filterGroup.args.filterGroup.inline = true
-		iFilger.args[Name].args.filterGroup.args.filterGroup.args.addSpell = ACH:Input(ACL['Add SpellID'], ACL['Add a spell to the filter.'], 1, nil, nil, function() return '' end, function(_, value) value = tonumber(value) if not value then return end local spellName = GetSpellInfo(value) selectedSpell = (spellName and value) or nil if not selectedSpell then return end IF.db[Name][selectedFilter][value] = true end)
+		iFilger.args[Name].args.filterGroup.args.filterGroup.args.addSpell = ACH:Input(ACL['Add SpellID'], ACL['Add a spell to the filter.'], 1, nil, nil, function() return '' end, function(_, value) value = tonumber(value) if not value then return end local spellName = GetSpellInfo(value).name selectedSpell = (spellName and value) or nil if not selectedSpell then return end IF.db[Name][selectedFilter][value] = true end)
 		iFilger.args[Name].args.filterGroup.args.filterGroup.args.removeSpell = ACH:Execute(ACL["Remove Spell"], ACL["Remove a spell from the filter. Use the spell ID if you see the ID as part of the spell name in the filter."], 2, function() local value = GetSelectedSpell() if not value then return end selectedSpell = nil IF.db[Name][selectedFilter][value] = nil end, nil, true)
-		iFilger.args[Name].args.filterGroup.args.filterGroup.args.selectSpell = ACH:Select(ACL["Select Spell"], nil, 10, function() local list = IF.db[Name][selectedFilter] if not list then return end wipe(spellList) for filter in next, list do local spellName = tonumber(filter) and GetSpellInfo(filter) local name = (spellName and format("%s |cFF888888(%s)|r", spellName, filter)) or tostring(filter) spellList[filter] = name end if not next(spellList) then spellList[''] = ACL["None"] end return spellList end, nil, 'double', function() if not IF.db[Name][selectedFilter][selectedSpell] then selectedSpell = nil end return selectedSpell or '' end, function(_, value) selectedSpell = (value ~= '' and value) or nil end)
-		iFilger.args[Name].args.filterGroup.args.spellGroup = ACH:Group(function() local spell = GetSelectedSpell() local spellName = spell and GetSpellInfo(spell) return (spellName and spellName..' |cFF888888('..spell..')|r') or spell or ' ' end, nil, -15, nil, nil, nil, nil, function() return not GetSelectedSpell() end)
+		iFilger.args[Name].args.filterGroup.args.filterGroup.args.selectSpell = ACH:Select(ACL["Select Spell"], nil, 10, function() local list = IF.db[Name][selectedFilter] if not list then return end wipe(spellList) for filter in next, list do local spellName = tonumber(filter) and IF:GetSpellName(tonumber(filter)) local name = (spellName and format("%s |cFF888888(%s)|r", spellName, filter) or tostring(filter)) spellList[filter] = name end if not next(spellList) then spellList[''] = ACL["None"] end return spellList end, nil, 'double', function() if not IF.db[Name][selectedFilter][selectedSpell] then selectedSpell = nil end return selectedSpell or '' end, function(_, value) selectedSpell = (value ~= '' and value) or nil end)
+		iFilger.args[Name].args.filterGroup.args.spellGroup = ACH:Group(function() local spell = GetSelectedSpell() local spellName = spell and IF:GetSpellName(spell) return (spellName and spellName..' |cFF888888('..spell..')|r') or spell or ' ' end, nil, -15, nil, nil, nil, nil, function() return not GetSelectedSpell() end)
 		iFilger.args[Name].args.filterGroup.args.spellGroup.inline = true
 		iFilger.args[Name].args.filterGroup.args.spellGroup.args.enabled = ACH:Toggle(ACL['Enable'], nil, 0, nil, nil, nil, function() local spell = GetSelectedSpell() if not spell then return end return IF.db[Name][selectedFilter][spell] end, function(_, value) local spell = GetSelectedSpell() if not spell then return end IF.db[Name][selectedFilter][spell] = value end)
 	end
