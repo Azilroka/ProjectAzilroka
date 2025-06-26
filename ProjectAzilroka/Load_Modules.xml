@@ -11,6 +11,7 @@
 	<Script file='Modules\MouseoverAuras.lua' />
 	<Script file='Modules\MovableFrames.lua' />
 	<Script file='Modules\OzCooldowns.lua' />
+	<Script file="Modules\PetBattleScriptsBreedExtension.lua"/>
 	<Script file='Modules\QuestSounds.lua' />
 	<Script file='Modules\Reminder.lua' />
 	<Script file='Modules\SquareMinimapButtons.lua' />
