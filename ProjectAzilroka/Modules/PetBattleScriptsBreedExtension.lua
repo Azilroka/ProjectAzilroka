@@ -1,6 +1,5 @@
 local PA, ACL, ACH = unpack(_G.ProjectAzilroka)
 if PA.Classic or not PA:IsAddOnEnabled("tdBattlePetScript") or not PA:IsAddOnEnabled("BattlePetBreedID") then
-	error("not loading PBSBE")
 	return
 end
 
