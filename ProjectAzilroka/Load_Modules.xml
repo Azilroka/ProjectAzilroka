@@ -7,7 +7,7 @@
 	<Script file='Modules\FasterLoot.lua' />
 	<Script file='Modules\iFilger.lua' />
 	<Script file='Modules\LootConfirm.lua' />
-	<Script file='Modules\MasterExperience.lua' />
+	<!--<Script file='Modules\MasterExperience.lua' />-->
 	<Script file='Modules\MouseoverAuras.lua' />
 	<Script file='Modules\MovableFrames.lua' />
 	<Script file='Modules\OzCooldowns.lua' />
