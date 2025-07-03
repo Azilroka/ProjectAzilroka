@@ -1,7 +1,6 @@
 local PA = _G.ProjectAzilroka[1]
 local oUF = PA.oUF
 if not oUF then
-	error("Missing oUF")
 	return
 end
 
