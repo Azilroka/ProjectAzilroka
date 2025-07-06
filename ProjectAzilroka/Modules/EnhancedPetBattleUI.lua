@@ -753,7 +753,11 @@ function EPB:InitPetFrameAPI()
 				end
 				frame:Tag(frame.PBPower.value, EPB.db.powerFormat)
 				frame:Tag(frame.PBSpeed.value, EPB.db.speedFormat)
-				frame:Tag(frame.BreedID, EPB.db.breedFormat)
+				if petInfo.petOwner == Enum_BattlePetOwner_Ally then
+					frame:Tag(frame.BreedID, EPB.db.breedAllyFormat)
+				else
+					frame:Tag(frame.BreedID, EPB.db.breedEnemyFormat)
+				end
 			end
 
 			function EPB:UpdatePetFrame(frame)
@@ -1639,10 +1643,23 @@ function EPB:GetOptions()
 			return not EPB.db.UseoUF
 		end
 	)
-	EnhancedPetBattleUI.args.General.args.breedFormat = ACH:Input(
-		ACL["Breed Format"],
+	EnhancedPetBattleUI.args.General.args.breedAllyFormat = ACH:Input(
+		ACL["Breed Format (Ally Team)"],
 		nil,
 		23,
+		nil,
+		"full",
+		nil,
+		nil,
+		nil,
+		function()
+			return not EPB.db.UseoUF or not BattlePetBreedID
+		end
+	)
+	EnhancedPetBattleUI.args.General.args.breedEnemyFormat = ACH:Input(
+		ACL["Breed Format (Enemy Team)"],
+		nil,
+		24,
 		nil,
 		"full",
 		nil,
@@ -1678,7 +1695,8 @@ function EPB:BuildProfile()
 		xpFormat = "[pbuf:xp:current-max-percent]",
 		powerFormat = "[pbuf:power:comparecolor][pbuf:power]",
 		speedFormat = "[pbuf:speed:comparecolor][pbuf:speed]",
-		breedFormat = "[pbuf:breedicon]",
+		breedAllyFormat = "[pbuf:breed][pbuf:breedicon]",
+		breedEnemyFormat = "[pbuf:breedicon][pbuf:breed]",
 		healthThreshold = 0.85,
 		wildHealthThreshold = 0.65,
 	}
