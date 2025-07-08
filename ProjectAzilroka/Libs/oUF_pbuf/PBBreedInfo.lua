@@ -18,12 +18,15 @@ local function GetBreedInfo(petInfo)
 	local breedInfo = {}
 	_G.BPBID_Options.format = 3 -- %/%
 	breedInfo.text = _G.GetBreedID_Battle(petInfo)
-	if (_G.PetTracker) then
+	if _G.PetTracker and not breedInfo.text:find("ERR") then
 		_G.BPBID_Options.format = 1 -- num
 		local breed = _G.GetBreedID_Battle(petInfo)
-		breedInfo.icon = _G.PetTracker.Breeds:Icon(breed, .9)
+		breedInfo.icon = _G.PetTracker.Breeds:Icon(breed, 0.9)
 	end
 	_G.BPBID_Options.format = oldOpt
+	if breedInfo.text:find("ERR") then
+		breedInfo.text = ""
+	end
 	petInfo.breedInfo = breedInfo
 	seenPetInfos[petInfo] = true
 end

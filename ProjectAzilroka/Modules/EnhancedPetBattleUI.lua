@@ -746,18 +746,6 @@ function EPB:InitPetFrameAPI()
 					0
 				)
 				frame.PBSpeed.value:SetJustifyH(ps.statJustifyH)
-				frame:Tag(frame.Name, EPB.db.nameFormat)
-				frame:Tag(frame.PBHealth.value, EPB.db.healthFormat)
-				if petInfo.petOwner == Enum_BattlePetOwner_Ally then
-					frame:Tag(frame.PBExperience.value, EPB.db.xpFormat)
-				end
-				frame:Tag(frame.PBPower.value, EPB.db.powerFormat)
-				frame:Tag(frame.PBSpeed.value, EPB.db.speedFormat)
-				if petInfo.petOwner == Enum_BattlePetOwner_Ally then
-					frame:Tag(frame.BreedID, EPB.db.breedAllyFormat)
-				else
-					frame:Tag(frame.BreedID, EPB.db.breedEnemyFormat)
-				end
 			end
 
 			function EPB:UpdatePetFrame(frame)
@@ -770,6 +758,22 @@ function EPB:InitPetFrameAPI()
 				end
 				self:UpdatePetFrameMedia(frame)
 				self:UpdatePetFrameAnchors(frame)
+			end
+
+			function EPB:UpdatePetFrameTags(frame)
+				local petInfo = frame.pbouf_petinfo
+				frame:Tag(frame.Name, EPB.db.nameFormat)
+				frame:Tag(frame.PBHealth.value, EPB.db.healthFormat)
+				if petInfo.petOwner == Enum_BattlePetOwner_Ally then
+					frame:Tag(frame.PBExperience.value, EPB.db.xpFormat)
+				end
+				frame:Tag(frame.PBPower.value, EPB.db.powerFormat)
+				frame:Tag(frame.PBSpeed.value, EPB.db.speedFormat)
+				if petInfo.petOwner == Enum_BattlePetOwner_Ally then
+					frame:Tag(frame.BreedID, EPB.db.breedAllyFormat)
+				else
+					frame:Tag(frame.BreedID, EPB.db.breedEnemyFormat)
+				end
 			end
 
 			function EPB:UpdateFrame(event)
@@ -844,6 +848,8 @@ function EPB:InitPetFrameAPI()
 					else
 						PA.Libs.LCG.PixelGlow_Stop(pet.RaisedElementParent)
 					end
+
+					EPB:UpdatePetFrameTags(pet)
 
 					_G.RegisterStateDriver(pet, "visibility", "[petbattle] show; hide")
 				end
