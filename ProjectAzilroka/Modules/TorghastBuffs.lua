@@ -72,20 +72,29 @@ function TB:UpdateAura(button, index)
 	button.Icon:SetTexture(auraData.icon)
 end
 
-
-function TB:OnAttributeChanged(attribute, value)
+function TB.OnAttributeChanged(self, attribute, value)
 	if attribute == 'index' then
 		TB:UpdateAura(self, value)
 	end
 end
 
+TB.AttributeInitialConfig = [[
+	local header = self:GetParent()
+
+	self:SetWidth(header:GetAttribute('config-width'))
+	self:SetHeight(header:GetAttribute('config-height'))
+]]
+
 function TB:UpdateHeader(header)
-	header:SetAttribute('template', format('TorghastBuffsTemplate%d', TB.db.size))
+	header:SetAttribute('config-width', TB.db.size)
+	header:SetAttribute('config-height', TB.db.size)
+	header:SetAttribute('template', 'TorghastBuffsTemplate')
 	header:SetAttribute('sortMethod', TB.db.sortMethod)
 	header:SetAttribute('sortDirection', TB.db.sortDir)
 	header:SetAttribute('maxWraps', TB.db.maxWraps)
 	header:SetAttribute('wrapAfter', TB.db.wrapAfter)
 	header:SetAttribute('point', DIRECTION_TO_POINT[TB.db.growthDirection])
+	header:SetAttribute('initialConfigFunction', TB.AttributeInitialConfig)
 
 	if IS_HORIZONTAL_GROWTH[TB.db.growthDirection] then
 		header:SetAttribute('minWidth', ((TB.db.wrapAfter == 1 and 0 or TB.db.horizontalSpacing) + TB.db.size) * TB.db.wrapAfter)
@@ -123,6 +132,9 @@ end
 function TB:CreateAuraHeader(unit, unitName)
 	local header = CreateFrame('Frame', 'TorghastBuffs_'..unitName, TB.Holder, 'TorghastBuffsHeaderTemplate')
 	header:SetAttribute('unit', unit)
+	header:ClearAllPoints()
+	header:UnregisterAllEvents()
+	header:RegisterUnitEvent('UNIT_AURA', unit)
 	header.unit = unit
 
 	TB:UpdateHeader(header)
@@ -223,18 +235,12 @@ function TB:Initialize()
 	end
 
 	TB.Holder.PlayerBuffFrame = TB:CreateAuraHeader('player', 'Player')
-	TB.Holder.PlayerBuffFrame:ClearAllPoints()
 	TB.Holder.PlayerBuffFrame:SetPoint('TOPLEFT', TB.Holder, 'TOPLEFT', 0, 0)
-	TB.Holder.PlayerBuffFrame:UnregisterAllEvents()
-	TB.Holder.PlayerBuffFrame:RegisterUnitEvent('UNIT_AURA', 'player')
 
 	for i = 1, 4 do
 		local name = format('Party%dBuffFrame', i)
 		TB.Holder[name] = TB:CreateAuraHeader('party'..i, 'Party'..i)
-		TB.Holder[name]:ClearAllPoints()
 		TB.Holder[name]:SetPoint('TOPLEFT', i == 1 and TB.Holder.PlayerBuffFrame or TB.Holder[format('Party%dBuffFrame', i - 1)], 'BOTTOMLEFT', 0, -25)
-		TB.Holder[name]:UnregisterAllEvents()
-		TB.Holder[name]:RegisterUnitEvent('UNIT_AURA', 'party'..i)
 	end
 
 	if PA.ElvUI then
