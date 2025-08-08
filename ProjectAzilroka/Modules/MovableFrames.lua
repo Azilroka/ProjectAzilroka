@@ -172,6 +172,7 @@ function MF:Initialize()
 
 	if PA.ElvUI then
 		AddOnFrames.Blizzard_TalkingHeadUI = nil
+		tremove(Frames, 'BankFrame')
 	end
 
 	for _, frame in next, Frames do
