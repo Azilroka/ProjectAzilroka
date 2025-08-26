@@ -44,7 +44,7 @@ _G.StaticPopupDialogs.STADDONMANAGER_NEWPROFILE = {
 	timeout = 0,
 	hasEditBox = 1,
 	whileDead = 1,
-	OnAccept = function(self) stAM:NewAddOnProfile(self.editBox:GetText()) end,
+	OnAccept = function(self) stAM:NewAddOnProfile(self.EditBox:GetText()) end,
 	EditBoxOnEnterPressed = function(self) stAM:NewAddOnProfile(self:GetText()) self:GetParent():Hide() end,
 	EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
 }
