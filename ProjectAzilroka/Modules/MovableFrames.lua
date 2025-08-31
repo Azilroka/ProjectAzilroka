@@ -11,7 +11,7 @@ local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 local IsShiftKeyDown = IsShiftKeyDown
 
 local Frames = {
-	'AddonList', 'BankFrame', 'CharacterFrame', 'DressUpFrame', 'FriendsFrame', 'FriendsFriendsFrame', 'GameMenuFrame', 'GhostFrame', 'GossipFrame', 'GuildInviteFrame',
+	'AddonList', 'CharacterFrame', 'DressUpFrame', 'FriendsFrame', 'FriendsFriendsFrame', 'GameMenuFrame', 'GhostFrame', 'GossipFrame', 'GuildInviteFrame',
 	'GuildRegistrarFrame', 'HelpFrame', 'InterfaceOptionsFrame', 'ItemTextFrame', 'LFGDungeonReadyDialog', 'LootFrame', 'MailFrame', 'MerchantFrame',
 	'PetitionFrame', 'PetStableFrame', 'PVEFrame', 'QuestFrame', 'QuestLogFrame', 'QuestLogPopupDetailFrame', 'RaidBrowserFrame', 'RaidParentFrame', 'ReadyCheckFrame',
 	'ScrollOfResurrectionSelectionFrame', 'SpellBookFrame', 'SplashFrame', 'StaticPopup1', 'StaticPopup2', 'StaticPopup3', 'StaticPopup4', 'TabardFrame', 'TaxiFrame',
@@ -172,7 +172,8 @@ function MF:Initialize()
 
 	if PA.ElvUI then
 		AddOnFrames.Blizzard_TalkingHeadUI = nil
-		tremove(Frames, 'BankFrame')
+	else
+		tinsert(Frames, 'BankFrame')
 	end
 
 	for _, frame in next, Frames do
