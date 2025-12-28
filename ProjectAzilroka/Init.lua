@@ -494,7 +494,7 @@ do
 		for SpellID in next, db do
 			local spellData, tblID = PA.SpellBook.Complete[SpellID], tostring(SpellID)
 
-			if spellData.name and not SpellOptions[tblID] then
+			if spellData and (spellData.name and not SpellOptions[tblID]) then
 				SpellOptions[tblID] = ACH:Toggle(' '..spellData.name, 'Spell ID: '..SpellID)
 				SpellOptions[tblID].image, SpellOptions[tblID].imageCoords = spellData.iconID, PA:TexCoords(true)
 			end
